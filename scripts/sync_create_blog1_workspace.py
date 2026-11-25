@@ -16,15 +16,110 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
+import sys
 import tempfile
 import time
+import zipfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR / "scripts") not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR / "scripts"))
+
+import create_blog1_engine as _cb1
 
 DEFAULT_BUCKET = os.environ.get("DURABLE_GCS_BUCKET", "scorex-durable-state-bbar-138hf0")
 GCS_PREFIX = "ge-blogs/create-blog1"
 GDRIVE_CLI = Path("/google/bin/releases/gemini-agents-gdrive/gdrive")
+
+
+def _rasterize_svgs_to_pngs(svg_paths: Dict[str, Path], out_dir: Path) -> Dict[str, Tuple[bytes, int, int]]:
+    """Rasterizes 1600x900 diagram SVGs to crisp PNGs for inline embedding inside Google Docs."""
+    result: Dict[str, Tuple[bytes, int, int]] = {}
+    if not svg_paths:
+        return result
+    # Prefer local Puppeteer (100% browser SVG fidelity with embedded data-URI icons & CSS fonts)
+    pupp_paths = [
+        Path("/usr/local/google/home/nitinagga/node_modules/puppeteer"),
+        ROOT_DIR / "node_modules" / "puppeteer",
+    ]
+    pupp_dir = next((p for p in pupp_paths if p.exists()), None)
+    if shutil.which("node") and pupp_dir is not None:
+        jobs = []
+        for k, sp in svg_paths.items():
+            out_p = out_dir / f"{k}.png"
+            jobs.append({"key": k, "svg": str(sp), "png": str(out_p)})
+        js_script = out_dir / "_raster.mjs"
+        js_script.write_text(
+            f"""import fs from 'fs';
+import puppeteer from '{pupp_dir.as_posix()}/lib/esm/puppeteer/puppeteer.js';
+const jobs = JSON.parse(fs.readFileSync({json.dumps(str(out_dir / "_jobs.json"))}, 'utf8'));
+const browser = await puppeteer.launch({{ headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox'] }});
+try {{
+  const page = await browser.newPage();
+  await page.setViewport({{ width: 1600, height: 900, deviceScaleFactor: 2 }});
+  for (const j of jobs) {{
+    const svg = fs.readFileSync(j.svg, 'utf8');
+    await page.setContent(`<!doctype html><html><body style="margin:0;padding:0;background:#fff;overflow:hidden;width:1600px;height:900px;">${{svg}}</body></html>`, {{ waitUntil: 'load' }});
+    await page.screenshot({{ path: j.png, type: 'png', clip: {{ x: 0, y: 0, width: 1600, height: 900 }} }});
+  }}
+}} finally {{
+  await browser.close();
+}}
+""",
+            encoding="utf-8",
+        )
+        (out_dir / "_jobs.json").write_text(json.dumps(jobs), encoding="utf-8")
+        try:
+            subprocess.run(["node", str(js_script)], check=True, capture_output=True, text=True, timeout=90)
+            for j in jobs:
+                pp = Path(j["png"])
+                if pp.is_file():
+                    raw = pp.read_bytes()
+                    _, pw, ph, _ = _cb1.parse_image_header(raw)
+                    result[j["key"]] = (raw, pw, ph)
+            if result:
+                return result
+        except Exception as exc:
+            print(f"[WARN] Puppeteer SVG rasterization skipped ({exc}); trying rsvg-convert fallback...")
+
+    if shutil.which("rsvg-convert"):
+        for k, sp in svg_paths.items():
+            out_p = out_dir / f"{k}.png"
+            try:
+                subprocess.run(["rsvg-convert", "-w", "1600", "-h", "900", str(sp), "-o", str(out_p)], check=True, timeout=20)
+                raw = out_p.read_bytes()
+                _, pw, ph, _ = _cb1.parse_image_header(raw)
+                result[k] = (raw, pw, ph)
+            except Exception:
+                pass
+    return result
+
+
+def _patch_bundle_zip(bundle_path: Path, slug: str, updates: Dict[str, bytes]) -> None:
+    """Rewrites entries inside `<slug>-bundle.zip` in place, redacting internal emails in manifest.json."""
+    if not bundle_path.is_file():
+        return
+    tmp_p = bundle_path.with_suffix(".tmp.zip")
+    prefixed = {f"{slug}/{k.lstrip('/')}": v for k, v in updates.items()}
+    seen = set()
+    with zipfile.ZipFile(bundle_path, "r") as zin, zipfile.ZipFile(tmp_p, "w", zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            if item.filename in prefixed:
+                zout.writestr(item.filename, prefixed[item.filename])
+                seen.add(item.filename)
+            elif item.filename == f"{slug}/manifest.json":
+                zout.writestr(item.filename, _cb1._redact_manifest_for_public_bundle(zin.read(item.filename)))
+                seen.add(item.filename)
+            else:
+                zout.writestr(item, zin.read(item.filename))
+        for k, v in prefixed.items():
+            if k not in seen:
+                zout.writestr(k, v)
+    tmp_p.replace(bundle_path)
 
 
 def _with_rk(base_url: str, resource_key: str) -> str:
@@ -73,8 +168,48 @@ def sync_slug(bucket: str, slug: str, force: bool = False) -> Dict[str, Any]:
 
         pptx_p = td_p / f"{slug}-deck.pptx"
         docx_p = td_p / f"{slug}-whitepaper.docx"
+        bundle_p = td_p / f"{slug}-bundle.zip"
         subprocess.run(["gcloud", "storage", "cp", f"{base}/{slug}/slides/{slug}-deck.pptx", str(pptx_p)], check=True)
         subprocess.run(["gcloud", "storage", "cp", f"{base}/{slug}/docs/{slug}-whitepaper.docx", str(docx_p)], check=True)
+        subprocess.run(["gcloud", "storage", "cp", f"{base}/{slug}/{slug}-bundle.zip", str(bundle_p)], check=False)
+
+        # Download SVGs & embed all 6 rasterized diagrams inline into the .docx before uploading to Google Docs
+        diag_dir = td_p / "diagrams"
+        diag_dir.mkdir(parents=True, exist_ok=True)
+        svg_paths: Dict[str, Path] = {}
+        d_meta = manifest.get("diagrams") if isinstance(manifest.get("diagrams"), dict) else {}
+        for dk in ("architecture", "cloudarch", "sequence", "security", "wire", "async"):
+            if dk in d_meta:
+                sp = diag_dir / f"{slug}-{dk}.svg"
+                cp_r = subprocess.run(["gcloud", "storage", "cp", f"{base}/{slug}/diagrams/{slug}-{dk}.svg", str(sp)], capture_output=True)
+                if cp_r.returncode == 0 and sp.is_file():
+                    svg_paths[dk] = sp
+        diagram_pngs = _rasterize_svgs_to_pngs(svg_paths, diag_dir)
+        docx_rebuilt = False
+        if diagram_pngs and isinstance(manifest.get("blueprint"), dict):
+            # Download any attached proofs so they stay embedded
+            proofs = manifest.get("proofs") or []
+            for pf in proofs:
+                rel_p = str(pf.get("relPath") or "")
+                if rel_p:
+                    dst_pf = td_p / rel_p
+                    dst_pf.parent.mkdir(parents=True, exist_ok=True)
+                    subprocess.run(["gcloud", "storage", "cp", f"{base}/{slug}/{rel_p}", str(dst_pf)], capture_output=True)
+            extra_urls = {k: str(d_meta[k].get("viewerUrl") or "") for k in ("cloudarch", "security", "wire", "async") if k in d_meta}
+            docx_bytes = _cb1.compile_docx_bytes(
+                manifest["blueprint"],
+                slug,
+                str((d_meta.get("architecture") or {}).get("viewerUrl") or ""),
+                str((d_meta.get("sequence") or {}).get("viewerUrl") or ""),
+                proofs,
+                td_p,
+                extra_urls=extra_urls,
+                grounding=(manifest.get("quality") or {}).get("grounding") or {},
+                diagram_pngs=diagram_pngs,
+            )
+            docx_p.write_bytes(docx_bytes)
+            docx_rebuilt = True
+            print(f"[DOCX] Embedded {len(diagram_pngs)} crisp diagram PNGs inline into {docx_p.name} ({len(docx_bytes):,} bytes)")
 
         title = str(manifest.get("title") or slug)[:90]
         slide_n = len((manifest.get("blueprint") or {}).get("slides") or []) or 12
@@ -103,11 +238,23 @@ def sync_slug(bucket: str, slug: str, force: bool = False) -> Dict[str, Any]:
             "slidesEmbedUrl": _with_rk(f"https://docs.google.com/presentation/d/{sid}/embed", srk),
             "docId": did,
             "docUrl": _with_rk(f"https://docs.google.com/document/d/{did}/edit", drk),
+            "embeddedDiagramPngs": len(diagram_pngs),
         }
         manifest["workspaceSync"] = ws_meta
         manifest["updatedAt"] = now
-        mp.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+        mp_bytes = json.dumps(manifest, indent=2).encode("utf-8")
+        mp.write_bytes(mp_bytes)
         subprocess.run(["gcloud", "storage", "cp", str(mp), f"{base}/{slug}/manifest.json"], check=True)
+        if docx_rebuilt:
+            subprocess.run(["gcloud", "storage", "cp", str(docx_p), f"{base}/{slug}/docs/{slug}-whitepaper.docx"], check=True)
+        if bundle_p.is_file():
+            bundle_updates: Dict[str, bytes] = {
+                "manifest.json": _cb1._redact_manifest_for_public_bundle(mp_bytes),
+            }
+            if docx_rebuilt:
+                bundle_updates[f"docs/{slug}-whitepaper.docx"] = docx_p.read_bytes()
+            _patch_bundle_zip(bundle_p, slug, bundle_updates)
+            subprocess.run(["gcloud", "storage", "cp", str(bundle_p), f"{base}/{slug}/{slug}-bundle.zip"], check=True)
         print(f"[SYNCED] {slug}\n  Slides: {ws_meta['slidesUrl']}\n  Docs:   {ws_meta['docUrl']}")
         return ws_meta
 

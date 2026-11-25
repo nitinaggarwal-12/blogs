@@ -579,25 +579,28 @@ def compile_spec_to_drawio_xml(spec: Dict[str, Any]) -> str:
         cells.append(
             f'<mxCell id="gcp_bezel_lbl" value="{esc_xml(bz.get("label", "Google Cloud"))}" '
             f'style="text;html=1;align=left;verticalAlign=middle;fontFamily=Arial;fontSize=15;fontStyle=1;fontColor=#FFFFFF;strokeColor=none;fillColor=none;" '
-            f'vertex="1" parent="1"><mxGeometry x="{bz["x"] + 20}" y="{bz["y"] + 6}" width="420" height="24" as="geometry"/></mxCell>'
+            f'vertex="1" parent="1"><mxGeometry x="{bz["x"] + 20}" y="{bz["y"] + 7}" width="420" height="24" as="geometry"/></mxCell>'
         )
         cells.append(
             f'<mxCell id="gcp_bezel_inner" value="" style="rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFFFF;'
             f'strokeColor=#1E293B;strokeWidth=1.2;container=1;collapsible=0;pointerEvents=0;" vertex="1" parent="1">'
-            f'<mxGeometry x="{bz["x"] + 12}" y="{bz["y"] + 34}" width="{bz["w"] - 24}" height="{bz["h"] - 46}" as="geometry"/></mxCell>'
+            f'<mxGeometry x="{bz["x"] + 12}" y="{bz["y"] + 38}" width="{bz["w"] - 24}" height="{bz["h"] - 50}" as="geometry"/></mxCell>'
         )
 
-    # 1. Title & top hairline divider
+    # 1. Title & top hairline divider (reserve width before any top-right badge pills!)
+    top_right_xs = [float(p["x"]) for p in (spec.get("pills") or []) if float(p.get("y", 999)) < 60 and float(p.get("x", 0)) > 600]
+    title_max_w = (min(top_right_xs) - 48.0) if top_right_xs else float(cw - 64)
     t_text = str(spec.get("title") or "")
     if t_text:
         t_y = int(spec.get("titleY", 14))
         t_sz = float(spec.get("titleSize", 20))
         t_clr = spec.get("titleColor", "#202124")
-        t_html = f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:{t_sz}px;font-weight:700;color:{t_clr};">{esc_html(t_text)}</div>'
+        t_fit, t_fs = fit_single_line_px(t_text, title_max_w, t_sz, bold=True)
+        t_html = f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:{t_fs}px;font-weight:700;color:{t_clr};">{esc_html(t_fit)}</div>'
         cells.append(
             f'<mxCell id="title_main" value="{esc_xml(t_html)}" '
             f'style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;strokeColor=none;fillColor=none;" '
-            f'vertex="1" parent="1"><mxGeometry x="32" y="{t_y}" width="1500" height="30" as="geometry"/></mxCell>'
+            f'vertex="1" parent="1"><mxGeometry x="32" y="{t_y}" width="{int(title_max_w)}" height="30" as="geometry"/></mxCell>'
         )
     if spec.get("subtitle"):
         _sub_h = '<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#5F6368;">' + esc_html(spec["subtitle"]) + '</div>'
@@ -959,18 +962,20 @@ def compile_spec_to_svg(spec: Dict[str, Any]) -> str:
         bx, by, bw, bh = bz["x"], bz["y"], bz["w"], bz["h"]
         body.append(f'<rect x="{bx}" y="{by}" width="{bw}" height="{bh}" rx="18" fill="#1A73E8"/>')
         body.append(
-            f'<text x="{bx + 22}" y="{by + 24}" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">'
+            f'<text x="{bx + 22}" y="{by + 25}" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF">'
             f'{esc_xml(bz.get("label", "Google Cloud"))}</text>'
         )
         body.append(
-            f'<rect x="{bx + 12}" y="{by + 34}" width="{bw - 24}" height="{bh - 46}" rx="12" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.2"/>'
+            f'<rect x="{bx + 12}" y="{by + 38}" width="{bw - 24}" height="{bh - 50}" rx="12" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.2"/>'
         )
 
+    top_right_xs = [float(p["x"]) for p in (spec.get("pills") or []) if float(p.get("y", 999)) < 60 and float(p.get("x", 0)) > 600]
+    title_max_w = (min(top_right_xs) - 48.0) if top_right_xs else float(cw - 90)
     if spec.get("title"):
         t_y = float(spec.get("titleY", 14))
         t_sz = float(spec.get("titleSize", 20))
         t_clr = spec.get("titleColor", "#202124")
-        t_txt, t_fs = fit_single_line_px(spec["title"], cw - 90, t_sz, bold=True)
+        t_txt, t_fs = fit_single_line_px(spec["title"], title_max_w, t_sz, bold=True)
         body.append(
             f'<text data-node-id="t_main" x="32" y="{t_y + t_fs * 1.15:.1f}" text-anchor="start" '
             f'font-family="Arial, Helvetica, sans-serif" font-size="{t_fs}" font-weight="700" fill="{t_clr}">'
@@ -1354,8 +1359,361 @@ def _ox_conn(edge: Dict[str, Any], pts: List[Tuple[float, float]], next_id) -> L
     return out
 
 
+_KAPPA = 0.5522847498
+
+
+def _hex6_opt(c: Any) -> Optional[str]:
+    s = str(c or "").strip().lstrip("#")
+    if len(s) == 3 and re.fullmatch(r"[0-9a-fA-F]{3}", s):
+        return (s[0] * 2 + s[1] * 2 + s[2] * 2).upper()
+    if re.fullmatch(r"[0-9a-fA-F]{6}", s):
+        return s.upper()
+    return None
+
+
+def _arc_to_cubic_beziers(
+    x1: float, y1: float, rx_in: float, ry_in: float, phi_deg: float, laf: int, sf: int, x2: float, y2: float
+) -> List[Tuple[float, float, float, float, float, float]]:
+    if math.hypot(x2 - x1, y2 - y1) < 1e-9:
+        return []
+    rx, ry = abs(rx_in), abs(ry_in)
+    if rx < 1e-9 or ry < 1e-9:
+        return [(x1, y1, x2, y2, x2, y2)]
+    phi = math.radians(phi_deg)
+    cos_p, sin_p = math.cos(phi), math.sin(phi)
+    dx2, dy2 = (x1 - x2) / 2.0, (y1 - y2) / 2.0
+    x1p = cos_p * dx2 + sin_p * dy2
+    y1p = -sin_p * dx2 + cos_p * dy2
+    rx2, ry2 = rx * rx, ry * ry
+    x1p2, y1p2 = x1p * x1p, y1p * y1p
+    lam = x1p2 / rx2 + y1p2 / ry2
+    if lam > 1.0:
+        s = math.sqrt(lam)
+        rx *= s
+        ry *= s
+        rx2, ry2 = rx * rx, ry * ry
+    sign = -1.0 if (bool(laf) == bool(sf)) else 1.0
+    num = max(0.0, rx2 * ry2 - rx2 * y1p2 - ry2 * x1p2)
+    den = rx2 * y1p2 + ry2 * x1p2
+    coef = 0.0 if den < 1e-12 else sign * math.sqrt(num / den)
+    cxp = coef * ((rx * y1p) / ry)
+    cyp = coef * (-(ry * x1p) / rx)
+    cx = cos_p * cxp - sin_p * cyp + (x1 + x2) / 2.0
+    cy = sin_p * cxp + cos_p * cyp + (y1 + y2) / 2.0
+
+    def _vec_ang(ux: float, uy: float, vx: float, vy: float) -> float:
+        dot = ux * vx + uy * vy
+        ln = math.hypot(ux, uy) * math.hypot(vx, vy)
+        cos_a = max(-1.0, min(1.0, (dot / ln) if ln else 1.0))
+        ang = math.acos(cos_a)
+        return -ang if (ux * vy - uy * vx < 0) else ang
+
+    theta1 = _vec_ang(1.0, 0.0, (x1p - cxp) / rx, (y1p - cyp) / ry)
+    d_theta = _vec_ang((x1p - cxp) / rx, (y1p - cyp) / ry, (-x1p - cxp) / rx, (-y1p - cyp) / ry)
+    if not sf and d_theta > 0:
+        d_theta -= 2.0 * math.pi
+    if sf and d_theta < 0:
+        d_theta += 2.0 * math.pi
+
+    segs = max(1, math.ceil(abs(d_theta) / (math.pi / 2.0)))
+    delta = d_theta / segs
+    alpha = (4.0 / 3.0) * math.tan(delta / 4.0)
+    out: List[Tuple[float, float, float, float, float, float]] = []
+    for i in range(segs):
+        t1 = theta1 + i * delta
+        t2 = t1 + delta
+        c1, s1 = math.cos(t1), math.sin(t1)
+        c2, s2 = math.cos(t2), math.sin(t2)
+        raw_pts = [
+            (c1 - alpha * s1, s1 + alpha * c1),
+            (c2 + alpha * s2, s2 - alpha * c2),
+            (c2, s2),
+        ]
+        pts = [(cos_p * rx * px - sin_p * ry * py + cx, sin_p * rx * px + cos_p * ry * py + cy) for px, py in raw_pts]
+        out.append((pts[0][0], pts[0][1], pts[1][0], pts[1][1], pts[2][0], pts[2][1]))
+    return out
+
+
+def _parse_svg_path_data(d: str) -> List[Dict[str, Any]]:
+    tokens: List[Tuple[str, Any]] = []
+    for m in re.finditer(r"([MmLlHhVvCcSsQqTtAaZz])|([+-]?(?:\d+\.\d*|\.\d+|\d+)(?:[eE][+-]?\d+)?)", d or ""):
+        if m.group(1):
+            tokens.append(("cmd", m.group(1)))
+        else:
+            tokens.append(("num", float(m.group(2))))
+    cmds: List[Dict[str, Any]] = []
+    i = 0
+    cx = cy = sx = sy = prev_c2x = prev_c2y = prev_qx = prev_qy = 0.0
+    prev_cmd = cur_cmd = ""
+
+    def _read_num() -> float:
+        nonlocal i
+        if i < len(tokens) and tokens[i][0] == "num":
+            v = float(tokens[i][1])
+            i += 1
+            return v
+        return 0.0
+
+    while i < len(tokens):
+        if tokens[i][0] == "cmd":
+            cur_cmd = str(tokens[i][1])
+            i += 1
+        elif cur_cmd == "M":
+            cur_cmd = "L"
+        elif cur_cmd == "m":
+            cur_cmd = "l"
+
+        if cur_cmd in ("Z", "z"):
+            cmds.append({"op": "Z"})
+            cx, cy = sx, sy
+            prev_cmd, cur_cmd = cur_cmd, ""
+        elif cur_cmd in ("M", "m"):
+            x, y = _read_num(), _read_num()
+            cx = cx + x if cur_cmd == "m" else x
+            cy = cy + y if cur_cmd == "m" else y
+            sx, sy = cx, cy
+            cmds.append({"op": "M", "x": cx, "y": cy})
+            prev_cmd = cur_cmd
+        elif cur_cmd in ("L", "l"):
+            x, y = _read_num(), _read_num()
+            cx = cx + x if cur_cmd == "l" else x
+            cy = cy + y if cur_cmd == "l" else y
+            cmds.append({"op": "L", "x": cx, "y": cy})
+            prev_cmd = cur_cmd
+        elif cur_cmd in ("H", "h"):
+            x = _read_num()
+            cx = cx + x if cur_cmd == "h" else x
+            cmds.append({"op": "L", "x": cx, "y": cy})
+            prev_cmd = cur_cmd
+        elif cur_cmd in ("V", "v"):
+            y = _read_num()
+            cy = cy + y if cur_cmd == "v" else y
+            cmds.append({"op": "L", "x": cx, "y": cy})
+            prev_cmd = cur_cmd
+        elif cur_cmd in ("C", "c"):
+            x1, y1, x2, y2, x, y = _read_num(), _read_num(), _read_num(), _read_num(), _read_num(), _read_num()
+            rel = cur_cmd == "c"
+            ax1, ay1 = (cx + x1, cy + y1) if rel else (x1, y1)
+            ax2, ay2 = (cx + x2, cy + y2) if rel else (x2, y2)
+            ax, ay = (cx + x, cy + y) if rel else (x, y)
+            cmds.append({"op": "C", "x1": ax1, "y1": ay1, "x2": ax2, "y2": ay2, "x": ax, "y": ay})
+            prev_c2x, prev_c2y, cx, cy, prev_cmd = ax2, ay2, ax, ay, cur_cmd
+        elif cur_cmd in ("S", "s"):
+            x2, y2, x, y = _read_num(), _read_num(), _read_num(), _read_num()
+            rel = cur_cmd == "s"
+            has_c = prev_cmd in ("C", "c", "S", "s")
+            ax1 = (2.0 * cx - prev_c2x) if has_c else cx
+            ay1 = (2.0 * cy - prev_c2y) if has_c else cy
+            ax2, ay2 = (cx + x2, cy + y2) if rel else (x2, y2)
+            ax, ay = (cx + x, cy + y) if rel else (x, y)
+            cmds.append({"op": "C", "x1": ax1, "y1": ay1, "x2": ax2, "y2": ay2, "x": ax, "y": ay})
+            prev_c2x, prev_c2y, cx, cy, prev_cmd = ax2, ay2, ax, ay, cur_cmd
+        elif cur_cmd in ("Q", "q"):
+            qx, qy, x, y = _read_num(), _read_num(), _read_num(), _read_num()
+            rel = cur_cmd == "q"
+            aqx, aqy = (cx + qx, cy + qy) if rel else (qx, qy)
+            ax, ay = (cx + x, cy + y) if rel else (x, y)
+            ax1, ay1 = cx + (2.0 / 3.0) * (aqx - cx), cy + (2.0 / 3.0) * (aqy - cy)
+            ax2, ay2 = ax + (2.0 / 3.0) * (aqx - ax), ay + (2.0 / 3.0) * (aqy - ay)
+            cmds.append({"op": "C", "x1": ax1, "y1": ay1, "x2": ax2, "y2": ay2, "x": ax, "y": ay})
+            prev_qx, prev_qy, cx, cy, prev_cmd = aqx, aqy, ax, ay, cur_cmd
+        elif cur_cmd in ("T", "t"):
+            x, y = _read_num(), _read_num()
+            rel = cur_cmd == "t"
+            has_q = prev_cmd in ("Q", "q", "T", "t")
+            aqx = (2.0 * cx - prev_qx) if has_q else cx
+            aqy = (2.0 * cy - prev_qy) if has_q else cy
+            ax, ay = (cx + x, cy + y) if rel else (x, y)
+            ax1, ay1 = cx + (2.0 / 3.0) * (aqx - cx), cy + (2.0 / 3.0) * (aqy - cy)
+            ax2, ay2 = ax + (2.0 / 3.0) * (aqx - ax), ay + (2.0 / 3.0) * (aqy - ay)
+            cmds.append({"op": "C", "x1": ax1, "y1": ay1, "x2": ax2, "y2": ay2, "x": ax, "y": ay})
+            prev_qx, prev_qy, cx, cy, prev_cmd = aqx, aqy, ax, ay, cur_cmd
+        elif cur_cmd in ("A", "a"):
+            rx, ry, rot, laf, sf, x, y = (
+                _read_num(), _read_num(), _read_num(), _read_num(), _read_num(), _read_num(), _read_num()
+            )
+            rel = cur_cmd == "a"
+            ax, ay = (cx + x, cy + y) if rel else (x, y)
+            for seg in _arc_to_cubic_beziers(cx, cy, rx, ry, rot, 1 if laf else 0, 1 if sf else 0, ax, ay):
+                cmds.append({"op": "C", "x1": seg[0], "y1": seg[1], "x2": seg[2], "y2": seg[3], "x": seg[4], "y": seg[5]})
+            cx, cy, prev_cmd = ax, ay, cur_cmd
+        else:
+            i += 1
+    return cmds
+
+
+def _ellipse_cmds(cx: float, cy: float, rx: float, ry: float) -> List[Dict[str, Any]]:
+    kx, ky = rx * _KAPPA, ry * _KAPPA
+    return [
+        {"op": "M", "x": cx, "y": cy - ry},
+        {"op": "C", "x1": cx + kx, "y1": cy - ry, "x2": cx + rx, "y2": cy - ky, "x": cx + rx, "y": cy},
+        {"op": "C", "x1": cx + rx, "y1": cy + ky, "x2": cx + kx, "y2": cy + ry, "x": cx, "y": cy + ry},
+        {"op": "C", "x1": cx - kx, "y1": cy + ry, "x2": cx - rx, "y2": cy + ky, "x": cx - rx, "y": cy},
+        {"op": "C", "x1": cx - rx, "y1": cy - ky, "x2": cx - kx, "y2": cy - ry, "x": cx, "y": cy - ry},
+        {"op": "Z"},
+    ]
+
+
+def _round_rect_cmds(x: float, y: float, w: float, h: float, r_in: float) -> List[Dict[str, Any]]:
+    r = max(0.0, min(r_in or 0.0, w / 2.0, h / 2.0))
+    if r < 1e-6:
+        return [{"op": "M", "x": x, "y": y}, {"op": "L", "x": x + w, "y": y}, {"op": "L", "x": x + w, "y": y + h}, {"op": "L", "x": x, "y": y + h}, {"op": "Z"}]
+    k = r * _KAPPA
+    return [
+        {"op": "M", "x": x + r, "y": y},
+        {"op": "L", "x": x + w - r, "y": y},
+        {"op": "C", "x1": x + w - r + k, "y1": y, "x2": x + w, "y2": y + r - k, "x": x + w, "y": y + r},
+        {"op": "L", "x": x + w, "y": y + h - r},
+        {"op": "C", "x1": x + w, "y1": y + h - r + k, "x2": x + w - r + k, "y2": y + h, "x": x + w - r, "y": y + h},
+        {"op": "L", "x": x + r, "y": y + h},
+        {"op": "C", "x1": x + r - k, "y1": y + h, "x2": x, "y2": y + h - r + k, "x": x, "y": y + h - r},
+        {"op": "L", "x": x, "y": y + r},
+        {"op": "C", "x1": x, "y1": y + r - k, "x2": x + r - k, "y2": y, "x": x + r, "y": y},
+        {"op": "Z"},
+    ]
+
+
+def compile_icon_to_ooxml_shapes(icon_key: str, px_x: float, px_y: float, px_size: float, next_id) -> List[str]:
+    """Compiles an official GCP SVG icon into pure native DrawingML <a:custGeom> shapes (pic=0, 1:1 SVG parity)."""
+    icons = load_gcp_icons()
+    rec = icons.get(icon_key) or icons.get("gcp_cloud")
+    if not rec:
+        return []
+    vb_parts = [float(v) for v in str(rec.get("viewBox") or "0 0 24 24").split()]
+    vb_w = vb_parts[2] if len(vb_parts) >= 3 and vb_parts[2] > 0 else 24.0
+    vb_h = vb_parts[3] if len(vb_parts) >= 4 and vb_parts[3] > 0 else 24.0
+    scale_emu = (float(px_size) * EMU_PER_PX) / vb_w
+    base_off_x = int(round(float(px_x) * EMU_PER_PX))
+    base_off_y = int(round(float(px_y) * EMU_PER_PX))
+
+    primitives: List[Dict[str, Any]] = []
+    stack: List[Tuple[float, float]] = [(0.0, 0.0)]
+    tag_re = re.compile(r"</g>|<g\b([^>]*)>|<(path|rect|circle|ellipse|polygon|line|polyline)\b([^>]*?)/?>")
+    attr_re = re.compile(r'([a-zA-Z0-9_-]+)\s*=\s*"([^"]*)"')
+    for m in tag_re.finditer(str(rec.get("inner") or "")):
+        raw = m.group(0)
+        if raw == "</g>":
+            if len(stack) > 1:
+                stack.pop()
+            continue
+        if raw.startswith("<g"):
+            tx, ty = stack[-1]
+            tm = re.search(r"translate\(\s*([+-]?[\d.]+)(?:[\s,]+([+-]?[\d.]+))?\s*\)", m.group(1) or "")
+            if tm:
+                tx += float(tm.group(1) or 0.0)
+                ty += float(tm.group(2) or 0.0)
+            stack.append((tx, ty))
+            continue
+        attrs = {am.group(1): am.group(2) for am in attr_re.finditer(m.group(3) or "")}
+        primitives.append({"tag": m.group(2), "attrs": attrs, "tx": stack[-1][0], "ty": stack[-1][1]})
+
+    shapes: List[str] = []
+    safe_key = re.sub(r"[^a-zA-Z0-9_]", "_", str(icon_key or "gcp_cloud"))
+    for p in primitives:
+        attrs = p["attrs"]
+        f_raw = attrs.get("fill")
+        f_hex = None if f_raw == "none" else (_hex6_opt(f_raw) if f_raw else None)
+        s_raw = attrs.get("stroke")
+        s_hex = _hex6_opt(s_raw) if (s_raw and s_raw != "none") else None
+        if not f_hex and not s_hex:
+            continue
+        fill_xml = f'<a:solidFill><a:srgbClr val="{f_hex}"/></a:solidFill>' if f_hex else "<a:noFill/>"
+        if s_hex:
+            sw_px = float(attrs.get("stroke-width") or 1.5) * (float(px_size) / vb_w)
+            sw_emu = max(6350, int(round(sw_px * EMU_PER_PX)))
+            cap = ' cap="rnd"' if attrs.get("stroke-linecap") == "round" else ""
+            dash = '<a:prstDash val="sysDash"/>' if attrs.get("stroke-dasharray") else ""
+            join = "<a:round/>" if attrs.get("stroke-linejoin") == "round" else ""
+            ln_xml = f'<a:ln w="{sw_emu}"{cap}><a:solidFill><a:srgbClr val="{s_hex}"/></a:solidFill>{dash}{join}</a:ln>'
+        else:
+            ln_xml = "<a:ln><a:noFill/></a:ln>"
+
+        tag = p["tag"]
+        cmds: List[Dict[str, Any]] = []
+        if tag == "rect":
+            w, h = float(attrs.get("width") or 0), float(attrs.get("height") or 0)
+            if w <= 0 or h <= 0:
+                continue
+            cmds = _round_rect_cmds(float(attrs.get("x") or 0), float(attrs.get("y") or 0), w, h, float(attrs.get("rx") or 0))
+        elif tag == "circle":
+            r = float(attrs.get("r") or 0)
+            if r <= 0:
+                continue
+            cmds = _ellipse_cmds(float(attrs.get("cx") or 0), float(attrs.get("cy") or 0), r, r)
+        elif tag == "ellipse":
+            rx, ry = float(attrs.get("rx") or 0), float(attrs.get("ry") or 0)
+            if rx <= 0 or ry <= 0:
+                continue
+            cmds = _ellipse_cmds(float(attrs.get("cx") or 0), float(attrs.get("cy") or 0), rx, ry)
+        elif tag in ("polygon", "polyline"):
+            nums = [float(n) for n in re.split(r"[\s,]+", (attrs.get("points") or "").strip()) if n]
+            for k in range(0, len(nums) - 1, 2):
+                cmds.append({"op": "M" if k == 0 else "L", "x": nums[k], "y": nums[k + 1]})
+            if tag == "polygon" and len(cmds) >= 2:
+                cmds.append({"op": "Z"})
+        elif tag == "line":
+            cmds = [
+                {"op": "M", "x": float(attrs.get("x1") or 0), "y": float(attrs.get("y1") or 0)},
+                {"op": "L", "x": float(attrs.get("x2") or 0), "y": float(attrs.get("y2") or 0)},
+            ]
+        elif tag == "path":
+            cmds = _parse_svg_path_data(attrs.get("d") or "")
+        if not cmds:
+            continue
+
+        t_cmds: List[Dict[str, Any]] = []
+        min_x = 0
+        min_y = 0
+        max_x = int(round(vb_w * scale_emu))
+        max_y = int(round(vb_h * scale_emu))
+        tx, ty = p["tx"], p["ty"]
+        for c in cmds:
+            op = c["op"]
+            if op == "Z":
+                t_cmds.append(c)
+            elif op in ("M", "L"):
+                x = int(round((c["x"] + tx) * scale_emu))
+                y = int(round((c["y"] + ty) * scale_emu))
+                min_x, min_y = min(min_x, x), min(min_y, y)
+                max_x, max_y = max(max_x, x), max(max_y, y)
+                t_cmds.append({"op": op, "x": x, "y": y})
+            elif op == "C":
+                x1, y1 = int(round((c["x1"] + tx) * scale_emu)), int(round((c["y1"] + ty) * scale_emu))
+                x2, y2 = int(round((c["x2"] + tx) * scale_emu)), int(round((c["y2"] + ty) * scale_emu))
+                x, y = int(round((c["x"] + tx) * scale_emu)), int(round((c["y"] + ty) * scale_emu))
+                for px_v, py_v in ((x1, y1), (x2, y2), (x, y)):
+                    min_x, min_y = min(min_x, px_v), min(min_y, py_v)
+                    max_x, max_y = max(max_x, px_v), max(max_y, py_v)
+                t_cmds.append({"op": "C", "x1": x1, "y1": y1, "x2": x2, "y2": y2, "x": x, "y": y})
+        box_w = max(MIN_CUSTGEOM_EMU, max_x - min_x)
+        box_h = max(MIN_CUSTGEOM_EMU, max_y - min_y)
+        path_parts = []
+        for c in t_cmds:
+            if c["op"] == "Z":
+                path_parts.append("<a:close/>")
+            elif c["op"] == "M":
+                path_parts.append(f'<a:moveTo><a:pt x="{c["x"] - min_x}" y="{c["y"] - min_y}"/></a:moveTo>')
+            elif c["op"] == "L":
+                path_parts.append(f'<a:lnTo><a:pt x="{c["x"] - min_x}" y="{c["y"] - min_y}"/></a:lnTo>')
+            else:
+                path_parts.append(
+                    f'<a:cubicBezTo><a:pt x="{c["x1"] - min_x}" y="{c["y1"] - min_y}"/>'
+                    f'<a:pt x="{c["x2"] - min_x}" y="{c["y2"] - min_y}"/>'
+                    f'<a:pt x="{c["x"] - min_x}" y="{c["y"] - min_y}"/></a:cubicBezTo>'
+                )
+        p_attrs = f'w="{box_w}" h="{box_h}"{"" if f_hex else " fill=\"none\""}{"" if s_hex else " stroke=\"0\""} extrusionOk="0"'
+        shapes.append(
+            f'<p:sp><p:nvSpPr><p:cNvPr id="{next_id()}" name="ico_{safe_key}"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>'
+            f'<p:spPr><a:xfrm><a:off x="{base_off_x + min_x}" y="{base_off_y + min_y}"/><a:ext cx="{box_w}" cy="{box_h}"/></a:xfrm>'
+            f'<a:custGeom><a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/><a:rect l="l" t="t" r="r" b="b"/>'
+            f'<a:pathLst><a:path {p_attrs}>{"".join(path_parts)}</a:path></a:pathLst></a:custGeom>'
+            f'{fill_xml}{ln_xml}</p:spPr></p:sp>'
+        )
+    return shapes
+
+
 def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_rid: str = "rId1") -> str:
-    """Compiles a canonical 1600x900 diagram spec directly into native editable PPTX slide XML (pic=0)."""
+    """Compiles a canonical 1600x900 diagram spec directly into native editable PPTX slide XML (pic=0, full SVG icon parity)."""
     counter = [2]
 
     def _nid() -> int:
@@ -1377,27 +1735,42 @@ def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_
         shapes.append(_ox_rect(
             _nid(), "gcp_bezel_outer", bz["x"], bz["y"], bz["w"], bz["h"],
             adj=5000, fill="#1A73E8", stroke="#1A73E8", stroke_pt=0.75, anchor="t",
-            l_ins=152400, t_ins=45720,
-            paragraphs=[_ox_p([{"text": bz.get("label", "Google Cloud"), "pt": 11.5, "bold": True, "color": "#FFFFFF"}], "l")],
+            l_ins=152400, t_ins=30480,
+            paragraphs=[_ox_p([{"text": bz.get("label", "Google Cloud"), "pt": 11.2, "bold": True, "color": "#FFFFFF"}], "l")],
         ))
         shapes.append(_ox_rect(
-            _nid(), "gcp_bezel_inner", bz["x"] + 12, bz["y"] + 34, bz["w"] - 24, bz["h"] - 46,
+            _nid(), "gcp_bezel_inner", bz["x"] + 12, bz["y"] + 38, bz["w"] - 24, bz["h"] - 50,
             adj=4000, fill="#FFFFFF", stroke="#1E293B", stroke_pt=0.85,
         ))
 
+    top_right_xs = [float(p["x"]) for p in (spec.get("pills") or []) if float(p.get("y", 999)) < 60 and float(p.get("x", 0)) > 600]
+    title_max_w = (min(top_right_xs) - 48.0) if top_right_xs else float(cw - 64)
     if spec.get("title"):
         ty = float(spec.get("titleY", 12))
+        t_sz = float(spec.get("titleSize", 20))
+        t_fit, t_fs = fit_single_line_px(spec["title"], title_max_w, t_sz, bold=True)
         shapes.append(_ox_rect(
-            _nid(), "t_main", 32, ty, cw - 64, 34, prst="rect", fill="none", stroke="none",
+            _nid(), "t_main", 32, ty, title_max_w, 34, prst="rect", fill="none", stroke="none",
             l_ins=0, r_ins=0, t_ins=0, b_ins=0,
-            paragraphs=[_ox_p([{"text": spec["title"], "pt": float(spec.get("titleSize", 20)) * 0.72, "bold": True, "color": spec.get("titleColor", "#202124")}], "l")],
+            paragraphs=[_ox_p([{"text": t_fit, "pt": t_fs * 0.72, "bold": True, "color": spec.get("titleColor", "#202124")}], "l")],
+        ))
+    if spec.get("subtitle"):
+        sub_fit, sub_fs = fit_single_line_px(spec["subtitle"], title_max_w, 11.0, bold=False)
+        shapes.append(_ox_rect(
+            _nid(), "t_sub", 32, float(spec.get("titleY", 12)) + 28, title_max_w, 18, prst="rect", fill="none", stroke="none",
+            l_ins=0, r_ins=0, t_ins=0, b_ins=0,
+            paragraphs=[_ox_p([{"text": sub_fit, "pt": sub_fs * 0.72, "color": "#5F6368"}], "l")],
         ))
     if spec.get("dividerY") is not None:
         shapes.append(_ox_rect(_nid(), "mc_div_line", 32, float(spec["dividerY"]), cw - 64, 2, prst="rect", fill="#DADCE0", stroke="none"))
 
     for z in spec.get("zones") or []:
         algn = "ctr" if z.get("titleAlign") == "center" else "l"
-        paras = [_ox_p([{"text": z["title"], "pt": float(z.get("titleSize", 12)) * 0.66, "bold": True, "color": z.get("titleColor", "#1967D2")}], algn)] if z.get("title") else None
+        paras = None
+        if z.get("title"):
+            paras = [_ox_p([{"text": z["title"], "pt": float(z.get("titleSize", 12)) * 0.66, "bold": True, "color": z.get("titleColor", "#1967D2")}], algn)]
+            if z.get("subtitle"):
+                paras.append(_ox_p([{"text": z["subtitle"], "pt": 6.8, "color": "#475569"}], algn, 1.0))
         shapes.append(_ox_rect(
             _nid(), z["id"], z["x"], z["y"], z["w"], z["h"],
             adj=min(18000, round((z.get("rx", 14) / max(1, min(z["w"], z["h"]))) * 100000)),
@@ -1420,6 +1793,15 @@ def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_
     for c in spec.get("cards") or []:
         is_ctr = bool(c.get("isContainer"))
         algn = "ctr" if c.get("align") == "center" else ("r" if c.get("align") == "right" else "l")
+        il = (c.get("iconPos") or "left") if c.get("icon") else "none"
+        isz = float(c.get("iconSize") or 20)
+        pad_l = float(c.get("padL") if c.get("padL") is not None else 10)
+        pad_r = float(c.get("padR") if c.get("padR") is not None else 8)
+        pad_t = float(c.get("padT") or (8 if is_ctr else 4))
+        if c.get("icon") and il in ("left", "header-left"):
+            pad_l = max(pad_l, isz + 20.0)
+        elif c.get("icon") and il == "top-left":
+            pad_l = max(pad_l, isz + 20.0)
         paras = [
             _ox_p([{
                 "text": ln.get("text", ""),
@@ -1430,25 +1812,74 @@ def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_
             }], algn, float(ln.get("gapTop") or 0) * 0.45 if li > 0 else 0.0, 108000)
             for li, ln in enumerate(c.get("lines") or [])
         ] or None
-        shapes.append(_ox_rect(
-            _nid(), c["id"], c["x"], c["y"], c["w"], c["h"],
-            adj=min(22000, round((c.get("rx", 12) / max(1, min(c["w"], c["h"]))) * 100000)),
-            fill=c.get("fill") or "#FFFFFF",
-            stroke=("none" if c.get("stroke") == "none" else (c.get("stroke") or "#DADCE0")),
-            stroke_pt=float(c.get("strokeWidth", 1.2)) * 0.8, dashed=bool(c.get("dashed")),
-            anchor="t" if is_ctr else "ctr",
-            l_ins=px_to_emu(max(8, c.get("padL") or 10)),
-            r_ins=px_to_emu(max(6, c.get("padR") or 8)),
-            t_ins=px_to_emu(c.get("padT") or (8 if is_ctr else 4)),
-            b_ins=px_to_emu(c.get("padB") or 4),
-            paragraphs=paras,
-        ))
+
+        # When icon sits on top, place card shell + native vector icon + dedicated text frame below icon (exact SVG parity)
+        if c.get("icon") and il == "top":
+            th = _measure_lines(c.get("lines") or [])
+            total_b = isz + 8.0 + th
+            top_y = max(float(c["y"]) + 10.0, float(c["y"]) + (float(c["h"]) - total_b) / 2.0)
+            ix = float(c["x"]) + (float(c["w"]) - isz) / 2.0
+            shapes.append(_ox_rect(
+                _nid(), c["id"], c["x"], c["y"], c["w"], c["h"],
+                adj=min(22000, round((c.get("rx", 12) / max(1, min(c["w"], c["h"]))) * 100000)),
+                fill=c.get("fill") or "#FFFFFF",
+                stroke=("none" if c.get("stroke") == "none" else (c.get("stroke") or "#DADCE0")),
+                stroke_pt=float(c.get("strokeWidth", 1.2)) * 0.8, dashed=bool(c.get("dashed")),
+                paragraphs=None,
+            ))
+            shapes.extend(compile_icon_to_ooxml_shapes(c["icon"], ix, top_y, isz, _nid))
+            if paras:
+                shapes.append(_ox_rect(
+                    _nid(), f"{c['id']}_txt", c["x"], top_y + isz + 6.0, c["w"], max(20.0, float(c["y"]) + float(c["h"]) - (top_y + isz + 10.0)),
+                    prst="rect", fill="none", stroke="none", anchor="t",
+                    l_ins=px_to_emu(max(8, pad_l)), r_ins=px_to_emu(max(6, pad_r)), t_ins=0, b_ins=0,
+                    paragraphs=paras,
+                ))
+        else:
+            shapes.append(_ox_rect(
+                _nid(), c["id"], c["x"], c["y"], c["w"], c["h"],
+                adj=min(22000, round((c.get("rx", 12) / max(1, min(c["w"], c["h"]))) * 100000)),
+                fill=c.get("fill") or "#FFFFFF",
+                stroke=("none" if c.get("stroke") == "none" else (c.get("stroke") or "#DADCE0")),
+                stroke_pt=float(c.get("strokeWidth", 1.2)) * 0.8, dashed=bool(c.get("dashed")),
+                anchor="t" if is_ctr else "ctr",
+                l_ins=px_to_emu(max(8, pad_l)),
+                r_ins=px_to_emu(max(6, pad_r)),
+                t_ins=px_to_emu(pad_t),
+                b_ins=px_to_emu(c.get("padB") or 4),
+                paragraphs=paras,
+            ))
+            if c.get("icon"):
+                ix = float(c["x"]) + 12.0
+                iy = (float(c["y"]) + 10.0) if il == "top-left" else (float(c["y"]) + (float(c["h"]) - isz) / 2.0)
+                if il == "header-left" and str(c.get("fill", "")).upper() in ("#1A73E8", "#0F172A", "#174EA6", "#188038"):
+                    r_halo = isz / 2.0 + 3.0
+                    shapes.append(_ox_rect(
+                        _nid(), f"{c['id']}_halo", ix + isz / 2.0 - r_halo, iy + isz / 2.0 - r_halo,
+                        r_halo * 2.0, r_halo * 2.0, prst="ellipse", fill="#FFFFFF", stroke="none",
+                    ))
+                shapes.extend(compile_icon_to_ooxml_shapes(c["icon"], ix, iy, isz, _nid))
+
+        if c.get("topAccent"):
+            shapes.append(_ox_rect(_nid(), f"{c['id']}_acc", float(c["x"]) + 1, c["y"], float(c["w"]) - 2, 5, adj=25000, fill=c["topAccent"], stroke="none"))
+
         for tile in c.get("tiles") or []:
             shapes.append(_ox_rect(
                 _nid(), tile["id"], tile["x"], tile["y"], tile["w"], tile["h"],
                 adj=20000, fill=tile.get("fill", "#F8FAFC"), stroke=tile.get("stroke", "#CBD5E1"), stroke_pt=0.75,
-                paragraphs=[_ox_p([{"text": tile.get("label") or tile.get("icon", "")[:4].upper(), "pt": 6.2, "bold": True, "color": "#1E293B"}], "ctr")],
+                paragraphs=None,
             ))
+            tisz = float(tile.get("iconSize") or 24)
+            tix = float(tile["x"]) + (float(tile["w"]) - tisz) / 2.0
+            tiy = float(tile["y"]) + (6.0 if tile.get("label") else (float(tile["h"]) - tisz) / 2.0)
+            if tile.get("icon"):
+                shapes.extend(compile_icon_to_ooxml_shapes(tile["icon"], tix, tiy, tisz, _nid))
+            if tile.get("label"):
+                shapes.append(_ox_rect(
+                    _nid(), f"{tile['id']}_lbl", tile["x"], float(tile["y"]) + float(tile["h"]) - 18.0, tile["w"], 16.0,
+                    prst="rect", fill="none", stroke="none", l_ins=0, r_ins=0, t_ins=0, b_ins=0,
+                    paragraphs=[_ox_p([{"text": str(tile["label"]), "pt": 6.5, "bold": True, "color": tile.get("labelColor", "#1F2937")}], "ctr", 0, 100000)],
+                ))
 
     for b in spec.get("bars") or []:
         shapes.append(_ox_rect(_nid(), b["id"], b["x"], b["y"], b["w"], b["h"], adj=20000, fill=b.get("fill", "#0F172A"), stroke="none"))
@@ -1505,13 +1936,13 @@ def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_
             paragraphs=[_ox_p([{"text": p["text"], "pt": 5.6, "bold": True, "color": p.get("textColor") or pal["text"]}], "ctr", 0, 100000)],
         ))
 
-    # Footer with clickable Draw.io link
+    # Footer with clickable Draw.io link — positioned cleanly in dedicated bottom margin (y=874px, zero overlap!)
     shapes.append(
         f'<p:sp><p:nvSpPr><p:cNvPr id="{_nid()}" name="canonical_drawio_footer"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>'
-        f'<p:spPr><a:xfrm><a:off x="518160" y="6586538"/><a:ext cx="11155680" cy="213360"/></a:xfrm>'
+        f'<p:spPr><a:xfrm><a:off x="518160" y="6660000"/><a:ext cx="11155680" cy="167640"/></a:xfrm>'
         f'<a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr>'
         f'<p:txBody><a:bodyPr wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr"><a:noAutofit/></a:bodyPr><a:lstStyle/>'
-        f'{_ox_p([{"text": f"{footer_prefix}  •  ", "pt": 8.2, "bold": True, "color": "#5F6368"}, {"text": "Edit in Draw.io ↗", "pt": 8.2, "bold": True, "color": "#1A73E8", "hlinkRId": hlink_rid}], "r", 0, 100000)}'
+        f'{_ox_p([{"text": f"{footer_prefix}  •  ", "pt": 8.0, "bold": True, "color": "#5F6368"}, {"text": "Edit in Draw.io ↗", "pt": 8.0, "bold": True, "color": "#1A73E8", "hlinkRId": hlink_rid}], "r", 0, 100000)}'
         f'</p:txBody></p:sp>'
     )
 

@@ -223,9 +223,13 @@
       gap: 16px;
       position: sticky;
       top: 104px;
+      max-height: calc(100vh - 116px);
+      overflow-y: auto;
+      padding-right: 2px;
+      scrollbar-width: thin;
     }
     @media (max-width: 1080px) {
-      .sidebar { position: static; }
+      .sidebar { position: static; max-height: none; overflow-y: visible; padding-right: 0; }
     }
 
     .card {
@@ -412,6 +416,7 @@
       display: flex;
       flex-wrap: nowrap;
       overflow-x: auto;
+      overflow-y: hidden;
       gap: 4px;
       border-bottom: 1px solid var(--border-strong);
       padding-bottom: 0;
@@ -428,14 +433,13 @@
       border-radius: 8px 8px 0 0;
       cursor: pointer;
       white-space: nowrap;
+      flex-shrink: 0;
     }
     .wtab:hover { background: var(--surface-alt); color: var(--text); }
     .wtab.active {
       background: var(--surface);
       color: var(--blue);
       border-color: var(--border-strong);
-      border-bottom: 2px solid var(--surface);
-      margin-bottom: -1px;
       box-shadow: inset 0 3px 0 var(--blue);
     }
     .panel {
@@ -532,6 +536,23 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+    .slide-stage-wrap.player-stage-wrap {
+      max-width: 820px;
+      max-height: 48vh;
+      margin: 0 auto;
+    }
+    .reader-fig-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 14px 0 22px;
+    }
+    @media (max-width: 1180px) {
+      .reader-fig-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .reader-fig-grid { grid-template-columns: 1fr; }
     }
     .slide-stage-wrap img { width: 100%; height: 100%; object-fit: contain; display: block; background: #ffffff; }
     .thumb-strip {
@@ -646,6 +667,16 @@
       background: #ecfdf5;
       flex-shrink: 0;
     }
+    .score-circle.score-warn {
+      border-color: #d97706;
+      color: #92400e;
+      background: #fffbeb;
+    }
+    .score-circle.score-fail {
+      border-color: #dc2626;
+      color: #b91c1c;
+      background: #fef2f2;
+    }
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
     .hidden { display: none !important; }
 
@@ -673,7 +704,7 @@
               <span class="pill pill-blue">Live Gemini Studio</span>
               <span class="pill pill-green">Zero Fake Prose / Zero Mock UI</span>
             </div>
-            <div class="brand-sub">Generate Google Cloud Architecture Center blogs, editable Draw.io diagrams, 12-slide OOXML .pptx decks, .docx whitepapers, Chirp3-HD audio &amp; Terraform starters from any prompt.</div>
+            <div class="brand-sub">Generate Google Cloud Architecture Center blogs, 6 editable Draw.io diagrams, native Google Slides decks, Google Docs briefs, Chirp3-HD audio &amp; Terraform starters from any prompt.</div>
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
@@ -713,80 +744,72 @@
               <textarea id="inp-prompt" maxlength="4000" required placeholder="Describe the Google Cloud architecture, isolation boundary, security controls, SaaS integration, or design pattern you want to publish..."></textarea>
             </div>
 
-            <div class="two-col">
-              <div class="field">
-                <label for="inp-domain">Domain / Pillar</label>
-                <select id="inp-domain">
-                  <option value="Multi-Tenant Agentic AI">Multi-Tenant Agentic AI</option>
-                  <option value="Cloud Security & Zero Trust">Cloud Security &amp; Zero Trust</option>
-                  <option value="Data & Analytics / RAG">Data &amp; Analytics / RAG</option>
-                  <option value="Serverless & Platform Eng">Serverless &amp; Platform Eng</option>
-                  <option value="Networking & Hybrid VPC">Networking &amp; Hybrid VPC</option>
-                  <option value="AI Governance & Compliance">AI Governance &amp; Compliance</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="inp-audience">Primary Audience</label>
-                <select id="inp-audience">
-                  <option value="Solutions Architects & Platform Engineers">Architects &amp; Platform Eng</option>
-                  <option value="CISOs & Security Architects">Security / CISO</option>
-                  <option value="Cloud Infrastructure & SRE">SRE &amp; Infra Teams</option>
-                  <option value="Engineering Executives (VP / CTO)">Executive Brief</option>
-                </select>
-              </div>
+            <div class="field">
+              <label for="inp-domain">Domain / Pillar</label>
+              <select id="inp-domain">
+                <option value="Multi-Tenant Agentic AI">Multi-Tenant Agentic AI</option>
+                <option value="Cloud Security & Zero Trust">Cloud Security &amp; Zero Trust</option>
+                <option value="Data & Analytics / RAG">Data &amp; Analytics / RAG</option>
+                <option value="Serverless & Platform Eng">Serverless &amp; Platform Eng</option>
+                <option value="Networking & Hybrid VPC">Networking &amp; Hybrid VPC</option>
+                <option value="AI Governance & Compliance">AI Governance &amp; Compliance</option>
+              </select>
             </div>
-
-            <div class="two-col">
-              <div class="field">
-                <label for="inp-model">Gemini Model (Live)</label>
-                <select id="inp-model">
-                  <optgroup label="Gemini 4 Frontier (Global)">
-                    <option value="gemini-4-neon" selected>gemini-4-neon (Fast Frontier · Recommended)</option>
-                    <option value="gemini-4-carbon">gemini-4-carbon (Deepest Reasoning)</option>
-                    <option value="gemini-4-argon">gemini-4-argon (12-Mo Long GA)</option>
-                    <option value="gemini-4-hydrogen">gemini-4-hydrogen (Fast High-Volume)</option>
-                  </optgroup>
-                  <optgroup label="Gemini 3.x Series (Global)">
-                    <option value="gemini-3.8-flash">gemini-3.8-flash (Fast GA)</option>
-                    <option value="gemini-3.7-flash">gemini-3.7-flash (GA)</option>
-                    <option value="gemini-3.5-flash">gemini-3.5-flash (GA)</option>
-                    <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview (Pro Preview)</option>
-                    <option value="gemini-3-flash-preview">gemini-3-flash-preview (Flash Preview)</option>
-                  </optgroup>
-                  <optgroup label="Gemini 2.5 Stable (Regional)">
-                    <option value="gemini-2.5-pro">gemini-2.5-pro (Stable Deep)</option>
-                    <option value="gemini-2.5-flash">gemini-2.5-flash (Stable Fast)</option>
-                  </optgroup>
-                </select>
-              </div>
-              <div class="field">
-                <label for="inp-voice">Cloud TTS Voice</label>
-                <select id="inp-voice">
-                  <option value="en-US-Chirp3-HD-Charon">Chirp3-HD Charon</option>
-                  <option value="en-US-Chirp3-HD-Aoede">Chirp3-HD Aoede</option>
-                  <option value="en-US-Chirp3-HD-Fenrir">Chirp3-HD Fenrir</option>
-                  <option value="en-US-Chirp3-HD-Kore">Chirp3-HD Kore</option>
-                </select>
-              </div>
+            <div class="field">
+              <label for="inp-audience">Primary Audience</label>
+              <select id="inp-audience">
+                <option value="Solutions Architects & Platform Engineers">Solutions Architects &amp; Platform Engineers</option>
+                <option value="CISOs & Security Architects">CISOs &amp; Security Architects</option>
+                <option value="Cloud Infrastructure & SRE">Cloud Infrastructure &amp; SRE</option>
+                <option value="Engineering Executives (VP / CTO)">Engineering Executives (VP / CTO)</option>
+              </select>
             </div>
-
-            <div class="two-col">
-              <div class="field">
-                <label for="inp-diagram-engine">PromptCanvas Diagram Engine</label>
-                <select id="inp-diagram-engine">
-                  <option value="canonical">Canonical WS1 (6-View .drawio + .pptx)</option>
-                  <option value="hybrid">Hybrid (Vision Arch + 4 Canonical)</option>
-                  <option value="promptcanvas_vision">4-Stage Vision (Image &rarr; .drawio)</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="inp-image-model">Vision Image Model</label>
-                <select id="inp-image-model">
-                  <option value="gemini-3-pro-image" selected>gemini-3-pro-image (Crisp Text)</option>
-                  <option value="gemini-3.1-flash-image">gemini-3.1-flash-image (Fast)</option>
-                  <option value="gemini-2.5-flash-image">gemini-2.5-flash-image (Regional)</option>
-                </select>
-              </div>
+            <div class="field">
+              <label for="inp-model">Gemini Model (Live)</label>
+              <select id="inp-model">
+                <optgroup label="Gemini 4 Frontier (Global)">
+                  <option value="gemini-4-neon" selected>gemini-4-neon (Fast Frontier · Recommended)</option>
+                  <option value="gemini-4-carbon">gemini-4-carbon (Deepest Reasoning)</option>
+                  <option value="gemini-4-argon">gemini-4-argon (12-Mo Long GA)</option>
+                  <option value="gemini-4-hydrogen">gemini-4-hydrogen (Fast High-Volume)</option>
+                </optgroup>
+                <optgroup label="Gemini 3.x Series (Global)">
+                  <option value="gemini-3.8-flash">gemini-3.8-flash (Fast GA)</option>
+                  <option value="gemini-3.7-flash">gemini-3.7-flash (GA)</option>
+                  <option value="gemini-3.5-flash">gemini-3.5-flash (GA)</option>
+                  <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview (Pro Preview)</option>
+                  <option value="gemini-3-flash-preview">gemini-3-flash-preview (Flash Preview)</option>
+                </optgroup>
+                <optgroup label="Gemini 2.5 Stable (Regional)">
+                  <option value="gemini-2.5-pro">gemini-2.5-pro (Stable Deep)</option>
+                  <option value="gemini-2.5-flash">gemini-2.5-flash (Stable Fast)</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="field">
+              <label for="inp-voice">Cloud TTS Voice</label>
+              <select id="inp-voice">
+                <option value="en-US-Chirp3-HD-Charon">Chirp3-HD Charon (US English)</option>
+                <option value="en-US-Chirp3-HD-Aoede">Chirp3-HD Aoede (US English)</option>
+                <option value="en-US-Chirp3-HD-Fenrir">Chirp3-HD Fenrir (US English)</option>
+                <option value="en-US-Chirp3-HD-Kore">Chirp3-HD Kore (US English)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="inp-diagram-engine">PromptCanvas Diagram Engine</label>
+              <select id="inp-diagram-engine">
+                <option value="canonical">Canonical WS1 (6-View Draw.io + Google Slides)</option>
+                <option value="hybrid">Hybrid (Vision Arch + 4 Canonical)</option>
+                <option value="promptcanvas_vision">4-Stage Vision (Image &rarr; Draw.io)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="inp-image-model">Vision Image Model</label>
+              <select id="inp-image-model">
+                <option value="gemini-3-pro-image" selected>gemini-3-pro-image (Crisp Text)</option>
+                <option value="gemini-3.1-flash-image">gemini-3.1-flash-image (Fast)</option>
+                <option value="gemini-2.5-flash-image">gemini-2.5-flash-image (Regional)</option>
+              </select>
             </div>
 
             <label class="check-row">
@@ -853,7 +876,7 @@
           <h1 style="font-size:24px; font-weight:800; margin-bottom:8px;">Build Any Architecture Blog End-to-End</h1>
           <p style="font-size:14px; color:var(--muted); max-width:740px;">
             Every generation invokes a live <strong>Gemini 4 / 3.x / 2.5</strong> model (default <code>gemini-4-neon</code>, orthogonal critic <code>gemini-4-carbon</code>) using Vertex AI IAM (or your optional transient
-            <code>X-Gemini-Api-Key</code> header) and compiles real, downloadable OOXML binaries, editable Draw.io files,
+            <code>X-Gemini-Api-Key</code> header) and compiles native Google Slides decks, Google Docs briefs, editable Draw.io files,
             Chirp3-HD narration tracks, and verified quality reports &mdash; with zero mock fallbacks.
           </p>
           <div class="welcome-grid">
@@ -863,15 +886,15 @@
             </div>
             <div class="welcome-tile">
               <h3>2. 6 WS1-Parity C4 Diagrams</h3>
-              <p>Official multi-color GCP SVG icons across L1 security, L2 arch, L3 sequence, L4 wire payload &amp; async lifecycle.</p>
+              <p>Official multi-color GCP SVG icons across L1 security, L2 platform, Hub-and-Spoke Cloud Arch, L3 sequence, L4 wire payload &amp; async lifecycle.</p>
             </div>
             <div class="welcome-tile">
               <h3>3. Open in Google Slides</h3>
-              <p>Native editable 12-slide presentation with vector diagrams, speaker notes, and clickable Draw.io links.</p>
+              <p>Native editable 12-slide presentation with vector icons, diagrams, speaker notes, and clickable Draw.io links.</p>
             </div>
             <div class="welcome-tile">
               <h3>4. Open in Google Docs</h3>
-              <p>GCP-styled whitepaper mirroring tables, claim provenance ledger, FAQ, and embedded proof visuals.</p>
+              <p>GCP-styled architecture brief with embedded diagrams, formatted code, claim provenance ledger, FAQ, and proof visuals.</p>
             </div>
             <div class="welcome-tile">
               <h3>5. Chirp3-HD Audio + Player</h3>
@@ -879,11 +902,11 @@
             </div>
             <div class="welcome-tile">
               <h3>6. Authentic Proof Vault</h3>
-              <p>Zero fabricated screenshots. Upload genuine PNG/JPEG proofs to auto-embed into the Proof slide &amp; .docx.</p>
+              <p>Zero fabricated screenshots. Upload genuine PNG/JPEG proofs to auto-embed into Slide 10 &amp; Google Docs.</p>
             </div>
             <div class="welcome-tile">
               <h3>7. Starter Code (ZIP)</h3>
-              <p>Terraform, DDL/schema.sql, Python (AST-checked), deploy &amp; verify scripts marked <code>GENERATED_TEMPLATE_UNDEPLOYED</code>.</p>
+              <p>Terraform, DDL/schema.sql, Python (AST-checked), Dockerfile, requirements.txt, deploy &amp; verify scripts marked <code>GENERATED_TEMPLATE_UNDEPLOYED</code>.</p>
             </div>
             <div class="welcome-tile">
               <h3>8. Dual Quality Gate</h3>
@@ -908,7 +931,7 @@
         <div>
           <nav class="tabs-bar" role="tablist" aria-label="Generated Blog Asset Views" id="asset-tablist">
             <button type="button" class="wtab active" role="tab" aria-selected="true" data-tab="reader">Blog Reader</button>
-            <button type="button" class="wtab" role="tab" aria-selected="false" data-tab="diagrams">Diagrams (5)</button>
+            <button type="button" class="wtab" role="tab" aria-selected="false" data-tab="diagrams">Diagrams (6)</button>
             <button type="button" class="wtab" role="tab" aria-selected="false" data-tab="slides">Slides (12)</button>
             <button type="button" class="wtab" role="tab" aria-selected="false" data-tab="player">Narrated Player</button>
             <button type="button" class="wtab" role="tab" aria-selected="false" data-tab="proofs">Live Proofs &amp; Recorder</button>

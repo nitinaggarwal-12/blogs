@@ -22,10 +22,11 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
 ALLOWED_ICON_KEYS_LIST = (
-    "cloud_run, gke, vertex_ai, cloud_armor, cloud_load_balancing, cloud_iam, iap, "
-    "memorystore, bigquery, cloud_logging, cloud_monitoring, scc, spanner, cloud_storage, "
-    "artifact_registry, gemini, adk, agent_gateway, model_armor, agent_registry, cloud_kms, "
-    "alloydb, finops, psc, vpc_sc, google_g, gcp_cloud, saas_globe, api_gateway, mcp_tools, a2a_agents"
+    "a2a_agents, adk, agent_gateway, agent_registry, alloydb, api_gateway, apigee, artifact_registry, "
+    "bigquery, bigtable, cloud_armor, cloud_build, cloud_dlp, cloud_iam, cloud_kms, cloud_load_balancing, "
+    "cloud_logging, cloud_monitoring, cloud_nat, cloud_run, cloud_sql, cloud_storage, compute_engine, "
+    "dataflow, eventarc, finops, firestore, gcp_cloud, gemini, gke, google_g, iap, looker, mcp_tools, "
+    "memorystore, model_armor, psc, pubsub, saas_globe, scc, secret_manager, spanner, vertex_ai, vpc_sc, workflows"
 )
 
 
@@ -51,11 +52,11 @@ def call_gemini_grounded_search(
         f"Today is {today}. Use Google Search to gather concise, verified, current official Google Cloud facts "
         f"for an Architecture Center article titled '{title_hint or topic_prompt[:90]}' (domain: {domain}).\n\n"
         f"Topic request:\n{topic_prompt[:1400]}\n\n"
-        "Provide strictly grounded bullet points covering:\n"
-        "1. Exact current GA/Preview Google Cloud product names & deprecations (e.g., flag legacy names like 'Matching Engine' -> 'Vertex AI Vector Search').\n"
-        "2. Official syntax/DDL/API features relevant to this topic (e.g., Cloud Spanner Graph ISO GQL `CREATE PROPERTY GRAPH` / `GRAPH_TABLE`, Fine-Grained Access Control vs RLS, Cloud Run v2 Terraform `google_cloud_run_v2_service`).\n"
-        "3. Exact verified SLA, quota, or limit numbers from official cloud.google.com docs.\n"
-        "4. Canonical https://cloud.google.com/... documentation URLs.\n"
+        "Provide strictly grounded bullet points prioritizing official site:cloud.google.com documentation covering:\n"
+        "1. Exact current GA/Preview Google Cloud product names, model lifecycles & deprecations (e.g., flag legacy names like 'Matching Engine' -> 'Vertex AI Vector Search'; note embedding model retirement dates such as text-embedding-005 -> gemini-embedding-001).\n"
+        "2. Official syntax/DDL/API features relevant to this topic (e.g., Cloud Spanner Graph ISO GQL `CREATE PROPERTY GRAPH` / `GRAPH_TABLE` 2-stage ANN `MATCH (@{FORCE_INDEX=...}) ... NEXT MATCH`, Fine-Grained Access Control vs RLS & 100-role/database limit, Cloud Run v2 Terraform `google_cloud_run_v2_service` & `metadata.annotations['run.googleapis.com/ingress']`).\n"
+        "3. Exact verified SLA (e.g., Enterprise regional 99.99% vs Enterprise Plus multi-region 99.999%), quota, pricing, or limit numbers from official cloud.google.com docs.\n"
+        "4. Canonical https://cloud.google.com/... documentation URLs matching each verified topic (never link KNN docs for ANN vector indexes).\n"
         "Be strictly factual; if uncertain, explicitly state 'unverified'."
     )
     _supported_search_models = (
@@ -196,6 +197,9 @@ def scan_terraform_security(starter_files: Dict[str, str]) -> List[Dict[str, str
     tf = str(starter_files.get("main.tf") or "")
     tv = str(starter_files.get("variables.tf") or "")
     dep = str(starter_files.get("deploy.sh") or "")
+    ver = str(starter_files.get("verify.sh") or "")
+    py_app = str(starter_files.get("app.py") or "")
+    sql_ddl = str(starter_files.get("schema.sql") or "")
     combined_tf = tf + "\n" + tv
 
     # Check non-comment lines for public IAM principals
@@ -244,6 +248,33 @@ def scan_terraform_security(starter_files: Dict[str, str]) -> List[Dict[str, str
             "severity": "HIGH",
             "detail": "deploy.sh includes '--allow-unauthenticated'; remove to enforce IAM / IAP authentication.",
         })
+    if "spec.template.metadata.annotations['run.googleapis.com/ingress']" in ver or 'spec.template.metadata.annotations["run.googleapis.com/ingress"]' in ver:
+        findings.append({
+            "id": "SH-BUG-01",
+            "severity": "HIGH",
+            "detail": "verify.sh reads Cloud Run ingress from spec.template.metadata.annotations (wrong revision path); must use top-level metadata.annotations['run.googleapis.com/ingress'].",
+        })
+    if re.search(r'\bCREATE\s+ROLE\b', sql_ddl, re.IGNORECASE) and re.search(r'roles/spanner\.databaseUser', active_tf):
+        findings.append({
+            "id": "TF-FGAC-01",
+            "severity": "HIGH",
+            "detail": "main.tf grants roles/spanner.databaseUser which bypasses Spanner FGAC roles defined in schema.sql; grant roles/spanner.fineGrainedAccessUser + roles/spanner.databaseRoleUser with a databaseRoles IAM condition instead.",
+        })
+    if "X-Goog-IAP-JWT-Assertion" in py_app and "verify_token" not in py_app:
+        findings.append({
+            "id": "PY-AUTH-01",
+            "severity": "HIGH",
+            "detail": "app.py reads X-Goog-IAP-JWT-Assertion without cryptographically verifying it via google.oauth2.id_token.verify_token(..., certs_url='https://www.gstatic.com/iap/verify/public_key-jwk').",
+        })
+    req_envs = sorted(set(re.findall(r'os\.environ\[\s*["\']([A-Z0-9_]+)["\']\s*\]', py_app)))
+    if req_envs and active_tf:
+        missing_tf_envs = [ev for ev in req_envs if ev not in active_tf]
+        if missing_tf_envs:
+            findings.append({
+                "id": "PY-ENV-01",
+                "severity": "HIGH",
+                "detail": f"app.py requires os.environ keys {missing_tf_envs} that are missing from main.tf (guaranteed KeyError crash on startup).",
+            })
     return findings
 
 
@@ -258,13 +289,20 @@ def prose_stage_system_prompt() -> str:
         "2. Ground EVERY Google Cloud product name, GA/Preview feature, SQL/GQL/API syntax, quota, and SLA in the "
         "LIVE_SEARCH_GROUNDING dossier provided. Replace deprecated terms (e.g., use 'Vertex AI Vector Search', "
         "NOT 'Matching Engine'; use exact product access controls like 'Fine-Grained Access Control' where applicable).\n"
-        "3. NEVER invent customer emails, employee names, internal shortlinks (go/...), issue IDs (b/...), or fake benchmarks.\n"
+        "3. NEVER invent customer emails, employee names, synthetic tenant placeholders ('acme', 'PolicyGraph'), internal shortlinks (go/...), issue IDs (b/...), or fake benchmarks.\n"
         "4. Write DEEP, concrete engineering prose — include real inline fenced code blocks inside sections "
-        "(DDL/SQL/ISO GQL/YAML/bash/formula FinOps equations), comparative tables, failure modes, compensating controls, and math.\n"
+        "(use exact language tags: `sql`, `hcl` for Terraform NEVER `yaml`, `python`, `bash`, `formula`), comparative tables, failure modes, compensating controls, and math.\n"
         "5. Tag EVERY numeric claim/SLA/latency/cost assumption in `claimLedger` strictly as one of: "
         "GCP_DOCUMENTED | DERIVED_MODEL | EXAMPLE_TARGET | USER_SUPPLIED.\n"
-        "6. Use current live Vertex AI model names (Gemini 4: gemini-4-neon / carbon / argon / hydrogen; Gemini 3.x: gemini-3.8-flash; Gemini 2.5: gemini-2.5-pro / flash) matching the user's request — NEVER reference retired Gemini 1.0/1.5 checkpoints.\n"
-        "7. Zero emojis in headings, bullets, tables, or labels. Real public https://cloud.google.com/ URLs only."
+        "6. Use current live Vertex AI model names (Gemini 4: gemini-4-neon / carbon / argon / hydrogen with location='global'; Gemini 3.x: gemini-3.8-flash; Gemini 2.5: gemini-2.5-pro / flash; embeddings: prefer gemini-embedding-001, or explicitly note text-embedding-005 retirement April 1, 2027) — NEVER reference retired Gemini 1.0/1.5 checkpoints.\n"
+        "7. STRICT GCP ENGINEERING ACCURACY:\n"
+        "   - Cloud Spanner Graph + ANN vector search (`APPROX_COSINE_DISTANCE`) MUST use the 2-stage pattern `MATCH (@{FORCE_INDEX=...} src:Label) ... ORDER BY distance LIMIT @k NEXT MATCH (src)-[rel:...]->(dst:...)` (a single-stage join silently defeats the vector index!).\n"
+        "   - Cloud Spanner FGAC has a hard quota of 100 database roles per database (use workload/service-tier roles + mandatory parameterized `@tenantId`, NEVER claim 1:1 per-tenant DB roles for >100 SaaS tenants!). Grant `roles/spanner.fineGrainedAccessUser` + conditional `roles/spanner.databaseRoleUser`, NEVER `roles/spanner.databaseUser` when using FGAC; ensure the runtime role actually has `INSERT`/`UPDATE` privileges on every table it mutates.\n"
+        "   - Cloud Spanner Editions: Enterprise is regional-only (99.99% SLA; us-central1 list rate $1.23/hr per 1,000 PUs = 3 replicas x $0.41/replica-hr); 99.999% multi-region SLA requires Enterprise Plus.\n"
+        "   - Cloud Run ingress describe MUST check top-level `metadata.annotations['run.googleapis.com/ingress']` (NEVER `spec.template.metadata.annotations`).\n"
+        "   - IAP JWTs expire in 600s (10 min), verify via `google.oauth2.id_token.verify_token(..., certs_url='https://www.gstatic.com/iap/verify/public_key-jwk')`, and extract identity via `email`/`sub`/`hd` or `gcip.firebase.tenant`.\n"
+        "   - NEVER reference services (like Memorystore) in diagrams unless provisioned in Terraform and costed in FinOps.\n"
+        "8. Zero emojis in headings, bullets, tables, or labels. Real public https://cloud.google.com/ URLs matching each exact topic (use `/spanner/docs/find-approximate-nearest-neighbors` for ANN vector indexes, NOT `/find-k-nearest-neighbors`)."
     )
 
 
@@ -336,23 +374,22 @@ def topology_stage_system_prompt() -> str:
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     return (
         f"Today is {today}. You are a Principal Google Cloud Solutions Architect generating the structured "
-        "visual diagrams (5 C4 layers), 12-slide executive deck, and hardened Terraform v2 + Python 3.11 starter kit "
-        "matching a flagship blog article. STRICT RULES:\n"
+        "12-slide executive deck and hardened Terraform v2 + Python 3.11 + Dockerfile starter kit "
+        "matching a flagship blog article with 100% SINGLE-SOURCE-OF-TRUTH consistency. STRICT RULES:\n"
         "1. Output ONLY valid JSON (no markdown wrappers outside JSON).\n"
         "2. ZERO emojis and ZERO inline markdown asterisks (**bold** or `backticks`) inside diagram labels, "
         "slide titles, slide bullets, table cells, or speaker notes! Write clean plain English text everywhere.\n"
-        "3. `iconKey` MUST be selected strictly from this allowed list:\n"
+        "3. NEVER print raw enum names like `(EXAMPLE_TARGET)` or `(DERIVED_MODEL)` on slides; use natural language.\n"
+        "4. `iconKey` MUST be selected strictly from this allowed list:\n"
         f"   {ALLOWED_ICON_KEYS_LIST}\n"
-        "4. Hardened Terraform (`terraformMain`) MUST:\n"
-        "   - Use `google_cloud_run_v2_service` (NEVER deprecated v1 `google_cloud_run_service`!)\n"
-        "   - Set `ingress = \"INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER\"`\n"
-        "   - NEVER grant `allUsers` or `allAuthenticatedUsers` on IAM bindings (zero public unauthenticated access!)\n"
-        "   - Declare any `data` block referenced (e.g., `data \"google_project\" \"project\" {}`).\n"
-        "5. `deploySh` MUST NEVER pass `--allow-unauthenticated` — always use `--no-allow-unauthenticated` behind IAM/IAP zero-trust ingress.\n"
-        "6. `pythonApp` MUST be syntactically valid Python 3.11 implementing realistic, topic-specific handlers "
-        "(no `...` or incomplete syntax stubs; verified with `ast.parse()`).\n"
-        "7. Speaker notes for ALL 12 slides must be natural, humanized, conversational spoken narration "
-        "(2-4 clear sentences each, ~55-95 words, zero markdown punctuation, never say 'Slide 1' or 'Architecture 1')."
+        "5. Hardened `codeStarter` MUST be 100% consistent with `blog.md` (same graph/table/column/env-var/service names — NEVER use placeholder 'PolicyGraph' or 'acme'!):\n"
+        "   - `terraformMain`: MUST use `google_cloud_run_v2_service` with `ingress = \"INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER\"`, ZERO `allUsers` or `allAuthenticatedUsers`, set EVERY `os.environ[...]` variable read by `pythonApp`, declare any `data` block referenced, and when using Spanner FGAC grant `roles/spanner.fineGrainedAccessUser` + conditional `roles/spanner.databaseRoleUser` (NEVER `roles/spanner.databaseUser`!).\n"
+        "   - `pythonApp`: MUST be complete, syntactically valid Python 3.11 (`ast.parse()` verified), cryptographically verify `X-Goog-IAP-JWT-Assertion` via `google.oauth2.id_token.verify_token(..., certs_url='https://www.gstatic.com/iap/verify/public_key-jwk')`, use `from google import genai` with `location='global'` for Gemini 4 models, pass `database_role=...` for Spanner FGAC, and ONLY reference tables/columns/graphs that exist verbatim in `schemaSql`!\n"
+        "   - `dockerfile` & `requirementsTxt`: MUST be complete and runnable for `gcloud builds submit`.\n"
+        "   - `deploySh`: MUST use `--no-allow-unauthenticated` and pass the exact same env vars & service account as `terraformMain`.\n"
+        "   - `verifySh`: MUST check Cloud Run ingress via top-level `metadata.annotations['run.googleapis.com/ingress']` (NEVER `spec.template.metadata.annotations`), verify zero `allUsers|allAuthenticatedUsers`, and match what Slide 12 describes.\n"
+        "6. Speaker notes for ALL 12 slides must be natural, humanized, conversational spoken narration "
+        "(2-4 clear sentences each, ~55-90 words, zero markdown punctuation, never say 'Slide 1' or 'Architecture 1') AND MUST match the EXACT visual content on each slide (Slide 4 = Hub-and-Spoke Architecture Blueprint, Slide 7 = Wire Payload Transformation, Slide 8 = Async Lifecycle & GCS DLQ, Slide 10 = Live Proofs, Slide 11 = Latency & Dollar Cost Math)."
     )
 
 
@@ -361,78 +398,35 @@ def topology_stage_user_prompt(prose_bp: Dict[str, Any], prompt: str, grounding:
         {"heading": s.get("heading"), "hasTable": bool(s.get("table")), "hasCode": bool(s.get("codeBlocks"))}
         for s in (prose_bp.get("sections") or [])
     ]
-    g_snippet = (grounding.get("summary") or "")[:2400]
+    inline_code_ctx = []
+    for s in (prose_bp.get("sections") or []):
+        for cb in (s.get("codeBlocks") or []):
+            if isinstance(cb, dict) and cb.get("code"):
+                inline_code_ctx.append({"section": s.get("heading"), "language": cb.get("language"), "caption": cb.get("caption"), "code": str(cb.get("code"))})
+    g_snippet = (grounding.get("summary") or "")
     schema = {
-        "architectureZones": [
-            {
-                "id": "zone_1",
-                "title": "Edge & Ingress",
-                "subtitle": "Short zone role (<= 40 chars)",
-                "components": [
-                    {"id": "c1", "label": "Service Name", "sub": "Protocol / SKU", "role": "1-line crisp role", "iconKey": "saas_globe"}
-                ],
-            }
-        ],
-        "architectureEdges": [
-            {"from": "c1", "to": "c2", "label": "HTTPS / TLS 1.3", "dashed": False}
-        ],
-        "sequenceActors": [
-            {"id": "a1", "label": "Actor Name", "sub": "Role / Service", "iconKey": "saas_globe"}
-        ],
-        "sequenceSteps": [
-            {"num": 1, "from": "a1", "to": "a2", "label": "Short verb + payload (<= 55 chars)", "kind": "request|guard|response"}
-        ],
-        "securityDiagram": {
-            "layers": [
-                {"layer": "L1 · EDGE INGRESS & WAF", "name": "Service + Feature", "iconKey": "cloud_armor", "detail": "Crisp 1-sentence enforcement check"}
-            ],
-            "threats": [
-                {"id": "T-01", "vector": "Specific attack/failure vector", "control": "Active defense control and cryptographic/IAM mechanism"}
-            ],
-            "breakers": [
-                {"code": "HTTP 401", "trigger": "Exact fail-closed trigger condition"}
-            ],
-        },
-        "wireDiagram": {
-            "hops": [
-                {
-                    "hop": "HOP 1 · CLIENT INGRESS",
-                    "name": "Envelope Name (<= 28 chars)",
-                    "transport": "HTTPS / TLS 1.3",
-                    "iconKey": "saas_globe",
-                    "added": ["+ field added 1", "+ field added 2", "+ field added 3"],
-                    "stripped": ["- stripped header/field 1", "- stripped field 2"],
-                    "payload": "compact realistic wire/query snippet (<= 110 chars; use escaped \\n and single quotes inside JSON!)",
-                }
-            ]
-        },
-        "asyncDiagram": {
-            "stages": [
-                {"stage": "1. STAGE NAME", "service": "GCP Service Name", "iconKey": "spanner", "cadence": "Continuous / Hourly", "slo": "Stage 1 · Off-Path", "bullets": ["bullet 1", "bullet 2", "bullet 3", "bullet 4"]}
-            ],
-            "dlqNote": "Dead-letter queue, retry/backoff, and reconciliation alert note.",
-            "feedbackLabel": "Periodic Verification & Idempotent Reconciliation Feedback",
-        },
         "slides": [
             {
                 "number": 1,
                 "kicker": "EXECUTIVE BRIEF",
                 "title": "Clean plain-text title (<= 60 chars, no ** or emojis)",
                 "subtitle": "Concise action subtitle (<= 100 chars)",
-                "bullets": ["3-5 crisp plain-text bullets (no ** or emojis, <= 95 chars each)"],
+                "bullets": ["3-4 crisp plain-text bullets (no ** or emojis, <= 95 chars each)"],
                 "calloutLabel": "Optional metric label",
-                "calloutValue": "Grounded value + tag",
+                "calloutValue": "Clean grounded figure ONLY (e.g. '1,200 ms p95 TTFT' — NO raw '(EXAMPLE_TARGET)' enum!)",
                 "table": {"headers": ["Col A", "Col B", "Col C"], "rows": [["v1", "v2", "v3"]]},
-                "codeSnippet": "Short snippet (slide 9 ONLY)",
-                "speakerNotes": "Conversational spoken narration (55-95 words, plain prose).",
+                "codeSnippet": "Short verified snippet from schemaSql (slide 9 ONLY)",
+                "speakerNotes": "Conversational spoken narration (55-90 words, plain prose, strictly matching this slide's visual).",
             }
         ],
         "codeStarter": {
-            "readmeSummary": "Review, security-scan, and terraform plan notes.",
-            "schemaSql": "-- Valid DDL/SQL/ISO GQL starter statements tailored to this architecture",
-            "terraformMain": "# Complete hardened Terraform using google_cloud_run_v2_service (NO allUsers!)",
-            "terraformVars": "# Terraform variable declarations",
-            "pythonApp": "# Syntactically valid Python 3.11 Flask/service app tailored to this architecture",
+            "readmeSummary": "Review, security-scan, and terraform plan notes listing all included files including schema.sql, Dockerfile, and requirements.txt.",
+            "schemaSql": "-- Complete valid DDL/SQL/ISO GQL matching Section 2 & Section 4 verbatim",
+            "terraformMain": "# Complete hardened Terraform using google_cloud_run_v2_service (NO allUsers, NO roles/spanner.databaseUser if FGAC!)",
+            "terraformVars": "# Terraform variable declarations matching every var.* in terraformMain",
+            "pythonApp": "# Complete syntactically valid Python 3.11 FastAPI app matching Section 3 verbatim with IAP JWT verify_token + google-genai + exact schemaSql tables/columns",
+            "dockerfile": "FROM python:3.11-slim\n...",
+            "requirementsTxt": "fastapi\nuvicorn\n...",
             "deploySh": "#!/usr/bin/env bash\nset -euo pipefail\n...",
             "verifySh": "#!/usr/bin/env bash\nset -euo pipefail\n...",
         },
@@ -442,25 +436,24 @@ def topology_stage_user_prompt(prose_bp: Dict[str, Any], prompt: str, grounding:
         f"SUBTITLE: {prose_bp.get('subtitle')}\n"
         f"SUMMARY: {prose_bp.get('summary')}\n"
         f"SECTIONS: {json.dumps(sec_brief)}\n"
-        f"CLAIMS: {json.dumps((prose_bp.get('claimLedger') or [])[:8])}\n"
-        f"ORIGINAL PROMPT:\n{prompt.strip()[:1200]}\n\n"
+        f"INLINE CODE IN BLOG (codeStarter MUST share identical graph/table/column/service/env names!):\n{json.dumps(inline_code_ctx, indent=2)}\n\n"
+        f"CLAIMS: {json.dumps(prose_bp.get('claimLedger') or [])}\n"
+        f"ORIGINAL PROMPT:\n{prompt.strip()}\n\n"
         + (f"GROUNDING NOTES:\n{g_snippet}\n\n" if g_snippet else "")
-        + "EXACT COUNTS REQUIRED:\n"
-        "- `architectureZones`: EXACTLY 4 zones in this order: zone_1=Edge & Ingress (2-3 comps), zone_2=Control & Governance Plane (2-4 comps: KMS/IAM/Policy/Registry), zone_3=Compute & AI Plane (2-3 comps), zone_4=Data & Persistence Plane (2-4 comps). Unique ids c1..c12. Set `iconKey` on EVERY component.\n"
-        "- `architectureEdges`: 7 to 11 crisp edges connecting those ids (set `dashed: true` for control/async/telemetry taps).\n"
-        "- `sequenceActors`: EXACTLY 5 actors (ids a1..a5) with `iconKey`.\n"
-        "- `sequenceSteps`: 8 to 10 numbered steps across a1..a5 (`kind`: request | guard | response).\n"
-        "- `securityDiagram`: EXACTLY 4 nested layers, 4 threats (`T-01`..`T-04`), 4 breakers (`HTTP 401`, `HTTP 403`, `HTTP 422`, `HTTP 429`).\n"
-        "- `wireDiagram.hops`: EXACTLY 4 progressive hops; EVERY hop MUST contain 2 to 3 NON-EMPTY `added` strings (`+ field/header/claim`), 1 to 2 NON-EMPTY `stripped` strings (`- untrusted field`), and compact escaped single-quoted `payload` (<= 120 chars; NEVER emit raw unescaped double quotes or newlines inside JSON strings!).\n"
-        "- `asyncDiagram.stages`: EXACTLY 4 background stages with `bullets` + `slo` + `dlqNote` + `feedbackLabel`.\n"
-        "- `slides`: EXACTLY 12 slides (matching WS1-WS5 12-slide executive deck cadence):\n"
-        "  1=Cover & BLUF | 2=Challenge & Design Goals (with callout metric) | 3=Figure 1 Master Reference Architecture (C4 L2) | "
-        "  4=Component & Security Design Matrix (include compact table) | 5=Figure 2 End-to-End Request Lifecycle Sequence (C4 L3) | "
-        "  6=Figure 3 Trust Perimeter & Security Boundary (C4 L1) | 7=Figure 4 Wire Payload & Schema Transformation (C4 L4) | "
-        "  8=Figure 5 Async Lifecycle, Export & Recovery Loop | 9=Implementation Guardrails & Starter Code (include concise `codeSnippet`) | "
-        "  10=Verified Live Console & SaaS Proofs (specify exact BEFORE/AFTER capture targets; no fake screenshots) | "
-        "  11=Cost, Latency & Architecture Trade-off Matrix (include compact table) | 12=Production Readiness Checklist & Next Steps.\n"
-        "- `codeStarter.terraformMain`: MUST use `google_cloud_run_v2_service` with `INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER`, ZERO `allUsers` or `allAuthenticatedUsers`.\n\n"
+        + "EXACT 12-SLIDE CADENCE REQUIRED (MUST MATCH RENDERED DIAGRAMS 1:1):\n"
+        "- `slides`: EXACTLY 12 slides:\n"
+        "  1=Cover & BLUF (3 concise takeaways <= 145 chars each so nothing ever clips!)\n"
+        "  2=Challenge & Design Goals (with clean callout metric — zero '(EXAMPLE_TARGET)' enum!)\n"
+        "  3=Figure 1 Master Platform Architecture (C4 L2 — narrate the 3-plane 5-stage platform flow)\n"
+        "  4=Figure 2 Cloud Architecture Center Hub-and-Spoke Blueprint (narrate the hub-and-spoke VPC-SC perimeter & sync/async spokes — NEVER call it a 'matrix'!)\n"
+        "  5=Figure 3 End-to-End Request Lifecycle Sequence (C4 L3 — narrate the actual 6 actor-to-actor hops)\n"
+        "  6=Figure 4 Trust Perimeter & Defense-in-Depth Security Boundary (C4 L1 — narrate the 4 layers, threats & HTTP 401/403/422/429 breakers)\n"
+        "  7=Figure 5 Wire-Protocol & Payload Transformation (C4 L4 — narrate the 4 wire hops accurately, including Hop 4 CDC/query)\n"
+        "  8=Figure 6 Async State, CDC Export & Recovery Loop (narrate Change Streams -> Dataflow -> BigQuery + GCS Dead-Letter Bucket — NOT Pub/Sub DLQ unless provisioned!)\n"
+        "  9=Implementation Guardrails & Starter Code (include concise verified `codeSnippet` matching `schemaSql` verbatim — NEVER 'PolicyGraph'!)\n"
+        "  10=Verified Live Console & SaaS Proofs (specify 2 crisp BEFORE/AFTER capture bullets <= 85 chars each; no fake screenshots)\n"
+        "  11=Latency Budget, Cost Math & Service Trade-Offs (table MUST include explicit monthly dollar cost estimates + latency column, consistent with Section 6!)\n"
+        "  12=Production Readiness Checklist & Rollout Plan (Step 4 MUST accurately describe what `verify.sh` actually checks!).\n\n"
         "Return ONLY JSON matching:\n" + json.dumps(schema, indent=2)
     )
 
@@ -479,13 +472,16 @@ def build_auto_revision_prompt(
         "Do NOT invent fake claims, fake benchmarks, emojis, internal links, or `allUsers` bindings. "
         "Output ONLY a JSON object with any subset of these keys:\n"
         '{"summary":"optional updated READER-FACING executive BLUF (leave empty to keep existing)",'
+        '"keyTakeaways":["optional full 4 corrected plain-text takeaways (<=145 chars each)"],'
         '"appliedFixes":["short description of each actual in-place fix applied"],'
-        '"textReplacements":[{"old":"exact buggy substring inside prose/code/slides/DDL","new":"exact corrected replacement"}],'
-        '"sectionPatches":[{"headingMatch":"substring heading","appendParagraph":"...","replaceTable":null,"replaceCodeBlocks":[{"language":"sql","caption":"...","code":"..."}]}],'
-        '"schemaSql":"full corrected schema.sql DDL string (REQUIRED if any DDL/SQL/vector/graph syntax finding exists)",'
+        '"textReplacements":[{"old":"exact buggy substring inside prose/code/slides/diagrams/DDL","new":"exact corrected replacement"}],'
+        '"sectionPatches":[{"headingMatch":"substring heading","appendParagraph":"...","replaceTable":null,"replaceCodeBlocks":[{"language":"sql|hcl|python|bash|formula","caption":"...","code":"..."}]}],'
+        '"schemaSql":"full corrected schema.sql DDL string",'
+        '"pythonApp":"full corrected Python 3.11 app.py string (with cryptographic IAP JWT verify_token + exact schemaSql tables/columns)",'
         '"claimLedger":[...full updated ledger array if fixing claims...],'
-        '"terraformMain":"full hardened main.tf if fixing TF/security findings (google_cloud_run_v2_service, zero allUsers)",'
-        '"deploySh":"full hardened deploy.sh if SH-SEC-01 fires (use --no-allow-unauthenticated; NEVER --allow-unauthenticated)"}'
+        '"terraformMain":"full hardened main.tf (google_cloud_run_v2_service, zero allUsers, FGAC role IAM instead of databaseUser)",'
+        '"deploySh":"full hardened deploy.sh (--no-allow-unauthenticated)",'
+        '"verifySh":"full corrected verify.sh (metadata.annotations[\'run.googleapis.com/ingress\'])"}'
     )
     findings = judge_r1.get("findings") or []
     code_excerpts = []
@@ -496,24 +492,31 @@ def build_auto_revision_prompt(
                     "section": s.get("heading"),
                     "language": cb.get("language"),
                     "caption": cb.get("caption"),
-                    "code": str(cb.get("code") or "")[:1400],
+                    "code": str(cb.get("code") or ""),
                 })
     starter = bp.get("codeStarter") or {}
-    schema_sql = str(starter.get("schemaSql") or "")[:3600]
+    schema_sql = str(starter.get("schemaSql") or "")
+    py_app = str(starter.get("pythonApp") or "")
+    tf_main = str(starter.get("terraformMain") or "")
+    dep_sh = str(starter.get("deploySh") or "")
+    ver_sh = str(starter.get("verifySh") or "")
     user_p = (
         f"TITLE: {bp.get('title')}\n"
+        f"KEY TAKEAWAYS: {json.dumps(bp.get('keyTakeaways') or [])}\n"
         f"ROUND 1 JUDGE: verdict={judge_r1.get('verdict')} score={judge_r1.get('score')}\n"
         f"JUDGE SUMMARY: {judge_r1.get('summary')}\n\n"
         f"JUDGE FINDINGS TO FIX IN PLACE:\n{json.dumps(findings, indent=2)}\n\n"
-        f"DETERMINISTIC TERRAFORM SECURITY FINDINGS (D-11):\n{json.dumps(tf_findings, indent=2)}\n\n"
-        f"LIVE GOOGLE SEARCH GROUNDING DOSSIER:\n{(grounding.get('summary') or 'N/A')[:2600]}\n\n"
+        f"DETERMINISTIC SECURITY / CODE FINDINGS (D-11):\n{json.dumps(tf_findings, indent=2)}\n\n"
+        f"LIVE GOOGLE SEARCH GROUNDING DOSSIER:\n{(grounding.get('summary') or 'N/A')}\n\n"
         f"CURRENT SECTION HEADINGS:\n{json.dumps([s.get('heading') for s in (bp.get('sections') or [])])}\n\n"
-        f"CURRENT INLINE CODE BLOCKS (fix any buggy SQL/DDL/ingress syntax using `textReplacements` or `sectionPatches[].replaceCodeBlocks`):\n"
-        f"{json.dumps(code_excerpts, indent=2)[:5500]}\n\n"
-        + (f"CURRENT schema.sql (return FULL corrected `schemaSql` if any DDL finding applies):\n{schema_sql}\n\n" if schema_sql else "")
-        + f"CURRENT CLAIM LEDGER:\n{json.dumps(bp.get('claimLedger') or [], indent=2)[:2400]}\n\n"
-        + (f"CURRENT main.tf (FIX ALL D-11 ISSUES!):\n{str(starter.get('terraformMain') or '')[:5000]}\n" if tf_findings else "")
-        + (f"CURRENT deploy.sh (FIX SH-SEC-01 — replace --allow-unauthenticated with --no-allow-unauthenticated!):\n{str(starter.get('deploySh') or '')[:2400]}\n" if any(f.get("id") == "SH-SEC-01" for f in tf_findings) else "")
+        f"CURRENT INLINE CODE BLOCKS (fix any buggy SQL/DDL/Python/HCL/ingress syntax using `textReplacements` or `sectionPatches[].replaceCodeBlocks`):\n"
+        f"{json.dumps(code_excerpts, indent=2)}\n\n"
+        + (f"CURRENT schema.sql:\n{schema_sql}\n\n" if schema_sql else "")
+        + (f"CURRENT starter app.py:\n{py_app}\n\n" if py_app else "")
+        + f"CURRENT CLAIM LEDGER:\n{json.dumps(bp.get('claimLedger') or [], indent=2)}\n\n"
+        + (f"CURRENT main.tf:\n{tf_main}\n\n" if tf_main else "")
+        + (f"CURRENT deploy.sh:\n{dep_sh}\n\n" if dep_sh else "")
+        + (f"CURRENT verify.sh:\n{ver_sh}\n\n" if ver_sh else "")
         + "\nReturn ONLY the JSON patch object now."
     )
     return sys_p, user_p
@@ -534,6 +537,36 @@ def _is_meta_changelog_summary(text: str) -> bool:
     return any(low.startswith(p) for p in prefixes)
 
 
+def _walk_replace_strings(obj: Any, repls: List[Tuple[str, str]]) -> Tuple[Any, int]:
+    """Recursively applies exact string replacements across nested dicts/lists and counts actual matches."""
+    if isinstance(obj, str):
+        out = obj
+        hits = 0
+        for o, n in repls:
+            if o in out:
+                cnt = out.count(o)
+                out = out.replace(o, n)
+                hits += cnt
+        return out, hits
+    if isinstance(obj, list):
+        total = 0
+        new_l = []
+        for item in obj:
+            nv, h = _walk_replace_strings(item, repls)
+            new_l.append(nv)
+            total += h
+        return new_l, total
+    if isinstance(obj, dict):
+        total = 0
+        new_d = {}
+        for k, v in obj.items():
+            nv, h = _walk_replace_strings(v, repls)
+            new_d[k] = nv
+            total += h
+        return new_d, total
+    return obj, 0
+
+
 def apply_revision_patch(
     bp: Dict[str, Any],
     patch: Dict[str, Any],
@@ -542,61 +575,58 @@ def apply_revision_patch(
     sanitize_fn: Callable[[str], str],
     strip_emoji_fn: Callable[[str], str],
 ) -> List[str]:
-    """Applies a surgical LLM auto-revision JSON patch in-place onto `bp`. Returns applied fix summary list."""
-    applied: List[str] = [str(x)[:480] for x in (patch.get("appliedFixes") or []) if str(x).strip()][:10]
+    """
+    Applies a surgical LLM auto-revision JSON patch in-place onto `bp`.
+    HONESTY INVARIANT: Never blindly echoes unverified LLM `appliedFixes` claims — returns ONLY
+    programmatically verified mutations where `before != after` actually changed in `bp`.
+    """
+    verified_applied: List[str] = []
     new_sum = str(patch.get("summary") or "").strip()
     if len(new_sum) >= 40 and not _is_meta_changelog_summary(new_sum):
-        bp["summary"] = sanitize_fn(new_sum)[:1600]
+        cleaned_sum = sanitize_fn(new_sum)
+        if cleaned_sum != bp.get("summary"):
+            bp["summary"] = cleaned_sum
+            verified_applied.append("Updated executive BLUF summary in-place.")
 
-    # True in-place string replacements across prose, inline code blocks, starter code & slide bullets
+    if isinstance(patch.get("keyTakeaways"), list) and len(patch["keyTakeaways"]) >= 3:
+        new_kts = [strip_emoji_fn(sanitize_fn(str(x))).strip() for x in patch["keyTakeaways"] if str(x).strip()][:6]
+        if new_kts and new_kts != (bp.get("keyTakeaways") or []):
+            bp["keyTakeaways"] = new_kts
+            verified_applied.append(f"Updated {len(new_kts)} Executive Summary Key Takeaways in-place.")
+
+    # True in-place string replacements across ALL user-visible fields (including keyTakeaways & all 6 diagrams!)
     # Protect live GA/Preview models (Gemini 4 / Gemini 3.x / Gemini 2.5) from spurious downgrade to Gemini 1.0/1.5
     _downgrade_old_re = re.compile(r"gemini[-\s]*(?:2\.5|3(?:\.\d+)?|4(?:[-\s]*(?:neon|carbon|argon|hydrogen))?)", re.IGNORECASE)
     _downgrade_new_re = re.compile(r"gemini[-\s]*(?:1\.0|1\.5)", re.IGNORECASE)
-    repls = []
-    skipped_downgrade = False
-    for rr in (patch.get("textReplacements") or [])[:24]:
+    repls: List[Tuple[str, str]] = []
+    for rr in (patch.get("textReplacements") or [])[:32]:
         if isinstance(rr, dict):
             old_s = str(rr.get("old") or "")
             new_s = str(rr.get("new") or "")
             if _downgrade_old_re.search(old_s) and _downgrade_new_re.search(new_s):
-                skipped_downgrade = True
                 continue
             if len(old_s.strip()) >= 4 and old_s != new_s:
                 repls.append((old_s, sanitize_fn(new_s)))
-    if skipped_downgrade:
-        applied = [
-            x for x in applied
-            if not (re.search(r"gemini[-\s]*1\.[05]", x, re.IGNORECASE) and re.search(r"2\.5|3\.|4|neon|carbon|argon|hydrogen|deprecat|replac", x, re.IGNORECASE))
-        ]
+
     if repls:
-        def _apply_repls(val: str) -> str:
-            out = val
-            for o, n in repls:
-                if o in out:
-                    out = out.replace(o, n)
-            return out
-        for s in bp.get("sections") or []:
-            if not isinstance(s, dict):
-                continue
-            s["paragraphs"] = [_apply_repls(str(p)) for p in (s.get("paragraphs") or [])]
-            for cb in s.get("codeBlocks") or []:
-                if isinstance(cb, dict) and cb.get("code"):
-                    cb["code"] = _apply_repls(str(cb["code"]))
-            tbl = s.get("table")
-            if isinstance(tbl, dict) and isinstance(tbl.get("rows"), list):
-                tbl["rows"] = [[_apply_repls(str(c)) for c in row] for row in tbl["rows"] if isinstance(row, list)]
-        for sl in bp.get("slides") or []:
-            if not isinstance(sl, dict):
-                continue
-            if isinstance(sl.get("bullets"), list):
-                sl["bullets"] = [_apply_repls(str(b)) for b in sl["bullets"]]
-            if isinstance(sl.get("speakerNotes"), str):
-                sl["speakerNotes"] = _apply_repls(sl["speakerNotes"])
-        cs = bp.get("codeStarter")
-        if isinstance(cs, dict):
-            for ck in ("schemaSql", "terraformMain", "pythonApp", "deploySh", "verifySh", "readmeSummary"):
-                if isinstance(cs.get(ck), str) and cs[ck]:
-                    cs[ck] = _apply_repls(cs[ck])
+        for o, n in repls:
+            single_hits = 0
+            # Apply across title, subtitle, summary, keyTakeaways, sections, slides, codeStarter, faq, and all 6 diagrams
+            for top_k in ("title", "subtitle", "summary", "keyTakeaways", "sections", "slides", "codeStarter", "faq",
+                          "platformDiagram", "cloudArchDiagram", "sequenceDiagram", "securityDiagram", "wireDiagram", "asyncDiagram"):
+                if top_k in bp and bp[top_k] is not None:
+                    nv, h = _walk_replace_strings(bp[top_k], [(o, n)])
+                    if h:
+                        bp[top_k] = nv
+                        single_hits += h
+            if single_hits > 0:
+                short_o = o.replace("\n", " ").strip()
+                short_n = n.replace("\n", " ").strip()
+                if len(short_o) > 48:
+                    short_o = short_o[:45] + "..."
+                if len(short_n) > 48:
+                    short_n = short_n[:45] + "..."
+                verified_applied.append(f"Verified replacement ({single_hits}x): '{short_o}' -> '{short_n}'.")
 
     for sp in (patch.get("sectionPatches") or [])[:8]:
         if not isinstance(sp, dict):
@@ -612,40 +642,54 @@ def apply_revision_patch(
             target = bp["sections"][-1]
         if target is None:
             continue
+        sec_name = str(target.get("heading") or "section")
         ap = str(sp.get("appendParagraph") or "").strip()
         if len(ap) >= 24:
-            target.setdefault("paragraphs", []).append(sanitize_fn(ap))
+            cleaned_ap = sanitize_fn(ap)
+            target.setdefault("paragraphs", []).append(cleaned_ap)
+            verified_applied.append(f"Appended clarifying paragraph to '{sec_name}'.")
         rcb = sp.get("replaceCodeBlocks")
         if isinstance(rcb, list) and rcb:
             cleaned_cbs = []
             for cb in rcb[:4]:
                 if isinstance(cb, dict) and str(cb.get("code") or "").strip():
+                    lang_raw = re.sub(r"[^a-zA-Z0-9_-]", "", str(cb.get("language") or "sql")) or "sql"
+                    code_full = sanitize_fn(str(cb.get("code") or "").strip())
+                    if lang_raw.lower() == "yaml" and ('resource "' in code_full or 'provider "' in code_full):
+                        lang_raw = "hcl"
                     cleaned_cbs.append({
-                        "language": re.sub(r"[^a-zA-Z0-9_-]", "", str(cb.get("language") or "sql"))[:16] or "sql",
-                        "caption": strip_emoji_fn(sanitize_fn(str(cb.get("caption") or "Verified snippet")))[:100],
-                        "code": sanitize_fn(str(cb.get("code") or "").strip())[:3600],
+                        "language": lang_raw,
+                        "caption": strip_emoji_fn(sanitize_fn(str(cb.get("caption") or "Verified snippet"))),
+                        "code": code_full,
                     })
             if cleaned_cbs:
                 target["codeBlocks"] = cleaned_cbs
+                verified_applied.append(f"Replaced {len(cleaned_cbs)} full code block(s) in '{sec_name}' (zero truncation).")
         cb = sp.get("addCodeBlock")
         if isinstance(cb, dict) and str(cb.get("code") or "").strip():
+            lang_raw = re.sub(r"[^a-zA-Z0-9_-]", "", str(cb.get("language") or "sql")) or "sql"
+            code_full = sanitize_fn(str(cb.get("code") or "").strip())
+            if lang_raw.lower() == "yaml" and ('resource "' in code_full or 'provider "' in code_full):
+                lang_raw = "hcl"
             target.setdefault("codeBlocks", []).append({
-                "language": re.sub(r"[^a-zA-Z0-9_-]", "", str(cb.get("language") or "sql"))[:16] or "sql",
-                "caption": strip_emoji_fn(sanitize_fn(str(cb.get("caption") or "Verified snippet")))[:100],
-                "code": sanitize_fn(str(cb.get("code") or "").strip())[:3200],
+                "language": lang_raw,
+                "caption": strip_emoji_fn(sanitize_fn(str(cb.get("caption") or "Verified snippet"))),
+                "code": code_full,
             })
+            verified_applied.append(f"Added verified code block in '{sec_name}'.")
         rt = sp.get("replaceTable")
         if isinstance(rt, dict) and isinstance(rt.get("headers"), list) and rt["headers"] and isinstance(rt.get("rows"), list) and rt["rows"]:
-            hdrs = [strip_emoji_fn(sanitize_fn(str(h)))[:60] for h in rt["headers"][:6]]
+            hdrs = [strip_emoji_fn(sanitize_fn(str(h))) for h in rt["headers"][:6]]
             rows = []
             for rr in rt["rows"][:10]:
                 if isinstance(rr, list) and rr:
-                    row = [strip_emoji_fn(sanitize_fn(str(c)))[:180] for c in rr[: len(hdrs)]]
+                    row = [strip_emoji_fn(sanitize_fn(str(c))) for c in rr[: len(hdrs)]]
                     while len(row) < len(hdrs):
                         row.append("")
                     rows.append(row)
             if rows:
                 target["table"] = {"headers": hdrs, "rows": rows}
+                verified_applied.append(f"Updated comparison/data table in '{sec_name}'.")
 
     if isinstance(patch.get("claimLedger"), list) and len(patch["claimLedger"]) >= 3:
         updated_claims = []
@@ -656,27 +700,36 @@ def apply_revision_patch(
             if prov not in allowed_tags:
                 prov = "EXAMPLE_TARGET"
             updated_claims.append({
-                "id": strip_emoji_fn(str(rc.get("id") or f"CLM-{ci:02d}"))[:16],
-                "claim": strip_emoji_fn(sanitize_fn(str(rc.get("claim") or "")))[:180],
-                "value": strip_emoji_fn(sanitize_fn(str(rc.get("value") or "")))[:80],
+                "id": strip_emoji_fn(str(rc.get("id") or f"CLM-{ci:02d}")),
+                "claim": strip_emoji_fn(sanitize_fn(str(rc.get("claim") or ""))),
+                "value": strip_emoji_fn(sanitize_fn(str(rc.get("value") or ""))),
                 "provenance": prov,
-                "basis": strip_emoji_fn(sanitize_fn(str(rc.get("basis") or "")))[:240],
+                "basis": strip_emoji_fn(sanitize_fn(str(rc.get("basis") or ""))),
             })
-        if updated_claims:
+        if updated_claims and updated_claims != (bp.get("claimLedger") or []):
             bp["claimLedger"] = updated_claims
+            verified_applied.append(f"Updated Claim Provenance Ledger ({len(updated_claims)} claims).")
 
-    new_schema = str(patch.get("schemaSql") or "").strip()
-    if len(new_schema) >= 60:
-        bp.setdefault("codeStarter", {})["schemaSql"] = sanitize_fn(new_schema)[:9000]
-
-    new_tf = str(patch.get("terraformMain") or "").strip()
-    if len(new_tf) >= 120 and "resource " in new_tf:
-        bp.setdefault("codeStarter", {})["terraformMain"] = sanitize_fn(new_tf)[:12000]
-
-    new_dep = str(patch.get("deploySh") or patch.get("deployScript") or "").strip()
-    if len(new_dep) >= 24:
-        bp.setdefault("codeStarter", {})["deploySh"] = sanitize_fn(new_dep)[:6000]
-    return applied
+    cs = bp.setdefault("codeStarter", {})
+    for p_key, cs_key, min_len, label in (
+        ("schemaSql", "schemaSql", 60, "starter schema.sql"),
+        ("pythonApp", "pythonApp", 80, "starter app.py"),
+        ("terraformMain", "terraformMain", 120, "starter main.tf"),
+        ("terraformVars", "terraformVars", 30, "starter variables.tf"),
+        ("deploySh", "deploySh", 24, "starter deploy.sh"),
+        ("verifySh", "verifySh", 24, "starter verify.sh"),
+    ):
+        val = str(patch.get(p_key) or "").strip()
+        if p_key == "deploySh" and not val:
+            val = str(patch.get("deployScript") or "").strip()
+        if len(val) >= min_len:
+            if p_key == "terraformMain" and "resource " not in val:
+                continue
+            cleaned_v = sanitize_fn(val)
+            if cleaned_v != cs.get(cs_key):
+                cs[cs_key] = cleaned_v
+                verified_applied.append(f"Updated full {label} in-place ({len(cleaned_v)} chars, zero truncation).")
+    return verified_applied
 
 
 def diagram_architect_system_prompt() -> str:
@@ -686,34 +739,38 @@ def diagram_architect_system_prompt() -> str:
         "driving a deterministic 1600x900 parametric Draw.io / SVG / DrawingML compiler.\n\n"
         "RULES — CRITICAL FOR TECHNICAL DEPTH:\n"
         "- NEVER write vague marketing blurbs ('Hosts the API', 'Stores data', 'Secures traffic').\n"
-        "- EVERY card bullet MUST contain concrete engineering specifics: exact protocol, RPC/SQL/GQL/API verb, header name, HTTP status code, "
-        "latency/SLA/quota or exact key format (using grounded facts from the prompt and Google Search dossier; tag unverified budgets as `target`!).\n"
-        "- Keep strings concise so they fit neatly inside their boxes (headings <= 32 chars, short bullets <= 34 chars).\n"
-        "- Use ONLY valid icon keys from: " + ALLOWED_ICON_KEYS_LIST + ".\n"
+        "- EVERY card bullet MUST contain concrete engineering specifics matching the blog prose & Claim Ledger EXACTLY (same latency budget, same `min_instance_count`, same edition/SLA, same graph/role/column names!). NEVER contradict the blog's latency budget or invent services like Memorystore that are NOT provisioned in Terraform!\n"
+        "- NEVER use placeholder names like 'acme', 'tenant_acme_reader', or 'PolicyGraph'.\n"
+        "- For bi-temporal queries in `wireDiagram`, ALWAYS use valid point-in-time predicates `(r.superseded_at IS NULL OR r.superseded_at > @asOf)` (NEVER bare `superseded_at IS NULL`!), use the exact graph/label names from the blog, and emit valid syntax.\n"
+        "- For `securityDiagram`, align `threats[0..3]` 1-to-1 with `layers[0..3]` and set `layerIndex` (0..3) explicitly so every dashed arrow connects each threat to its exact defending layer!\n"
+        "- For `sequenceDiagram`, set exact `fromIdx` (0..4) and `toIdx` (0..4) on EVERY step matching the REAL call graph (e.g., API actor 2 calls AI actor 3 AND Data actor 4, then API actor 2 returns HTTP 200 to Caller actor 0 — NEVER draw Vertex AI calling Spanner!). Include `iconKey` on all 5 actors.\n"
+        "- For `cloudArchDiagram`, provide accurate `edgeLabels` (`sec0`, `sec1`, `sec2`, `spokeA`, `spokeB`), set `spokeB.mode` to `'async'` when Spoke B is Change Streams/CDC (fed from Spoke A, NOT from Cloud Run!), and place Private Service Connect / Entry at Spoke A `nodes[0]`, Primary Data Engine at `nodes[1]`, Vertex AI at `nodes[2]`, KMS/Secondary at `nodes[3]`.\n"
+        "- Keep strings concise so they fit neatly inside their boxes (headings <= 30 chars, caller tier titles <= 24 chars, short bullets <= 34 chars).\n"
+        "- Use ONLY valid icon keys from: " + ALLOWED_ICON_KEYS_LIST + " (use `dataflow` for Cloud Dataflow!).\n"
         "- Reference current Vertex AI models requested by the prompt (e.g., Gemini 4 Neon, Gemini 3.8 Flash, Gemini 2.5 Pro) — NEVER write retired 'Gemini 1.5 Pro' or 'Gemini 1.0'.\n"
         "- Zero emojis. Zero markdown `**bold**` asterisks. Zero internal/corp URLs.\n\n"
         "Output ONLY a single JSON object with EXACTLY these 6 top-level keys:\n"
         "{\n"
         '  "platformDiagram": {\n'
-        '    "controlPlaneTitle": "Google Cloud — Shared Governance & Control Plane (< XXms target)",\n'
+        '    "controlPlaneTitle": "Google Cloud — Shared Governance & Control Plane (exact target from Claim Ledger)",\n'
         '    "callerLabel": "Caller Tiers",\n'
         '    "targetsLabel": "Targets & APIs",\n'
         '    "controlCards": [\n'
-        '      {"title":"Stage 1 · Auth & OIDC","icon":"cloud_iam","bullets":["line 1 (<=42 chars)","line 2 (<=42 chars)"]}, ... 3 cards exact\n'
+        '      {"title":"Stage 1 · Auth & IAP","icon":"cloud_iam","bullets":["line 1 (<=42 chars)","line 2 (<=42 chars)"]}, ... 3 cards exact\n'
         '    ],\n'
         '    "callerTiers": [\n'
-        '      {"title":"Tier 1: ...","subtitle":"short metric/role"}, ... 3 tiers exact\n'
+        '      {"title":"Tier 1: ... (<=24 chars)","subtitle":"short metric/role"}, ... 3 tiers exact\n'
         '    ],\n'
         '    "identityStage": {"title":"Stage 1A · ...","icon":"cloud_iam","bullets":["b1","b2","b3","b4"]},\n'
         '    "ingressStage": {"title":"Stage 1B · ...","icon":"cloud_load_balancing","bullets":["b1","b2","b3","b4"]},\n'
-        '    "frontEnd": {"title":"Front End","subtitle":"Entry stack","tiles":[{"icon":"gemini","label":"Gemini"},{"icon":"adk","label":"ADK"},{"icon":"cloud_run","label":"Run"},{"icon":"spanner","label":"Data"}]},\n'
+        '    "frontEnd": {"title":"Front End","subtitle":"Entry stack","tiles":[{"icon":"gemini","label":"Gemini"},{"icon":"cloud_run","label":"Run v2"},{"icon":"spanner","label":"Spanner"},{"icon":"bigquery","label":"BQ Audit"}]},\n'
         '    "inboundGateway": {"header":"Ingress PEP","title":"Stage 2 · ...","icon":"agent_gateway","bullets":["b1","b2","b3","b4"]},\n'
         '    "coreRuntime": {"title":"Stage 3 · ...","service":"Cloud Run v2 (Private)","subtitle":"Orchestrator Name","icon":"cloud_run","bullets":["b1","b2","b3","b4","b5"]},\n'
         '    "outboundGateway": {"header":"Egress PEP","title":"Stage 4 · ...","icon":"agent_gateway","bullets":["b1","b2","b3","b4"]},\n'
         '    "targets": [{"title":"...","subtitle":"..."}, ... 4 targets exact],\n'
-        '    "hotStateCard": {"title":"...","title2":"...","icon":"memorystore","bullets":["b1","b2","b3","b4"]},\n'
+        '    "hotStateCard": {"title":"Tenant Context &","title2":"Policy Guard","icon":"cloud_iam","bullets":["ONLY services provisioned in Terraform — NEVER invent Memorystore!","b2","b3","b4"]},\n'
         '    "dataBankCard": {"title":"Primary Data & Isolation Tiers","tiers":["Row 1 (<=48 chars)","Row 2 (<=48 chars)","Row 3 (<=48 chars)"]},\n'
-        '    "finopsCard": {"title":"FinOps &","title2":"Bulkhead","icon":"finops","bullets":["b1","b2","b3","b4"]},\n'
+        '    "finopsCard": {"title":"FinOps &","title2":"Bulkhead","icon":"finops","bullets":["Match Section 6 cost & min_instance_count!","b2","b3","b4"]},\n'
         '    "observabilityBar": {"title":"Observability & Fail-Closed Breakers — HTTP 401 / 403 / 422 / 429","subtitle":"short pipe-separated summary <= 95 chars"},\n'
         '    "planeGuide": {\n'
         '      "title":"WHO RUNS WHAT — PLANE OWNERSHIP GUIDE",\n'
@@ -726,13 +783,14 @@ def diagram_architect_system_prompt() -> str:
         '    }\n'
         '  },\n'
         '  "cloudArchDiagram": {\n'
-        '    "caller": {"title":"Authenticated Client / Agent","subtitle":"OIDC / mTLS JWT"},\n'
-        '    "perimeterLabel":"Shared hubs (VPC Service Controls Organization Perimeter)",\n'
+        '    "caller": {"title":"Authenticated Client / Agent","subtitle":"HTTPS TLS 1.3 + IAP JWT"},\n'
+        '    "perimeterLabel":"Google Cloud Edge + VPC Service Controls Organization Perimeter",\n'
         '    "vpcLabel":"VPC • Zero-Trust Private Ingress & Private Service Connect",\n'
+        '    "edgeLabels":{"sec0":"WAF / L7 policy","sec1":"IAP JWT verify","sec2":"VPC-SC perimeter","spokeA":"CMEK & PITR","spokeB":"Streaming load"},\n'
         '    "routingHub": {\n'
         '      "title":"Routing Hub (Ingress & Policy Enforcement)",\n'
         '      "subtitle":"short description",\n'
-        '      "securityNodes":[{"title":"...","subtitle":"...","icon":"cloud_armor"}, ... 3 nodes],\n'
+        '      "securityNodes":[{"title":"...","subtitle":"...","icon":"cloud_armor"}, ... 3 nodes matching sec0..sec2],\n'
         '      "alb":{"title":"External Application LB","subtitle":"...","icon":"cloud_load_balancing"},\n'
         '      "runtime":{"title":"Cloud Run v2 API","subtitle":"...","icon":"cloud_run"}\n'
         '    },\n'
@@ -744,41 +802,42 @@ def diagram_architect_system_prompt() -> str:
         '    "spokeA": {\n'
         '      "outerLabel":"Isolation Boundary A • Primary Sync Path",\n'
         '      "title":"...","subtitle":"...",\n'
-        '      "nodes":[{"title":"...","subtitle":"...","icon":"..."}, ... 4 nodes: guard, compute/engine, llm/tool, datastore]\n'
+        '      "nodes":[{"title":"Private Service Connect","subtitle":"...","icon":"psc"}, {"title":"Primary Data Engine","subtitle":"...","icon":"spanner"}, {"title":"Vertex AI Model","subtitle":"...","icon":"gemini"}, {"title":"KMS CMEK / PITR","subtitle":"...","icon":"cloud_kms"}]\n'
         '    },\n'
         '    "spokeB": {\n'
-        '      "outerLabel":"Isolation Boundary B • Secondary / Mutation Path",\n'
+        '      "mode":"async",\n'
+        '      "outerLabel":"Isolation Boundary B • Async CDC & Compliance Analytics",\n'
         '      "title":"...","subtitle":"...",\n'
-        '      "nodes":[{"title":"...","subtitle":"...","icon":"..."}, ... 4 nodes]\n'
+        '      "nodes":[{"title":"Change Streams","subtitle":"...","icon":"spanner"}, {"title":"Cloud Dataflow","subtitle":"...","icon":"dataflow"}, {"title":"GCS Archive & DLQ","subtitle":"...","icon":"cloud_storage"}, {"title":"BigQuery Analytics","subtitle":"...","icon":"bigquery"}]\n'
         '    }\n'
         '  },\n'
         '  "sequenceDiagram": {\n'
         '    "actors": [\n'
-        '      {"box":"CALLER","label":"...","planes":[]},\n'
-        '      {"box":"HOP 1","label":"...","planes":["CONTROL"]},\n'
-        '      {"box":"HOP 2-3","label":"...","planes":["CONTROL","COMPUTE"]},\n'
-        '      {"box":"HOP 4","label":"...","planes":["CONTROL","COMPUTE"]},\n'
-        '      {"box":"HOP 5","label":"...","planes":["COMPUTE","DATA"]}\n'
+        '      {"box":"CALLER","label":"...","planes":[],"iconKey":"saas_globe"},\n'
+        '      {"box":"EDGE","label":"ALB + Armor + IAP","planes":["CONTROL"],"iconKey":"iap"},\n'
+        '      {"box":"API","label":"Cloud Run v2 API","planes":["CONTROL","COMPUTE"],"iconKey":"cloud_run"},\n'
+        '      {"box":"AI / KMS","label":"Vertex AI & KMS","planes":["COMPUTE"],"iconKey":"gemini"},\n'
+        '      {"box":"DATA","label":"Primary Data Store","planes":["DATA"],"iconKey":"spanner"}\n'
         '    ],\n'
-        '    "steps": [{"title":"action name WITHOUT leading 1. / 2. number","detail":"concise 6-11 word action detail","wire":"arrow label <=30 chars"}, ... 6 steps exact],\n'
-        '    "guardBadge":"short 2-word tag",\n'
+        '    "steps": [{"fromIdx":0,"toIdx":1,"kind":"request","title":"action name WITHOUT leading 1. number","detail":"concise 6-10 word detail","wire":"arrow label <=28 chars"}, ... 6 steps exact with ACCURATE fromIdx/toIdx!],\n'
+        '    "guardBadge":"short 2-3 word tag",\n'
         '    "highlightBox":{"title":"...","subtitle":"...","metric":"..."},\n'
         '    "otelBullets":["bullet 1 <=28 chars","bullet 2 <=28 chars"],\n'
-        '    "stageSummaries":[{"title":"1. ...","headline":"...","detail":"..."}, ... 3 stages],\n'
+        '    "stageSummaries":[{"title":"1. ...","headline":"Exact latency matching Section 6!","detail":"..."}, ... 3 stages],\n'
         '    "legendStrip":{"control":"...","compute":"...","data":"..."}\n'
         '  },\n'
         '  "securityDiagram": {\n'
         '    "layers":[{"layer":"L1 · ...","name":"...","detail":"...","iconKey":"..."}, ... 4 layers],\n'
-        '    "threats":[{"id":"T-01","vector":"...","control":"..."}, ... 4 threats],\n'
+        '    "threats":[{"id":"T-01","layerIndex":0,"vector":"Threat stopped by L1","control":"..."}, ... 4 threats aligned 1:1 with layers 0..3!],\n'
         '    "breakers":[{"code":"HTTP 401","trigger":"..."}, {"code":"HTTP 403","trigger":"..."}, {"code":"HTTP 422","trigger":"..."}, {"code":"HTTP 429","trigger":"..."}]\n'
         '  },\n'
         '  "wireDiagram": {\n'
-        '    "hops":[{"hop":"HOP 1 · ...","name":"concise envelope name","transport":"HTTPS / TLS 1.3","iconKey":"...","added":["+ REQUIRED field/header 1","+ REQUIRED field/header 2","+ REQUIRED field/header 3 (NEVER empty [])"],"stripped":["- header1","- field2"],"payload":"3-4 short \\n-escaped lines of HTTP/SQL/GQL using single quotes (no unescaped quotes!)"}, ... 4 hops EXACT, EVERY hop MUST have 2-3 non-empty `added` bullets]\n'
+        '    "hops":[{"hop":"HOP 1 · ...","name":"concise envelope name","transport":"HTTPS / TLS 1.3","iconKey":"...","added":["+ REQUIRED field/header 1","+ REQUIRED field/header 2","+ REQUIRED field/header 3"],"stripped":["- header1","- field2"],"payload":"3-4 short \\n-escaped lines using exact blog schema (ZERO acme, ZERO PolicyGraph, valid bi-temporal predicates!)"}, ... 4 hops EXACT]\n'
         '  },\n'
         '  "asyncDiagram": {\n'
-        '    "stages":[{"stage":"1. ...","service":"...","cadence":"Continuous","iconKey":"...","slo":"Stage 1 · ...","bullets":["b1","b2","b3","b4"]}, ... 4 stages],\n'
-        '    "dlqNote":"1-2 sentences on dead-letter queue, backoff & audit reconciliation",\n'
-        '    "feedbackLabel":"short cyclic return arrow label"\n'
+        '    "stages":[{"stage":"1. ...","service":"...","cadence":"Continuous","iconKey":"...","slo":"Stage 1 · ...","bullets":["b1","b2","b3","b4"]}, ... 4 stages (use iconKey=dataflow for Dataflow!)],\n'
+        '    "dlqNote":"1-2 sentences on GCS dead-letter bucket, backoff & audit reconciliation",\n'
+        '    "feedbackLabel":"Drift Alert & Ops Reconciliation"\n'
         '  }\n'
         "}\n"
     )

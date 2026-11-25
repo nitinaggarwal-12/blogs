@@ -64,66 +64,85 @@ def _sample_blueprint() -> dict:
             "Enforce VPC Service Controls and Private Service Connect so tools never traverse the public internet.",
             "Apply Cloud DLP egress redaction before streaming responses back to callers.",
         ],
-        "architectureZones": [
-            {
-                "id": "z1",
-                "title": "Edge & Ingress",
-                "subtitle": "External HTTPS & WAF",
-                "components": [
-                    {"id": "c1", "label": "Global Cloud LB", "sub": "TLS 1.3 + Cloud Armor", "role": "WAF & rate limits"},
-                    {"id": "c2", "label": "Identity-Aware Proxy", "sub": "OIDC / ES256 JWT", "role": "Verify user identity"},
-                ],
+        "platformDiagram": {
+            "governanceBanner": "Google Cloud — Zero-Trust MCP Governance & Control Plane",
+            "controlCards": [
+                {"title": "Auth & IAP Broker", "iconKey": "iap", "bullets": ["Verifies ES256 IAP JWT", "Enforces tenant claims"]},
+                {"title": "Cloud Armor WAF", "iconKey": "cloud_armor", "bullets": ["OWASP filtering", "Per-tenant rate limit"]},
+                {"title": "Cloud DLP Egress", "iconKey": "cloud_dlp", "bullets": ["Redacts PII/secrets", "Fail-closed inspect"]},
+            ],
+            "ingressCardA": {"title": "Cloud LB & WAF", "iconKey": "load_balancing", "bullets": ["TLS 1.3 ingress", "Cloud Armor policy"]},
+            "ingressCardB": {"title": "Identity-Aware Proxy", "iconKey": "iap", "bullets": ["Verify ES256 JWT", "Bind tenant_id"]},
+            "frontendTitle": "MCP Clients",
+            "frontendTiles": [{"label": "Gemini", "iconKey": "gemini"}, {"label": "ADK", "iconKey": "adk"}, {"label": "Run", "iconKey": "cloud_run"}, {"label": "IAM", "iconKey": "cloud_iam"}],
+            "gatewayIn": {"title": "MCP Ingress PEP", "iconKey": "apigee", "bullets": ["Validate JWT aud/iss", "Check RBAC scope"]},
+            "runtimeCard": {"title": "Cloud Run MCP Proxy", "iconKey": "cloud_run", "bullets": ["gVisor sandbox", "Stateless workers"]},
+            "gatewayOut": {"title": "Cloud DLP Egress PEP", "iconKey": "cloud_dlp", "bullets": ["Inspect outbound body", "Redact sensitive keys"]},
+            "hotStateCard": {"title": "Tenant Context Guard", "iconKey": "cloud_iam", "bullets": ["Zero cross-tenant cache", "Scoped policy check"]},
+            "dataStoreTitle": "Durable Audit & State Stores",
+            "dataStores": [
+                {"title": "BigQuery Audit Table", "sub": "Row-Level Security", "iconKey": "bigquery"},
+                {"title": "Cloud Storage Artifacts", "sub": "CMEK + Versioning", "iconKey": "cloud_storage"},
+            ],
+            "bulkheadCard": {"title": "Rate & Quota Guard", "iconKey": "cloud_monitoring", "bullets": ["Per-tenant RPM cap", "Token budget check"]},
+            "targets": [
+                {"title": "BigQuery Analytics", "sub": "Private Service Connect", "iconKey": "bigquery"},
+                {"title": "Cloud KMS CMEK", "sub": "Revocable HSM key", "iconKey": "cloud_kms"},
+            ],
+            "observabilityBar": "Cloud Logging & Cloud Monitoring — Immutable audit trail · HTTP 401/403/429 fail-closed",
+        },
+        "cloudArchDiagram": {
+            "userLabel": "Enterprise AI Agent",
+            "edgeServices": [
+                {"name": "Cloud Armor", "iconKey": "cloud_armor"},
+                {"name": "Identity-Aware Proxy", "iconKey": "iap"},
+                {"name": "Cloud Load Balancing", "iconKey": "load_balancing"},
+            ],
+            "hubTitle": "Zero-Trust MCP Hub",
+            "hubServices": [
+                {"name": "Cloud Run MCP Proxy", "iconKey": "cloud_run"},
+                {"name": "Cloud DLP Redactor", "iconKey": "cloud_dlp"},
+            ],
+            "spokeATitle": "Sync Tool & Policy Spoke",
+            "spokeAServices": [
+                {"name": "Cloud IAM Policy", "iconKey": "cloud_iam"},
+                {"name": "Cloud Storage", "iconKey": "cloud_storage"},
+            ],
+            "spokeBTitle": "Async Audit & Governance Spoke",
+            "spokeBMode": "async",
+            "spokeBServices": [
+                {"name": "Pub/Sub Audit Bus", "iconKey": "pubsub"},
+                {"name": "BigQuery Audit", "iconKey": "bigquery"},
+            ],
+            "rightRailServices": [
+                {"name": "Cloud KMS", "iconKey": "cloud_kms"},
+                {"name": "Cloud Logging", "iconKey": "cloud_logging"},
+                {"name": "Cloud Monitoring", "iconKey": "cloud_monitoring"},
+            ],
+            "edgeLabels": {
+                "edgeToHub": "Verified IAP JWT",
+                "hubToSpokeA": "Scoped tool call",
+                "hubToSpokeB": "Async audit event",
+                "spokeAToSpokeB": "Audit stream",
             },
-            {
-                "id": "z2",
-                "title": "Control & Security",
-                "subtitle": "Policy & Auth Plane",
-                "components": [
-                    {"id": "c3", "label": "IAM Policy Engine", "sub": "Fail-closed RBAC", "role": "Authorize tool scope"},
-                    {"id": "c4", "label": "Cloud KMS CMEK", "sub": "Customer keys", "role": "Revocable encryption"},
-                ],
-            },
-            {
-                "id": "z3",
-                "title": "Compute & Runtime",
-                "subtitle": "Serverless MCP Pool",
-                "components": [
-                    {"id": "c5", "label": "Cloud Run MCP Proxy", "sub": "gVisor sandbox", "role": "Execute stateless proxy"},
-                    {"id": "c6", "label": "Cloud DLP Redactor", "sub": "Sensitive Data Prot.", "role": "Scrub egress tokens"},
-                ],
-            },
-            {
-                "id": "z4",
-                "title": "Data & Telemetry",
-                "subtitle": "Durable Governance",
-                "components": [
-                    {"id": "c7", "label": "BigQuery Audit Table", "sub": "Row-Level Security", "role": "Immutable audit log"},
-                    {"id": "c8", "label": "Cloud Storage State", "sub": "CMEK + Versioning", "role": "Durable artifact store"},
-                ],
-            },
-        ],
-        "architectureEdges": [
-            {"from": "c1", "to": "c2", "label": "HTTPS / TLS 1.3", "dashed": False},
-            {"from": "c2", "to": "c3", "label": "Signed JWT", "dashed": False},
-            {"from": "c3", "to": "c5", "label": "Scoped Call", "dashed": False},
-            {"from": "c5", "to": "c6", "label": "Inspect Egress", "dashed": False},
-            {"from": "c6", "to": "c7", "label": "Write Audit Log", "dashed": True},
-            {"from": "c4", "to": "c8", "label": "CMEK Key Check", "dashed": True},
-        ],
-        "sequenceActors": [
-            {"id": "a1", "label": "Caller / Agent", "sub": "OIDC Token"},
-            {"id": "a2", "label": "Cloud LB & IAP", "sub": "Edge Verify"},
-            {"id": "a3", "label": "Policy Engine", "sub": "RBAC Check"},
-            {"id": "a4", "label": "MCP Gateway", "sub": "Cloud Run"},
-            {"id": "a5", "label": "BigQuery Audit", "sub": "RLS Sink"},
-        ],
-        "sequenceSteps": [
-            {"num": 1, "from": "a1", "to": "a2", "label": "POST /mcp/call with bearer JWT", "kind": "request"},
-            {"num": 2, "from": "a2", "to": "a3", "label": "Verify JWT signature & tenant binding", "kind": "guard"},
-            {"num": 3, "from": "a3", "to": "a4", "label": "Dispatch authorized tool request", "kind": "request"},
-            {"num": 4, "from": "a4", "to": "a5", "label": "Append signed audit event record", "kind": "guard"},
-            {"num": 5, "from": "a4", "to": "a1", "label": "HTTP 200 redacted response payload", "kind": "response"},
-        ],
+        },
+        "sequenceDiagram": {
+            "actors": [
+                {"title": "Caller / Agent", "sub": "OIDC Token", "iconKey": "client_user"},
+                {"title": "Cloud LB & IAP", "sub": "Edge Verify", "iconKey": "iap"},
+                {"title": "MCP Gateway", "sub": "Cloud Run v2", "iconKey": "cloud_run"},
+                {"title": "Cloud DLP", "sub": "Egress Guard", "iconKey": "cloud_dlp"},
+                {"title": "BigQuery Audit", "sub": "RLS Sink", "iconKey": "bigquery"},
+            ],
+            "steps": [
+                {"fromIdx": 0, "toIdx": 1, "title": "POST /mcp/call with bearer JWT", "detail": "HTTPS TLS 1.3 ingress request", "wire": "HTTPS TLS 1.3", "kind": "request"},
+                {"fromIdx": 1, "toIdx": 2, "title": "Forward IAP-verified assertion", "detail": "Attaches ES256 signed JWT", "wire": "X-Goog-IAP-JWT-Assertion", "kind": "guard"},
+                {"fromIdx": 2, "toIdx": 3, "title": "Inspect tool output via Cloud DLP", "detail": "Scans for PII & credentials", "wire": "gRPC Private", "kind": "guard"},
+                {"fromIdx": 3, "toIdx": 2, "title": "Return redacted response payload", "detail": "Sensitive fields masked", "wire": "gRPC 200 OK", "kind": "response"},
+                {"fromIdx": 2, "toIdx": 4, "title": "Append signed audit event record", "detail": "Tenant-scoped audit row", "wire": "Storage Write API", "kind": "request"},
+                {"fromIdx": 2, "toIdx": 0, "title": "HTTP 200 redacted response payload", "detail": "Verified caller receives answer", "wire": "HTTPS 200 OK", "kind": "response"},
+            ],
+        },
         "sections": [
             {
                 "heading": "Executive Summary & Architectural Challenge",
@@ -757,7 +776,9 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
             sanitize_fn=cb1._sanitize_for_public_output,
             strip_emoji_fn=cb1.strip_inline_md,
         )
-        self.assertEqual(len(applied), 1)
+        self.assertGreaterEqual(len(applied), 2)
+        self.assertTrue(any("Verified replacement" in x for x in applied))
+        self.assertTrue(any("schema.sql" in x for x in applied))
         # Meta-changelog summary must NOT overwrite reader-facing BLUF
         self.assertTrue(bp["summary"].startswith("Design a strongly consistent"))
         self.assertIn("ARRAY<FLOAT32>(vector_length=>768)", bp["sections"][0]["paragraphs"][0])
@@ -1068,6 +1089,128 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
             self.assertEqual(calls[3][2], "doc_xyz789")
         finally:
             mod_ref._drive_multipart_upload = orig_up
+
+
+    def test_15_permanent_forensic_anti_regression_guards(self) -> None:
+        """Fail-closed static & runtime guards preventing recurrence of every audited P0/P1/P2 defect."""
+        # 1. Static source-code purge verification across compilers, pipeline, engine, HTML & JS
+        compiler_src = (ROOT_DIR / "scripts" / "create_blog1_canonical_compiler.py").read_text(encoding="utf-8")
+        diagrams_src = (ROOT_DIR / "scripts" / "create_blog1_diagrams_v2.py").read_text(encoding="utf-8")
+        pipeline_src = (ROOT_DIR / "scripts" / "create_blog1_pipeline_v2.py").read_text(encoding="utf-8")
+        engine_src = (ROOT_DIR / "scripts" / "create_blog1_engine.py").read_text(encoding="utf-8")
+        html_src = (ROOT_DIR / "templates" / "create_blog1_page.html").read_text(encoding="utf-8")
+        js_src = (ROOT_DIR / "js" / "create_blog1.js").read_text(encoding="utf-8")
+
+        self.assertNotIn('tile.get("icon", "")[:4].upper()', compiler_src)
+        self.assertNotIn("_node_by_plane", diagrams_src)
+        for dead_edge in ("Sanitize & screen", "User authentication", "Scoped RAG / SQL", "Atomic commit / CDC"):
+            self.assertNotIn(dead_edge, diagrams_src, f"Hardcoded WS1 edge label leaked back: {dead_edge}")
+        for dead_key in ("architectureZones", "sequenceSteps", "compile_architecture_drawio_and_svg"):
+            self.assertNotIn(dead_key, engine_src, f"Legacy v1 dead code leaked back: {dead_key}")
+            self.assertNotIn(dead_key, pipeline_src, f"Legacy v1 dead code leaked back: {dead_key}")
+        self.assertNotIn(".splitlines()[:45]", engine_src, "Silent 45-line DOCX code truncation leaked back")
+        self.assertNotIn("[:3600]", pipeline_src, "Silent 3600-char code truncation leaked back")
+        self.assertNotIn("Diagrams (5)", html_src)
+        self.assertNotIn("notesSlide", js_src)
+        self.assertNotIn("Slide 7", js_src)
+        self.assertNotIn("Vector PPTX", js_src)
+        self.assertNotIn("Edit in Draw.io (.pptx link)", engine_src)
+
+        # 2. Native DrawingML <a:custGeom> icons present on ALL 6 diagram slides (3..8), zero GOO/GCP/SAA badges
+        bp = _sample_blueprint()
+        bp["slides"] = list(bp["slides"]) + [
+            {"number": n, "kicker": f"SLIDE {n}", "title": f"Slide {n}", "subtitle": f"Sub {n}",
+             "bullets": [f"Bullet {n}.1", f"Bullet {n}.2"], "speakerNotes": f"Narration {n}."}
+            for n in range(10, 13)
+        ]
+        bp["sections"][0]["paragraphs"].append("Inline `CREATE PROPERTY GRAPH` and **bold** formatting check.")
+        bp["sections"][0]["codeBlocks"] = [
+            {"language": "yaml", "caption": "main.tf", "code": 'resource "google_storage_bucket" "b" {\n  name = "x"\n}'},
+            {"language": "python", "caption": "app.py", "code": "def broken_syntax(:\n    pass"},
+        ]
+        bp["codeStarter"]["schemaSql"] = "CREATE PROPERTY GRAPH AgentMemoryGraph NODE TABLES (Entities);"
+        bp["slides"][8]["codeSnippet"] = "SELECT * FROM GRAPH_TABLE(PolicyGraph MATCH (a) RETURN a);"
+        slug = "anti-regression-v3"
+        manifest = cb1.compile_and_save_blog(
+            blueprint=bp,
+            slug=slug,
+            model_used="gemini-4-neon",
+            auth_mode="unit_test_fixture",
+            actor_email="secret-operator@google.com",
+            enable_tts=False,
+            enable_judge=False,
+        )
+        self.assertTrue(manifest["quality"]["deterministic"]["allPassed"], manifest["quality"]["deterministic"])
+
+        blog_dir = Path(self._tmpdir.name) / slug
+        # Single source of truth fixed YAML -> HCL, fixed broken inline Python, and replaced PolicyGraph on Slide 9
+        md_txt = (blog_dir / "blog.md").read_text(encoding="utf-8")
+        self.assertIn("```hcl", md_txt)
+        self.assertNotIn("def broken_syntax(:", md_txt)
+        self.assertNotIn("PolicyGraph", (blog_dir / "slides" / "slide_09.svg").read_text(encoding="utf-8"))
+
+        # PPTX Slides 3..8 all have native <a:custGeom> icon shapes, Slide 2 has 0 raw (EXAMPLE_TARGET), Slide 10 says Slide 10
+        with zipfile.ZipFile(blog_dir / "slides" / f"{slug}-deck.pptx", "r") as zf:
+            s2 = zf.read("ppt/slides/slide2.xml").decode("utf-8")
+            self.assertNotIn("EXAMPLE_TARGET", s2)
+            s10 = zf.read("ppt/slides/slide10.xml").decode("utf-8")
+            self.assertIn("Slide 10", s10)
+            self.assertNotIn("Slide 7", s10)
+            for di in (3, 4, 5, 6, 7, 8):
+                sx = zf.read(f"ppt/slides/slide{di}.xml").decode("utf-8")
+                self.assertGreaterEqual(sx.count('name="ico_'), 3, f"Slide {di} missing native DrawingML icons")
+                self.assertIn("<a:custGeom>", sx)
+                for bad_b in (">GOO<", ">GCP<", ">SAA<"):
+                    self.assertNotIn(bad_b, sx)
+
+        # DOCX has all 6 figures (incl. Figure 2), zero literal prose backticks, and full starter manifest
+        with zipfile.ZipFile(blog_dir / "docs" / f"{slug}-whitepaper.docx", "r") as zf:
+            dxml = zf.read("word/document.xml").decode("utf-8")
+            for fi in range(1, 7):
+                self.assertIn(f"Figure {fi}", dxml)
+            self.assertNotIn("`CREATE PROPERTY GRAPH`", dxml)
+            self.assertIn("Dockerfile", dxml)
+
+        # Starter zip includes Dockerfile + requirements.txt + schema.sql listed in README.md
+        with zipfile.ZipFile(blog_dir / f"{slug}-starter.zip", "r") as zf:
+            snames = set(zf.namelist())
+            self.assertIn(f"{slug}-starter/Dockerfile", snames)
+            self.assertIn(f"{slug}-starter/requirements.txt", snames)
+            self.assertIn(f"{slug}-starter/schema.sql", snames)
+            readme = zf.read(f"{slug}-starter/README.md").decode("utf-8")
+            self.assertIn("schema.sql", readme)
+            self.assertIn("Dockerfile", readme)
+
+        # Public bundle.zip redacts actorEmail (@google.com never leaks into downloadable archive)
+        with zipfile.ZipFile(blog_dir / f"{slug}-bundle.zip", "r") as zf:
+            b_manifest = zf.read(f"{slug}/manifest.json").decode("utf-8")
+            self.assertNotIn("@google.com", b_manifest)
+            self.assertNotIn("secret-operator", b_manifest)
+
+        # 3. Upgraded D-11 catches SH-BUG-01, TF-FGAC-01, PY-AUTH-01, PY-ENV-01
+        bad_starter = {
+            "schema.sql": "CREATE ROLE memory_api_role;",
+            "main.tf": 'resource "google_spanner_database_iam_member" "x" { role = "roles/spanner.databaseUser" }\nresource "google_cloud_run_v2_service" "s" { template { containers { env { name = "ONLY_ONE" } } } }',
+            "variables.tf": "",
+            "verify.sh": "gcloud run services describe api --format=\"value(spec.template.metadata.annotations['run.googleapis.com/ingress'])\"",
+            "app.py": 'import os\nX = os.environ["MISSING_VAR"]\ndef f(req):\n    hdr = req.headers.get("X-Goog-IAP-JWT-Assertion")\n    return hdr\n',
+        }
+        f_ids = {f["id"] for f in cb1._pipe_v2.scan_terraform_security(bad_starter)}
+        self.assertIn("SH-BUG-01", f_ids)
+        self.assertIn("TF-FGAC-01", f_ids)
+        self.assertIn("PY-AUTH-01", f_ids)
+        self.assertIn("PY-ENV-01", f_ids)
+
+        # 4. Auto-revision NEVER emits unverified appliedFixes when nothing mutated
+        bp_noop = {"summary": "Unchanged", "sections": [], "slides": [], "codeStarter": {}}
+        noop_applied = cb1._pipe_v2.apply_revision_patch(
+            bp_noop,
+            {"appliedFixes": ["Claimed fix that never happened"], "textReplacements": [{"old": "DOES_NOT_EXIST", "new": "X"}]},
+            allowed_tags=cb1.ALLOWED_PROVENANCE_TAGS,
+            sanitize_fn=cb1._sanitize_for_public_output,
+            strip_emoji_fn=cb1.strip_inline_md,
+        )
+        self.assertEqual(noop_applied, [])
 
 
 if __name__ == "__main__":

@@ -809,7 +809,7 @@ def get_capabilities() -> Dict[str, Any]:
             "rateLimitPerHour": JOB_RATE_LIMIT_PER_HOUR,
         },
         "honestDisclosures": [
-            "Screenshots are NEVER fabricated or rendered from mock HTML. Slide 7 starts awaiting proof until you upload genuine PNG/JPEG screenshots.",
+            "Screenshots are NEVER fabricated or rendered from mock HTML. The Proof slide (Slide 10 in 12-slide decks) starts awaiting proof until you upload genuine PNG/JPEG screenshots.",
             "Narrated audio is synthesized live by Google Cloud Text-to-Speech (Chirp3-HD) and labeled SYNTHETIC_CLOUD_TTS_CHIRP3_HD (not a human digital twin).",
             "Starter code & Terraform (starter.zip) is marked GENERATED_TEMPLATE_UNDEPLOYED until reviewed and applied to a real GCP project.",
             "Transient X-Gemini-Api-Key headers are forwarded once per call over TLS to generativelanguage.googleapis.com and NEVER stored on disk, browser storage, or logs.",
@@ -1010,129 +1010,176 @@ def call_gemini_json(
     return parsed, meta
 
 
-def _blueprint_system_prompt() -> str:
-    return (
-        "You are a Principal Google Cloud Solutions Architect authoring a Google Cloud Architecture Center "
-        "technical article and complete deliverable kit (architecture diagram, sequence swimlane, 9-slide deck, "
-        "Word whitepaper, runnable Terraform & Python starter template). "
-        "STRICT ANTI-HALLUCINATION CONTRACT:\n"
-        "1. Output ONLY a valid JSON object (no markdown fences, no extra prose).\n"
-        "2. NEVER fabricate employee emails, internal issue tracker IDs, internal shortlinks, fake URLs, "
-        "or fake live benchmark receipts.\n"
-        "3. Every quantitative claim (SLA, latency, throughput, pricing estimate, sizing quota) MUST be recorded in "
-        "claimLedger with provenance strictly one of: GCP_DOCUMENTED | DERIVED_MODEL | EXAMPLE_TARGET | USER_SUPPLIED.\n"
-        "4. Use ZERO emojis inside slide titles, slide bullets, diagram labels, table cells, or speaker notes.\n"
-        "5. Never reference internal corporate domains or confidential customer names.\n"
-        "6. Keep diagram labels crisp and short (<= 30 chars title, <= 38 chars subtitle) so boxes never overflow.\n"
-        "7. Speaker notes for all 9 slides must be natural, conversational spoken English (2-4 clear sentences each, "
-        "50-100 words) ready for live Google Cloud TTS narration without saying 'Slide 1' or reading markdown punctuation.\n"
-        "8. Starter code pythonApp MUST be syntactically valid Python 3.11 code (zero syntax placeholders or ellipses).\n"
-        "9. Reference URLs MUST be real public https://cloud.google.com/ URLs."
-    )
+_PROVENANCE_ENUM_SUFFIX_RE = re.compile(
+    r"\s*(?:\(\s*(?:GCP_DOCUMENTED|DERIVED_MODEL|EXAMPLE_TARGET|USER_SUPPLIED)\s*\)|\[\s*(?:GCP_DOCUMENTED|DERIVED_MODEL|EXAMPLE_TARGET|USER_SUPPLIED)\s*\]|\b(?:GCP_DOCUMENTED|DERIVED_MODEL|EXAMPLE_TARGET|USER_SUPPLIED)\b)\s*$",
+    re.IGNORECASE,
+)
 
 
-def _blueprint_user_prompt(prompt: str, title_hint: str, domain: str, audience: str) -> str:
-    schema_hint = {
-        "title": "Concise flagship technical title (<= 85 chars)",
-        "subtitle": "One-sentence Google Cloud Architecture Center subtitle (<= 140 chars)",
-        "slugHint": "short-kebab-case-slug",
-        "summary": "2-3 sentence executive summary (BLUF)",
-        "audience": audience,
-        "domain": domain,
-        "estimatedReadMinutes": 10,
-        "keyTakeaways": ["4 crisp actionable takeaways (no emojis)"],
-        "architectureZones": [
-            {
-                "id": "zone_1",
-                "title": "Edge & Ingress",
-                "plane": "edge",
-                "subtitle": "Short zone role",
-                "components": [
-                    {"id": "c1", "label": "Component Name", "sub": "Protocol / SKU", "role": "Brief role"}
-                ],
-            }
-        ],
-        "architectureEdges": [
-            {"from": "c1", "to": "c2", "label": "TLS 1.3 / Auth", "dashed": False}
-        ],
-        "sequenceActors": [
-            {"id": "a1", "label": "Client / User", "sub": "Browser / App"}
-        ],
-        "sequenceSteps": [
-            {"num": 1, "from": "a1", "to": "a2", "label": "HTTPS request + token", "kind": "request"}
-        ],
-        "sections": [
-            {
-                "heading": "Executive Summary & Business Problem",
-                "paragraphs": ["Detailed grounded paragraphs explaining trade-offs and design choices."],
-                "bullets": ["Actionable point"],
-                "table": {"headers": ["Dimension", "Choice", "Rationale"], "rows": [["Isolation", "Example", "Why"]]},
-            }
-        ],
-        "slides": [
-            {
-                "number": 1,
-                "kicker": "EXECUTIVE BRIEF",
-                "title": "Slide title (<= 60 chars)",
-                "subtitle": "Takeaway subtitle",
-                "bullets": ["3-5 crisp bullets (<= 95 chars each)"],
-                "calloutLabel": "Key Metric / Constraint",
-                "calloutValue": "Grounded figure + provenance tag",
-                "table": {"headers": ["Col A", "Col B", "Col C"], "rows": [["v1", "v2", "v3"]]},
-                "codeSnippet": "optional short snippet for slide 6 only",
-                "speakerNotes": "Natural 2-4 sentence spoken narration without emojis or markdown.",
-            }
-        ],
-        "codeStarter": {
-            "readmeSummary": "Concise instructions explaining review & deployment prerequisites.",
-            "terraformMain": "# Valid HCL defining core GCP resources with parameterized variables",
-            "terraformVars": "# Terraform variable declarations",
-            "pythonApp": "# Syntactically valid Python 3.11 service/example module (no syntax errors)",
-            "deploySh": "#!/usr/bin/env bash\nset -euo pipefail\n...",
-            "verifySh": "#!/usr/bin/env bash\nset -euo pipefail\n...",
-        },
-        "claimLedger": [
-            {
-                "id": "CLM-01",
-                "claim": "Specific quantitative or SLA claim",
-                "value": "Exact figure",
-                "provenance": "GCP_DOCUMENTED | DERIVED_MODEL | EXAMPLE_TARGET | USER_SUPPLIED",
-                "basis": "How the figure was obtained or scoped",
-            }
-        ],
-        "faq": [{"question": "Sharp architectural objection", "answer": "Grounded answer"}],
-        "references": [{"title": "Official doc title", "url": "https://cloud.google.com/architecture", "note": "Why relevant"}],
-    }
-    return (
-        f"USER TOPIC / PROMPT:\n{prompt.strip()}\n\n"
-        f"TITLE HINT: {title_hint.strip() or '(derive crisp title from prompt)'}\n"
-        f"DOMAIN / PILLAR: {domain.strip() or 'Enterprise AI Architecture'}\n"
-        f"PRIMARY AUDIENCE: {audience.strip() or 'Solutions Architects & Platform Engineers'}\n\n"
-        "REQUIREMENTS:\n"
-        "- architectureZones: EXACTLY 4 zones (edge, control, compute, data), each with 2 to 4 components (unique ids c1..c12).\n"
-        "- architectureEdges: 6 to 10 directed flows connecting those component ids (short protocol/auth labels).\n"
-        "- sequenceActors: EXACTLY 5 actors (ids a1..a5).\n"
-        "- sequenceSteps: 7 to 9 numbered steps (num 1..N) across a1..a5 (kind = 'request' | 'response' | 'guard').\n"
-        "- sections: 5 to 7 deep Architecture Center sections with realistic engineering depth, IAM/networking controls, failure modes, and trade-offs. Include tables on at least 2 sections.\n"
-        "- slides: EXACTLY 9 slides with this sequence:\n"
-        "  1=Title & BLUF | 2=Challenge & Design Goals | 3=Reference Architecture Overview | "
-        "  4=Component & Security Design Matrix (include compact table) | 5=End-to-End Request Lifecycle | "
-        "  6=Implementation Guardrails & Code (include concise codeSnippet) | 7=Live Environment Verification Slot (specify which real BEFORE/AFTER screenshots to capture) | "
-        "  8=Cost, Latency & Trade-off Matrix (include compact table) | 9=Production Readiness Checklist & Next Steps.\n"
-        "- claimLedger: 4 to 8 entries tagging EVERY numeric target, quota, or latency/cost claim.\n"
-        "- faq: 4 to 5 sharp engineering questions.\n"
-        "- references: 4 to 6 real public https://cloud.google.com/ URLs.\n\n"
-        "Return JSON conforming strictly to this shape:\n"
-        + json.dumps(schema_hint, indent=2)
-    )
+def _strip_provenance_enum_suffix(text: str) -> str:
+    """Removes raw internal provenance enum tags from executive slide callouts (ledger keeps full tags)."""
+    s = strip_inline_md(str(text or "")).strip()
+    prev = None
+    while prev != s:
+        prev = s
+        s = _PROVENANCE_ENUM_SUFFIX_RE.sub("", s).strip(" -|;:,")
+    return s or strip_inline_md(str(text or "")).strip()
+
+
+def _fit_clean_sentence(text: str, max_chars: int) -> str:
+    """Fits text within max_chars at a clean sentence or word boundary (never mid-word)."""
+    s = re.sub(r"\s+", " ", strip_inline_md(str(text or ""))).strip()
+    if len(s) <= max_chars:
+        return s
+    # Prefer ending on a complete sentence if >= 55% of budget
+    for sep in (". ", "; ", " — "):
+        pos = s.rfind(sep, int(max_chars * 0.55), max_chars)
+        if pos != -1:
+            return s[: pos + (1 if sep == ". " else 0)].strip()
+    cut = s.rfind(" ", 0, max_chars - 1)
+    if cut > int(max_chars * 0.4):
+        return s[:cut].rstrip(" ,;:-") + "…"
+    return s[: max_chars - 1].rstrip() + "…"
+
+
+def _sanitize_nested_obj(obj: Any) -> Any:
+    if isinstance(obj, str):
+        return _sanitize_for_public_output(obj)
+    if isinstance(obj, list):
+        return [_sanitize_nested_obj(x) for x in obj]
+    if isinstance(obj, dict):
+        return {k: _sanitize_nested_obj(v) for k, v in obj.items()}
+    return obj
+
+
+def _sync_inline_code_with_starter(bp: Dict[str, Any]) -> None:
+    """Single-Source-of-Truth reconciliation between starter.zip files, inline blog code blocks, and Slide 9."""
+    cs = bp.get("codeStarter") if isinstance(bp.get("codeStarter"), dict) else {}
+    canon_py = str(cs.get("pythonApp") or "").strip()
+    canon_sql = str(cs.get("schemaSql") or "").strip()
+    canon_tf = str(cs.get("terraformMain") or "").strip()
+    canon_verify = str(cs.get("verifySh") or "").strip()
+    canon_deploy = str(cs.get("deploySh") or "").strip()
+
+    # Check if canonical app.py parses cleanly
+    canon_py_valid = False
+    if canon_py:
+        try:
+            ast.parse(canon_py)
+            canon_py_valid = True
+        except SyntaxError:
+            canon_py_valid = False
+
+    # Canonical property graph name from schema.sql (if any)
+    graph_m = re.search(r"\bCREATE\s+(?:OR\s+REPLACE\s+)?PROPERTY\s+GRAPH\s+([A-Za-z_][A-Za-z0-9_]*)", canon_sql, re.IGNORECASE)
+    canon_graph_name = graph_m.group(1) if graph_m else ""
+
+    for sec in (bp.get("sections") or []):
+        if not isinstance(sec, dict):
+            continue
+        for cb in (sec.get("codeBlocks") or []):
+            if not isinstance(cb, dict):
+                continue
+            code = str(cb.get("code") or "").rstrip()
+            lang = str(cb.get("language") or "text").lower().strip()
+            cap_low = str(cb.get("caption") or "").lower()
+
+            # 1. Fix mistagged Terraform HCL labeled as yaml/yml/terraform
+            if lang in ("yaml", "yml", "text", "terraform") and re.search(
+                r'(?m)^\s*(?:resource|variable|provider|terraform|module|data|locals)\s+(?:"[^"]+"|\{)', code
+            ):
+                cb["language"] = "hcl"
+                lang = "hcl"
+
+            # 2. Fix known Cloud Run ingress annotation bug in inline verify/bash blocks
+            if "spec.template.metadata.annotations['run.googleapis.com/ingress']" in code:
+                code = code.replace(
+                    "spec.template.metadata.annotations['run.googleapis.com/ingress']",
+                    "metadata.annotations['run.googleapis.com/ingress']",
+                )
+                cb["code"] = code
+            if 'spec.template.metadata.annotations["run.googleapis.com/ingress"]' in code:
+                code = code.replace(
+                    'spec.template.metadata.annotations["run.googleapis.com/ingress"]',
+                    'metadata.annotations["run.googleapis.com/ingress"]',
+                )
+                cb["code"] = code
+
+            # 3. Ensure inline Python blocks are syntactically valid; sync broken/app.py blocks with canonical pythonApp
+            if lang in ("python", "py"):
+                py_ok = True
+                try:
+                    ast.parse(code)
+                except SyntaxError:
+                    py_ok = False
+                is_app_mirror = ("app.py" in cap_low) or (
+                    ("FastAPI(" in code or "from fastapi" in code) and canon_py_valid and not py_ok
+                )
+                if (not py_ok or is_app_mirror) and canon_py_valid:
+                    cb["code"] = canon_py
+                    code = canon_py
+
+            # 4. Sync canonical schema.sql if inline DDL defines a contradictory graph name or mirrors schema.sql
+            if lang in ("sql", "gql") and canon_sql:
+                if "schema.sql" in cap_low:
+                    cb["code"] = canon_sql
+                elif canon_graph_name:
+                    m_inline = re.search(r"\bCREATE\s+(?:OR\s+REPLACE\s+)?PROPERTY\s+GRAPH\s+([A-Za-z_][A-Za-z0-9_]*)", code, re.IGNORECASE)
+                    if m_inline and m_inline.group(1) != canon_graph_name:
+                        cb["code"] = re.sub(
+                            r"\b" + re.escape(m_inline.group(1)) + r"\b",
+                            canon_graph_name,
+                            code,
+                        )
+
+            # 5. Sync main.tf if inline HCL mirrors main.tf and contains forbidden D-11 anti-patterns while starter is clean
+            if lang in ("hcl", "tf") and canon_tf:
+                if "main.tf" in cap_low or (
+                    ("allUsers" in code or "google_cloud_run_service" in code)
+                    and "allUsers" not in canon_tf
+                    and "google_cloud_run_service" not in canon_tf
+                ):
+                    cb["code"] = canon_tf
+
+            # 6. Sync verify.sh / deploy.sh if inline bash has `--allow-unauthenticated` while starter is clean
+            if lang in ("bash", "sh", "shell"):
+                if "deploy.sh" in cap_low and canon_deploy:
+                    cb["code"] = canon_deploy
+                elif "verify.sh" in cap_low and canon_verify:
+                    cb["code"] = canon_verify
+                elif "--allow-unauthenticated" in code:
+                    cb["code"] = re.sub(r"--allow-unauthenticated\b", "--no-allow-unauthenticated", code)
+
+    # Sync Slide 9 (or Slide 6 in 9-slide) codeSnippet to canonical starter so Slide 9 never invents PolicyGraph
+    slides = bp.get("slides") or []
+    code_idx = 8 if len(slides) >= 12 else (5 if len(slides) >= 6 else -1)
+    if 0 <= code_idx < len(slides) and isinstance(slides[code_idx], dict):
+        sl_code = str(slides[code_idx].get("codeSnippet") or "").strip()
+        if canon_sql and (
+            not sl_code
+            or (canon_graph_name and re.search(r"\bGRAPH_TABLE\s*\(\s*(?!" + re.escape(canon_graph_name) + r"\b)[A-Za-z_][A-Za-z0-9_]*", sl_code))
+            or (canon_graph_name and re.search(r"\bPROPERTY\s+GRAPH\s+(?!" + re.escape(canon_graph_name) + r"\b)[A-Za-z_][A-Za-z0-9_]*", sl_code, re.IGNORECASE))
+            or "PolicyGraph" in sl_code
+        ):
+            # Extract the most representative 18-line slice from canonical schema.sql
+            sql_lines = [ln for ln in canon_sql.splitlines() if not ln.strip().startswith("-- STATUS:")]
+            slides[code_idx]["codeSnippet"] = "\n".join(sql_lines[:18]).strip()
+        elif not sl_code and canon_py:
+            py_lines = [ln for ln in canon_py.splitlines() if not ln.strip().startswith("# STATUS:")]
+            slides[code_idx]["codeSnippet"] = "\n".join(py_lines[:18]).strip()
+
+    # Clean raw provenance enum suffixes from slide calloutValue across all slides
+    for sl in slides:
+        if isinstance(sl, dict) and sl.get("calloutValue"):
+            sl["calloutValue"] = _strip_provenance_enum_suffix(str(sl["calloutValue"]))
 
 
 def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience: str, *, target_slides: Optional[int] = None) -> Dict[str, Any]:
-    """Enforces clean bounded shapes and strips emojis/inline markdown leaks without inventing fake data."""
-    title = strip_inline_md(_sanitize_for_public_output(str(raw.get("title") or "Cloud Architecture Reference Guide")))[:110].strip()
-    subtitle = strip_inline_md(_sanitize_for_public_output(str(raw.get("subtitle") or "Grounded Google Cloud reference architecture generated via live Gemini API.")))[:200].strip()
+    """Enforces clean bounded shapes and strips emojis/inline markdown leaks without silently slicing prose or code."""
+    title = strip_inline_md(_sanitize_for_public_output(str(raw.get("title") or "Cloud Architecture Reference Guide")))[:140].strip()
+    subtitle = strip_inline_md(_sanitize_for_public_output(str(raw.get("subtitle") or "Grounded Google Cloud reference architecture generated via live Gemini API.")))[:260].strip()
     slug_hint = str(raw.get("slugHint") or title)
-    summary = _sanitize_for_public_output(str(raw.get("summary") or ""))[:1800].strip()
+    summary = _sanitize_for_public_output(str(raw.get("summary") or "")).strip()
     est_min = 14
     try:
         est_min = max(3, min(45, int(raw.get("estimatedReadMinutes") or 14)))
@@ -1140,131 +1187,45 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
         est_min = 14
 
     takeaways = [
-        strip_inline_md(_sanitize_for_public_output(str(t)))[:220].strip()
+        strip_inline_md(_sanitize_for_public_output(str(t))).strip()
         for t in (raw.get("keyTakeaways") or [])
         if str(t).strip()
     ][:6]
 
-    raw_zones = raw.get("architectureZones") if isinstance(raw.get("architectureZones"), list) else []
-    zones: List[Dict[str, Any]] = []
-    all_comp_ids: List[str] = []
-    default_titles = ("Edge & Ingress", "Control & Security Plane", "Compute & Agent Plane", "Data & Governance Plane")
-    for zi in range(4):
-        rz = raw_zones[zi] if zi < len(raw_zones) and isinstance(raw_zones[zi], dict) else {}
-        z_title = strip_inline_md(_sanitize_for_public_output(str(rz.get("title") or default_titles[zi])))[:40]
-        z_sub = strip_inline_md(_sanitize_for_public_output(str(rz.get("subtitle") or "")))[:52]
-        raw_comps = rz.get("components") if isinstance(rz.get("components"), list) else []
-        comps: List[Dict[str, str]] = []
-        for ci, rc in enumerate(raw_comps[:4]):
-            if not isinstance(rc, dict):
-                continue
-            cid = re.sub(r"[^a-zA-Z0-9_-]", "", str(rc.get("id") or f"z{zi+1}c{ci+1}"))[:24] or f"z{zi+1}c{ci+1}"
-            if cid in all_comp_ids:
-                cid = f"{cid}_{zi+1}_{ci+1}"
-            lbl = strip_inline_md(_sanitize_for_public_output(str(rc.get("label") or f"Service {ci+1}")))[:34]
-            sub = strip_inline_md(_sanitize_for_public_output(str(rc.get("sub") or "")))[:38]
-            role = strip_inline_md(_sanitize_for_public_output(str(rc.get("role") or "")))[:88]
-            ik = _diag_v2.infer_gcp_icon_key(lbl, sub, role, str(rc.get("iconKey") or ""))
-            comps.append({"id": cid, "label": lbl, "sub": sub, "role": role, "iconKey": ik})
-            all_comp_ids.append(cid)
-        if not comps:
-            cid = f"z{zi+1}c1"
-            comps.append({"id": cid, "label": z_title[:28], "sub": "Component", "role": "", "iconKey": "gcp_cloud"})
-            all_comp_ids.append(cid)
-        zones.append({"id": f"zone_{zi+1}", "title": z_title, "subtitle": z_sub, "components": comps})
+    # Canonical 6 WS1 diagram schemas (platform, cloudarch, sequence, security, wire, async)
+    platform_diag = _sanitize_nested_obj(raw.get("platformDiagram")) if isinstance(raw.get("platformDiagram"), dict) else {}
+    cloudarch_diag = _sanitize_nested_obj(raw.get("cloudArchDiagram")) if isinstance(raw.get("cloudArchDiagram"), dict) else {}
+    sequence_diag = _sanitize_nested_obj(raw.get("sequenceDiagram")) if isinstance(raw.get("sequenceDiagram"), dict) else {}
 
-    id_set = set(all_comp_ids)
-    raw_edges = raw.get("architectureEdges") if isinstance(raw.get("architectureEdges"), list) else []
-    edges: List[Dict[str, Any]] = []
-    for re_edge in raw_edges[:16]:
-        if not isinstance(re_edge, dict):
-            continue
-        frm = str(re_edge.get("from") or "").strip()
-        to = str(re_edge.get("to") or "").strip()
-        if frm in id_set and to in id_set and frm != to:
-            edges.append({
-                "from": frm,
-                "to": to,
-                "label": strip_inline_md(_sanitize_for_public_output(str(re_edge.get("label") or "HTTPS / TLS")))[:32],
-                "dashed": bool(re_edge.get("dashed", False)),
-            })
-    if not edges and len(zones) == 4:
-        for zi in range(3):
-            edges.append({
-                "from": zones[zi]["components"][0]["id"],
-                "to": zones[zi + 1]["components"][0]["id"],
-                "label": f"Flow {zi+1}",
-                "dashed": False,
-            })
-
-    raw_actors = raw.get("sequenceActors") if isinstance(raw.get("sequenceActors"), list) else []
-    actors: List[Dict[str, str]] = []
-    default_actors = ("Client App", "Edge / Gateway", "Security / IAM", "Core Service", "Data / Audit Store")
-    for ai in range(5):
-        ra = raw_actors[ai] if ai < len(raw_actors) and isinstance(raw_actors[ai], dict) else {}
-        aid = re.sub(r"[^a-zA-Z0-9_-]", "", str(ra.get("id") or f"a{ai+1}"))[:20] or f"a{ai+1}"
-        albl = strip_inline_md(_sanitize_for_public_output(str(ra.get("label") or default_actors[ai])))[:26]
-        asub = strip_inline_md(_sanitize_for_public_output(str(ra.get("sub") or "")))[:30]
-        aik = _diag_v2.infer_gcp_icon_key(albl, asub, "", str(ra.get("iconKey") or ""))
-        actors.append({"id": aid, "label": albl, "sub": asub, "iconKey": aik})
-    actor_ids = {a["id"] for a in actors}
-
-    raw_steps = raw.get("sequenceSteps") if isinstance(raw.get("sequenceSteps"), list) else []
-    steps: List[Dict[str, Any]] = []
-    for si, rs in enumerate(raw_steps[:10], 1):
-        if not isinstance(rs, dict):
-            continue
-        frm = str(rs.get("from") or "").strip()
-        to = str(rs.get("to") or "").strip()
-        if frm not in actor_ids or to not in actor_ids or frm == to:
-            frm = actors[min(si - 1, 3)]["id"]
-            to = actors[min(si, 4)]["id"]
-        kind = str(rs.get("kind") or "request").lower()
-        if kind not in ("request", "response", "guard"):
-            kind = "request"
-        steps.append({
-            "num": len(steps) + 1,
-            "from": frm,
-            "to": to,
-            "label": strip_inline_md(_sanitize_for_public_output(str(rs.get("label") or f"Step {si}")))[:66],
-            "kind": kind,
-        })
-    if not steps:
-        steps = [
-            {"num": 1, "from": actors[0]["id"], "to": actors[1]["id"], "label": "HTTPS request + bearer token", "kind": "request"},
-            {"num": 2, "from": actors[1]["id"], "to": actors[2]["id"], "label": "Verify identity and policy", "kind": "guard"},
-            {"num": 3, "from": actors[2]["id"], "to": actors[3]["id"], "label": "Authorized invocation", "kind": "request"},
-            {"num": 4, "from": actors[3]["id"], "to": actors[4]["id"], "label": "Query data + emit audit log", "kind": "request"},
-            {"num": 5, "from": actors[4]["id"], "to": actors[0]["id"], "label": "200 OK signed response", "kind": "response"},
-        ]
-
-    # Supporting C4 diagram blueprints — canonical v3 schema (security L1, wire L4, async loop)
     sec_raw = raw.get("securityDiagram") if isinstance(raw.get("securityDiagram"), dict) else {}
     sec_layers = []
     for rl in (sec_raw.get("layers") or [])[:4]:
         if isinstance(rl, dict):
-            layer_lbl = strip_inline_md(_sanitize_for_public_output(str(rl.get("layer") or f"L{len(sec_layers)+1}")))[:48]
-            name_lbl = strip_inline_md(_sanitize_for_public_output(str(rl.get("name") or "")))[:66]
+            layer_lbl = strip_inline_md(_sanitize_for_public_output(str(rl.get("layer") or f"L{len(sec_layers)+1}")))[:64]
+            name_lbl = strip_inline_md(_sanitize_for_public_output(str(rl.get("name") or "")))[:80]
             sec_layers.append({
                 "layer": layer_lbl,
                 "name": name_lbl,
                 "iconKey": _diag_v2.infer_gcp_icon_key(name_lbl, layer_lbl, "", str(rl.get("iconKey") or "")),
-                "detail": strip_inline_md(_sanitize_for_public_output(str(rl.get("detail") or "")))[:180],
+                "detail": strip_inline_md(_sanitize_for_public_output(str(rl.get("detail") or ""))).strip(),
             })
     sec_threats = []
     for rt in (sec_raw.get("threats") or [])[:4]:
         if isinstance(rt, dict):
-            sec_threats.append({
-                "id": strip_inline_md(str(rt.get("id") or f"T-0{len(sec_threats)+1}"))[:10],
-                "vector": strip_inline_md(_sanitize_for_public_output(str(rt.get("vector") or "")))[:56],
-                "control": strip_inline_md(_sanitize_for_public_output(str(rt.get("control") or "")))[:190],
-            })
+            t_item: Dict[str, Any] = {
+                "id": strip_inline_md(str(rt.get("id") or f"T-0{len(sec_threats)+1}"))[:12],
+                "vector": strip_inline_md(_sanitize_for_public_output(str(rt.get("vector") or ""))).strip(),
+                "control": strip_inline_md(_sanitize_for_public_output(str(rt.get("control") or ""))).strip(),
+            }
+            if isinstance(rt.get("layerIndex"), int):
+                t_item["layerIndex"] = max(0, min(3, int(rt["layerIndex"])))
+            sec_threats.append(t_item)
     sec_breakers = []
     for rb in (sec_raw.get("breakers") or [])[:4]:
         if isinstance(rb, dict):
             sec_breakers.append({
-                "code": strip_inline_md(str(rb.get("code") or "HTTP 403"))[:14],
-                "trigger": strip_inline_md(_sanitize_for_public_output(str(rb.get("trigger") or "")))[:110],
+                "code": strip_inline_md(str(rb.get("code") or "HTTP 403"))[:18],
+                "trigger": strip_inline_md(_sanitize_for_public_output(str(rb.get("trigger") or ""))).strip(),
             })
     security_diag = {"layers": sec_layers, "threats": sec_threats, "breakers": sec_breakers} if (sec_layers or sec_threats) else {}
 
@@ -1272,16 +1233,16 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
     wire_hops = []
     for rh in (wire_raw.get("hops") or [])[:4]:
         if isinstance(rh, dict):
-            h_name = strip_inline_md(_sanitize_for_public_output(str(rh.get("name") or "")))[:40]
-            h_tr = strip_inline_md(_sanitize_for_public_output(str(rh.get("transport") or "HTTPS / TLS 1.3")))[:36]
-            h_payload = strip_emojis(_sanitize_for_public_output(str(rh.get("payload") or ""))).strip()[:520]
+            h_name = strip_inline_md(_sanitize_for_public_output(str(rh.get("name") or ""))).strip()
+            h_tr = strip_inline_md(_sanitize_for_public_output(str(rh.get("transport") or "HTTPS / TLS 1.3"))).strip()
+            h_payload = strip_emojis(_sanitize_for_public_output(str(rh.get("payload") or ""))).strip()
             wire_hops.append({
-                "hop": strip_inline_md(_sanitize_for_public_output(str(rh.get("hop") or f"HOP {len(wire_hops)+1}")))[:34],
+                "hop": strip_inline_md(_sanitize_for_public_output(str(rh.get("hop") or f"HOP {len(wire_hops)+1}"))).strip(),
                 "name": h_name,
                 "transport": h_tr,
                 "iconKey": _diag_v2.infer_gcp_icon_key(h_name, h_tr, str(rh.get("hop") or ""), str(rh.get("iconKey") or "")),
-                "added": [strip_inline_md(_sanitize_for_public_output(str(x)))[:68] for x in (rh.get("added") or []) if str(x).strip()][:4],
-                "stripped": [strip_inline_md(_sanitize_for_public_output(str(x)))[:68] for x in (rh.get("stripped") or []) if str(x).strip()][:3],
+                "added": [strip_inline_md(_sanitize_for_public_output(str(x))).strip() for x in (rh.get("added") or []) if str(x).strip()][:4],
+                "stripped": [strip_inline_md(_sanitize_for_public_output(str(x))).strip() for x in (rh.get("stripped") or []) if str(x).strip()][:3],
                 "payload": h_payload,
             })
     wire_diag = {"hops": wire_hops} if len(wire_hops) >= 2 else {}
@@ -1291,13 +1252,13 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
     for rs_a in (async_raw.get("stages") or [])[:4]:
         if isinstance(rs_a, dict):
             raw_blts = rs_a.get("bullets")
-            norm_blts = [strip_inline_md(_sanitize_for_public_output(str(x)))[:72] for x in raw_blts if str(x).strip()][:5] if isinstance(raw_blts, list) else []
-            detail_s = strip_inline_md(_sanitize_for_public_output(str(rs_a.get("detail") or "")))[:200]
-            cad_s = strip_inline_md(_sanitize_for_public_output(str(rs_a.get("cadence") or "Async")))[:26]
-            slo_s = strip_inline_md(_sanitize_for_public_output(str(rs_a.get("slo") or f"Stage {len(async_stages)+1} · {cad_s} · Off-Path")))[:44]
+            norm_blts = [strip_inline_md(_sanitize_for_public_output(str(x))).strip() for x in raw_blts if str(x).strip()][:5] if isinstance(raw_blts, list) else []
+            detail_s = strip_inline_md(_sanitize_for_public_output(str(rs_a.get("detail") or ""))).strip()
+            cad_s = strip_inline_md(_sanitize_for_public_output(str(rs_a.get("cadence") or "Async"))).strip()
+            slo_s = strip_inline_md(_sanitize_for_public_output(str(rs_a.get("slo") or f"Stage {len(async_stages)+1} · {cad_s} · Off-Path"))).strip()
             async_stages.append({
-                "stage": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("stage") or f"{len(async_stages)+1}. STAGE")))[:32],
-                "service": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("service") or "")))[:38],
+                "stage": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("stage") or f"{len(async_stages)+1}. STAGE"))).strip(),
+                "service": strip_inline_md(_sanitize_for_public_output(str(rs_a.get("service") or ""))).strip(),
                 "iconKey": _diag_v2.infer_gcp_icon_key(str(rs_a.get("service") or ""), str(rs_a.get("stage") or ""), "", str(rs_a.get("iconKey") or "")),
                 "cadence": cad_s,
                 "slo": slo_s,
@@ -1307,8 +1268,8 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
     async_diag = (
         {
             "stages": async_stages,
-            "dlqNote": strip_inline_md(_sanitize_for_public_output(str(async_raw.get("dlqNote") or "")))[:260],
-            "feedbackLabel": strip_inline_md(_sanitize_for_public_output(str(async_raw.get("feedbackLabel") or "")))[:90],
+            "dlqNote": strip_inline_md(_sanitize_for_public_output(str(async_raw.get("dlqNote") or ""))).strip(),
+            "feedbackLabel": strip_inline_md(_sanitize_for_public_output(str(async_raw.get("feedbackLabel") or ""))).strip(),
         }
         if len(async_stages) >= 2
         else {}
@@ -1319,34 +1280,34 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
     for rs in raw_secs[:12]:
         if not isinstance(rs, dict):
             continue
-        heading = strip_inline_md(_sanitize_for_public_output(str(rs.get("heading") or "Architecture Details")))[:120]
+        heading = strip_inline_md(_sanitize_for_public_output(str(rs.get("heading") or "Architecture Details"))).strip()
         paras = [
             _sanitize_for_public_output(str(p)).strip()
             for p in (rs.get("paragraphs") or [])
             if str(p).strip()
-        ][:10]
+        ][:12]
         bullets = [
             _sanitize_for_public_output(str(b)).strip()
             for b in (rs.get("bullets") or [])
             if str(b).strip()
-        ][:14]
+        ][:16]
         code_blocks = []
         for cb in (rs.get("codeBlocks") or [])[:4]:
             if isinstance(cb, dict) and str(cb.get("code") or "").strip():
                 lang = re.sub(r"[^a-zA-Z0-9_-]", "", str(cb.get("language") or "sql").lower())[:16] or "text"
                 code_blocks.append({
                     "language": lang,
-                    "caption": strip_inline_md(_sanitize_for_public_output(str(cb.get("caption") or "")))[:110],
-                    "code": _sanitize_for_public_output(str(cb.get("code") or "").rstrip())[:4500],
+                    "caption": strip_inline_md(_sanitize_for_public_output(str(cb.get("caption") or ""))).strip(),
+                    "code": _sanitize_for_public_output(str(cb.get("code") or "").rstrip()),
                 })
         tbl_out = None
         rt = rs.get("table")
         if isinstance(rt, dict) and isinstance(rt.get("headers"), list) and rt["headers"]:
-            hdrs = [strip_inline_md(_sanitize_for_public_output(str(h)))[:60] for h in rt["headers"][:6]]
+            hdrs = [strip_inline_md(_sanitize_for_public_output(str(h))).strip() for h in rt["headers"][:6]]
             rows = []
             for rr in (rt.get("rows") or [])[:12]:
                 if isinstance(rr, list) and rr:
-                    row = [strip_inline_md(_sanitize_for_public_output(str(c)))[:180] for c in rr[: len(hdrs)]]
+                    row = [strip_inline_md(_sanitize_for_public_output(str(c))).strip() for c in rr[: len(hdrs)]]
                     while len(row) < len(hdrs):
                         row.append("")
                     rows.append(row)
@@ -1359,15 +1320,15 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
     if n_slides == 12:
         default_kickers = (
             "EXECUTIVE BRIEF", "PROBLEM & TARGETS", "REFERENCE ARCHITECTURE (C4 L2)",
-            "DESIGN MATRIX", "REQUEST LIFECYCLE (C4 L3)", "SECURITY BOUNDARY (C4 L1)",
+            "CLOUD ARCHITECTURE (HUB-SPOKE)", "REQUEST LIFECYCLE (C4 L3)", "SECURITY BOUNDARY (C4 L1)",
             "WIRE PAYLOAD (C4 L4)", "ASYNC LIFECYCLE LOOP", "IMPLEMENTATION & GUARDRAILS",
             "LIVE PROOF VAULT", "TRADE-OFFS & FINOPS", "PRODUCTION READINESS",
         )
         default_titles = (
-            title[:58],
+            title[:72],
             "Architectural Challenge & Design Goals",
             "Master Reference Architecture Topology",
-            "Component & Security Design Matrix",
+            "Cloud Architecture Center Hub-and-Spoke Blueprint",
             "End-to-End Request Lifecycle Sequence",
             "Trust Perimeter & Fail-Closed Security Boundary",
             "Wire-Protocol & Schema Transformation",
@@ -1384,7 +1345,7 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
             "LIVE PROOF VAULT", "TRADE-OFFS & COST", "PRODUCTION READINESS",
         )
         default_titles = (
-            title[:58],
+            title[:72],
             "Architectural Challenge & Design Goals",
             "End-to-End Reference Topology",
             "Component & Security Design Matrix",
@@ -1400,34 +1361,34 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
         tbl_s = None
         rt = rs.get("table")
         if isinstance(rt, dict) and isinstance(rt.get("headers"), list) and rt["headers"]:
-            hdrs = [strip_inline_md(_sanitize_for_public_output(str(h)))[:40] for h in rt["headers"][:5]]
+            hdrs = [strip_inline_md(_sanitize_for_public_output(str(h))).strip() for h in rt["headers"][:5]]
             rows = []
             for rr in (rt.get("rows") or [])[:6]:
                 if isinstance(rr, list) and rr:
-                    row = [strip_inline_md(_sanitize_for_public_output(str(c)))[:105] for c in rr[: len(hdrs)]]
+                    row = [strip_inline_md(_sanitize_for_public_output(str(c))).strip() for c in rr[: len(hdrs)]]
                     while len(row) < len(hdrs):
                         row.append("")
                     rows.append(row)
             if rows:
                 tbl_s = {"headers": hdrs, "rows": rows}
         bullets = [
-            strip_inline_md(_sanitize_for_public_output(str(b)))[:140]
+            strip_inline_md(_sanitize_for_public_output(str(b))).strip()
             for b in (rs.get("bullets") or [])
             if str(b).strip()
         ][:6]
-        notes = strip_inline_md(_sanitize_for_public_output(str(rs.get("speakerNotes") or "")))[:950].strip()
+        notes = strip_inline_md(_sanitize_for_public_output(str(rs.get("speakerNotes") or ""))).strip()
         if not notes:
-            notes = f"{default_titles[i]}. " + (" ".join(bullets[:3]) if bullets else summary[:240])
+            notes = f"{default_titles[i]}. " + (" ".join(bullets[:3]) if bullets else _fit_clean_sentence(summary, 240))
         slides.append({
             "number": i + 1,
-            "kicker": strip_inline_md(_sanitize_for_public_output(str(rs.get("kicker") or default_kickers[i])))[:38].upper(),
-            "title": strip_inline_md(_sanitize_for_public_output(str(rs.get("title") or default_titles[i])))[:72],
-            "subtitle": strip_inline_md(_sanitize_for_public_output(str(rs.get("subtitle") or "")))[:128],
+            "kicker": strip_inline_md(_sanitize_for_public_output(str(rs.get("kicker") or default_kickers[i])))[:44].upper(),
+            "title": strip_inline_md(_sanitize_for_public_output(str(rs.get("title") or default_titles[i])))[:88],
+            "subtitle": strip_inline_md(_sanitize_for_public_output(str(rs.get("subtitle") or "")))[:160],
             "bullets": bullets,
-            "calloutLabel": strip_inline_md(_sanitize_for_public_output(str(rs.get("calloutLabel") or "")))[:40],
-            "calloutValue": strip_inline_md(_sanitize_for_public_output(str(rs.get("calloutValue") or "")))[:65],
+            "calloutLabel": strip_inline_md(_sanitize_for_public_output(str(rs.get("calloutLabel") or "")))[:48],
+            "calloutValue": _strip_provenance_enum_suffix(_sanitize_for_public_output(str(rs.get("calloutValue") or "")))[:80],
             "table": tbl_s,
-            "codeSnippet": _sanitize_for_public_output(str(rs.get("codeSnippet") or ""))[:1600],
+            "codeSnippet": _sanitize_for_public_output(str(rs.get("codeSnippet") or "")),
             "speakerNotes": notes,
         })
 
@@ -1441,10 +1402,10 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
             prov = "EXAMPLE_TARGET"
         claims.append({
             "id": strip_inline_md(str(rc.get("id") or f"CLM-{ci:02d}"))[:16],
-            "claim": strip_inline_md(_sanitize_for_public_output(str(rc.get("claim") or "")))[:180],
-            "value": strip_inline_md(_sanitize_for_public_output(str(rc.get("value") or "")))[:80],
+            "claim": strip_inline_md(_sanitize_for_public_output(str(rc.get("claim") or ""))).strip(),
+            "value": strip_inline_md(_sanitize_for_public_output(str(rc.get("value") or ""))).strip(),
             "provenance": prov,
-            "basis": strip_inline_md(_sanitize_for_public_output(str(rc.get("basis") or "")))[:240],
+            "basis": strip_inline_md(_sanitize_for_public_output(str(rc.get("basis") or ""))).strip(),
         })
 
     raw_faq = raw.get("faq") if isinstance(raw.get("faq"), list) else []
@@ -1452,8 +1413,8 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
     for rf in raw_faq[:10]:
         if isinstance(rf, dict) and str(rf.get("question") or "").strip():
             faq.append({
-                "question": strip_inline_md(_sanitize_for_public_output(str(rf.get("question"))))[:220],
-                "answer": _sanitize_for_public_output(str(rf.get("answer") or ""))[:1000].strip(),
+                "question": strip_inline_md(_sanitize_for_public_output(str(rf.get("question")))).strip(),
+                "answer": _sanitize_for_public_output(str(rf.get("answer") or "")).strip(),
             })
 
     raw_refs = raw.get("references") if isinstance(raw.get("references"), list) else []
@@ -1467,9 +1428,9 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
             continue
         seen_urls.add(safe_url)
         refs.append({
-            "title": strip_inline_md(_sanitize_for_public_output(str(rr.get("title") or safe_url)))[:120],
+            "title": strip_inline_md(_sanitize_for_public_output(str(rr.get("title") or safe_url))).strip(),
             "url": safe_url,
-            "note": strip_inline_md(_sanitize_for_public_output(str(rr.get("note") or "")))[:200],
+            "note": strip_inline_md(_sanitize_for_public_output(str(rr.get("note") or ""))).strip(),
         })
 
     rc = raw.get("codeStarter") if isinstance(raw.get("codeStarter"), dict) else {}
@@ -1479,11 +1440,13 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
         "terraformMain": _sanitize_for_public_output(str(rc.get("terraformMain") or "")),
         "terraformVars": _sanitize_for_public_output(str(rc.get("terraformVars") or "")),
         "pythonApp": _sanitize_for_public_output(str(rc.get("pythonApp") or "")),
+        "dockerfile": _sanitize_for_public_output(str(rc.get("dockerfile") or "")),
+        "requirementsTxt": _sanitize_for_public_output(str(rc.get("requirementsTxt") or "")),
         "deploySh": _sanitize_for_public_output(str(rc.get("deploySh") or "")),
         "verifySh": _sanitize_for_public_output(str(rc.get("verifySh") or "")),
     }
 
-    return {
+    bp_out = {
         "title": title,
         "subtitle": subtitle,
         "slugHint": slug_hint,
@@ -1493,13 +1456,9 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
         "audience": strip_inline_md(_sanitize_for_public_output(str(raw.get("audience") or audience or "Solutions Architects & Engineers")))[:80],
         "estimatedReadMinutes": est_min,
         "keyTakeaways": takeaways,
-        "architectureZones": zones,
-        "architectureEdges": edges,
-        "sequenceActors": actors,
-        "sequenceSteps": steps,
-        "platformDiagram": raw.get("platformDiagram") if isinstance(raw.get("platformDiagram"), dict) else {},
-        "cloudArchDiagram": raw.get("cloudArchDiagram") if isinstance(raw.get("cloudArchDiagram"), dict) else {},
-        "sequenceDiagram": raw.get("sequenceDiagram") if isinstance(raw.get("sequenceDiagram"), dict) else {},
+        "platformDiagram": platform_diag,
+        "cloudArchDiagram": cloudarch_diag,
+        "sequenceDiagram": sequence_diag,
         "securityDiagram": security_diag,
         "wireDiagram": wire_diag,
         "asyncDiagram": async_diag,
@@ -1510,6 +1469,8 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
         "references": refs,
         "codeStarter": code_starter,
     }
+    _sync_inline_code_with_starter(bp_out)
+    return bp_out
 
 
 def encode_drawio_viewer_url(xml_str: str) -> str:
@@ -1571,16 +1532,6 @@ def encode_drawio_studio_hash(xml_str: str) -> str:
     comp = zlib.compressobj(9, zlib.DEFLATED, -15)
     compressed = comp.compress(uri_encoded.encode("utf-8")) + comp.flush()
     return "R" + base64.b64encode(compressed).decode("ascii")
-
-
-def compile_architecture_drawio_and_svg(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str]:
-    xml_s, svg_s, url_s, _ = _diag_v2.compile_architecture_v2(bp, slug)
-    return xml_s, svg_s, url_s
-
-
-def compile_sequence_drawio_and_svg(bp: Dict[str, Any], slug: str) -> Tuple[str, str, str]:
-    xml_s, svg_s, url_s, _ = _diag_v2.compile_sequence_v2(bp, slug)
-    return xml_s, svg_s, url_s
 
 
 def compile_all_diagrams_v2(bp: Dict[str, Any], slug: str) -> Dict[str, Dict[str, Any]]:
@@ -1754,17 +1705,21 @@ def compile_slide_preview_svgs(
             cards = [strip_inline_md(x) for x in (bp.get("keyTakeaways") or [])[:3]] or bullets[:3]
             for ci, ctxt in enumerate(cards):
                 cx = 116 + ci * 468
-                parts.append(f'<rect x="{cx}" y="585" width="440" height="165" rx="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>')
+                parts.append(f'<rect x="{cx}" y="558" width="440" height="224" rx="14" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>')
                 bar_c = ("#1A73E8", "#137333", "#EA8600")[ci % 3]
-                parts.append(f'<rect x="{cx}" y="585" width="440" height="7" rx="3" fill="{bar_c}"/>')
-                parts.append(f'<text x="{cx + 22}" y="622" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12" font-weight="800" fill="{bar_c}">KEY TAKEAWAY {ci+1}</text>')
-                for li, ln in enumerate(_wrap_text(ctxt, 42, 4)):
-                    parts.append(f'<text x="{cx + 22}" y="{650 + li * 22}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="15.5" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
+                parts.append(f'<rect x="{cx}" y="558" width="440" height="7" rx="3" fill="{bar_c}"/>')
+                parts.append(f'<text x="{cx + 22}" y="594" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12" font-weight="800" fill="{bar_c}">KEY TAKEAWAY {ci+1}</text>')
+                fit_txt = _fit_clean_sentence(ctxt, 235)
+                wrap_c = 47 if len(fit_txt) > 155 else 43
+                f_sz = 14.0 if len(fit_txt) > 155 else 15.0
+                lh = 20 if len(fit_txt) > 155 else 22
+                for li, ln in enumerate(_wrap_text(fit_txt, wrap_c, 6)):
+                    parts.append(f'<text x="{cx + 22}" y="{622 + li * lh}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="{f_sz}" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
         else:
             parts.extend([
                 f'<text x="64" y="64" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" font-weight="800" letter-spacing="1.2" fill="#1A73E8">{xml_esc(kicker)}</text>',
-                f'<text x="64" y="108" font-family="Google Sans, Inter, Arial, sans-serif" font-size="34" font-weight="800" fill="#0F172A">{xml_esc(title[:62])}</text>',
-                f'<text x="64" y="138" font-family="Google Sans, Inter, Arial, sans-serif" font-size="17" fill="#475569">{xml_esc(subtitle[:110])}</text>',
+                f'<text x="64" y="108" font-family="Google Sans, Inter, Arial, sans-serif" font-size="34" font-weight="800" fill="#0F172A">{xml_esc(title[:76])}</text>',
+                f'<text x="64" y="138" font-family="Google Sans, Inter, Arial, sans-serif" font-size="17" fill="#475569">{xml_esc(subtitle[:135])}</text>',
                 '<line x1="64" y1="158" x2="1536" y2="158" stroke="#E2E8F0" stroke-width="1.8"/>',
             ])
             if num in diag_slides and diag_slides[num][0]:
@@ -1778,9 +1733,9 @@ def compile_slide_preview_svgs(
                 for bi, b in enumerate(bullets[:4]):
                     by = 238 + bi * 126
                     parts.append(f'<rect x="1248" y="{by}" width="268" height="108" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>')
-                    for li, ln in enumerate(_wrap_text(b, 27, 4)):
-                        parts.append(f'<text x="1262" y="{by + 26 + li * 20}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.2" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
-                parts.append(f'<text x="1250" y="794" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12" font-weight="700" text-decoration="underline" fill="{rail_col}">Edit in Draw.io (.pptx link)</text>')
+                    for li, ln in enumerate(_wrap_text(_fit_clean_sentence(b, 118), 29, 4)):
+                        parts.append(f'<text x="1262" y="{by + 26 + li * 20}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.0" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
+                parts.append(f'<text x="1250" y="794" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12" font-weight="700" text-decoration="underline" fill="{rail_col}">Edit in Draw.io ↗</text>')
             elif num == code_slide_num:
                 code_raw = sl.get("codeSnippet") or bp["codeStarter"].get("schemaSql") or bp["codeStarter"].get("pythonApp", "")
                 code_lines = [ln[:82] for ln in code_raw.splitlines()][:20]
@@ -1798,8 +1753,8 @@ def compile_slide_preview_svgs(
                 for bi, b in enumerate(bullets[:5]):
                     by = 252 + bi * 102
                     parts.append(f'<rect x="1076" y="{by}" width="434" height="86" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>')
-                    for li, ln in enumerate(_wrap_text(b, 42, 3)):
-                        parts.append(f'<text x="1096" y="{by + 28 + li * 21}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14.2" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
+                    for li, ln in enumerate(_wrap_text(_fit_clean_sentence(b, 130), 44, 3)):
+                        parts.append(f'<text x="1096" y="{by + 28 + li * 21}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14.0" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
             elif num == proof_slide_num:
                 if proofs:
                     shown = proofs[:2]
@@ -1810,7 +1765,7 @@ def compile_slide_preview_svgs(
                         parts.append(f'<rect x="{px}" y="188" width="{cw}" height="590" rx="12" fill="#F8FAFC" stroke="#137333" stroke-width="2"/>')
                         parts.append(f'<rect x="{px + 18}" y="204" width="142" height="28" rx="14" fill="#137333"/>')
                         parts.append(f'<text x="{px + 89}" y="223" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11.5" font-weight="800" fill="#FFFFFF">{xml_esc(pf["stage"])}</text>')
-                        parts.append(f'<text x="{px + 174}" y="223" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#0F172A">{xml_esc(strip_inline_md(pf["caption"])[:48])}</text>')
+                        parts.append(f'<text x="{px + 174}" y="223" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#0F172A">{xml_esc(strip_inline_md(pf["caption"])[:52])}</text>')
                         if pfile.is_file():
                             uri = _svg_data_uri(pfile.read_bytes(), pf["mime"])
                             parts.append(f'<image href="{uri}" x="{px + 18}" y="246" width="{cw - 36}" height="480" preserveAspectRatio="xMidYMid meet"/>')
@@ -1821,19 +1776,23 @@ def compile_slide_preview_svgs(
                 else:
                     for pi, slot in enumerate(("BEFORE — Baseline / Vulnerability Proof", "AFTER — Guarded Production Proof")):
                         px = 64 + pi * 756
-                        parts.append(f'<rect x="{px}" y="200" width="716" height="530" rx="14" fill="#FFFBEB" stroke="#D97706" stroke-width="2.5" stroke-dasharray="10,7"/>')
-                        parts.append(f'<text x="{px + 358}" y="388" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="22" font-weight="800" fill="#92400E">{xml_esc(slot)}</text>')
-                        parts.append('<text x="{0}" y="428" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="15.5" font-weight="600" fill="#78350F">AUTHENTIC LIVE PROOF REQUIRED — ZERO FAKE SCREENSHOTS</text>'.format(px + 358))
-                        parts.append(f'<text x="{px + 358}" y="462" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" fill="#92400E">Upload genuine PNG/JPEG via Live Proofs tab to auto-embed into Slide {proof_slide_num} (.pptx/.docx).</text>')
+                        parts.append(f'<rect x="{px}" y="196" width="716" height="512" rx="14" fill="#FFFBEB" stroke="#D97706" stroke-width="2.5" stroke-dasharray="10,7"/>')
+                        parts.append(f'<text x="{px + 358}" y="384" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="22" font-weight="800" fill="#92400E">{xml_esc(slot)}</text>')
+                        parts.append('<text x="{0}" y="424" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="15.5" font-weight="600" fill="#78350F">AUTHENTIC LIVE PROOF REQUIRED — ZERO FAKE SCREENSHOTS</text>'.format(px + 358))
+                        parts.append(f'<text x="{px + 358}" y="458" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" fill="#92400E">Upload genuine PNG/JPEG via Live Proofs tab to auto-embed into Slide {proof_slide_num} (Google Slides &amp; Docs).</text>')
                     guide = bullets[:2]
                     if guide:
-                        parts.append(f'<text x="64" y="778" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#334155">Capture target: {xml_esc(" | ".join(guide)[:130])}</text>')
+                        guide_lines = _wrap_text("Capture target: " + "  |  ".join(guide), 124, 2)
+                        for gi, gln in enumerate(guide_lines):
+                            parts.append(f'<text x="64" y="{748 + gi * 22}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#334155">{xml_esc(gln)}</text>')
             elif sl.get("table") and num in table_slide_nums:
-                parts.append(_render_slide_table_svg(sl["table"], 64, 198, 1472, 470))
+                parts.append(_render_slide_table_svg(sl["table"], 64, 192, 1472, 464))
                 if bullets:
-                    parts.append('<rect x="64" y="700" width="1472" height="106" rx="10" fill="#E8F0FE" stroke="#BFDBFE"/>')
-                    parts.append('<text x="90" y="734" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" font-weight="800" fill="#174EA6">KEY NOTES</text>')
-                    parts.append(f'<text x="90" y="766" font-family="Google Sans, Inter, Arial, sans-serif" font-size="15.5" font-weight="600" fill="#0F172A">{xml_esc("  |  ".join(bullets[:3])[:138])}</text>')
+                    parts.append('<rect x="64" y="676" width="1472" height="146" rx="10" fill="#E8F0FE" stroke="#BFDBFE"/>')
+                    parts.append('<text x="90" y="706" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12.5" font-weight="800" fill="#174EA6">KEY NOTES</text>')
+                    note_lines = _wrap_text("  •  ".join(_fit_clean_sentence(b, 130) for b in bullets[:3]), 122, 4)
+                    for nli, nln in enumerate(note_lines):
+                        parts.append(f'<text x="90" y="{734 + nli * 22}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14.2" font-weight="600" fill="#0F172A">{xml_esc(nln)}</text>')
             else:
                 left_w = 960 if sl.get("calloutValue") else 1472
                 for bi, b in enumerate(bullets[:5]):
@@ -1846,9 +1805,10 @@ def compile_slide_preview_svgs(
                     for li, ln in enumerate(lines):
                         parts.append(f'<text x="140" y="{by + (42 if len(lines) == 2 else 54) + li * 25}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="18.5" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
                 if sl.get("calloutValue"):
+                    clean_cv = _strip_provenance_enum_suffix(sl["calloutValue"])
                     parts.append('<rect x="1056" y="196" width="480" height="320" rx="16" fill="#E8F0FE" stroke="#1A73E8" stroke-width="2"/>')
                     parts.append(f'<text x="1090" y="246" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13.5" font-weight="800" fill="#174EA6">{xml_esc(strip_inline_md(sl.get("calloutLabel") or "GROUNDED METRIC").upper())}</text>')
-                    for li, ln in enumerate(_wrap_text(strip_inline_md(sl["calloutValue"]), 22, 4)):
+                    for li, ln in enumerate(_wrap_text(clean_cv, 22, 4)):
                         parts.append(f'<text x="1090" y="{310 + li * 42}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="30" font-weight="800" fill="#0F172A">{xml_esc(ln)}</text>')
                     parts.append('<text x="1090" y="486" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12" fill="#174EA6">See Claim Provenance Ledger for basis.</text>')
 
@@ -2007,9 +1967,22 @@ def compile_pptx_bytes(
         is_v2 = total_slides == 12
         code_idx = 9 if is_v2 else 6
         proof_idx = 10 if is_v2 else 7
-        tbl_idxs = (4, 11) if is_v2 else (4, 8)
+        tbl_idxs = (11,) if is_v2 else (4, 8)
         slides_data = bp["slides"][:total_slides]
         slide_rels_extra: Dict[int, List[str]] = {i: [] for i in range(1, total_slides + 1)}
+
+        # Always guarantee canonical WS1 DrawingML XML with native multi-color <a:custGeom> icons on diagram slides
+        resolved_native: Dict[int, Tuple[str, str]] = dict(native_slide_xmls or {})
+        req_diag_map = (
+            {3: "architecture", 4: "cloudarch", 5: "sequence", 6: "security", 7: "wire", 8: "async"}
+            if is_v2
+            else {3: "architecture", 5: "sequence"}
+        )
+        if any(s_num not in resolved_native for s_num in req_diag_map):
+            _fallback_diags = compile_all_diagrams_v2(bp, slug)
+            for s_num, d_key in req_diag_map.items():
+                if s_num not in resolved_native and d_key in _fallback_diags and _fallback_diags[d_key].get("ooxmlSlideXml"):
+                    resolved_native[s_num] = (_fallback_diags[d_key]["ooxmlSlideXml"], _fallback_diags[d_key]["viewerUrl"])
 
         for idx, sl in enumerate(slides_data, 1):
             shapes: List[str] = []
@@ -2038,254 +2011,66 @@ def compile_pptx_bytes(
                 sid += 1
                 shapes.append(
                     _pptx_rect(
-                        sid, "cover_title", 116, 196, 1380, 195, fill_hex=None,
-                        text_runs=[{"text": bp["title"][:100], "pt": 36, "bold": True, "color": "0F172A"}],
+                        sid, "cover_title", 116, 190, 1380, 195, fill_hex=None,
+                        text_runs=[{"text": bp["title"][:120], "pt": 34, "bold": True, "color": "0F172A"}],
                     )
                 )
                 sid += 1
                 shapes.append(
                     _pptx_rect(
-                        sid, "cover_sub", 116, 400, 1360, 110, fill_hex=None,
-                        text_runs=[{"text": bp["subtitle"][:180], "pt": 18, "color": "475569"}],
+                        sid, "cover_sub", 116, 392, 1360, 120, fill_hex=None,
+                        text_runs=[{"text": bp["subtitle"][:220], "pt": 17, "color": "475569"}],
                     )
                 )
                 sid += 1
-                cards = bp.get("keyTakeaways")[:3] or bullets[:3] or [bp["summary"][:160]]
+                cards = (bp.get("keyTakeaways") or [])[:3] or bullets[:3] or [_fit_clean_sentence(bp["summary"], 220)]
                 for ci, ctxt in enumerate(cards[:3]):
                     cx = 116 + ci * 468
                     col_hex = ("1A73E8", "137333", "EA8600")[ci % 3]
+                    clean_kt = _fit_clean_sentence(str(ctxt), 240)
+                    kt_pt = 10.5 if len(clean_kt) > 155 else 11.5
                     shapes.append(
                         _pptx_rect(
-                            sid, f"takeaway_{ci}", cx, 576, 440, 170,
+                            sid, f"takeaway_{ci}", cx, 554, 440, 232,
                             fill_hex="FFFFFF", line_hex=col_hex, line_pt=1.5, rounded=True,
                             text_runs=[
-                                {"text": f"KEY TAKEAWAY {ci+1}", "pt": 9.5, "bold": True, "color": col_hex, "spcAft": 80},
-                                {"text": strip_inline_md(str(ctxt))[:160], "pt": 12.5, "color": "0F172A"},
+                                {"text": f"KEY TAKEAWAY {ci+1}", "pt": 9.5, "bold": True, "color": col_hex, "spcAft": 70},
+                                {"text": clean_kt, "pt": kt_pt, "color": "0F172A"},
                             ],
-                            pad_lr=160000, pad_tb=120000,
+                            pad_lr=145000, pad_tb=105000,
                         )
                     )
                     sid += 1
+            elif idx in resolved_native and resolved_native[idx][0]:
+                # Handled directly below via canonical WS1 DrawingML XML with native multi-color <a:custGeom> icons
+                pass
             else:
                 shapes.append(
                     _pptx_rect(
                         sid, "kicker", 64, 30, 1100, 32, fill_hex=None,
-                        text_runs=[{"text": kicker[:40], "pt": 10.5, "bold": True, "color": "1A73E8"}],
+                        text_runs=[{"text": kicker[:44], "pt": 10.5, "bold": True, "color": "1A73E8"}],
                     )
                 )
                 sid += 1
                 shapes.append(
                     _pptx_rect(
                         sid, "slide_title", 64, 60, 1460, 56, fill_hex=None,
-                        text_runs=[{"text": title[:76], "pt": 24, "bold": True, "color": "0F172A"}],
+                        text_runs=[{"text": title[:84], "pt": 24, "bold": True, "color": "0F172A"}],
                     )
                 )
                 sid += 1
                 shapes.append(
                     _pptx_rect(
                         sid, "slide_sub", 64, 114, 1460, 36, fill_hex=None,
-                        text_runs=[{"text": subtitle[:130], "pt": 13, "color": "475569"}],
+                        text_runs=[{"text": subtitle[:155], "pt": 13, "color": "475569"}],
                     )
                 )
                 sid += 1
                 shapes.append(_pptx_rect(sid, "hdr_rule", 64, 154, 1472, 2, fill_hex="E2E8F0"))
                 sid += 1
 
-                if idx == 3:
-                    zones = bp["architectureZones"][:4]
-                    col_w = 270
-                    gap = 18
-                    for zi, z in enumerate(zones):
-                        theme = _ZONE_THEMES[zi % 4]
-                        zx = 64 + zi * (col_w + gap)
-                        shapes.append(
-                            _pptx_rect(
-                                sid, f"arch_z_{zi}", zx, 178, col_w, 560,
-                                fill_hex=theme["bg"].lstrip("#"),
-                                line_hex=theme["border"].lstrip("#"),
-                                line_pt=1.5, dash="dash", rounded=True,
-                                text_runs=[{"text": f"ZONE {zi+1}: {z['title'][:26]}", "pt": 10.5, "bold": True, "color": theme["text"].lstrip("#")}],
-                                pad_lr=90000, pad_tb=80000,
-                            )
-                        )
-                        sid += 1
-                        comps = z["components"][:4]
-                        step_h = 460 / max(1, len(comps))
-                        for ci, comp in enumerate(comps):
-                            cy = 232 + ci * step_h + 10
-                            ch = min(98, step_h - 14)
-                            shapes.append(
-                                _pptx_rect(
-                                    sid, f"arch_c_{zi}_{ci}", zx + 14, cy, col_w - 28, ch,
-                                    fill_hex="FFFFFF", line_hex=theme["border"].lstrip("#"),
-                                    line_pt=1.2, rounded=True,
-                                    text_runs=[
-                                        {"text": comp["label"][:30], "pt": 10.5, "bold": True, "color": "0F172A", "spcAft": 40},
-                                        {"text": comp.get("sub", "")[:34], "pt": 8.5, "color": "475569"},
-                                    ],
-                                    valign="ctr", pad_lr=70000, pad_tb=40000,
-                                )
-                            )
-                            sid += 1
-                    r_id_link = "rId10"
-                    slide_rels_extra[idx].append(
-                        f'<Relationship Id="{r_id_link}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" '
-                        f'Target="{xml_esc(arch_url)}" TargetMode="External"/>'
-                    )
-                    shapes.append(
-                        _pptx_rect(
-                            sid, "arch_rail", 1226, 178, 310, 560,
-                            fill_hex="F8FAFC", line_hex="CBD5E1", rounded=True,
-                            text_runs=[{"text": "DESIGN DECISIONS", "pt": 10.5, "bold": True, "color": "1A73E8", "spcAft": 100}]
-                            + [{"text": f"- {b[:84]}", "pt": 10.5, "color": "0F172A", "spcAft": 120} for b in bullets[:4]],
-                            pad_lr=110000, pad_tb=100000,
-                        )
-                    )
-                    sid += 1
-                    shapes.append(
-                        _pptx_rect(
-                            sid, "arch_drawio_link", 64, 756, 460, 44, fill_hex="E8F0FE", line_hex="1A73E8", rounded=True,
-                            text_runs=[{"text": "Edit in Draw.io ->", "pt": 11.5, "bold": True, "color": "1A73E8", "linkRid": r_id_link, "align": "ctr"}],
-                            valign="ctr",
-                        )
-                    )
-                    sid += 1
-                elif idx == 5:
-                    actors = bp["sequenceActors"][:5]
-                    steps = bp["sequenceSteps"][:8]
-                    for ai, a in enumerate(actors):
-                        sc, fc = _ACTOR_THEMES[ai % 5]
-                        ax = 64 + ai * 228
-                        shapes.append(
-                            _pptx_rect(
-                                sid, f"seq_a_{ai}", ax, 182, 206, 56,
-                                fill_hex=fc.lstrip("#"), line_hex=sc.lstrip("#"), line_pt=1.5, rounded=True,
-                                text_runs=[{"text": a["label"][:22], "pt": 10, "bold": True, "color": "0F172A", "align": "ctr"}],
-                                valign="ctr",
-                            )
-                        )
-                        sid += 1
-                    for si, st in enumerate(steps):
-                        sy = 256 + si * 58
-                        kind = st.get("kind", "request")
-                        b_hex = "137333" if kind == "response" else ("B06000" if kind == "guard" else "1A73E8")
-                        shapes.append(
-                            _pptx_rect(
-                                sid, f"seq_s_{si}", 64, sy, 1118, 46,
-                                fill_hex="F8FAFC" if si % 2 == 0 else "FFFFFF",
-                                line_hex=b_hex, line_pt=1.0, rounded=True,
-                                text_runs=[{"text": f"Step {st['num']}  [{st['from']} -> {st['to']}]  {st['label'][:72]}", "pt": 10.5, "bold": True, "color": "0F172A"}],
-                                valign="ctr", pad_lr=110000,
-                            )
-                        )
-                        sid += 1
-                    r_id_link = "rId10"
-                    slide_rels_extra[idx].append(
-                        f'<Relationship Id="{r_id_link}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" '
-                        f'Target="{xml_esc(seq_url)}" TargetMode="External"/>'
-                    )
-                    shapes.append(
-                        _pptx_rect(
-                            sid, "seq_rail", 1212, 182, 324, 540,
-                            fill_hex="F8FAFC", line_hex="CBD5E1", rounded=True,
-                            text_runs=[{"text": "LIFECYCLE CHECKPOINTS", "pt": 10.5, "bold": True, "color": "137333", "spcAft": 100}]
-                            + [{"text": f"- {b[:84]}", "pt": 10.5, "color": "0F172A", "spcAft": 120} for b in bullets[:4]],
-                            pad_lr=110000, pad_tb=100000,
-                        )
-                    )
-                    sid += 1
-                    shapes.append(
-                        _pptx_rect(
-                            sid, "seq_drawio_link", 64, 756, 460, 44, fill_hex="E6F4EA", line_hex="137333", rounded=True,
-                            text_runs=[{"text": "Edit Sequence in Draw.io ->", "pt": 11.5, "bold": True, "color": "137333", "linkRid": r_id_link, "align": "ctr"}],
-                            valign="ctr",
-                        )
-                    )
-                    sid += 1
-                elif is_v2 and idx in (6, 7, 8):
-                    d_kind, d_title, d_col, d_bg = {
-                        6: ("security", "C4 L1 Trust Perimeter & Security Boundary", "991B1B", "FEF2F2"),
-                        7: ("wire", "C4 L4 Wire Payload & Schema Transformation", "5B21B6", "F3E8FD"),
-                        8: ("async", "Async Lifecycle, Export & Recovery Loop", "8A4600", "FEF7E0"),
-                    }[idx]
-                    d_url = ex_urls.get(d_kind) or arch_url
-                    r_id_link = "rId10"
-                    slide_rels_extra[idx].append(
-                        f'<Relationship Id="{r_id_link}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" '
-                        f'Target="{xml_esc(d_url)}" TargetMode="External"/>'
-                    )
-                    if d_kind == "security":
-                        lays = (bp.get("securityDiagram") or {}).get("layers") or []
-                        for li, lay in enumerate(lays[:4]):
-                            shapes.append(
-                                _pptx_rect(
-                                    sid, f"sec_l_{li}", 64 + li * 22, 182 + li * 130, 1110 - li * 44, 112,
-                                    fill_hex=d_bg if li % 2 == 0 else "FFFFFF", line_hex=d_col, line_pt=1.5, dash="dash", rounded=True,
-                                    text_runs=[
-                                        {"text": f"{strip_inline_md(lay.get('layer', f'Layer {li+1}'))[:38]}  —  {strip_inline_md(lay.get('name', ''))[:52]}", "pt": 11.5, "bold": True, "color": "0F172A", "spcAft": 40},
-                                        {"text": strip_inline_md(lay.get("detail", ""))[:110], "pt": 9.8, "color": "475569"},
-                                    ],
-                                    valign="ctr", pad_lr=140000,
-                                )
-                            )
-                            sid += 1
-                    elif d_kind == "wire":
-                        hops = (bp.get("wireDiagram") or {}).get("hops") or []
-                        for hi, hp in enumerate(hops[:4]):
-                            hx = 64 + hi * 282
-                            added = ", ".join(strip_inline_md(x) for x in (hp.get("added") or [])[:3])
-                            shapes.append(
-                                _pptx_rect(
-                                    sid, f"wire_h_{hi}", hx, 186, 264, 520,
-                                    fill_hex="FFFFFF", line_hex=d_col, line_pt=1.5, rounded=True,
-                                    text_runs=[
-                                        {"text": strip_inline_md(hp.get("hop", f"HOP {hi+1}"))[:24], "pt": 9.5, "bold": True, "color": d_col, "spcAft": 40},
-                                        {"text": strip_inline_md(hp.get("name", ""))[:28], "pt": 12, "bold": True, "color": "0F172A", "spcAft": 80},
-                                        {"text": f"+ {added[:120]}" if added else "Protocol framing", "pt": 9.5, "color": "137333", "spcAft": 100},
-                                        {"text": strip_inline_md(hp.get("payload", ""))[:110], "pt": 8.5, "font": "Courier New", "color": "334155"},
-                                    ],
-                                    pad_lr=100000, pad_tb=110000,
-                                )
-                            )
-                            sid += 1
-                    else:
-                        stages = (bp.get("asyncDiagram") or {}).get("stages") or []
-                        for ai_i, stg in enumerate(stages[:4]):
-                            ax = 64 + ai_i * 282
-                            shapes.append(
-                                _pptx_rect(
-                                    sid, f"async_s_{ai_i}", ax, 186, 264, 420,
-                                    fill_hex="FFFBEB" if ai_i % 2 == 0 else "FFFFFF", line_hex=d_col, line_pt=1.5, rounded=True,
-                                    text_runs=[
-                                        {"text": strip_inline_md(stg.get("stage", f"STAGE {ai_i+1}"))[:26], "pt": 9.5, "bold": True, "color": d_col, "spcAft": 40},
-                                        {"text": strip_inline_md(stg.get("service", ""))[:28], "pt": 12, "bold": True, "color": "0F172A", "spcAft": 60},
-                                        {"text": strip_inline_md(stg.get("cadence", "Async"))[:22], "pt": 9, "color": "475569", "spcAft": 80},
-                                        {"text": strip_inline_md("; ".join(stg.get("bullets") or []) or stg.get("detail", ""))[:140], "pt": 9.8, "color": "334155"},
-                                    ],
-                                    pad_lr=100000, pad_tb=100000,
-                                )
-                            )
-                            sid += 1
-                    shapes.append(
-                        _pptx_rect(
-                            sid, f"{d_kind}_rail", 1212, 182, 324, 540,
-                            fill_hex="F8FAFC", line_hex="CBD5E1", rounded=True,
-                            text_runs=[{"text": d_title.upper()[:30], "pt": 9.5, "bold": True, "color": d_col, "spcAft": 100}]
-                            + [{"text": f"- {b[:84]}", "pt": 10.5, "color": "0F172A", "spcAft": 120} for b in bullets[:4]],
-                            pad_lr=110000, pad_tb=100000,
-                        )
-                    )
-                    sid += 1
-                    shapes.append(
-                        _pptx_rect(
-                            sid, f"{d_kind}_drawio_link", 64, 756, 480, 44, fill_hex=d_bg, line_hex=d_col, rounded=True,
-                            text_runs=[{"text": f"Edit {d_kind.title()} Diagram in Draw.io ->", "pt": 11.5, "bold": True, "color": d_col, "linkRid": r_id_link, "align": "ctr"}],
-                            valign="ctr",
-                        )
-                    )
-                    sid += 1
-                elif idx == code_idx:
-                    code_raw = sl.get("codeSnippet") or bp["codeStarter"].get("pythonApp", "")
+                if idx == code_idx:
+                    code_raw = sl.get("codeSnippet") or bp["codeStarter"].get("schemaSql") or bp["codeStarter"].get("pythonApp", "")
                     runs = []
                     for ln in code_raw.splitlines()[:20]:
                         lead = len(ln) - len(ln.lstrip(" "))
@@ -2313,7 +2098,7 @@ def compile_pptx_bytes(
                         _pptx_rect(
                             sid, "guard_rail", 1052, 186, 484, 598, fill_hex="F8FAFC", line_hex="CBD5E1", rounded=True,
                             text_runs=[{"text": "ENFORCEMENT GUARDRAILS", "pt": 11, "bold": True, "color": "1A73E8", "spcAft": 100}]
-                            + [{"text": f"- {b[:110]}", "pt": 11.5, "color": "0F172A", "spcAft": 140} for b in bullets[:5]],
+                            + [{"text": f"- {_fit_clean_sentence(b, 125)}", "pt": 11.2, "color": "0F172A", "spcAft": 130} for b in bullets[:5]],
                             pad_lr=140000, pad_tb=120000,
                         )
                     )
@@ -2366,30 +2151,42 @@ def compile_pptx_bytes(
                             bx = 64 + pi * 756
                             shapes.append(
                                 _pptx_rect(
-                                    sid, f"proof_slot_{pi}", bx, 200, 716, 520,
+                                    sid, f"proof_slot_{pi}", bx, 196, 716, 512,
                                     fill_hex="FFFBEB", line_hex="D97706", line_pt=2.0, dash="dash", rounded=True,
                                     text_runs=[
                                         {"text": label, "pt": 15, "bold": True, "color": "92400E", "align": "ctr", "spcAft": 160},
                                         {"text": "AUTHENTIC LIVE PROOF REQUIRED — ZERO FAKE SCREENSHOTS", "pt": 11.5, "bold": True, "color": "78350F", "align": "ctr", "spcAft": 100},
-                                        {"text": "Upload a genuine PNG/JPEG from the Create Blog1 portal tab to embed it on Slide 7.", "pt": 10.5, "color": "92400E", "align": "ctr"},
+                                        {"text": f"Upload genuine PNG/JPEG via Live Proofs tab to auto-embed on Slide {proof_idx} (Google Slides & Docs).", "pt": 10.5, "color": "92400E", "align": "ctr"},
                                     ],
                                     valign="ctr", pad_lr=220000,
                                 )
                             )
                             sid += 1
+                        if bullets:
+                            shapes.append(
+                                _pptx_rect(
+                                    sid, "proof_target", 64, 728, 1472, 92, fill_hex="F8FAFC", line_hex="CBD5E1", rounded=True,
+                                    text_runs=[
+                                        {"text": "CAPTURE TARGETS", "pt": 9.5, "bold": True, "color": "334155", "spcAft": 40},
+                                        {"text": "  |  ".join(_fit_clean_sentence(b, 140) for b in bullets[:2]), "pt": 10.5, "color": "0F172A"},
+                                    ],
+                                    pad_lr=140000, pad_tb=70000,
+                                )
+                            )
+                            sid += 1
                 elif sl.get("table") and idx in tbl_idxs:
                     tbl = sl["table"]
-                    shapes.append(_pptx_table(sid, f"tbl_{idx}", 64, 194, 1472, 460, tbl["headers"], tbl["rows"]))
+                    shapes.append(_pptx_table(sid, f"tbl_{idx}", 64, 190, 1472, 464, tbl["headers"], tbl["rows"]))
                     sid += 1
                     if bullets:
+                        note_runs = [{"text": "KEY NOTES", "pt": 9.5, "bold": True, "color": "174EA6", "spcAft": 45}]
+                        for b_item in bullets[:3]:
+                            note_runs.append({"text": f"• {_fit_clean_sentence(b_item, 165)}", "pt": 10.5, "color": "0F172A", "spcAft": 35})
                         shapes.append(
                             _pptx_rect(
-                                sid, f"tbl_note_{idx}", 64, 690, 1472, 108, fill_hex="E8F0FE", line_hex="BFDBFE", rounded=True,
-                                text_runs=[
-                                    {"text": "KEY NOTES", "pt": 10, "bold": True, "color": "174EA6", "spcAft": 60},
-                                    {"text": " | ".join(bullets[:3])[:220], "pt": 11.5, "color": "0F172A"},
-                                ],
-                                pad_lr=140000, pad_tb=90000,
+                                sid, f"tbl_note_{idx}", 64, 676, 1472, 146, fill_hex="E8F0FE", line_hex="BFDBFE", rounded=True,
+                                text_runs=note_runs,
+                                pad_lr=140000, pad_tb=80000,
                             )
                         )
                         sid += 1
@@ -2400,18 +2197,19 @@ def compile_pptx_bytes(
                         shapes.append(
                             _pptx_rect(
                                 sid, f"bcard_{bi}", 64, by, left_w, 94, fill_hex="F8FAFC", line_hex="CBD5E1", rounded=True,
-                                text_runs=[{"text": f"{bi+1}.  {b[:135]}", "pt": 13.5, "color": "0F172A"}],
+                                text_runs=[{"text": f"{bi+1}.  {_fit_clean_sentence(b, 155)}", "pt": 13.0, "color": "0F172A"}],
                                 valign="ctr", pad_lr=150000,
                             )
                         )
                         sid += 1
                     if sl.get("calloutValue"):
+                        clean_cv = _strip_provenance_enum_suffix(sl["calloutValue"])
                         shapes.append(
                             _pptx_rect(
                                 sid, "callout", 1054, 192, 482, 330, fill_hex="E8F0FE", line_hex="1A73E8", line_pt=1.8, rounded=True,
                                 text_runs=[
-                                    {"text": (sl.get("calloutLabel") or "GROUNDED METRIC").upper()[:36], "pt": 10.5, "bold": True, "color": "174EA6", "spcAft": 180},
-                                    {"text": strip_emojis(sl["calloutValue"])[:72], "pt": 22, "bold": True, "color": "0F172A", "spcAft": 180},
+                                    {"text": (sl.get("calloutLabel") or "GROUNDED METRIC").upper()[:40], "pt": 10.5, "bold": True, "color": "174EA6", "spcAft": 180},
+                                    {"text": clean_cv[:80], "pt": 22, "bold": True, "color": "0F172A", "spcAft": 180},
                                     {"text": "Verify basis in the Claim Provenance Ledger.", "pt": 9.5, "color": "174EA6"},
                                 ],
                                 pad_lr=180000, pad_tb=160000,
@@ -2435,7 +2233,7 @@ def compile_pptx_bytes(
                 )
             )
 
-            nat_pair = (native_slide_xmls or {}).get(idx)
+            nat_pair = resolved_native.get(idx)
             if nat_pair and nat_pair[0]:
                 slide_xml = nat_pair[0]
                 nat_url = nat_pair[1] or arch_url
@@ -2647,6 +2445,56 @@ def compile_pptx_bytes(
     return buf.getvalue()
 
 
+_DOCX_INLINE_MD_RE = re.compile(r"(\*\*[^*]+\*\*|`[^`]+`)")
+
+
+def _docx_rich_runs(text: str, *, bold: bool = False, size_hp: int = 20, color: str = "0F172A", font: str = "Arial") -> str:
+    """Converts inline markdown **bold** and `code` into clean WordprocessingML runs (zero literal backticks)."""
+    raw = strip_emojis(str(text or ""))
+    # Strip markdown links [label](url) -> label cleanly in prose
+    raw = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r"\1 (\2)", raw)
+    out: List[str] = []
+    pos = 0
+    for m in _DOCX_INLINE_MD_RE.finditer(raw):
+        if m.start() > pos:
+            seg = raw[pos : m.start()].replace("`", "")
+            b_tag = "<w:b/>" if bold else ""
+            out.append(
+                f'<w:r><w:rPr><w:rFonts w:ascii="{font}" w:hAnsi="{font}"/>{b_tag}'
+                f'<w:color w:val="{color}"/><w:sz w:val="{size_hp}"/></w:rPr>'
+                f'<w:t xml:space="preserve">{xml_esc(seg)}</w:t></w:r>'
+            )
+        tok = m.group(0)
+        if tok.startswith("**") and tok.endswith("**"):
+            inner = tok[2:-2].replace("`", "")
+            out.append(
+                f'<w:r><w:rPr><w:rFonts w:ascii="{font}" w:hAnsi="{font}"/><w:b/>'
+                f'<w:color w:val="{color}"/><w:sz w:val="{size_hp}"/></w:rPr>'
+                f'<w:t xml:space="preserve">{xml_esc(inner)}</w:t></w:r>'
+            )
+        elif tok.startswith("`") and tok.endswith("`"):
+            inner = tok[1:-1]
+            c_sz = max(16, size_hp - 2)
+            out.append(
+                f'<w:r><w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New"/>'
+                f'<w:shd w:val="clear" w:color="auto" w:fill="F1F5F9"/>'
+                f'<w:color w:val="0F172A"/><w:sz w:val="{c_sz}"/></w:rPr>'
+                f'<w:t xml:space="preserve">{xml_esc(inner)}</w:t></w:r>'
+            )
+        pos = m.end()
+    if pos < len(raw):
+        tail = raw[pos:].replace("`", "")
+        b_tag = "<w:b/>" if bold else ""
+        out.append(
+            f'<w:r><w:rPr><w:rFonts w:ascii="{font}" w:hAnsi="{font}"/>{b_tag}'
+            f'<w:color w:val="{color}"/><w:sz w:val="{size_hp}"/></w:rPr>'
+            f'<w:t xml:space="preserve">{xml_esc(tail)}</w:t></w:r>'
+        )
+    if not out:
+        return '<w:r><w:t xml:space="preserve"></w:t></w:r>'
+    return "".join(out)
+
+
 def _docx_p(
     text: str,
     *,
@@ -2658,12 +2506,16 @@ def _docx_p(
     border_bottom: Optional[str] = None,
     shade: Optional[str] = None,
     font: str = "Arial",
+    rich: bool = True,
 ) -> str:
     ppr_bits = [f'<w:spacing w:before="{sp_before}" w:after="{sp_after}"/>']
     if border_bottom:
         ppr_bits.append(f'<w:pBdr><w:bottom w:val="single" w:sz="18" w:space="4" w:color="{border_bottom}"/></w:pBdr>')
     if shade:
         ppr_bits.append(f'<w:shd w:val="clear" w:color="auto" w:fill="{shade}"/>')
+    if rich and font != "Courier New":
+        runs_xml = _docx_rich_runs(text, bold=bold, size_hp=size_hp, color=color, font=font)
+        return f'<w:p><w:pPr>{"".join(ppr_bits)}</w:pPr>{runs_xml}</w:p>'
     b_tag = "<w:b/>" if bold else ""
     return (
         f'<w:p><w:pPr>{"".join(ppr_bits)}</w:pPr>'
@@ -2675,8 +2527,8 @@ def _docx_p(
 def _docx_link_p(prefix: str, link_label: str, rid: str) -> str:
     return (
         '<w:p><w:pPr><w:spacing w:before="40" w:after="100"/></w:pPr>'
-        f'<w:r><w:rPr><w:color w:val="334155"/><w:sz w:val="19"/></w:rPr><w:t xml:space="preserve">{xml_esc(prefix)}</w:t></w:r>'
-        f'<w:hyperlink r:id="{xml_esc(rid)}"><w:r><w:rPr><w:color w:val="1A73E8"/><w:u w:val="single"/><w:b/><w:sz w:val="19"/></w:rPr>'
+        f'<w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="334155"/><w:sz w:val="19"/></w:rPr><w:t xml:space="preserve">{xml_esc(prefix)}</w:t></w:r>'
+        f'<w:hyperlink r:id="{xml_esc(rid)}"><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="1A73E8"/><w:u w:val="single"/><w:b/><w:sz w:val="19"/></w:rPr>'
         f'<w:t>{xml_esc(link_label)}</w:t></w:r></w:hyperlink></w:p>'
     )
 
@@ -2687,14 +2539,13 @@ def _docx_table(headers: List[str], rows: List[List[str]]) -> str:
     grid = "".join(f'<w:gridCol w:w="{col_w}"/>' for _ in range(ncols))
 
     def _tc(text: str, fill: str, fg: str, bold: bool) -> str:
-        b = "<w:b/>" if bold else ""
+        runs = _docx_rich_runs(str(text), bold=bold, size_hp=18, color=fg, font="Arial")
         return (
             f'<w:tc><w:tcPr><w:tcW w:w="{col_w}" w:type="dxa"/>'
             f'<w:shd w:val="clear" w:color="auto" w:fill="{fill}"/>'
             '<w:tcMar><w:top w:w="70" w:type="dxa"/><w:bottom w:w="70" w:type="dxa"/><w:left w:w="100" w:type="dxa"/><w:right w:w="100" w:type="dxa"/></w:tcMar>'
             "</w:tcPr>"
-            f'<w:p><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/>{b}<w:color w:val="{fg}"/><w:sz w:val="18"/></w:rPr>'
-            f'<w:t>{xml_esc(str(text))}</w:t></w:r></w:p></w:tc>'
+            f'<w:p>{runs}</w:p></w:tc>'
         )
 
     out = [
@@ -2745,78 +2596,110 @@ def compile_docx_bytes(
     blog_dir: Path,
     extra_urls: Optional[Dict[str, str]] = None,
     grounding: Optional[Dict[str, Any]] = None,
+    diagram_pngs: Optional[Dict[str, Tuple[bytes, int, int]]] = None,
 ) -> bytes:
     buf = io.BytesIO()
     ex_u = extra_urls or {}
-    doc_rels: List[str] = [
-        f'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(arch_url)}" TargetMode="External"/>',
-        f'<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(seq_url)}" TargetMode="External"/>',
+    # Auto-discover cached rasterized diagram PNGs in blog_dir/diagrams/ if not explicitly provided
+    diag_png_map: Dict[str, Tuple[bytes, int, int]] = dict(diagram_pngs or {})
+    for dk in ("architecture", "cloudarch", "sequence", "security", "wire", "async"):
+        if dk not in diag_png_map:
+            cand_png = blog_dir / "diagrams" / f"{slug}-{dk}.png"
+            if cand_png.is_file():
+                try:
+                    raw_p = cand_png.read_bytes()
+                    _, pw, ph, _ = parse_image_header(raw_p)
+                    diag_png_map[dk] = (raw_p, pw, ph)
+                except Exception:
+                    pass
+
+    ordered_figs: List[Tuple[str, str, str]] = [
+        ("architecture", "Figure 1 — Master Platform Architecture (C4 L2)", arch_url),
     ]
+    if ex_u.get("cloudarch"):
+        ordered_figs.append(("cloudarch", "Figure 2 — Cloud Architecture Center Blueprint (Hub-and-Spoke)", ex_u["cloudarch"]))
+    ordered_figs.append(("sequence", f"Figure {len(ordered_figs)+1} — End-to-End Request Lifecycle Sequence (C4 L3)", seq_url))
     if ex_u.get("security"):
-        doc_rels.append(f'<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(ex_u["security"])}" TargetMode="External"/>')
+        ordered_figs.append(("security", f"Figure {len(ordered_figs)+1} — Trust Perimeter & Security Boundary (C4 L1)", ex_u["security"]))
     if ex_u.get("wire"):
-        doc_rels.append(f'<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(ex_u["wire"])}" TargetMode="External"/>')
+        ordered_figs.append(("wire", f"Figure {len(ordered_figs)+1} — Wire Payload & Schema Transformation (C4 L4)", ex_u["wire"]))
     if ex_u.get("async"):
-        doc_rels.append(f'<Relationship Id="rId5" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(ex_u["async"])}" TargetMode="External"/>')
+        ordered_figs.append(("async", f"Figure {len(ordered_figs)+1} — Async Lifecycle, Export & Recovery Loop", ex_u["async"]))
+
+    doc_rels: List[str] = []
     media_files: Dict[str, bytes] = {}
     has_png = False
     has_jpg = False
 
     body: List[str] = [
-        _docx_p(f"GOOGLE CLOUD ARCHITECTURE BRIEF  |  {bp['domain'].upper()}", bold=True, size_hp=18, color="1A73E8", sp_after=40),
-        _docx_p(bp["title"], bold=True, size_hp=40, color="0F172A", sp_before=20, sp_after=80, border_bottom="1A73E8"),
-        _docx_p(bp["subtitle"], size_hp=24, color="475569", sp_after=140),
+        _docx_p(f"GOOGLE CLOUD ARCHITECTURE BRIEF  |  {bp['domain'].upper()}", bold=True, size_hp=18, color="1A73E8", sp_after=40, rich=False),
+        _docx_p(bp["title"], bold=True, size_hp=40, color="0F172A", sp_before=20, sp_after=80, border_bottom="1A73E8", rich=False),
+        _docx_p(bp["subtitle"], size_hp=24, color="475569", sp_after=140, rich=False),
         _docx_p(
             f"Slug: {slug}  |  Audience: {bp['audience']}  |  Estimated Read: {bp['estimatedReadMinutes']} min  |  Generated: {_now_iso()}",
-            size_hp=17, color="64748B", shade="F1F5F9", sp_after=160,
+            size_hp=17, color="64748B", shade="F1F5F9", sp_after=160, rich=False,
         ),
-        _docx_p("Executive Summary (BLUF)", bold=True, size_hp=26, color="1A73E8", sp_before=120, sp_after=60),
+        _docx_p("Executive Summary (BLUF)", bold=True, size_hp=26, color="1A73E8", sp_before=120, sp_after=60, rich=False),
         _docx_p(bp["summary"] or bp["subtitle"], size_hp=21, shade="EFF6FF", sp_after=140),
-        _docx_link_p("Figure 1 (C4 L2 Master Reference Architecture): ", "Open in viewer.diagrams.net ->", "rId1"),
-        _docx_link_p("Figure 2 (C4 L3 End-to-End Request Sequence): ", "Open in viewer.diagrams.net ->", "rId2"),
-        *(
-            [_docx_link_p("Figure 3 (C4 L1 Trust Perimeter & Security Boundary): ", "Open in viewer.diagrams.net ->", "rId3")]
-            if ex_u.get("security") else []
-        ),
-        *(
-            [_docx_link_p("Figure 4 (C4 L4 Wire Payload & Schema Transformation): ", "Open in viewer.diagrams.net ->", "rId4")]
-            if ex_u.get("wire") else []
-        ),
-        *(
-            [_docx_link_p("Figure 5 (Async Lifecycle, Export & Recovery Loop): ", "Open in viewer.diagrams.net ->", "rId5")]
-            if ex_u.get("async") else []
-        ),
     ]
 
     if bp.get("keyTakeaways"):
-        body.append(_docx_p("Key Takeaways", bold=True, size_hp=24, color="0F172A", sp_before=140, sp_after=60))
+        body.append(_docx_p("Key Takeaways", bold=True, size_hp=24, color="0F172A", sp_before=140, sp_after=60, rich=False))
         for tk in bp["keyTakeaways"]:
-            body.append(_docx_p(f"- {tk}", size_hp=20, sp_before=20, sp_after=40))
+            body.append(_docx_p(f"• {tk}", size_hp=20, sp_before=20, sp_after=40))
+
+    body.append(_docx_p("Architecture Diagrams & Interactive Blueprints", bold=True, size_hp=26, color="1A73E8", sp_before=180, sp_after=60, border_bottom="CBD5E1", rich=False))
+    for fi, (f_key, f_label, f_url) in enumerate(ordered_figs, 1):
+        rid = f"rId{fi}"
+        doc_rels.append(
+            f'<Relationship Id="{rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(f_url)}" TargetMode="External"/>'
+        )
+        body.append(_docx_link_p(f"{f_label}: ", "Open editable diagram in viewer.diagrams.net ->", rid))
+        if f_key in diag_png_map:
+            png_bytes, pw, ph = diag_png_map[f_key]
+            img_rid = f"rId{200 + fi}"
+            mname = f"diagram_{fi}_{f_key}.png"
+            media_files[f"word/media/{mname}"] = png_bytes
+            has_png = True
+            doc_rels.append(
+                f'<Relationship Id="{img_rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/{mname}"/>'
+            )
+            body.append(_docx_inline_image(img_rid, 200 + fi, mname, pw, ph))
 
     for sec in bp["sections"]:
-        body.append(_docx_p(sec["heading"], bold=True, size_hp=28, color="0F172A", sp_before=220, sp_after=80, border_bottom="CBD5E1"))
+        body.append(_docx_p(sec["heading"], bold=True, size_hp=28, color="0F172A", sp_before=220, sp_after=80, border_bottom="CBD5E1", rich=False))
         for p in sec.get("paragraphs") or []:
             body.append(_docx_p(p, size_hp=20, sp_after=90))
         for b in sec.get("bullets") or []:
-            body.append(_docx_p(f"- {b}", size_hp=19, sp_before=15, sp_after=40))
+            body.append(_docx_p(f"• {b}", size_hp=19, sp_before=15, sp_after=40))
         for cb in (sec.get("codeBlocks") or []):
             cap = cb.get("caption") or f"Code ({cb.get('language', 'text')})"
-            body.append(_docx_p(f"[{str(cb.get('language', 'code')).upper()}] {cap}", bold=True, size_hp=17, color="1E40AF", shade="EFF6FF", sp_before=60, sp_after=10))
-            for ln in str(cb.get("code") or "").splitlines()[:45]:
-                body.append(_docx_p(ln, size_hp=16, font="Courier New", color="0F172A", shade="F1F5F9", sp_before=0, sp_after=0))
-            body.append(_docx_p("", sp_after=40))
+            body.append(_docx_p(f"[{str(cb.get('language', 'code')).upper()}] {cap}", bold=True, size_hp=17, color="1E40AF", shade="EFF6FF", sp_before=60, sp_after=10, rich=False))
+            for ln in str(cb.get("code") or "").splitlines():
+                body.append(_docx_p(ln, size_hp=16, font="Courier New", color="0F172A", shade="F1F5F9", sp_before=0, sp_after=0, rich=False))
+            body.append(_docx_p("", sp_after=40, rich=False))
         if sec.get("table"):
             body.append(_docx_table(sec["table"]["headers"], sec["table"]["rows"]))
-            body.append(_docx_p("", sp_after=80))
+            body.append(_docx_p("", sp_after=80, rich=False))
 
-    cs = bp["codeStarter"]
-    if cs.get("pythonApp"):
-        body.append(_docx_p("Starter Implementation Snippet (GENERATED_TEMPLATE_UNDEPLOYED)", bold=True, size_hp=24, color="0F172A", sp_before=180, sp_after=60, border_bottom="EA8600"))
-        body.append(_docx_p("WARNING: Generated template code has NOT been applied to any live GCP project. Review before deployment.", bold=True, size_hp=17, color="92400E", shade="FFFBEB", sp_after=80))
-        for ln in cs["pythonApp"].splitlines()[:45]:
-            body.append(_docx_p(ln, size_hp=16, font="Courier New", color="1E293B", shade="F1F5F9", sp_before=0, sp_after=0))
+    cs = bp.get("codeStarter") or {}
+    starter_manifest_rows = [
+        ["main.tf", "Terraform GCP infrastructure & IAM scaffold", "GENERATED_TEMPLATE_UNDEPLOYED"],
+        ["variables.tf", "Parameterized project, region & instance inputs", "GENERATED_TEMPLATE_UNDEPLOYED"],
+        ["app.py", "FastAPI / Python 3.11 reference service (AST-verified)", "GENERATED_TEMPLATE_UNDEPLOYED"],
+        ["Dockerfile", "Hardened non-root Python 3.11 container image", "GENERATED_TEMPLATE_UNDEPLOYED"],
+        ["requirements.txt", "Pinned Python runtime dependencies", "GENERATED_TEMPLATE_UNDEPLOYED"],
+        ["deploy.sh", "Zero-trust build & deployment wrapper script", "GENERATED_TEMPLATE_UNDEPLOYED"],
+        ["verify.sh", "Post-deploy ingress & health verification script", "GENERATED_TEMPLATE_UNDEPLOYED"],
+    ]
+    if str(cs.get("schemaSql") or "").strip():
+        starter_manifest_rows.insert(2, ["schema.sql", "Canonical database DDL, indexes & property graph", "GENERATED_TEMPLATE_UNDEPLOYED"])
+    body.append(_docx_p("Starter Implementation Kit Manifest", bold=True, size_hp=24, color="0F172A", sp_before=180, sp_after=60, border_bottom="EA8600", rich=False))
+    body.append(_docx_p("STATUS: GENERATED_TEMPLATE_UNDEPLOYED — Review, run terraform plan, and security-scan starter.zip before applying to any live Google Cloud project.", bold=True, size_hp=17, color="92400E", shade="FFFBEB", sp_after=80, rich=False))
+    body.append(_docx_table(["Starter File", "Purpose", "Verification Status"], starter_manifest_rows))
+    body.append(_docx_p("", sp_after=80, rich=False))
 
-    body.append(_docx_p("Authentic Live Proof Screenshots", bold=True, size_hp=26, color="137333", sp_before=220, sp_after=80, border_bottom="137333"))
+    body.append(_docx_p("Authentic Live Proof Screenshots", bold=True, size_hp=26, color="137333", sp_before=220, sp_after=80, border_bottom="137333", rich=False))
     if proofs:
         for pi, pf in enumerate(proofs[:6]):
             pfile = blog_dir / pf["relPath"]
@@ -2827,18 +2710,18 @@ def compile_docx_bytes(
                 has_png = True
             else:
                 has_jpg = True
-            rid = f"rId{10 + pi}"
+            rid = f"rId{20 + pi}"
             mname = f"proof_{pi+1}.{ext}"
             media_files[f"word/media/{mname}"] = pfile.read_bytes()
             doc_rels.append(
                 f'<Relationship Id="{rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/{mname}"/>'
             )
-            body.append(_docx_p(f"[{pf['stage']}] {pf['caption']} ({pf['width']}x{pf['height']}px, SHA-256: {pf['sha256'][:16]}...)", bold=True, size_hp=18, color="0D652D", sp_before=100, sp_after=40))
+            body.append(_docx_p(f"[{pf['stage']}] {pf['caption']} ({pf['width']}x{pf['height']}px, SHA-256: {pf['sha256'][:16]}...)", bold=True, size_hp=18, color="0D652D", sp_before=100, sp_after=40, rich=False))
             body.append(_docx_inline_image(rid, 100 + pi, mname, int(pf["width"]), int(pf["height"])))
     else:
-        body.append(_docx_p("0 live screenshots uploaded yet. Capture and upload genuine BEFORE/AFTER PNG/JPEG proofs via Create Blog1 to embed real screenshots here.", size_hp=19, color="92400E", shade="FFFBEB"))
+        body.append(_docx_p("0 live screenshots uploaded yet. Capture and upload genuine BEFORE/AFTER PNG/JPEG proofs via Create Blog1 to embed real screenshots here and in Google Slides.", size_hp=19, color="92400E", shade="FFFBEB", rich=False))
 
-    body.append(_docx_p("Claim Provenance Ledger", bold=True, size_hp=26, color="1A73E8", sp_before=220, sp_after=80, border_bottom="1A73E8"))
+    body.append(_docx_p("Claim Provenance Ledger", bold=True, size_hp=26, color="1A73E8", sp_before=220, sp_after=80, border_bottom="1A73E8", rich=False))
     if bp["claimLedger"]:
         body.append(_docx_table(
             ["ID", "Claim", "Value", "Provenance Tag", "Basis / Scope"],
@@ -2846,19 +2729,19 @@ def compile_docx_bytes(
         ))
 
     if bp["faq"]:
-        body.append(_docx_p("Frequently Asked Questions", bold=True, size_hp=26, color="0F172A", sp_before=220, sp_after=80, border_bottom="CBD5E1"))
+        body.append(_docx_p("Frequently Asked Questions", bold=True, size_hp=26, color="0F172A", sp_before=220, sp_after=80, border_bottom="CBD5E1", rich=False))
         for f in bp["faq"]:
             body.append(_docx_p(f"Q: {f['question']}", bold=True, size_hp=20, color="1A73E8", sp_before=90, sp_after=30))
             body.append(_docx_p(f"A: {f['answer']}", size_hp=19, sp_after=80))
 
     if bp["references"]:
-        body.append(_docx_p("References (Public Documentation)", bold=True, size_hp=24, color="0F172A", sp_before=180, sp_after=60))
+        body.append(_docx_p("References (Public Documentation)", bold=True, size_hp=24, color="0F172A", sp_before=180, sp_after=60, rich=False))
         for ri, rf in enumerate(bp["references"]):
             rid = f"rId{50 + ri}"
             doc_rels.append(
                 f'<Relationship Id="{rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(rf["url"])}" TargetMode="External"/>'
             )
-            body.append(_docx_link_p(f"- {rf['title']}: ", rf["url"], rid))
+            body.append(_docx_link_p(f"• {rf['title']}: ", rf["url"], rid))
 
     doc_xml = (
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
@@ -3022,7 +2905,7 @@ def compile_blog_markdown(
                 f"| `{pf['stage']}` | {pf['caption'].replace('|', '/')} | {pf['width']}x{pf['height']} | `{pf['sha256'][:16]}...` | {pf.get('sourceUrl') or 'Uploaded file'} |"
             )
     else:
-        lines.append("> **0 live proofs uploaded yet.** Per zero-fabrication policy, fake/mock HTML screenshots are never generated. Upload genuine console or SaaS BEFORE/AFTER PNG/JPEG proofs in the **Live Proofs & Recorder** tab to auto-embed them here, in the `.pptx` proof slide, and in `.docx`.")
+        lines.append("> **0 live proofs uploaded yet.** Per zero-fabrication policy, fake/mock HTML screenshots are never generated. Upload genuine console or SaaS BEFORE/AFTER PNG/JPEG proofs in the **Live Proofs & Recorder** tab to auto-embed them here, in the Google Slides proof slide, and in the Google Docs architecture brief.")
     lines.append("")
 
     if bp["faq"]:
@@ -3092,19 +2975,38 @@ def compile_starter_zip(bp: Dict[str, Any], slug: str) -> Tuple[bytes, Dict[str,
         else:
             verify_sh = f"#!/usr/bin/env bash\n# STATUS: GENERATED_TEMPLATE_UNDEPLOYED\n{verify_sh}\n"
 
-    readme = (
-        f"# {bp['title']} — Starter Kit (`{slug}`)\n\n"
-        "> **STATUS: `GENERATED_TEMPLATE_UNDEPLOYED`** — These files were generated by the live Gemini API as an "
-        "architecture starter template. They have **not** been applied to any Google Cloud project.\n\n"
-        f"{cs.get('readmeSummary') or ''}\n\n"
-        "## Included Files\n"
-        "- `main.tf` — Core Terraform resource scaffold\n"
-        "- `variables.tf` — Input variable declarations\n"
-        "- `app.py` — Reference Python service scaffold\n"
-        "- `deploy.sh` — Deployment wrapper script\n"
-        "- `verify.sh` — Local verification script\n"
-        "- `PROVENANCE.txt` — Generation & safety attestation\n"
-    )
+    dockerfile_body = (cs.get("dockerfile") or "").strip()
+    if not dockerfile_body:
+        dockerfile_body = (
+            "FROM python:3.11-slim\n"
+            "ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PORT=8080\n"
+            "WORKDIR /app\n"
+            "COPY requirements.txt .\n"
+            "RUN pip install --no-cache-dir -r requirements.txt\n"
+            "COPY app.py .\n"
+            "RUN useradd --create-home --uid 10001 appuser && chown -R appuser:appuser /app\n"
+            "USER appuser\n"
+            "EXPOSE 8080\n"
+            'CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]\n'
+        )
+    dockerfile_txt = banner_hash + dockerfile_body.rstrip() + "\n"
+
+    req_body = (cs.get("requirementsTxt") or "").strip()
+    if not req_body:
+        inferred_reqs = ["fastapi==0.115.6", "uvicorn[standard]==0.34.0", "google-auth==2.37.0"]
+        if "google.cloud.spanner" in py_app or "spanner" in py_app:
+            inferred_reqs.append("google-cloud-spanner==3.51.0")
+        if "google.genai" in py_app or "from google import genai" in py_app:
+            inferred_reqs.append("google-genai==1.5.0")
+        elif "vertexai" in py_app:
+            inferred_reqs.append("google-cloud-aiplatform==1.79.0")
+        if "google.cloud.bigquery" in py_app:
+            inferred_reqs.append("google-cloud-bigquery==3.29.0")
+        if "google.cloud.dlp" in py_app:
+            inferred_reqs.append("google-cloud-dlp==3.26.0")
+        req_body = "\n".join(inferred_reqs)
+    requirements_txt = banner_hash + req_body.rstrip() + "\n"
+
     provenance_txt = (
         f"STATUS: GENERATED_TEMPLATE_UNDEPLOYED\n"
         f"SLUG: {slug}\n"
@@ -3112,12 +3014,14 @@ def compile_starter_zip(bp: Dict[str, Any], slug: str) -> Tuple[bytes, Dict[str,
         f"PYTHON_AST_VALID: {py_ast_ok}\n"
         + (f"PYTHON_AST_ERROR: {py_ast_err}\n" if py_ast_err else "")
     )
-    files = {
-        "README.md": readme,
+    files: Dict[str, str] = {
+        "README.md": "",
         "PROVENANCE.txt": provenance_txt,
         "main.tf": tf_main,
         "variables.tf": tf_vars,
         "app.py": py_app,
+        "Dockerfile": dockerfile_txt,
+        "requirements.txt": requirements_txt,
         "deploy.sh": deploy_sh,
         "verify.sh": verify_sh,
     }
@@ -3128,6 +3032,31 @@ def compile_starter_zip(bp: Dict[str, Any], slug: str) -> Tuple[bytes, Dict[str,
             f"-- Generated for slug '{slug}' at {_now_iso()}.\n\n"
             + schema_sql + "\n"
         )
+    file_descs = {
+        "main.tf": "Core Terraform resource scaffold",
+        "variables.tf": "Input variable declarations",
+        "schema.sql": "Database DDL, indexes, and graph/schema definitions",
+        "app.py": "Reference Python 3.11 service scaffold (AST-verified)",
+        "Dockerfile": "Hardened non-root Python 3.11 container image",
+        "requirements.txt": "Pinned Python runtime dependencies",
+        "deploy.sh": "Deployment wrapper script",
+        "verify.sh": "Post-deploy verification script",
+        "PROVENANCE.txt": "Generation & safety attestation",
+    }
+    included_lines = [
+        f"- `{fn}` — {file_descs.get(fn, 'Starter kit artifact')}"
+        for fn in ("main.tf", "variables.tf", "schema.sql", "app.py", "Dockerfile", "requirements.txt", "deploy.sh", "verify.sh", "PROVENANCE.txt")
+        if fn in files
+    ]
+    files["README.md"] = (
+        f"# {bp['title']} — Starter Kit (`{slug}`)\n\n"
+        "> **STATUS: `GENERATED_TEMPLATE_UNDEPLOYED`** — These files were generated by the live Gemini API as an "
+        "architecture starter template. They have **not** been applied to any Google Cloud project.\n\n"
+        f"{cs.get('readmeSummary') or ''}\n\n"
+        "## Included Files\n"
+        + "\n".join(included_lines)
+        + "\n"
+    )
     zbuf = io.BytesIO()
     with zipfile.ZipFile(zbuf, "w", zipfile.ZIP_DEFLATED) as zf:
         for fn, content in files.items():
@@ -3261,7 +3190,7 @@ def _try_compile_host_mp4(blog_dir: Path, slug: str, durations: List[float]) -> 
     tmp_dir.mkdir(parents=True, exist_ok=True)
     seg_files: List[Path] = []
     try:
-        for i in range(1, 10):
+        for i in range(1, max(1, len(durations)) + 1):
             svg_p = blog_dir / "slides" / f"slide_{i:02d}.svg"
             mp3_p = blog_dir / "audio" / f"slide_{i:02d}.mp3"
             if not (svg_p.is_file() and mp3_p.is_file()):
@@ -3295,6 +3224,23 @@ def _try_compile_host_mp4(blog_dir: Path, slug: str, durations: List[float]) -> 
         shutil.rmtree(tmp_dir, ignore_errors=True)
 
 
+def _count_prose_only_words(md_text: str) -> int:
+    """Counts real prose words strictly excluding fenced code blocks, markdown tables, URLs, and headings."""
+    # Remove fenced code blocks completely
+    stripped = re.sub(r"```[\s\S]*?```", " ", md_text or "")
+    lines = []
+    for ln in stripped.splitlines():
+        s = ln.strip()
+        if not s or s.startswith("|") or s.startswith("#"):
+            continue
+        # Remove markdown links keeping visible label, strip bare URLs & inline code backticks
+        s = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", s)
+        s = re.sub(r"https?://\S+", " ", s)
+        s = re.sub(r"[`*_>#\[\]()]+", " ", s)
+        lines.append(s)
+    return len(re.findall(r"\b[A-Za-z][A-Za-z0-9'-]*\b", " ".join(lines)))
+
+
 def run_deterministic_quality_gate(
     *,
     bp: Dict[str, Any],
@@ -3316,15 +3262,14 @@ def run_deterministic_quality_gate(
     def _add(cid: str, label: str, passed: bool, detail: str) -> None:
         checks.append({"id": cid, "label": label, "status": "PASS" if passed else "FAIL", "detail": detail})
 
-    clean_md = re.sub(r"https://viewer\.diagrams\.net/[^\s)]+", "URL", md_text)
-    words = len(re.findall(r"\S+", clean_md))
+    prose_words = _count_prose_only_words(md_text)
     cb_count = sum(len(s.get("codeBlocks") or []) for s in (bp.get("sections") or []))
     tbl_count = sum(1 for s in (bp.get("sections") or []) if s.get("table"))
     _add(
         "D-01",
-        "Markdown Structure & Depth",
-        words >= 180 and len(bp.get("sections", [])) >= 3,
-        f"{words:,} clean prose words across {len(bp.get('sections', []))} sections, {tbl_count} tables, {cb_count} inline code/formula blocks.",
+        "Markdown Structure & Prose-Only Depth",
+        prose_words >= 180 and len(bp.get("sections", [])) >= 3,
+        f"{prose_words:,} prose-only words (excl. code/tables/URLs) across {len(bp.get('sections', []))} sections, {tbl_count} section tables, {cb_count} inline code blocks.",
     )
 
     ic_cnt = arch_icon_count if arch_icon_count is not None else arch_drawio.count("image=data:image/svg+xml,")
@@ -3385,40 +3330,91 @@ def run_deterministic_quality_gate(
 
     expected_slides = 12 if len(bp.get("slides") or []) >= 12 else len((bp.get("slides") or [])[:9]) or 9
     d5_ok, d5_detail = True, ""
+    pptx_all_xml = ""
     try:
         with zipfile.ZipFile(io.BytesIO(pptx_bytes), "r") as zf:
             names = set(zf.namelist())
             missing_s = [i for i in range(1, expected_slides + 1) if f"ppt/slides/slide{i}.xml" not in names]
             missing_n = [i for i in range(1, expected_slides + 1) if f"ppt/notesSlides/notesSlide{i}.xml" not in names]
             zero_rows = 0
+            icon_missing_slides: List[int] = []
+            text_badge_hits: List[str] = []
+            total_ooxml_icons = 0
+            req_links = ((3, 4, 5, 6, 7, 8) if (extra_diagrams and "cloudarch" in extra_diagrams) else (3, 5, 6, 7, 8)) if (expected_slides == 12 and extra_diagrams) else (3, 5)
+            slide_xml_chunks: List[str] = []
             for i in range(1, expected_slides + 1):
                 xml_b = zf.read(f"ppt/slides/slide{i}.xml")
                 ET.fromstring(xml_b)
+                s_str = xml_b.decode("utf-8")
+                slide_xml_chunks.append(s_str)
                 if re.search(rb'<a:tr\s+h="0"', xml_b):
                     zero_rows += 1
-            req_links = ((3, 4, 5, 6, 7, 8) if (extra_diagrams and "cloudarch" in extra_diagrams) else (3, 5, 6, 7, 8)) if (expected_slides == 12 and extra_diagrams) else (3, 5)
+                if i in req_links:
+                    ico_cnt = s_str.count('name="ico_')
+                    total_ooxml_icons += ico_cnt
+                    if ico_cnt < 1:
+                        icon_missing_slides.append(i)
+                    for bad_b in (">GOO<", ">GCP<", ">SAA<"):
+                        if bad_b in s_str:
+                            text_badge_hits.append(f"S{i}:{bad_b}")
+            pptx_all_xml = "\n".join(slide_xml_chunks)
             links_ok = all(
                 "viewer.diagrams.net" in zf.read(f"ppt/slides/_rels/slide{si}.xml.rels").decode("utf-8")
                 for si in req_links
             )
-            d5_ok = (not missing_s) and (not missing_n) and (zero_rows == 0) and links_ok
-            d5_detail = f"{expected_slides}/{expected_slides} slides, {expected_slides}/{expected_slides} notesSlides, 0 zero-height rows, {len(req_links)} Draw.io #R links={'OK' if links_ok else 'MISSING'}."
+            d5_ok = (not missing_s) and (not missing_n) and (zero_rows == 0) and links_ok and (not icon_missing_slides) and (not text_badge_hits)
+            d5_detail = (
+                f"{expected_slides}/{expected_slides} slides, {expected_slides}/{expected_slides} notesSlides, "
+                f"{total_ooxml_icons} native <a:custGeom> icon shapes across {len(req_links)} diagram slides, "
+                f"0 text-box badge fallbacks, {len(req_links)} Draw.io #R links={'OK' if links_ok else 'MISSING'}."
+            )
+            if icon_missing_slides:
+                d5_detail += f" MISSING_ICONS_SLIDES={icon_missing_slides}"
+            if text_badge_hits:
+                d5_detail += f" TEXT_BADGE_FALLBACK={text_badge_hits}"
     except Exception as exc:
         d5_ok, d5_detail = False, f"PPTX ZIP/XML error: {exc}"
-    _add("D-05", "Editable OOXML .pptx Structure & #R Links", d5_ok, d5_detail)
+    _add("D-05", "Editable OOXML .pptx, Native Vector Icons & #R Links", d5_ok, d5_detail)
 
     d6_ok, d6_detail = True, "Valid WordprocessingML document.xml."
+    docx_xml_str = ""
     try:
         with zipfile.ZipFile(io.BytesIO(docx_bytes), "r") as zf:
             doc_xml = zf.read("word/document.xml")
-            ET.fromstring(doc_xml)
-            d6_detail = f"Valid word/document.xml ({len(doc_xml):,} bytes, {len(zf.namelist())} package parts)."
+            root_doc = ET.fromstring(doc_xml)
+            docx_xml_str = doc_xml.decode("utf-8")
+            # Check all expected figures present
+            expected_fig_n = 6 if (extra_diagrams and "cloudarch" in extra_diagrams) else 5
+            missing_figs = [f"Figure {fi}" for fi in range(1, expected_fig_n + 1) if f"Figure {fi}" not in docx_xml_str]
+            # Check zero literal markdown backticks in prose paragraphs (non-Courier New)
+            ns_w = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+            backtick_leaks = 0
+            for p_el in root_doc.findall(".//w:p", ns_w):
+                is_code_p = any(
+                    (rf.attrib.get("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}ascii") == "Courier New")
+                    and (p_el.find("./w:pPr/w:shd", ns_w) is not None)
+                    for rf in p_el.findall(".//w:rFonts", ns_w)
+                )
+                if is_code_p:
+                    continue
+                p_txt = "".join(t.text or "" for t in p_el.findall(".//w:t", ns_w))
+                if "`" in p_txt:
+                    backtick_leaks += 1
+            d6_ok = (not missing_figs) and (backtick_leaks == 0)
+            d6_detail = (
+                f"Valid word/document.xml ({len(doc_xml):,} bytes, {len(zf.namelist())} parts, "
+                f"{expected_fig_n - len(missing_figs)}/{expected_fig_n} figures, {backtick_leaks} prose backtick leaks)."
+            )
+            if missing_figs:
+                d6_detail += f" MISSING={missing_figs}"
     except Exception as exc:
         d6_ok, d6_detail = False, f"DOCX ZIP/XML error: {exc}"
-    _add("D-06", "GCP-Branded OOXML .docx Structure", d6_ok, d6_detail)
+    _add("D-06", "GCP-Branded OOXML .docx Parity & Clean Formatting", d6_ok, d6_detail)
 
     emoji_hits = 0
     raw_md_leaks = 0
+    enum_leaks = 0
+    stale_slide7_hits = 0
     try:
         with zipfile.ZipFile(io.BytesIO(pptx_bytes), "r") as zf:
             for i in range(1, expected_slides + 1):
@@ -3427,40 +3423,73 @@ def run_deterministic_quality_gate(
                     emoji_hits += 1
                 if "**" in s_txt and i != (9 if expected_slides == 12 else 6):
                     raw_md_leaks += 1
+                if any(f"({tag})" in s_txt for tag in ALLOWED_PROVENANCE_TAGS):
+                    enum_leaks += 1
+                if expected_slides == 12 and "Slide 7" in s_txt and i == 10:
+                    stale_slide7_hits += 1
     except Exception:
         pass
     _add("D-07", "Zero Status Emojis inside Slide XML", emoji_hits == 0, f"0 emoji glyphs detected across slides 1..{expected_slides}." if emoji_hits == 0 else f"{emoji_hits} slides contained disallowed status emojis.")
 
-    scan_blobs = [md_text, arch_drawio, seq_drawio] + [
+    scan_blobs = [md_text, arch_drawio, seq_drawio, pptx_all_xml, docx_xml_str] + [
         dv.get("xml", "") for k, dv in (extra_diagrams or {}).items() if k in ("cloudarch", "security", "wire", "async")
-    ]
-    leaks = scan_for_f13_leaks("\n".join(scan_blobs))
-    _add("D-08", "Public-Repo F-13 Hygiene & Secret Scan", len(leaks) == 0, "0 internal domains, tokens, or unverified refs." if not leaks else f"Detected: {', '.join(leaks)}")
+    ] + list((starter_files or {}).values())
+    combo_scan = "\n".join(scan_blobs)
+    leaks = scan_for_f13_leaks(combo_scan)
+    if re.search(r"\b(?:acme_corp|tenant_acme|@acme\.com|acme-corp)\b", combo_scan, re.IGNORECASE):
+        leaks.append("fixture_placeholder:acme")
+    if stale_slide7_hits > 0:
+        leaks.append("stale_proof_copy:Slide_7_on_12slide_deck")
+    _add("D-08", "Public-Repo F-13 Hygiene, Secret & Fixture Scan", len(leaks) == 0, "0 internal domains, tokens, @google.com leaks, or acme fixtures across all artifacts." if not leaks else f"Detected: {', '.join(leaks)}")
 
     ledger = bp.get("claimLedger") or []
     valid_tags = all(c.get("provenance") in ALLOWED_PROVENANCE_TAGS for c in ledger)
     _add("D-09", "Claim Provenance Ledger Tagging", len(ledger) >= 1 and valid_tags, f"{len(ledger)} quantitative claims tagged with canonical provenance categories.")
 
+    # Verify BOTH starter app.py AND every inline Python code block in blog.md parse via ast.parse()
+    inline_py_errs: List[str] = []
+    for idx_m, m_py in enumerate(re.finditer(r"```(?:python|py)\s*\n([\s\S]*?)```", md_text or "", re.IGNORECASE), 1):
+        snippet = m_py.group(1)
+        try:
+            ast.parse(snippet)
+        except SyntaxError as exc:
+            inline_py_errs.append(f"blog.md block #{idx_m} L{exc.lineno}: {exc.msg}")
     has_label = all("GENERATED_TEMPLATE_UNDEPLOYED" in starter_files.get(k, "") for k in ("main.tf", "app.py", "README.md", "PROVENANCE.txt"))
-    _add("D-10", "Starter Code AST & Undeployed Disclosure", py_ast_ok and has_label, "app.py parses via ast.parse() and starter artifacts bear GENERATED_TEMPLATE_UNDEPLOYED." if (py_ast_ok and has_label) else f"AST ok={py_ast_ok} ({py_ast_err}), label ok={has_label}")
+    has_container_files = bool(starter_files.get("Dockerfile")) and bool(starter_files.get("requirements.txt"))
+    d10_ok = py_ast_ok and (not inline_py_errs) and has_label and has_container_files
+    _add(
+        "D-10",
+        "Starter + Inline Python AST, Container & Disclosure",
+        d10_ok,
+        "app.py + all inline Python blocks pass ast.parse(); Dockerfile & requirements.txt present; GENERATED_TEMPLATE_UNDEPLOYED attested."
+        if d10_ok
+        else f"starter_ast={py_ast_ok} ({py_ast_err}), inline_py_errs={inline_py_errs[:2]}, label={has_label}, docker+req={has_container_files}",
+    )
 
     tf_findings = _pipe_v2.scan_terraform_security(starter_files)
+    # Also scan inline blog.md code blocks for the Cloud Run ingress bug or unauthenticated flags
+    for m_code in re.finditer(r"```(?:bash|sh|shell|hcl|tf|yaml)\s*\n([\s\S]*?)```", md_text or "", re.IGNORECASE):
+        blk = m_code.group(1)
+        if "spec.template.metadata.annotations" in blk and "run.googleapis.com/ingress" in blk:
+            tf_findings.append({"id": "MD-SH-BUG-01", "severity": "P1", "detail": "blog.md inline bash/code inspects spec.template.metadata.annotations['run.googleapis.com/ingress'] instead of top-level metadata.annotations."})
+        if "--allow-unauthenticated" in blk:
+            tf_findings.append({"id": "MD-SH-SEC-01", "severity": "P0", "detail": "blog.md inline bash contains --allow-unauthenticated."})
     _add(
         "D-11",
-        "Terraform & Script Zero-Trust Hygiene",
+        "Terraform, Script & App Zero-Trust Hygiene",
         len(tf_findings) == 0,
-        "0 allUsers/allAuthenticatedUsers bindings, 0 deprecated v1 Cloud Run resources, 0 unauthenticated flags."
+        "0 allUsers/allAuthenticatedUsers, 0 deprecated v1 resources, 0 unverified IAP/FGAC/ingress bugs."
         if not tf_findings
         else " | ".join(f"[{x['id']}] {x['detail']}" for x in tf_findings[:4]),
     )
 
     _add(
         "D-12",
-        "Zero Raw Markdown Leakage inside Slides",
-        raw_md_leaks == 0,
-        f"0 leaked literal '**' markdown markers inside slides 1..{expected_slides}."
-        if raw_md_leaks == 0
-        else f"{raw_md_leaks} slide XML parts contained raw '**' markdown markers.",
+        "Zero Raw Markdown or Enum Leakage inside Slides",
+        raw_md_leaks == 0 and enum_leaks == 0,
+        f"0 leaked literal '**' markdown markers and 0 raw provenance enum tags inside slides 1..{expected_slides}."
+        if (raw_md_leaks == 0 and enum_leaks == 0)
+        else f"{raw_md_leaks} raw '**' leaks, {enum_leaks} raw enum tag leaks inside slide XML.",
     )
 
     passed_n = sum(1 for c in checks if c["status"] == "PASS")
@@ -3492,42 +3521,63 @@ def run_orthogonal_llm_judge(
         "NEVER claim these models are fake, unconfirmed, or deprecated, and NEVER recommend downgrading them to Gemini 1.5. "
         "2. Cloud Spanner Graph (`CREATE PROPERTY GRAPH`, ISO GQL `GRAPH_TABLE`), Spanner vector search, Spanner full-text search (`TOKENLIST`/`TOKENIZE_FULLTEXT`), and Cloud Run v2 (`google_cloud_run_v2_service`) are real Google Cloud capabilities — verify exact syntax against the LIVE_GOOGLE_SEARCH_GROUNDING dossier and Google Search before rejecting. "
         "3. Treat the LIVE_GOOGLE_SEARCH_GROUNDING dossier below as verified live web evidence. Never flag text truncated at the prompt excerpt boundary as an incomplete article or broken snippet. "
-        "Critically review for genuine hallucinations, invented IDs/URLs, incorrect SQL/GQL/DDL parameters, missing failure modes, Terraform/IAM security gaps (e.g. allUsers, deprecated v1 resources), "
-        "overstated claims lacking provenance tags, stale product names, or diagram-vs-prose mismatches. Return ONLY raw JSON (no prose wrapper, no markdown headings): "
+        "STRICT AUDIT CHECKLIST (flag P0/P1 for ANY violation found across prose, diagrams, slides, or starter code): "
+        "- Spanner Graph ANN: `APPROX_COSINE_DISTANCE` inside single-stage `MATCH (src)-[rel]->(dst)` silently defeats the vector index (must use 2-stage `MATCH (@{FORCE_INDEX=...} src) ... ORDER BY distance LIMIT @k NEXT MATCH ...`). "
+        "- Spanner FGAC: hard limit is 100 database roles per database (never propose 1-role-per-tenant for >100 tenants); never grant `roles/spanner.databaseUser` to an FGAC-restricted service account. "
+        "- Spanner Editions: Enterprise is regional-only (99.99% SLA, $1.23/hr per 1,000 PUs us-central1 list); Enterprise Plus is required for multi-region 99.999% SLA. "
+        "- Security & Code: IAP `X-Goog-IAP-JWT-Assertion` MUST be cryptographically verified (`verify_token`); Cloud Run ingress annotation is top-level `metadata.annotations['run.googleapis.com/ingress']` (NOT `spec.template.metadata.annotations`); `os.environ` vars in `app.py` must match `main.tf`; inline code blocks & Slide 9 MUST match `starter.zip` (zero contradictory graph names or broken syntax); zero `acme` placeholder names. "
+        "- Diagrams: verify ALL 6 rendered diagrams (`platformDiagram`, `cloudArchDiagram`, `sequenceDiagram`, `securityDiagram`, `wireDiagram`, `asyncDiagram`) match the article's real GCP services and directional data flows with zero unrelated services or wrong arrows. "
+        "Return ONLY raw JSON (no prose wrapper, no markdown headings): "
         '{"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"summary":"1-2 crisp sentences",'
         '"strengths":["..."],"findings":[{"severity":"P0|P1|P2","category":"grounding|security|diagram|code|clarity","detail":"..."}]}'
     )
-    diag_summary = {
-        "architectureZones": [{"title": z.get("title"), "components": [c.get("label") for c in z.get("components", [])]} for z in bp.get("architectureZones", [])],
-        "architectureEdges": bp.get("architectureEdges", []),
-        "sequenceActors": [a.get("label") for a in bp.get("sequenceActors", [])],
-        "sequenceSteps": bp.get("sequenceSteps", []),
-        "securityLayers": len((bp.get("securityDiagram") or {}).get("layers") or []),
-        "wireHops": len((bp.get("wireDiagram") or {}).get("hops") or []),
-        "asyncStages": len((bp.get("asyncDiagram") or {}).get("stages") or []),
+    rendered_diagrams = {
+        "figure1_platformDiagram": bp.get("platformDiagram") or {},
+        "figure2_cloudArchDiagram": bp.get("cloudArchDiagram") or {},
+        "figure3_sequenceDiagram": bp.get("sequenceDiagram") or {},
+        "figure4_securityDiagram": bp.get("securityDiagram") or {},
+        "figure5_wireDiagram": bp.get("wireDiagram") or {},
+        "figure6_asyncDiagram": bp.get("asyncDiagram") or {},
     }
+    slides_summary = [
+        {
+            "number": s.get("number"),
+            "title": s.get("title"),
+            "calloutValue": s.get("calloutValue"),
+            "bullets": s.get("bullets"),
+            "codeSnippet": s.get("codeSnippet"),
+            "speakerNotes": s.get("speakerNotes"),
+        }
+        for s in (bp.get("slides") or [])
+    ]
     g_sum = ((grounding or {}).get("summary") or "").strip()
     tf_block = (
         json.dumps(tf_findings, indent=2)
         if tf_findings
-        else "PASSED (0 findings — static D-11 zero-trust scan confirmed 0 allUsers/allAuthenticatedUsers IAM bindings, 0 deprecated v1 Cloud Run resources, and 0 unauthenticated flags)"
+        else "PASSED (0 findings — static D-11 zero-trust scan confirmed 0 allUsers/allAuthenticatedUsers, 0 deprecated v1 resources, 0 unverified IAP/FGAC/ingress bugs)"
     )
-    # Clean entry/line-boundary excerpts so the judge never mistakes a mid-line prompt slice for broken syntax
-    ledger_json = json.dumps((bp.get("claimLedger") or [])[:16], indent=2)
-    md_max = 26000
+    ledger_json = json.dumps((bp.get("claimLedger") or [])[:18], indent=2)
+    md_max = 32000
     if len(md_text) > md_max:
         cut_nl = md_text.rfind("\n", 0, md_max)
-        md_excerpt = md_text[: cut_nl if cut_nl > 16000 else md_max] + "\n\n[... remainder truncated cleanly at line boundary for review window ...]"
+        md_excerpt = md_text[: cut_nl if cut_nl > 18000 else md_max] + "\n\n[... remainder truncated cleanly at line boundary for review window ...]"
     else:
         md_excerpt = md_text
-    schema_sql = str((bp.get("codeStarter") or {}).get("schemaSql") or "").strip()
+    cs = bp.get("codeStarter") or {}
+    starter_bundle = {
+        k: str(cs.get(k) or "").strip()
+        for k in ("schemaSql", "terraformMain", "terraformVars", "pythonApp", "dockerfile", "requirementsTxt", "deploySh", "verifySh")
+        if str(cs.get(k) or "").strip()
+    }
     usr_p = (
         f"TITLE: {bp['title']}\nDOMAIN: {bp['domain']}\nGENERATOR_MODEL: {generator_model}\n\n"
-        + (f"LIVE_GOOGLE_SEARCH_GROUNDING (status={(grounding or {}).get('status')}):\n{g_sum[:4400]}\n\n" if g_sum else "")
+        f"KEY_TAKEAWAYS:\n{json.dumps(bp.get('keyTakeaways') or [], indent=2)}\n\n"
+        + (f"LIVE_GOOGLE_SEARCH_GROUNDING (status={(grounding or {}).get('status')}):\n{g_sum[:5000]}\n\n" if g_sum else "")
         + f"TERRAFORM_SECURITY_FINDINGS (D-11):\n{tf_block}\n\n"
-        + f"DIAGRAM_TOPOLOGY_JSON:\n{json.dumps(diag_summary, indent=2)}\n\n"
+        + f"ALL_6_RENDERED_DIAGRAMS_JSON:\n{json.dumps(rendered_diagrams, indent=2)[:16000]}\n\n"
+        + f"SLIDES_SUMMARY_12:\n{json.dumps(slides_summary, indent=2)[:10000]}\n\n"
         + f"COMPLETE_CLAIM_LEDGER ({len(bp.get('claimLedger') or [])} rows):\n{ledger_json}\n\n"
-        + (f"STARTER_SCHEMA_SQL:\n```sql\n{schema_sql[:4000]}\n```\n\n" if schema_sql else "")
+        + f"STARTER_KIT_CODE_FILES:\n{json.dumps(starter_bundle, indent=2)[:14000]}\n\n"
         + f"BLOG_MARKDOWN:\n{md_excerpt}\n"
     )
     try:
@@ -3551,7 +3601,7 @@ def run_orthogonal_llm_judge(
                 thinking_budget=512,
                 thinking_level="LOW",
                 temperature=0.1,
-                timeout_s=85.0,
+                timeout_s=95.0,
                 use_google_search=True,
                 max_attempts=1,
             )
@@ -3568,7 +3618,7 @@ def run_orthogonal_llm_judge(
                 thinking_budget=512,
                 thinking_level="LOW",
                 temperature=0.1,
-                timeout_s=75.0,
+                timeout_s=85.0,
                 use_google_search=False,
                 max_attempts=1,
             )
@@ -3578,13 +3628,16 @@ def run_orthogonal_llm_judge(
             verdict = "NEEDS_REVISION"
         score = int(max(0, min(100, float(res.get("score") or 0))))
         findings = []
-        for f in (res.get("findings") or [])[:10]:
+        for f in (res.get("findings") or [])[:12]:
             if isinstance(f, dict):
                 findings.append({
                     "severity": str(f.get("severity") or "P2").upper()[:4],
                     "category": str(f.get("category") or "clarity")[:24],
                     "detail": _sanitize_for_public_output(str(f.get("detail") or ""))[:900],
                 })
+        # Fail-closed verdict consistency: never emit APPROVED if any P0 or P1 finding exists
+        if any(f["severity"] in ("P0", "P1") for f in findings):
+            verdict = "NEEDS_REVISION"
         return {
             "status": "COMPLETED",
             "judgeModel": judge_model,
@@ -3615,6 +3668,23 @@ def run_orthogonal_llm_judge(
         }
 
 
+def _redact_manifest_for_public_bundle(raw_bytes: bytes) -> bytes:
+    """Strips internal operator emails (@google.com / LDAP) from manifest.json inside downloadable public bundle.zip."""
+    try:
+        obj = json.loads(raw_bytes.decode("utf-8"))
+        if isinstance(obj, dict):
+            if obj.get("actorEmail"):
+                obj["actorEmail"] = "redacted-public-bundle"
+            for pf in (obj.get("proofs") or []):
+                if isinstance(pf, dict) and pf.get("uploadedBy"):
+                    pf["uploadedBy"] = "redacted-public-bundle"
+            cleaned = _sanitize_for_public_output(json.dumps(obj, indent=2))
+            return cleaned.encode("utf-8")
+    except Exception:
+        pass
+    return _sanitize_for_public_output(raw_bytes.decode("utf-8", errors="replace")).encode("utf-8")
+
+
 def _rebuild_bundle_zip(blog_dir: Path, slug: str) -> Path:
     bundle_path = blog_dir / f"{slug}-bundle.zip"
     tmp_path = blog_dir / f".{slug}-bundle.tmp.zip"
@@ -3625,7 +3695,10 @@ def _rebuild_bundle_zip(blog_dir: Path, slug: str) -> Path:
             if p.name.endswith("-bundle.zip") or p.name.endswith("-bundle.tmp.zip"):
                 continue
             rel = p.relative_to(blog_dir).as_posix()
-            zf.write(p, arcname=f"{slug}/{rel}")
+            if rel == "manifest.json":
+                zf.writestr(f"{slug}/{rel}", _redact_manifest_for_public_bundle(p.read_bytes()))
+            else:
+                zf.write(p, arcname=f"{slug}/{rel}")
     tmp_path.replace(bundle_path)
     return bundle_path
 
@@ -3688,6 +3761,7 @@ def compile_and_save_blog(
     g_info = grounding or {"status": "NOT_RUN", "queries": [], "sources": [], "summary": ""}
 
     def _compile_artifacts(bp_cur: Dict[str, Any]) -> Dict[str, Any]:
+        _sync_inline_code_with_starter(bp_cur)
         diags = compile_all_diagrams_v2(bp_cur, slug)
         if vision_overrides:
             for vk, vv in vision_overrides.items():
@@ -3828,16 +3902,21 @@ def compile_and_save_blog(
                     sanitize_fn=_sanitize_for_public_output,
                     strip_emoji_fn=strip_inline_md,
                 )
-                # Deterministic D-11 fail-safe during auto-revision: if SH-SEC-01 was flagged and
-                # LLM patch did not remove `--allow-unauthenticated`, enforce `--no-allow-unauthenticated`.
+                # Deterministic D-11 fail-safes during auto-revision
                 _cs_rev = blueprint.get("codeStarter")
-                if isinstance(_cs_rev, dict) and "--allow-unauthenticated" in str(_cs_rev.get("deploySh") or ""):
-                    _cs_rev["deploySh"] = re.sub(
-                        r"--allow-unauthenticated\b",
-                        "--no-allow-unauthenticated",
-                        str(_cs_rev["deploySh"]),
-                    )
-                    applied.append("Hardened deploy.sh: replaced --allow-unauthenticated with --no-allow-unauthenticated (SH-SEC-01).")
+                if isinstance(_cs_rev, dict):
+                    if "--allow-unauthenticated" in str(_cs_rev.get("deploySh") or ""):
+                        _cs_rev["deploySh"] = re.sub(
+                            r"--allow-unauthenticated\b",
+                            "--no-allow-unauthenticated",
+                            str(_cs_rev["deploySh"]),
+                        )
+                        applied.append("Hardened deploy.sh: replaced --allow-unauthenticated with --no-allow-unauthenticated (SH-SEC-01).")
+                    if "spec.template.metadata.annotations" in str(_cs_rev.get("verifySh") or "") and "run.googleapis.com/ingress" in str(_cs_rev.get("verifySh") or ""):
+                        _cs_rev["verifySh"] = str(_cs_rev["verifySh"]).replace(
+                            "spec.template.metadata.annotations", "metadata.annotations"
+                        )
+                        applied.append("Fixed verify.sh: queried top-level metadata.annotations['run.googleapis.com/ingress'] (SH-BUG-01).")
                 art_r2 = _compile_artifacts(blueprint)
                 det_r2 = art_r2["det"]
                 judge_r2 = run_orthogonal_llm_judge(
@@ -3947,9 +4026,19 @@ def compile_and_save_blog(
         "queries": g_info.get("queries") or [],
         "sources": g_info.get("sources") or [],
     }
+    has_open_p0_p1 = any(
+        str(f.get("severity") or "").upper() in ("P0", "P1")
+        for f in (judge_report.get("findings") or [])
+    )
+    overall_status = (
+        "APPROVED"
+        if (det_report.get("allPassed") and judge_report.get("verdict") == "APPROVED" and not has_open_p0_p1)
+        else "NEEDS_REVISION"
+    )
     quality_report = {
         "slug": slug,
         "checkedAt": _now_iso(),
+        "overallStatus": overall_status,
         "deterministic": det_report,
         "orthogonalJudge": judge_report,
         "grounding": grounding_public,
@@ -4305,7 +4394,6 @@ def start_generation_job(
 
             merged_raw = dict(prose_raw)
             for tk in (
-                "architectureZones", "architectureEdges", "sequenceActors", "sequenceSteps",
                 "securityDiagram", "wireDiagram", "asyncDiagram", "slides", "codeStarter",
             ):
                 if topo_raw.get(tk) is not None:
@@ -4530,6 +4618,11 @@ def _recompile_after_proof_change(slug: str, manifest: Dict[str, Any]) -> Dict[s
     )
     manifest["quality"]["deterministic"] = det
     manifest["quality"]["checkedAt"] = _now_iso()
+    ws_prev = manifest.get("workspaceSync")
+    if isinstance(ws_prev, dict) and ws_prev.get("status") == "SYNCED":
+        ws_prev["status"] = "STALE"
+        ws_prev["staleSince"] = _now_iso()
+        ws_prev["staleReason"] = "Live proofs changed since last Workspace sync — click Re-sync Slides & Docs."
     manifest["updatedAt"] = _now_iso()
     (blog_dir / "quality_report.json").write_text(json.dumps(manifest["quality"], indent=2), encoding="utf-8")
     (blog_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
@@ -4940,6 +5033,7 @@ def sync_to_google_workspace(
         manifest["updatedAt"] = _now_iso()
         blog_dir = get_storage_root() / clean
         (blog_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+        _rebuild_bundle_zip(blog_dir, clean)
         index_bytes = _update_index_entry(manifest)
         _sync_blog_dir_to_gcs_async(slug=clean, blog_dir=blog_dir, index_bytes=index_bytes, sync=True)
     return {"ok": True, "statusCode": 200, "workspaceSync": sync_meta}

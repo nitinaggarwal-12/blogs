@@ -316,7 +316,7 @@
     ));
     if (c.googleSearchGrounding) items.push(makePill('Search Grounding: LIVE', 'pill-green', true));
     if (c.officialGcpSvgIcons) items.push(makePill(c.officialGcpSvgIcons + ' GCP SVG Icons', 'pill-blue', false));
-    items.push(makePill('6 WS1-Parity Diagrams + Vector PPTX', 'pill-blue', false));
+    items.push(makePill('6 WS1-Parity Diagrams + Google Slides', 'pill-blue', false));
     items.push(makePill(
       c.workspaceOauthSync ? 'Google Slides & Docs: Synced Engine' : 'Google Slides & Docs: 1-Click OAuth',
       c.workspaceOauthSync ? 'pill-green' : 'pill-blue',
@@ -516,18 +516,19 @@
         },
       });
       card.appendChild(el('div', { className: 'lib-title' }, b.title || b.slug));
-      const diagCnt = Number(b.diagramCount || 0) || (Number(b.slideCount || 9) >= 12 ? 5 : 2);
+      const diagCnt = Number(b.diagramCount || 0) || (Number(b.slideCount || 9) >= 12 ? 6 : 2);
       const slideCnt = Number(b.slideCount || 9);
       const verTag = diagCnt >= 6 ? 'v3 · WS1-Parity' : (diagCnt >= 5 ? 'v2' : 'v1');
-      const createdShort = b.createdAt ? String(b.createdAt).slice(0, 16).replace('T', ' ') + 'Z' : '';
-      card.appendChild(el('div', { className: 'hint', style: 'font-family:monospace;font-size:10.5px;margin:2px 0 4px;word-break:break-all;' },
-        b.slug + (createdShort ? ' · ' + createdShort : '')));
-      const isWsSynced = Boolean(b.workspaceSync && b.workspaceSync.status === 'SYNCED' && b.workspaceSync.slidesUrl && b.workspaceSync.docUrl);
+      card.appendChild(el('div', { className: 'hint', style: { fontFamily: 'var(--mono)', fontSize: '10.5px', margin: '2px 0 5px', wordBreak: 'break-all' } }, b.slug));
+      const wsStatus = (b.workspaceSync && b.workspaceSync.status) || '';
+      const isWsSynced = Boolean(wsStatus === 'SYNCED' && b.workspaceSync.slidesUrl && b.workspaceSync.docUrl);
+      const isWsStale = Boolean(wsStatus === 'STALE');
       const meta = el('div', { className: 'lib-meta' },
         makePill(verTag + ' (' + diagCnt + 'd/' + slideCnt + 's)', diagCnt >= 6 ? 'pill-green' : (diagCnt >= 5 ? 'pill-purple' : 'pill-amber'), false),
         makePill(b.modelUsed || 'gemini', 'pill-blue', false),
-        makePill('Gate ' + (b.qualityPassed || 0) + '/' + (b.qualityTotal || 10), (b.qualityPassed === b.qualityTotal ? 'pill-green' : 'pill-amber'), false),
-        isWsSynced ? makePill('Slides & Docs', 'pill-green', false) : makePill('Proofs: ' + (b.proofCount || 0), (b.proofCount > 0 ? 'pill-green' : 'pill-amber'), false)
+        makePill('Gate ' + (b.qualityPassed || 0) + '/' + (b.qualityTotal || 12), (b.qualityPassed === b.qualityTotal ? 'pill-green' : 'pill-amber'), false),
+        makePill('Proofs: ' + (b.proofCount || 0), (b.proofCount > 0 ? 'pill-green' : 'pill-amber'), false),
+        isWsSynced ? makePill('Slides & Docs', 'pill-green', false) : (isWsStale ? makePill('Sync Stale', 'pill-amber', false) : null)
       );
       card.appendChild(meta);
       const actions = el('div', { className: 'lib-actions' },
@@ -646,13 +647,20 @@
       proofCount > 0 ? 'pill-green' : 'pill-amber',
       false
     ));
+    const ws = blog.workspaceSync || {};
+    const isSynced = ws.status === 'SYNCED' && isSafeHref(ws.slidesUrl) && isSafeHref(ws.docUrl);
+    const isStale = ws.status === 'STALE';
+    if (isSynced) {
+      const syncedShort = ws.syncedAt ? ' · ' + String(ws.syncedAt).slice(0, 16).replace('T', ' ') + 'Z' : '';
+      badges.push(makePill('Google Slides & Docs Synced' + syncedShort, 'pill-green', true));
+    } else if (isStale) {
+      badges.push(makePill('Workspace Sync Stale — Re-sync Needed', 'pill-amber', true));
+    }
     document.getElementById('hero-badges').replaceChildren(...badges);
     document.getElementById('hero-title').textContent = blog.title || slug;
     document.getElementById('hero-sub').textContent = blog.subtitle || '';
 
     const a = blog.assets || {};
-    const ws = blog.workspaceSync || {};
-    const isSynced = ws.status === 'SYNCED' && isSafeHref(ws.slidesUrl) && isSafeHref(ws.docUrl);
     const slideCount = ((blog.blueprint && blog.blueprint.slides) || []).length || 12;
 
     const openSlidesBtn = isSynced
@@ -711,13 +719,11 @@
     document.getElementById('hero-actions').replaceChildren(...btns);
 
     const syncBanner = document.getElementById('workspace-sync-banner');
-    if (isSynced) {
-      const syncedLabel = ws.syncedAt ? ' (' + String(ws.syncedAt).slice(0, 16).replace('T', ' ') + 'Z)' : '';
-      syncBanner.className = 'banner banner-ok';
+    if (isStale) {
+      syncBanner.className = 'banner banner-warn';
       syncBanner.replaceChildren(
-        el('strong', null, 'Google Workspace Ready' + syncedLabel + ': '),
-        el('a', { href: ws.slidesUrl, target: '_blank', rel: 'noopener noreferrer', style: { color: '#0d652d', fontWeight: '700', marginRight: '14px' } }, 'Open with Google Slides ->'),
-        el('a', { href: ws.docUrl, target: '_blank', rel: 'noopener noreferrer', style: { color: '#0d652d', fontWeight: '700' } }, 'Open with Google Docs ->')
+        el('strong', null, 'Workspace Deck & Doc Out of Sync: '),
+        (ws.staleReason || 'Proofs changed after the last Workspace sync.') + ' Click "Re-sync Slides & Docs" above to update Google Slides and Google Docs in place.'
       );
     } else {
       syncBanner.className = 'banner hidden';
@@ -910,17 +916,28 @@
       })()
     );
     const diagEntries = getDiagramEntries(blog);
-    const figBox = el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px', margin: '14px 0 22px' } });
+    const figBox = el('div', { className: 'reader-fig-grid' });
     diagEntries.forEach((ent) => {
       figBox.appendChild(el('div', { className: 'diagram-card', style: { marginBottom: '0' } },
         el('div', { className: 'diagram-hdr' },
-          el('strong', { style: { fontSize: '11.5px' } }, ent.label),
+          el('strong', { style: { fontSize: '11.5px', lineHeight: '1.3' } }, ent.label),
           el('a', { className: 'btn btn-sm', href: ent.diag.viewerUrl, target: '_blank', rel: 'noopener noreferrer' }, 'viewer ->')
         ),
-        el('div', { className: 'diagram-stage' }, el('img', { src: assetUrl(slug, ent.diag.svgPath), alt: ent.diag.title }))
+        el('div', { className: 'diagram-stage' }, el('img', {
+          src: assetUrl(slug, ent.diag.svgPath),
+          alt: ent.diag.title,
+          title: 'Click to maximize',
+          onClick: () => openDiagramLightbox(slug, ent.label, ent.diag),
+        }))
       ));
     });
-    panel.replaceChildren(topBar, figBox, buildMarkdownDom(blog.markdownText || ''));
+    // Strip duplicate H1/subtitle metadata header & redundant Figures table in Reader view
+    // (Hero card + interactive 3x2 Figure grid above already present them; Copy Raw Markdown keeps full file).
+    let readerMd = String(blog.markdownText || '').replace(/\r\n/g, '\n');
+    const execIdx = readerMd.indexOf('## Executive Summary');
+    if (execIdx > 0) readerMd = readerMd.slice(execIdx);
+    readerMd = readerMd.replace(/\n## Figures & Editable C4 Diagrams[\s\S]*?(?=\n## )/m, '\n');
+    panel.replaceChildren(topBar, figBox, buildMarkdownDom(readerMd));
   }
 
   function openDiagramLightbox(slug, label, diag) {
@@ -1062,7 +1079,7 @@
 
     const notes = el('div', { className: 'notes-box' },
       el('div', { style: { fontSize: '11px', fontWeight: '800', color: '#1a73e8', marginBottom: '4px', letterSpacing: '0.03em' } },
-        'SPOKEN SPEAKER NOTES (EMBEDDED IN notesSlide' + n + '.xml)'
+        'SPOKEN SPEAKER NOTES (SLIDE ' + n + ' · SYNCED TO GOOGLE SLIDES)'
       ),
       el('div', null, cur.speakerNotes || 'No speaker notes for this slide.')
     );
@@ -1116,7 +1133,7 @@
     const sl = ((blog.blueprint && blog.blueprint.slides) || [])[n - 1] || {};
     if (img) img.setAttribute('src', assetUrl(blog.slug, 'slides/slide_' + String(n).padStart(2, '0') + '.svg'));
     if (cap) cap.textContent = '[Slide ' + n + '/' + getSlideCount(blog) + '] ' + (sl.speakerNotes || sl.title || '');
-    if (lbl) lbl.textContent = 'Chapter ' + n + ' / ' + getSlideCount(blog) + ': ' + (sl.title || '');
+    if (lbl) lbl.textContent = 'Slide ' + n + ' / ' + getSlideCount(blog) + ': ' + (sl.title || '');
     if (playBtn) playBtn.textContent = state.playerPlaying ? 'Pause Narration' : 'Play All Slides';
     document.querySelectorAll('#player-chapters button').forEach((b) => {
       b.classList.toggle('btn-primary', Number(b.dataset.slide) === n);
@@ -1218,7 +1235,7 @@
 
     const n = state.playerSlide;
     const sl = ((blog.blueprint && blog.blueprint.slides) || [])[n - 1] || {};
-    const stage = el('div', { className: 'slide-stage-wrap' },
+    const stage = el('div', { className: 'slide-stage-wrap player-stage-wrap' },
       el('img', { id: 'player-slide-img', src: assetUrl(slug, 'slides/slide_' + String(n).padStart(2, '0') + '.svg'), alt: 'Narrated slide ' + n })
     );
     const caption = el('div', { className: 'caption-bar', id: 'player-caption' }, '[Slide ' + n + '/' + getSlideCount(blog) + '] ' + (sl.speakerNotes || ''));
@@ -1243,7 +1260,7 @@
         type: 'button', className: 'btn btn-sm',
         onClick: () => { state.playerSlide = Math.min(getSlideCount(blog), state.playerSlide + 1); stopAudioPlayer(); updatePlayerUi(blog); },
       }, 'Next ->'),
-      el('span', { id: 'player-status', style: { fontSize: '12.5px', fontWeight: '700', marginRight: 'auto' } }, 'Chapter ' + n + ' / ' + getSlideCount(blog) + ': ' + (sl.title || '')),
+      el('span', { id: 'player-status', style: { fontSize: '12.5px', fontWeight: '700', marginRight: 'auto' } }, 'Slide ' + n + ' / ' + getSlideCount(blog) + ': ' + (sl.title || '')),
       el('a', { className: 'btn btn-sm', href: assetUrl(slug, 'audio/captions.vtt', true) }, 'captions.vtt'),
       audioMeta.hostMp4Available && blog.assets.hostMp4
         ? el('a', { className: 'btn btn-green btn-sm', href: assetUrl(slug, blog.assets.hostMp4, true) }, 'Download .mp4')
@@ -1278,9 +1295,10 @@
     const slug = blog.slug;
     const proofs = blog.proofs || [];
 
+    const proofSlideNum = getSlideCount(blog) >= 12 ? 10 : 7;
     const warn = el('div', { className: 'banner banner-warn' },
       el('strong', null, 'Zero Fake Screenshots Policy: '),
-      'Only genuine PNG or JPEG captures (min 320x180 px, max 6 MiB, magic-byte & F-13 hygiene verified) are accepted. Uploading immediately recompiles blog.md, Slide 7 preview, .pptx (<p:pic>), .docx (<w:drawing>), and bundle.zip.'
+      'Only genuine PNG or JPEG captures (min 320x180 px, max 6 MiB, magic-byte & F-13 hygiene verified) are accepted. Uploading immediately recompiles blog.md, Slide ' + proofSlideNum + ' preview, Google Slides & Docs artifacts, and bundle.zip (click Re-sync Slides & Docs afterward to push updates to Drive).'
     );
 
     const statusBox = el('div', { className: 'banner hidden' });
@@ -1315,7 +1333,7 @@
             sourceUrl: urlInp.value.trim(),
             dataBase64: dataUrl,
           });
-          setBanner(statusBox, 'banner-ok', 'Proof attached! Slide 7, .pptx, .docx, blog.md, and bundle.zip were rebuilt.');
+          setBanner(statusBox, 'banner-ok', 'Proof attached! Slide ' + proofSlideNum + ', blog.md, deck/doc artifacts, and bundle.zip were rebuilt. Click Re-sync Slides & Docs to update Google Drive.');
           await selectBlog(slug);
           await refreshLibrary(false);
         } catch (err) {
@@ -1341,7 +1359,7 @@
 
     const grid = el('div', { className: 'proof-grid' });
     if (!proofs.length) {
-      grid.appendChild(el('div', { className: 'hint' }, '0 proofs uploaded yet. Slide 7 shows clean amber upload placeholders until you attach verified screenshots above.'));
+      grid.appendChild(el('div', { className: 'hint' }, '0 proofs uploaded yet. Slide ' + proofSlideNum + ' shows clean amber upload placeholders until you attach verified screenshots above.'));
     } else {
       proofs.forEach((pf) => {
         const isConf = state.confirmDeleteProofId === pf.id;
@@ -1511,7 +1529,11 @@
     const judgeCard = el('div', { className: 'card', style: { margin: '18px 0', padding: '16px', background: '#f8fafc' } });
     const topFlex = el('div', { style: { display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' } });
     if (judge.score !== null && judge.score !== undefined) {
-      topFlex.appendChild(el('div', { className: 'score-circle' }, String(judge.score)));
+      const hasP0 = (judge.findings || []).some((f) => String(f.severity || '').toUpperCase() === 'P0');
+      const scoreCls = (judge.verdict === 'APPROVED' && Number(judge.score) >= 80 && !hasP0)
+        ? 'score-circle'
+        : ((Number(judge.score) < 70 || hasP0) ? 'score-circle score-fail' : 'score-circle score-warn');
+      topFlex.appendChild(el('div', { className: scoreCls }, String(judge.score)));
     }
     const jInfo = el('div', { style: { flex: '1', minWidth: '220px' } },
       el('div', { style: { display: 'flex', gap: '7px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '4px' } },
@@ -1553,7 +1575,7 @@
           el('th', null, 'ID'), el('th', null, 'Claim'), el('th', null, 'Value'), el('th', null, 'Provenance'), el('th', null, 'Basis / Scope'),
         ])),
         el('tbody', null, claims.map((c) => el('tr', null,
-          el('td', { style: { fontFamily: 'var(--mono)', fontWeight: '700' } }, c.id),
+          el('td', { style: { fontFamily: 'var(--mono)', fontWeight: '700', whiteSpace: 'nowrap' } }, c.id),
           el('td', null, c.claim),
           el('td', { style: { fontWeight: '700' } }, c.value),
           el('td', null, makePill(c.provenance, c.provenance === 'GCP_DOCUMENTED' ? 'pill-green' : 'pill-blue', false)),
