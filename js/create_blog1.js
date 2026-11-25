@@ -47,7 +47,117 @@
     screenChunks: [],
     screenBlobUrl: null,
     slideCacheBust: Date.now(),
+    workspaceToken: '',
+    workspaceTokenExp: 0,
+    workspaceSyncBusy: false,
+    gisLoaded: false,
   };
+
+  function makeSvgBadgeIcon(kind) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('width', '14');
+    svg.setAttribute('height', '14');
+    svg.setAttribute('viewBox', '0 0 18 18');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.style.flexShrink = '0';
+    const bg = document.createElementNS(NS, 'rect');
+    bg.setAttribute('x', '1.5');
+    bg.setAttribute('y', '1');
+    bg.setAttribute('width', '15');
+    bg.setAttribute('height', '16');
+    bg.setAttribute('rx', '2.5');
+    bg.setAttribute('fill', kind === 'slides' ? '#F4B400' : '#4285F4');
+    svg.appendChild(bg);
+    if (kind === 'slides') {
+      const box = document.createElementNS(NS, 'rect');
+      box.setAttribute('x', '4.2');
+      box.setAttribute('y', '5.5');
+      box.setAttribute('width', '9.6');
+      box.setAttribute('height', '7');
+      box.setAttribute('rx', '1');
+      box.setAttribute('fill', '#FFFFFF');
+      svg.appendChild(box);
+    } else {
+      [5.5, 8.6, 11.7].forEach((y, idx) => {
+        const line = document.createElementNS(NS, 'rect');
+        line.setAttribute('x', '4.5');
+        line.setAttribute('y', String(y));
+        line.setAttribute('width', idx === 2 ? '6.2' : '9');
+        line.setAttribute('height', '1.7');
+        line.setAttribute('rx', '0.8');
+        line.setAttribute('fill', '#FFFFFF');
+        svg.appendChild(line);
+      });
+    }
+    return svg;
+  }
+
+  function loadGoogleGisClient() {
+    if (window.google && window.google.accounts && window.google.accounts.oauth2) {
+      return Promise.resolve(true);
+    }
+    return new Promise((resolve, reject) => {
+      const existing = document.getElementById('cb1-gis-script');
+      if (existing) {
+        existing.addEventListener('load', () => resolve(true), { once: true });
+        existing.addEventListener('error', () => reject(new Error('Could not load Google Sign-In script.')), { once: true });
+        return;
+      }
+      const s = document.createElement('script');
+      s.id = 'cb1-gis-script';
+      s.src = 'https://accounts.google.com/gsi/client';
+      s.async = true;
+      s.defer = true;
+      s.onload = () => { state.gisLoaded = true; resolve(true); };
+      s.onerror = () => reject(new Error('Unable to load Google Identity Services (accounts.google.com/gsi/client).'));
+      document.head.appendChild(s);
+    });
+  }
+
+  async function requestBrowserDriveToken(clientId) {
+    const now = Date.now();
+    if (state.workspaceToken && now < state.workspaceTokenExp - 60000) {
+      return state.workspaceToken;
+    }
+    await loadGoogleGisClient();
+    if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
+      throw new Error('Google Identity Services OAuth client unavailable in this browser.');
+    }
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      const timer = setTimeout(() => {
+        if (!settled) {
+          settled = true;
+          reject(new Error('Google sign-in popup timed out or was closed.'));
+        }
+      }, 120000);
+      const tokenClient = window.google.accounts.oauth2.initTokenClient({
+        client_id: clientId,
+        scope: 'https://www.googleapis.com/auth/drive.file',
+        callback: (resp) => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          if (resp && resp.access_token) {
+            state.workspaceToken = resp.access_token;
+            const ttlSec = Number(resp.expires_in || 3300);
+            state.workspaceTokenExp = Date.now() + ttlSec * 1000;
+            resolve(resp.access_token);
+          } else {
+            reject(new Error((resp && (resp.error_description || resp.error)) || 'Google Drive authorization cancelled.'));
+          }
+        },
+        error_callback: (err) => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          reject(new Error((err && err.message) || 'Google Drive sign-in popup could not open.'));
+        },
+      });
+      tokenClient.requestAccessToken({ prompt: '' });
+    });
+  }
 
   function isSafeHref(url) {
     const s = String(url || '').trim();
@@ -208,9 +318,9 @@
     if (c.officialGcpSvgIcons) items.push(makePill(c.officialGcpSvgIcons + ' GCP SVG Icons', 'pill-blue', false));
     items.push(makePill('6 WS1-Parity Diagrams + Vector PPTX', 'pill-blue', false));
     items.push(makePill(
-      c.workspaceOauthSync ? 'Workspace Drive OAuth: Connected' : 'Workspace OAuth: Manual Import',
-      c.workspaceOauthSync ? 'pill-green' : 'pill-amber',
-      false
+      c.workspaceOauthSync ? 'Google Slides & Docs: Synced Engine' : 'Google Slides & Docs: 1-Click OAuth',
+      c.workspaceOauthSync ? 'pill-green' : 'pill-blue',
+      Boolean(c.workspaceOauthSync)
     ));
     items.push(makePill(
       c.hostMp4Compiler ? 'Video Export: Server MP4 + Browser WebM' : 'Video Export: Browser WebM (MediaRecorder)',
@@ -412,11 +522,12 @@
       const createdShort = b.createdAt ? String(b.createdAt).slice(0, 16).replace('T', ' ') + 'Z' : '';
       card.appendChild(el('div', { className: 'hint', style: 'font-family:monospace;font-size:10.5px;margin:2px 0 4px;word-break:break-all;' },
         b.slug + (createdShort ? ' · ' + createdShort : '')));
+      const isWsSynced = Boolean(b.workspaceSync && b.workspaceSync.status === 'SYNCED' && b.workspaceSync.slidesUrl && b.workspaceSync.docUrl);
       const meta = el('div', { className: 'lib-meta' },
         makePill(verTag + ' (' + diagCnt + 'd/' + slideCnt + 's)', diagCnt >= 6 ? 'pill-green' : (diagCnt >= 5 ? 'pill-purple' : 'pill-amber'), false),
         makePill(b.modelUsed || 'gemini', 'pill-blue', false),
         makePill('Gate ' + (b.qualityPassed || 0) + '/' + (b.qualityTotal || 10), (b.qualityPassed === b.qualityTotal ? 'pill-green' : 'pill-amber'), false),
-        makePill('Proofs: ' + (b.proofCount || 0), (b.proofCount > 0 ? 'pill-green' : 'pill-amber'), false)
+        isWsSynced ? makePill('Slides & Docs', 'pill-green', false) : makePill('Proofs: ' + (b.proofCount || 0), (b.proofCount > 0 ? 'pill-green' : 'pill-amber'), false)
       );
       card.appendChild(meta);
       const actions = el('div', { className: 'lib-actions' },
@@ -540,29 +651,73 @@
     document.getElementById('hero-sub').textContent = blog.subtitle || '';
 
     const a = blog.assets || {};
+    const ws = blog.workspaceSync || {};
+    const isSynced = ws.status === 'SYNCED' && isSafeHref(ws.slidesUrl) && isSafeHref(ws.docUrl);
+    const slideCount = ((blog.blueprint && blog.blueprint.slides) || []).length || 12;
+
+    const openSlidesBtn = isSynced
+      ? el('a', {
+          className: 'btn btn-gslides btn-sm',
+          id: 'btn-open-gslides',
+          href: ws.slidesUrl,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          title: 'Open native editable ' + slideCount + '-slide presentation directly in Google Slides',
+        }, makeSvgBadgeIcon('slides'), 'Open with Google Slides (' + slideCount + ')')
+      : el('button', {
+          type: 'button',
+          className: 'btn btn-gslides btn-sm',
+          id: 'btn-open-gslides',
+          title: 'Sync & open native editable ' + slideCount + '-slide presentation in Google Slides (no .pptx download)',
+          onClick: () => openInGoogleWorkspace(slug, 'slides'),
+        }, makeSvgBadgeIcon('slides'), 'Open with Google Slides (' + slideCount + ')');
+
+    const openDocsBtn = isSynced
+      ? el('a', {
+          className: 'btn btn-gdocs btn-sm',
+          id: 'btn-open-gdocs',
+          href: ws.docUrl,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          title: 'Open native editable architecture brief directly in Google Docs',
+        }, makeSvgBadgeIcon('docs'), 'Open with Google Docs')
+      : el('button', {
+          type: 'button',
+          className: 'btn btn-gdocs btn-sm',
+          id: 'btn-open-gdocs',
+          title: 'Sync & open native editable architecture brief in Google Docs (no .docx download)',
+          onClick: () => openInGoogleWorkspace(slug, 'docs'),
+        }, makeSvgBadgeIcon('docs'), 'Open with Google Docs');
+
     const btns = [
-      el('a', { className: 'btn btn-primary btn-sm', href: assetUrl(slug, a.bundleZip, true) }, 'Download Full Bundle (.zip)'),
-      el('a', { className: 'btn btn-sm', href: assetUrl(slug, a.markdown, true) }, 'blog.md'),
-      el('a', { className: 'btn btn-sm', href: assetUrl(slug, a.pptx, true) }, (((blog.blueprint && blog.blueprint.slides) || []).length || 9) + '-Slide Deck (.pptx)'),
-      el('a', { className: 'btn btn-sm', href: assetUrl(slug, a.docx, true) }, 'Whitepaper (.docx)'),
-      el('a', { className: 'btn btn-sm', href: assetUrl(slug, a.starterZip, true) }, 'Starter Code (.zip)'),
+      openSlidesBtn,
+      openDocsBtn,
       el('button', {
         type: 'button',
-        className: 'btn btn-green btn-sm',
+        className: 'btn btn-sm',
+        id: 'btn-view-blogmd',
+        onClick: () => switchTab('reader'),
+      }, 'View blog.md'),
+      el('a', { className: 'btn btn-sm', href: assetUrl(slug, a.starterZip, true) }, 'Starter Code (.zip)'),
+      el('a', { className: 'btn btn-primary btn-sm', href: assetUrl(slug, a.bundleZip, true) }, 'Full Bundle (.zip)'),
+      el('button', {
+        type: 'button',
+        className: 'btn btn-sm',
         id: 'btn-sync-workspace',
+        title: isSynced ? 'Update the live Google Slides & Google Docs files in place' : 'Convert and publish to Google Slides & Google Docs',
         onClick: () => triggerWorkspaceSync(slug),
-      }, 'Push to Google Slides / Docs'),
+      }, isSynced ? 'Re-sync Slides & Docs' : 'Sync to Google Workspace'),
     ];
     document.getElementById('hero-actions').replaceChildren(...btns);
 
     const syncBanner = document.getElementById('workspace-sync-banner');
-    const ws = blog.workspaceSync || {};
-    if (ws.status === 'SYNCED' && ws.slidesUrl && ws.docUrl) {
+    if (isSynced) {
+      const syncedLabel = ws.syncedAt ? ' (' + String(ws.syncedAt).slice(0, 16).replace('T', ' ') + 'Z)' : '';
       syncBanner.className = 'banner banner-ok';
       syncBanner.replaceChildren(
-        el('strong', null, 'Synced to Google Workspace: '),
-        el('a', { href: ws.slidesUrl, target: '_blank', rel: 'noopener noreferrer', style: { color: '#0d652d', fontWeight: '700', marginRight: '12px' } }, 'Open Google Slides ->'),
-        el('a', { href: ws.docUrl, target: '_blank', rel: 'noopener noreferrer', style: { color: '#0d652d', fontWeight: '700' } }, 'Open Google Doc ->')
+        el('strong', null, 'Google Workspace Ready' + syncedLabel + ': '),
+        el('a', { href: ws.slidesUrl, target: '_blank', rel: 'noopener noreferrer', style: { color: '#0d652d', fontWeight: '700', marginRight: '14px' } }, 'Open with Google Slides ->'),
+        el('a', { href: ws.docUrl, target: '_blank', rel: 'noopener noreferrer', style: { color: '#0d652d', fontWeight: '700' } }, 'Open with Google Docs ->')
       );
     } else {
       syncBanner.className = 'banner hidden';
@@ -570,29 +725,111 @@
     }
   }
 
-  async function triggerWorkspaceSync(slug) {
-    const btn = document.getElementById('btn-sync-workspace');
+  function updateSidebarWorkspaceSync(slug, wsMeta) {
+    state.blogs.forEach((b) => {
+      if (b && b.slug === slug) b.workspaceSync = wsMeta;
+    });
+    renderLibrary();
+  }
+
+  async function openInGoogleWorkspace(slug, mode) {
+    const blog = state.activeBlog;
+    const ws = (blog && blog.slug === slug && blog.workspaceSync) || {};
+    if (ws.status === 'SYNCED') {
+      const targetUrl = mode === 'docs' ? ws.docUrl : ws.slidesUrl;
+      if (isSafeHref(targetUrl)) {
+        window.open(targetUrl, '_blank', 'noopener,noreferrer');
+        return;
+      }
+    }
+    const synced = await triggerWorkspaceSync(slug, mode);
+    if (synced && synced.status === 'SYNCED') {
+      const targetUrl = mode === 'docs' ? synced.docUrl : synced.slidesUrl;
+      if (isSafeHref(targetUrl)) {
+        window.open(targetUrl, '_blank', 'noopener,noreferrer');
+      }
+    }
+  }
+
+  async function triggerWorkspaceSync(slug, openMode) {
+    if (state.workspaceSyncBusy) return null;
+    state.workspaceSyncBusy = true;
+    const syncBtn = document.getElementById('btn-sync-workspace');
+    const slidesBtn = document.getElementById('btn-open-gslides');
+    const docsBtn = document.getElementById('btn-open-gdocs');
     const banner = document.getElementById('workspace-sync-banner');
-    if (btn) { btn.disabled = true; btn.textContent = 'Syncing...'; }
+    const setBusy = (on, label) => {
+      if (syncBtn) { syncBtn.disabled = on; if (on) syncBtn.textContent = label || 'Syncing...'; }
+      if (slidesBtn && slidesBtn.tagName === 'BUTTON') slidesBtn.disabled = on;
+      if (docsBtn && docsBtn.tagName === 'BUTTON') docsBtn.disabled = on;
+    };
+    setBusy(true, 'Syncing to Drive...');
     try {
-      const res = await apiPost('/api/create-blog1/blogs/' + encodeURIComponent(slug) + '/sync-workspace', {});
-      if (res.ok && res.workspaceSync) {
-        state.activeBlog.workspaceSync = res.workspaceSync;
-        renderHero(state.activeBlog);
+      const extraHdrs = state.workspaceToken && Date.now() < state.workspaceTokenExp - 60000
+        ? { 'X-Google-Workspace-Token': state.workspaceToken }
+        : {};
+      let res;
+      try {
+        res = await apiPost('/api/create-blog1/blogs/' + encodeURIComponent(slug) + '/sync-workspace', {}, extraHdrs);
+      } catch (firstErr) {
+        const p = firstErr.payload || {};
+        if (firstErr.status === 412 && p.code === 'WORKSPACE_OAUTH_REQUIRED') {
+          const capCid = state.capabilities && state.capabilities.capabilities && state.capabilities.capabilities.workspaceOauthClientId;
+          const clientId = p.oauthClientId || capCid || '';
+          if (!clientId) throw firstErr;
+          banner.className = 'banner banner-warn';
+          banner.replaceChildren(
+            el('strong', null, 'Authorizing Google Drive: '),
+            'Complete the Google sign-in popup to open directly in ' + (openMode === 'docs' ? 'Google Docs' : 'Google Slides') + '...'
+          );
+          const accessTok = await requestBrowserDriveToken(clientId);
+          setBusy(true, 'Converting in Drive...');
+          res = await apiPost(
+            '/api/create-blog1/blogs/' + encodeURIComponent(slug) + '/sync-workspace',
+            {},
+            { 'X-Google-Workspace-Token': accessTok }
+          );
+        } else {
+          if (firstErr.status === 401 && state.workspaceToken) {
+            state.workspaceToken = '';
+            state.workspaceTokenExp = 0;
+          }
+          throw firstErr;
+        }
       }
+      if (res && res.ok && res.workspaceSync) {
+        if (state.activeBlog && state.activeBlog.slug === slug) {
+          state.activeBlog.workspaceSync = res.workspaceSync;
+          renderHero(state.activeBlog);
+          renderReaderTab(state.activeBlog);
+          renderSlidesTab(state.activeBlog);
+        }
+        updateSidebarWorkspaceSync(slug, res.workspaceSync);
+        return res.workspaceSync;
+      }
+      return null;
     } catch (err) {
-      const p = err.payload || {};
       banner.className = 'banner banner-warn';
-      const nodes = [el('strong', null, p.code === 'WORKSPACE_OAUTH_REQUIRED' ? 'Workspace OAuth Token Not Mounted (HTTP 412): ' : 'Workspace Sync Error: '), err.message];
-      if (p.pptxDownloadUrl) {
-        nodes.push('  ', el('a', { href: p.pptxDownloadUrl + '?download=1', style: { color: '#1a73e8', fontWeight: '700', marginLeft: '6px' } }, 'Download .pptx'));
-      }
-      if (p.docxDownloadUrl) {
-        nodes.push('  ', el('a', { href: p.docxDownloadUrl + '?download=1', style: { color: '#1a73e8', fontWeight: '700', marginLeft: '6px' } }, 'Download .docx'));
-      }
-      banner.replaceChildren(...nodes);
+      const cliCmd = 'python3 scripts/sync_create_blog1_workspace.py --slug ' + slug;
+      banner.replaceChildren(
+        el('strong', null, 'Google Workspace Sync Pending: '),
+        String((err && err.message) || err || 'Authorization required.') + ' ',
+        el('span', { style: { display: 'inline-block', marginTop: '4px', fontSize: '11.5px', color: '#475569' } },
+          'Or run from workstation to push directly into Google Slides & Docs: ',
+          el('code', null, cliCmd)
+        )
+      );
+      return null;
     } finally {
-      if (btn) { btn.disabled = false; btn.textContent = 'Push to Google Slides / Docs'; }
+      state.workspaceSyncBusy = false;
+      const curWs = (state.activeBlog && state.activeBlog.slug === slug && state.activeBlog.workspaceSync) || {};
+      const syncedNow = curWs.status === 'SYNCED' && isSafeHref(curWs.slidesUrl) && isSafeHref(curWs.docUrl);
+      if (syncBtn) {
+        syncBtn.disabled = false;
+        syncBtn.textContent = syncedNow ? 'Re-sync Slides & Docs' : 'Sync to Google Workspace';
+      }
+      if (slidesBtn && slidesBtn.tagName === 'BUTTON') slidesBtn.disabled = false;
+      if (docsBtn && docsBtn.tagName === 'BUTTON') docsBtn.disabled = false;
     }
   }
 
@@ -661,10 +898,16 @@
     }, 'Copy Raw Markdown');
     const topBar = el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' } },
       el('span', { className: 'pill pill-blue' }, 'Google Cloud Architecture Center Format'),
-      el('div', { style: { display: 'flex', gap: '7px' } },
-        copyBtn,
-        el('a', { className: 'btn btn-sm', href: assetUrl(slug, 'blog.md', true) }, 'Download blog.md')
-      )
+      (() => {
+        const ws = blog.workspaceSync || {};
+        const docBtn = (ws.status === 'SYNCED' && isSafeHref(ws.docUrl))
+          ? el('a', { className: 'btn btn-gdocs btn-sm', href: ws.docUrl, target: '_blank', rel: 'noopener noreferrer' }, makeSvgBadgeIcon('docs'), 'Open with Google Docs')
+          : el('button', { type: 'button', className: 'btn btn-gdocs btn-sm', onClick: () => openInGoogleWorkspace(slug, 'docs') }, makeSvgBadgeIcon('docs'), 'Open with Google Docs');
+        return el('div', { style: { display: 'flex', gap: '7px', flexWrap: 'wrap' } },
+          docBtn,
+          copyBtn
+        );
+      })()
     );
     const diagEntries = getDiagramEntries(blog);
     const figBox = el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px', margin: '14px 0 22px' } });
@@ -790,10 +1033,16 @@
           onClick: () => { state.activeSlide = Math.min(getSlideCount(blog), n + 1); renderSlidesTab(blog); },
         }, 'Next ->')
       ),
-      el('div', { style: { display: 'flex', gap: '6px', flexWrap: 'wrap' } },
-        el('a', { className: 'btn btn-primary btn-sm', href: assetUrl(slug, 'slides/' + slug + '-deck.pptx', true) }, 'Download .pptx (' + getSlideCount(blog) + ' Slides)'),
-        el('button', { type: 'button', className: 'btn btn-sm', onClick: () => triggerWorkspaceSync(slug) }, 'Sync to Google Slides')
-      )
+      (() => {
+        const ws = blog.workspaceSync || {};
+        const isWs = ws.status === 'SYNCED' && isSafeHref(ws.slidesUrl);
+        return el('div', { style: { display: 'flex', gap: '6px', flexWrap: 'wrap' } },
+          isWs
+            ? el('a', { className: 'btn btn-gslides btn-sm', href: ws.slidesUrl, target: '_blank', rel: 'noopener noreferrer' }, makeSvgBadgeIcon('slides'), 'Open with Google Slides (' + getSlideCount(blog) + ' Slides)')
+            : el('button', { type: 'button', className: 'btn btn-gslides btn-sm', onClick: () => openInGoogleWorkspace(slug, 'slides') }, makeSvgBadgeIcon('slides'), 'Open with Google Slides (' + getSlideCount(blog) + ' Slides)'),
+          el('button', { type: 'button', className: 'btn btn-sm', onClick: () => triggerWorkspaceSync(slug) }, isWs ? 'Re-sync Slides & Docs' : 'Sync to Google Workspace')
+        );
+      })()
     );
 
     const stage = el('div', { className: 'slide-stage-wrap' },

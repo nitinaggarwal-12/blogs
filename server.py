@@ -5214,8 +5214,15 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     self._send_json(auth_status, {"ok": False, "code": auth_code, "error": auth_msg})
                     return
                 raw_slug = urllib.parse.unquote(m_cb1_sync.group(1))
+                transient_ws_token = str(self.headers.get("X-Google-Workspace-Token") or "").strip() or None
+                force_new = bool(body.get("forceNew", False)) if isinstance(body, dict) else False
                 try:
-                    res = create_blog1_mod.sync_to_google_workspace(raw_slug, bridge_mod=bridge_mod)
+                    res = create_blog1_mod.sync_to_google_workspace(
+                        raw_slug,
+                        bridge_mod=bridge_mod,
+                        access_token_override=transient_ws_token,
+                        force_new=force_new,
+                    )
                     self._send_json(int(res.get("statusCode", 200)), res)
                 except create_blog1_mod.CreateBlog1Error as exc:
                     self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})

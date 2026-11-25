@@ -26,6 +26,7 @@ import secrets
 import shutil
 import struct
 import subprocess
+import tempfile
 import threading
 import time
 import urllib.error
@@ -716,6 +717,19 @@ def _ensure_rel_hydrated(slug: str, rel_path: str) -> Optional[Path]:
     return None
 
 
+DEFAULT_WORKSPACE_OAUTH_CLIENT_ID = os.environ.get(
+    "GOOGLE_WORKSPACE_OAUTH_CLIENT_ID",
+    "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
+).strip()
+DEFAULT_GDRIVE_CLI_PATH = Path("/google/bin/releases/gemini-agents-gdrive/gdrive")
+
+
+def _has_local_gdrive_cli() -> bool:
+    if os.environ.get("CREATE_BLOG1_DISABLE_GDRIVE_CLI", "").strip() == "1":
+        return False
+    return DEFAULT_GDRIVE_CLI_PATH.is_file()
+
+
 def _has_workspace_oauth_token() -> bool:
     env_tf = os.environ.get("GSHEET_OAUTH_TOKEN_FILE", "").strip()
     candidates = [ROOT_DIR / ".gsheet_oauth_token.json"]
@@ -738,7 +752,8 @@ def get_capabilities() -> Dict[str, Any]:
     has_env_key = bool(os.environ.get("GEMINI_API_KEY", "").strip())
     has_ffmpeg = bool(shutil.which("ffmpeg"))
     has_svg_raster = bool(shutil.which("rsvg-convert"))
-    has_workspace = _has_workspace_oauth_token()
+    gdrive_cli_ready = _has_local_gdrive_cli()
+    has_workspace = _has_workspace_oauth_token() or gdrive_cli_ready
     is_cloud_run = bool(os.environ.get("K_SERVICE"))
     return {
         "ok": True,
@@ -784,6 +799,9 @@ def get_capabilities() -> Dict[str, Any]:
             "slidesPerDeck": 12,
             "deterministicGateChecks": 12,
             "workspaceOauthSync": has_workspace,
+            "workspaceOauthClientId": DEFAULT_WORKSPACE_OAUTH_CLIENT_ID,
+            "workspaceCliReady": gdrive_cli_ready,
+            "workspaceBrowserOauth": True,
             "hostMp4Compiler": has_ffmpeg and has_svg_raster,
             "browserWebmExporter": True,
             "browserScreenRecorder": True,
@@ -4696,9 +4714,29 @@ def get_diagram_record_for_studio(diag_id: str) -> Optional[Dict[str, Any]]:
     }
 
 
-def _drive_multipart_upload(token: str, filename: str, src_mime: str, dst_mime: str, raw_bytes: bytes) -> Dict[str, Any]:
+def _drive_url_with_resourcekey(base_url: str, resource_key: str = "", webview_link: str = "") -> str:
+    rk = (resource_key or "").strip()
+    if not rk and webview_link:
+        mrk = re.search(r"[?&]resourcekey=([^&#]+)", webview_link, re.IGNORECASE)
+        if mrk:
+            rk = mrk.group(1)
+    if rk and "resourcekey=" not in base_url.lower():
+        sep = "&" if "?" in base_url else "?"
+        return f"{base_url}{sep}resourcekey={urllib.parse.quote(rk, safe='-_')}"
+    return base_url
+
+
+def _drive_multipart_upload(
+    token: str,
+    filename: str,
+    src_mime: str,
+    dst_mime: str,
+    raw_bytes: bytes,
+    existing_id: Optional[str] = None,
+) -> Dict[str, Any]:
     boundary = f"cb1_{uuid.uuid4().hex}"
-    meta = json.dumps({"name": filename, "mimeType": dst_mime}).encode("utf-8")
+    meta_obj: Dict[str, str] = {"name": filename, "mimeType": dst_mime}
+    meta = json.dumps(meta_obj).encode("utf-8")
     parts = [
         f"--{boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n".encode("utf-8"),
         meta,
@@ -4706,41 +4744,110 @@ def _drive_multipart_upload(token: str, filename: str, src_mime: str, dst_mime: 
         raw_bytes,
         f"\r\n--{boundary}--\r\n".encode("utf-8"),
     ]
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": f"multipart/related; boundary={boundary}",
+    }
+    if DEFAULT_GCP_PROJECT:
+        headers["x-goog-user-project"] = DEFAULT_GCP_PROJECT
+    fields = "id,name,webViewLink,resourceKey"
+    if existing_id:
+        try:
+            patch_req = urllib.request.Request(
+                f"https://www.googleapis.com/upload/drive/v3/files/{urllib.parse.quote(existing_id, safe='')}"
+                f"?uploadType=multipart&supportsAllDrives=true&fields={fields}",
+                data=b"".join(parts),
+                headers=headers,
+                method="PATCH",
+            )
+            with urllib.request.urlopen(patch_req, timeout=75.0) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            if exc.code not in (403, 404):
+                raise
     req = urllib.request.Request(
-        "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink",
+        f"https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields={fields}",
         data=b"".join(parts),
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Content-Type": f"multipart/related; boundary={boundary}",
-        },
+        headers=headers,
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=60.0) as resp:
+    with urllib.request.urlopen(req, timeout=75.0) as resp:
         return json.loads(resp.read().decode("utf-8"))
 
 
-def sync_to_google_workspace(slug: str, bridge_mod: Any = None) -> Dict[str, Any]:
+def _gdrive_cli_upload_or_update(
+    src_path: Path,
+    display_name: str,
+    dst_mime: str,
+    existing_id: Optional[str] = None,
+) -> Dict[str, Any]:
+    """Use pre-authenticated internal gdrive CLI when running on a workstation where it is installed."""
+    cli = str(DEFAULT_GDRIVE_CLI_PATH)
+    ext = src_path.suffix or ""
+    safe_label = re.sub(r'[\\/:*?"<>|]+', "-", display_name).strip()[:120] or src_path.stem
+    with tempfile.TemporaryDirectory(prefix="cb1_gd_") as td:
+        staged = Path(td) / f"{safe_label}{ext}"
+        staged.write_bytes(src_path.read_bytes())
+        if existing_id:
+            upd = subprocess.run(
+                [cli, "mutate", "update", existing_id, str(staged), "--json"],
+                capture_output=True, text=True, timeout=90,
+            )
+            if upd.returncode == 0:
+                try:
+                    info_obj = json.loads(upd.stdout.strip() or "{}")
+                except Exception:
+                    info_obj = {}
+                return {
+                    "id": str(info_obj.get("id") or existing_id),
+                    "resourceKey": str(info_obj.get("resourceKey") or ""),
+                    "webViewLink": str(info_obj.get("webViewLink") or ""),
+                }
+        res = subprocess.run(
+            [cli, "mutate", "upload", str(staged), "--mime-type", dst_mime, "--json"],
+            check=True, capture_output=True, text=True, timeout=90,
+        )
+        return json.loads(res.stdout.strip())
+
+
+def sync_to_google_workspace(
+    slug: str,
+    bridge_mod: Any = None,
+    *,
+    access_token_override: Optional[str] = None,
+    force_new: bool = False,
+) -> Dict[str, Any]:
     clean = validate_existing_slug(slug)
     mp = _ensure_rel_hydrated(clean, "manifest.json")
     if mp is None or not mp.is_file():
         raise CreateBlog1Error(f"Blog '{clean}' not found.", 404, "BLOG_NOT_FOUND")
     manifest = json.loads(mp.read_text(encoding="utf-8"))
 
-    token = None
-    if bridge_mod is not None and hasattr(bridge_mod, "get_drive_access_token"):
+    transient_tok = str(access_token_override or "").strip() or None
+    if transient_tok and transient_tok.lower().startswith("bearer "):
+        transient_tok = transient_tok[7:].strip() or None
+
+    token = transient_tok
+    auth_provider = "browser_oauth_gis" if token else ""
+    if not token and bridge_mod is not None and hasattr(bridge_mod, "get_drive_access_token"):
         try:
             token = bridge_mod.get_drive_access_token()
+            if token:
+                auth_provider = "server_oauth_refresh"
         except Exception:
             token = None
 
-    if not token:
+    use_cli = (not token) and _has_local_gdrive_cli()
+    if not token and not use_cli:
         return {
             "ok": False,
             "statusCode": 412,
             "code": "WORKSPACE_OAUTH_REQUIRED",
+            "oauthClientId": DEFAULT_WORKSPACE_OAUTH_CLIENT_ID,
+            "scopes": ["https://www.googleapis.com/auth/drive.file"],
             "error": (
-                "No Google Drive / Workspace user OAuth token is mounted inside this runtime. "
-                "Download the native OOXML .pptx and .docx directly below and import into Google Drive (File -> Open with Google Slides / Docs)."
+                "Sign in with Google Workspace (drive.file scope) to convert and open this deck "
+                "directly in Google Slides and Google Docs without downloading .pptx/.docx files."
             ),
             "pptxDownloadUrl": f"/api/create-blog1/blogs/{clean}/asset/slides/{clean}-deck.pptx",
             "docxDownloadUrl": f"/api/create-blog1/blogs/{clean}/asset/docs/{clean}-whitepaper.docx",
@@ -4751,28 +4858,82 @@ def sync_to_google_workspace(slug: str, bridge_mod: Any = None) -> Dict[str, Any
     if not pptx_p or not docx_p:
         raise CreateBlog1Error("Missing compiled .pptx or .docx artifact for sync.", 404, "ASSET_NOT_FOUND")
 
+    prev_ws = manifest.get("workspaceSync") if isinstance(manifest.get("workspaceSync"), dict) else {}
+    existing_slides_id = None if force_new else (str(prev_ws.get("slidesId") or "").strip() or None)
+    existing_doc_id = None if force_new else (str(prev_ws.get("docId") or "").strip() or None)
+
+    slide_count = len((manifest.get("blueprint") or {}).get("slides") or []) or 12
     title = manifest["title"][:90]
-    slides_res = _drive_multipart_upload(
-        token,
-        f"{title} — 9-Slide Deck",
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        "application/vnd.google-apps.presentation",
-        pptx_p.read_bytes(),
-    )
-    docs_res = _drive_multipart_upload(
-        token,
-        f"{title} — Architecture Brief",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/vnd.google-apps.document",
-        docx_p.read_bytes(),
-    )
+    slides_name = f"{title} — {slide_count}-Slide Deck"
+    docs_name = f"{title} — Architecture Brief"
+
+    try:
+        if token:
+            slides_res = _drive_multipart_upload(
+                token,
+                slides_name,
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                "application/vnd.google-apps.presentation",
+                pptx_p.read_bytes(),
+                existing_id=existing_slides_id,
+            )
+            docs_res = _drive_multipart_upload(
+                token,
+                docs_name,
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "application/vnd.google-apps.document",
+                docx_p.read_bytes(),
+                existing_id=existing_doc_id,
+            )
+        else:
+            auth_provider = "google_drive_cli"
+            slides_res = _gdrive_cli_upload_or_update(
+                pptx_p,
+                slides_name,
+                "application/vnd.google-apps.presentation",
+                existing_id=existing_slides_id,
+            )
+            docs_res = _gdrive_cli_upload_or_update(
+                docx_p,
+                docs_name,
+                "application/vnd.google-apps.document",
+                existing_id=existing_doc_id,
+            )
+    except urllib.error.HTTPError as exc:
+        err_txt = ""
+        try:
+            err_txt = exc.read().decode("utf-8", errors="replace")[:320]
+        except Exception:
+            pass
+        safe_msg = _redact_secret(f"Google Drive API HTTP {exc.code}: {err_txt}", transient_tok)
+        st_code = 401 if exc.code in (401, 403) else 502
+        raise CreateBlog1Error(safe_msg, st_code, "WORKSPACE_SYNC_FAILED") from None
+    except Exception as exc:
+        safe_msg = _redact_secret(str(exc), transient_tok)[:320]
+        raise CreateBlog1Error(f"Google Workspace upload failed: {safe_msg}", 502, "WORKSPACE_SYNC_FAILED") from None
+
+    slides_id = str(slides_res.get("id") or "").strip()
+    doc_id = str(docs_res.get("id") or "").strip()
+    slides_rk = str(slides_res.get("resourceKey") or "").strip()
+    doc_rk = str(docs_res.get("resourceKey") or "").strip()
+    slides_wv = str(slides_res.get("webViewLink") or "")
+    doc_wv = str(docs_res.get("webViewLink") or "")
+
     sync_meta = {
         "status": "SYNCED",
         "syncedAt": _now_iso(),
-        "slidesId": slides_res.get("id", ""),
-        "slidesUrl": f"https://docs.google.com/presentation/d/{slides_res.get('id', '')}/edit",
-        "docId": docs_res.get("id", ""),
-        "docUrl": f"https://docs.google.com/document/d/{docs_res.get('id', '')}/edit",
+        "provider": auth_provider or "google_drive_native",
+        "slidesId": slides_id,
+        "slidesUrl": _drive_url_with_resourcekey(
+            f"https://docs.google.com/presentation/d/{slides_id}/edit", slides_rk, slides_wv
+        ),
+        "slidesEmbedUrl": _drive_url_with_resourcekey(
+            f"https://docs.google.com/presentation/d/{slides_id}/embed", slides_rk, slides_wv
+        ),
+        "docId": doc_id,
+        "docUrl": _drive_url_with_resourcekey(
+            f"https://docs.google.com/document/d/{doc_id}/edit", doc_rk, doc_wv
+        ),
     }
     with _STATE_LOCK:
         manifest["workspaceSync"] = sync_meta
@@ -4780,7 +4941,7 @@ def sync_to_google_workspace(slug: str, bridge_mod: Any = None) -> Dict[str, Any
         blog_dir = get_storage_root() / clean
         (blog_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
         index_bytes = _update_index_entry(manifest)
-        _sync_blog_dir_to_gcs_async(slug=clean, blog_dir=blog_dir, index_bytes=index_bytes)
+        _sync_blog_dir_to_gcs_async(slug=clean, blog_dir=blog_dir, index_bytes=index_bytes, sync=True)
     return {"ok": True, "statusCode": 200, "workspaceSync": sync_meta}
 
 

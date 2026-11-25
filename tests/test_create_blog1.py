@@ -220,9 +220,11 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
             "GEAP_DISABLE_VERTEX_AUTH": os.environ.get("GEAP_DISABLE_VERTEX_AUTH"),
             "K_SERVICE": os.environ.get("K_SERVICE"),
             "GEMINI_API_KEY": os.environ.get("GEMINI_API_KEY"),
+            "CREATE_BLOG1_DISABLE_GDRIVE_CLI": os.environ.get("CREATE_BLOG1_DISABLE_GDRIVE_CLI"),
         }
         os.environ["GEAP_CREATE_BLOG1_DIR"] = cls._tmpdir.name
         os.environ["GEAP_DISABLE_GCS_SYNC"] = "1"
+        os.environ["CREATE_BLOG1_DISABLE_GDRIVE_CLI"] = "1"
 
         cls.httpd = ThreadingHTTPServer(("127.0.0.1", 0), srv.PortalRequestHandler)
         cls.port = cls.httpd.server_address[1]
@@ -988,6 +990,84 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         xss_pat = cb1.re.compile(r"(<script|<foreignobject|javascript:|<[^>]+\son[a-z]+\s*=)")
         self.assertIsNone(xss_pat.search(svg_ok.lower()))
         self.assertIsNotNone(xss_pat.search(svg_bad.lower()))
+
+
+    def test_14_open_with_google_slides_docs_and_transient_oauth_sync(self) -> None:
+        # 1. UI uses Open with Google Slides / Google Docs buttons (no raw .pptx/.docx hero download buttons)
+        js_text = (ROOT_DIR / "js" / "create_blog1.js").read_text(encoding="utf-8")
+        self.assertIn("Open with Google Slides", js_text)
+        self.assertIn("Open with Google Docs", js_text)
+        self.assertNotIn("Whitepaper (.docx)", js_text)
+        self.assertNotIn("-Slide Deck (.pptx)", js_text)
+        self.assertNotIn("Download .pptx (", js_text)
+
+        # 2. Capabilities exposes OAuth client ID for browser 1-click Google Slides/Docs sync
+        cap_st, _, cap_body = self._req("/api/create-blog1/capabilities")
+        self.assertEqual(cap_st, 200)
+        cap = json.loads(cap_body.decode("utf-8"))
+        self.assertTrue(cap["capabilities"]["workspaceOauthClientId"].endswith(".apps.googleusercontent.com"))
+        self.assertTrue(cap["capabilities"]["workspaceBrowserOauth"])
+
+        # 3. Unmounted server without token returns 412 with oauthClientId + scopes
+        bp = _sample_blueprint()
+        slug = "zt-workspace-sync-test"
+        cb1.compile_and_save_blog(
+            blueprint=bp,
+            slug=slug,
+            model_used="gemini-4-neon",
+            auth_mode="unit_test_fixture",
+            actor_email="unit-test",
+            enable_tts=False,
+            enable_judge=False,
+        )
+        st412, _, body412 = self._req(
+            f"/api/create-blog1/blogs/{slug}/sync-workspace",
+            method="POST",
+            body={},
+            headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
+        )
+        self.assertEqual(st412, 412)
+        p412 = json.loads(body412.decode("utf-8"))
+        self.assertEqual(p412["code"], "WORKSPACE_OAUTH_REQUIRED")
+        self.assertIn("drive.file", p412["scopes"][0])
+
+        # 4. Transient X-Google-Workspace-Token converts via multipart upload & supports in-place re-sync PATCH
+        calls = []
+        mod_ref = srv.create_blog1_mod
+        orig_up = mod_ref._drive_multipart_upload
+        def _fake_upload(token, filename, src_mime, dst_mime, raw_bytes, existing_id=None):
+            calls.append((token, dst_mime, existing_id, len(raw_bytes)))
+            if dst_mime.endswith("presentation"):
+                return {"id": existing_id or "slide_abc123", "resourceKey": "0-rkSlide"}
+            return {"id": existing_id or "doc_xyz789", "resourceKey": "0-rkDoc"}
+        mod_ref._drive_multipart_upload = _fake_upload
+        try:
+            st1, _, b1 = self._req(
+                f"/api/create-blog1/blogs/{slug}/sync-workspace",
+                method="POST",
+                body={},
+                headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN, "X-Google-Workspace-Token": "unit-test-oauth-bearer-fixture"},
+            )
+            self.assertEqual(st1, 200, b1.decode("utf-8"))
+            r1 = json.loads(b1.decode("utf-8"))["workspaceSync"]
+            self.assertEqual(r1["status"], "SYNCED")
+            self.assertIn("docs.google.com/presentation/d/slide_abc123/edit?resourcekey=0-rkSlide", r1["slidesUrl"])
+            self.assertIn("docs.google.com/document/d/doc_xyz789/edit?resourcekey=0-rkDoc", r1["docUrl"])
+            self.assertEqual(calls[0][2], None)
+            self.assertEqual(calls[1][2], None)
+
+            # Re-sync passes existing_id to preserve permanent Google Slides & Docs links
+            st2, _, b2 = self._req(
+                f"/api/create-blog1/blogs/{slug}/sync-workspace",
+                method="POST",
+                body={},
+                headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN, "X-Google-Workspace-Token": "unit-test-oauth-bearer-fixture"},
+            )
+            self.assertEqual(st2, 200)
+            self.assertEqual(calls[2][2], "slide_abc123")
+            self.assertEqual(calls[3][2], "doc_xyz789")
+        finally:
+            mod_ref._drive_multipart_upload = orig_up
 
 
 if __name__ == "__main__":
