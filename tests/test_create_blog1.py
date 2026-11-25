@@ -1213,5 +1213,25 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertEqual(noop_applied, [])
 
 
+        # 5. Python 3.11 compatibility guard (Cloud Run uses python:3.11-slim — forbid PEP 701 backslashes in f-strings)
+        import ast as _ast
+        for rel_py in (
+            "server.py",
+            "scripts/create_blog1_canonical_compiler.py",
+            "scripts/create_blog1_diagrams_v2.py",
+            "scripts/create_blog1_engine.py",
+            "scripts/create_blog1_pipeline_v2.py",
+            "scripts/sync_create_blog1_workspace.py",
+        ):
+            src_py = (ROOT_DIR / rel_py).read_text(encoding="utf-8")
+            tree_py = _ast.parse(src_py, filename=rel_py)
+            for node in _ast.walk(tree_py):
+                if isinstance(node, _ast.JoinedStr):
+                    for val in node.values:
+                        if isinstance(val, _ast.FormattedValue):
+                            vseg = _ast.get_source_segment(src_py, val.value) or ""
+                            self.assertNotIn("\\", vseg, f"Python 3.11-incompatible backslash inside f-string at {rel_py}:{val.lineno}: {vseg}")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

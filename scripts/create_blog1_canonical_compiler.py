@@ -1701,7 +1701,9 @@ def compile_icon_to_ooxml_shapes(icon_key: str, px_x: float, px_y: float, px_siz
                     f'<a:pt x="{c["x2"] - min_x}" y="{c["y2"] - min_y}"/>'
                     f'<a:pt x="{c["x"] - min_x}" y="{c["y"] - min_y}"/></a:cubicBezTo>'
                 )
-        p_attrs = f'w="{box_w}" h="{box_h}"{"" if f_hex else " fill=\"none\""}{"" if s_hex else " stroke=\"0\""} extrusionOk="0"'
+        fill_attr = '' if f_hex else ' fill="none"'
+        stroke_attr = '' if s_hex else ' stroke="0"'
+        p_attrs = f'w="{box_w}" h="{box_h}"{fill_attr}{stroke_attr} extrusionOk="0"'
         shapes.append(
             f'<p:sp><p:nvSpPr><p:cNvPr id="{next_id()}" name="ico_{safe_key}"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>'
             f'<p:spPr><a:xfrm><a:off x="{base_off_x + min_x}" y="{base_off_y + min_y}"/><a:ext cx="{box_w}" cy="{box_h}"/></a:xfrm>'
