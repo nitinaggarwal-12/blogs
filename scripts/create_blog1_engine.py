@@ -2526,10 +2526,11 @@ def _docx_p(
     )
 
 
-def _docx_link_p(prefix: str, link_label: str, rid: str) -> str:
+def _docx_link_p(prefix: str, link_label: str, rid: str, *, keep_next: bool = False) -> str:
+    kn = "<w:keepNext/>" if keep_next else ""
     return (
-        '<w:p><w:pPr><w:spacing w:before="40" w:after="100"/></w:pPr>'
-        f'<w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="334155"/><w:sz w:val="19"/></w:rPr><w:t xml:space="preserve">{xml_esc(prefix)}</w:t></w:r>'
+        f'<w:p><w:pPr>{kn}<w:spacing w:before="80" w:after="80"/></w:pPr>'
+        f'<w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:b/><w:color w:val="0F172A"/><w:sz w:val="19"/></w:rPr><w:t xml:space="preserve">{xml_esc(prefix)}</w:t></w:r>'
         f'<w:hyperlink r:id="{xml_esc(rid)}"><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial"/><w:color w:val="1A73E8"/><w:u w:val="single"/><w:b/><w:sz w:val="19"/></w:rPr>'
         f'<w:t>{xml_esc(link_label)}</w:t></w:r></w:hyperlink></w:p>'
     )
@@ -2568,14 +2569,21 @@ def _docx_table(headers: List[str], rows: List[List[str]]) -> str:
 
 def _docx_inline_image(rid: str, docpr_id: int, name: str, iw: int, ih: int) -> str:
     max_w_emu = 5760000
-    scale = min(1.0, max_w_emu / max(1, iw * 9525))
-    cx = max(914400, int(iw * 9525 * scale))
-    cy = max(457200, int(ih * 9525 * scale))
+    max_h_emu = 6100000  # ~6.67 in cap so slim portrait diagrams fit comfortably on one Google Docs page
+    nat_w = max(1, iw * 9525)
+    nat_h = max(1, ih * 9525)
+    scale = min(1.0, max_w_emu / nat_w, max_h_emu / nat_h)
+    cx = max(914400, int(round(nat_w * scale)))
+    cy = max(457200, int(round(nat_h * scale)))
     if cx > max_w_emu:
-        cy = int(cy * (max_w_emu / cx))
+        cy = int(round(cy * (max_w_emu / cx)))
         cx = max_w_emu
+    if cy > max_h_emu:
+        cx = int(round(cx * (max_h_emu / cy)))
+        cy = max_h_emu
+    align_p = '<w:pPr><w:jc w:val="center"/></w:pPr>' if ih >= iw else ""
     return (
-        '<w:p><w:r><w:drawing>'
+        f'<w:p>{align_p}<w:r><w:drawing>'
         '<wp:inline distT="0" distB="0" distL="0" distR="0" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing">'
         f'<wp:extent cx="{cx}" cy="{cy}"/>'
         f'<wp:docPr id="{docpr_id}" name="{xml_esc(name)}"/>'
@@ -2656,7 +2664,7 @@ def compile_docx_bytes(
         doc_rels.append(
             f'<Relationship Id="{rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(f_url)}" TargetMode="External"/>'
         )
-        body.append(_docx_link_p(f"{f_label}: ", "Open editable diagram in viewer.diagrams.net ->", rid))
+        body.append(_docx_link_p(f"{f_label}: ", "Open editable diagram in viewer.diagrams.net ->", rid, keep_next=(f_key in diag_png_map)))
         if f_key in diag_png_map:
             png_bytes, pw, ph = diag_png_map[f_key]
             img_rid = f"rId{200 + fi}"

@@ -950,7 +950,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertEqual(cb1.select_orthogonal_judge_model("gemini-2.5-flash"), "gemini-2.5-pro")
         self.assertEqual(cb1.select_orthogonal_judge_model("gemini-2.5-pro"), "gemini-2.5-flash")
 
-        # 4. Wire diagram non-empty + ADDED fallback when model passes added=[]
+        # 4. Wire diagram non-empty 3-column transformation gate fallback when model passes added=[] / stripped=[]
         bp_wire = {
             "title": "Bi-Temporal Agent Memory",
             "wireDiagram": {
@@ -961,9 +961,24 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
             },
         }
         w_spec = cb1._diag_v2.build_wire_spec_v3(bp_wire, "unit-wire")
-        for i in range(4):
-            card = next(c for c in w_spec["cards"] if c["id"] == f"wh_add_{i}")
-            self.assertGreaterEqual(len(card["lines"]), 3, f"hop {i+1} +ADDED box must never be blank")
+        w_cards = {c["id"]: c for c in w_spec["cards"]}
+        for cid in ("wl_auth_pill", "wl_strip_1", "wl_strip_2", "wg_stage_0", "wg_stage_1", "wg_stage_2", "wr_bind_0", "wr_bind_1", "wr_bind_2", "wr_bind_3"):
+            self.assertIn(cid, w_cards, f"missing 3-column wire gate card {cid}")
+            self.assertGreaterEqual(len(w_cards[cid]["lines"]), 1, f"{cid} must never be blank")
+        self.assertTrue(cb1._diag_v2._cc.validate_spec_geometry(w_spec)["valid"])
+
+        # 4b. Figure 2 slim Google Cloud Architecture Center proportions (1200x1280 portrait, never stretched 1600x900)
+        ca_spec = cb1._diag_v2.build_cloudarch_spec_v3({"title": "Bi-Temporal Agent Memory"}, "unit-ca")
+        self.assertEqual(ca_spec.get("canvasW"), 1200)
+        self.assertEqual(ca_spec.get("canvasH"), 1280)
+        self.assertLess(ca_spec["canvasW"], ca_spec["canvasH"], "Figure 2 must remain slim portrait like WS1 reference")
+        self.assertTrue(cb1._diag_v2._cc.validate_spec_geometry(ca_spec)["valid"])
+
+        # 4c. Figure 4 3-layer security topology & threat vault
+        sec_spec = cb1._diag_v2.build_security_spec_v3({"title": "Bi-Temporal Agent Memory"}, "unit-sec")
+        sec_zone_ids = {z["id"] for z in sec_spec["zones"]}
+        self.assertTrue({"sec_p1", "sec_p2", "sec_p3"}.issubset(sec_zone_ids))
+        self.assertTrue(cb1._diag_v2._cc.validate_spec_geometry(sec_spec)["valid"])
 
         # 5. Sequence bottom 3 milestone cards wrap long detail text across up to 2 lines
         bp_seq = {

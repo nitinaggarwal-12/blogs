@@ -588,7 +588,7 @@ def compile_spec_to_drawio_xml(spec: Dict[str, Any]) -> str:
         )
 
     # 1. Title & top hairline divider (reserve width before any top-right badge pills!)
-    top_right_xs = [float(p["x"]) for p in (spec.get("pills") or []) if float(p.get("y", 999)) < 60 and float(p.get("x", 0)) > 600]
+    top_right_xs = [float(p["x"]) for p in (spec.get("pills") or []) if float(p.get("y", 999)) < 60 and float(p.get("x", 0)) > cw * 0.45]
     title_max_w = (min(top_right_xs) - 48.0) if top_right_xs else float(cw - 64)
     t_text = str(spec.get("title") or "")
     if t_text:
@@ -603,10 +603,11 @@ def compile_spec_to_drawio_xml(spec: Dict[str, Any]) -> str:
             f'vertex="1" parent="1"><mxGeometry x="32" y="{t_y}" width="{int(title_max_w)}" height="30" as="geometry"/></mxCell>'
         )
     if spec.get("subtitle"):
-        _sub_h = '<div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#5F6368;">' + esc_html(spec["subtitle"]) + '</div>'
+        _sub_fit, _sub_fs = fit_single_line_px(spec["subtitle"], cw - 64, 11.0, bold=False)
+        _sub_h = f'<div style="font-family:Arial,Helvetica,sans-serif;font-size:{_sub_fs}px;color:#5F6368;">' + esc_html(_sub_fit) + '</div>'
         cells.append(f'<mxCell id="title_sub" value="{esc_xml(_sub_h)}" '
             f'style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;strokeColor=none;fillColor=none;" '
-            f'vertex="1" parent="1"><mxGeometry x="32" y="{int(spec.get("titleY", 14)) + 26}" width="1500" height="18" as="geometry"/></mxCell>'
+            f'vertex="1" parent="1"><mxGeometry x="32" y="{int(spec.get("titleY", 14)) + 26}" width="{cw - 64}" height="18" as="geometry"/></mxCell>'
         )
     if spec.get("dividerY") is not None:
         dy = int(spec["dividerY"])
@@ -724,7 +725,7 @@ def compile_spec_to_drawio_xml(spec: Dict[str, Any]) -> str:
                 iy = max(c["y"] + 10, round(c["y"] + (c["h"] - (isz + 8 + th)) / 2))
             elif il == "top-left":
                 iy = c["y"] + 10
-            if il == "header-left" and str(fill).upper() in ("#1A73E8", "#1967D2", "#174EA6", "#0F172A"):
+            if il == "header-left" and str(fill).upper() in ("#1A73E8", "#1967D2", "#174EA6", "#0F172A", "#188038", "#0D253F", "#155E75", "#0A2540"):
                 hr = isz + 8
                 cells.append(
                     f'<mxCell id="pic_halo_{esc_xml(c["id"])}" value="" '
@@ -969,8 +970,8 @@ def compile_spec_to_svg(spec: Dict[str, Any]) -> str:
             f'<rect x="{bx + 12}" y="{by + 38}" width="{bw - 24}" height="{bh - 50}" rx="12" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.2"/>'
         )
 
-    top_right_xs = [float(p["x"]) for p in (spec.get("pills") or []) if float(p.get("y", 999)) < 60 and float(p.get("x", 0)) > 600]
-    title_max_w = (min(top_right_xs) - 48.0) if top_right_xs else float(cw - 90)
+    top_right_xs = [float(p["x"]) for p in (spec.get("pills") or []) if float(p.get("y", 999)) < 60 and float(p.get("x", 0)) > cw * 0.45]
+    title_max_w = (min(top_right_xs) - 48.0) if top_right_xs else float(cw - 64)
     if spec.get("title"):
         t_y = float(spec.get("titleY", 14))
         t_sz = float(spec.get("titleSize", 20))
@@ -1074,7 +1075,7 @@ def compile_spec_to_svg(spec: Dict[str, Any]) -> str:
             if c.get("icon"):
                 ix = c["x"] + 12.0
                 iy = (c["y"] + 10.0) if il == "top-left" else (c["y"] + (c["h"] - isz) / 2.0)
-                if il == "header-left" and str(c.get("fill", "")).upper() in ("#1A73E8", "#0F172A", "#174EA6", "#188038"):
+                if il == "header-left" and str(c.get("fill", "")).upper() in ("#1A73E8", "#0F172A", "#174EA6", "#188038", "#0D253F", "#155E75", "#0A2540"):
                     body.append(f'<circle cx="{ix + isz/2:.1f}" cy="{iy + isz/2:.1f}" r="{isz/2 + 3.0:.1f}" fill="#FFFFFF"/>')
                 body.append(render_inline_svg_icon(c["icon"], ix, iy, isz))
                 if il in ("left", "header-left"):
@@ -1307,6 +1308,9 @@ def _ox_rect(
     t_ins: int = 30480,
     b_ins: int = 30480,
     paragraphs: Optional[List[str]] = None,
+    emu_scale: float = EMU_PER_PX,
+    ox_emu: int = 0,
+    oy_emu: int = 0,
 ) -> str:
     fill_xml = "<a:noFill/>" if (not fill or fill == "none") else f'<a:solidFill><a:srgbClr val="{hex6(fill)}"/></a:solidFill>'
     av = f'<a:avLst><a:gd name="adj" fmla="val {adj}"/></a:avLst>' if prst == "roundRect" else "<a:avLst/>"
@@ -1314,27 +1318,41 @@ def _ox_rect(
         body = f'<p:txBody><a:bodyPr wrap="{wrap}" lIns="{l_ins}" tIns="{t_ins}" rIns="{r_ins}" bIns="{b_ins}" anchor="{anchor}"><a:noAutofit/></a:bodyPr><a:lstStyle/>{"".join(paragraphs)}</p:txBody>'
     else:
         body = '<p:txBody><a:bodyPr wrap="square" anchor="ctr"/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>'
+    x_e = ox_emu + int(round(float(x) * emu_scale))
+    y_e = oy_emu + int(round(float(y) * emu_scale))
+    w_e = max(12700, int(round(float(w) * emu_scale)))
+    h_e = max(12700, int(round(float(h) * emu_scale)))
     return (
         f'<p:sp><p:nvSpPr><p:cNvPr id="{sid}" name="{esc_xml(name)}"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>'
-        f'<p:spPr><a:xfrm><a:off x="{px_to_emu(x)}" y="{px_to_emu(y)}"/>'
-        f'<a:ext cx="{max(12700, px_to_emu(w))}" cy="{max(12700, px_to_emu(h))}"/></a:xfrm>'
+        f'<p:spPr><a:xfrm><a:off x="{x_e}" y="{y_e}"/>'
+        f'<a:ext cx="{w_e}" cy="{h_e}"/></a:xfrm>'
         f'<a:prstGeom prst="{prst}">{av}</a:prstGeom>{fill_xml}{_ox_ln(stroke, stroke_pt, dashed)}</p:spPr>{body}</p:sp>'
     )
 
 
-def _ox_conn(edge: Dict[str, Any], pts: List[Tuple[float, float]], next_id) -> List[str]:
-    xs = [px_to_emu(p[0]) for p in pts]
-    ys = [px_to_emu(p[1]) for p in pts]
+def _ox_conn(
+    edge: Dict[str, Any],
+    pts: List[Tuple[float, float]],
+    next_id,
+    *,
+    emu_scale: float = EMU_PER_PX,
+    ox_emu: int = 0,
+    oy_emu: int = 0,
+) -> List[str]:
+    xs = [ox_emu + int(round(float(p[0]) * emu_scale)) for p in pts]
+    ys = [oy_emu + int(round(float(p[1]) * emu_scale)) for p in pts]
     min_x, max_x = min(xs), max(xs)
     min_y, max_y = min(ys), max(ys)
     bw = max(MIN_CUSTGEOM_EMU, max_x - min_x)
     bh = max(MIN_CUSTGEOM_EMU, max_y - min_y)
     cmds = []
     for i, p in enumerate(pts):
-        rx, ry = px_to_emu(p[0]) - min_x, px_to_emu(p[1]) - min_y
+        rx = ox_emu + int(round(float(p[0]) * emu_scale)) - min_x
+        ry = oy_emu + int(round(float(p[1]) * emu_scale)) - min_y
         cmds.append(f'<a:moveTo><a:pt x="{rx}" y="{ry}"/></a:moveTo>' if i == 0 else f'<a:lnTo><a:pt x="{rx}" y="{ry}"/></a:lnTo>')
     clr = edge.get("stroke") or "#595959"
-    spt = float(edge.get("strokeWidth", 1.5)) * 0.72
+    pt_scale = emu_scale / float(EMU_PER_PX)
+    spt = float(edge.get("strokeWidth", 1.5)) * 0.72 * pt_scale
     no_arr = bool(edge.get("noArrow"))
     out = [
         f'<p:sp><p:nvSpPr><p:cNvPr id="{next_id()}" name="edge_{esc_xml(edge["id"])}"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>'
@@ -1352,9 +1370,10 @@ def _ox_conn(edge: Dict[str, Any], pts: List[Tuple[float, float]], next_id) -> L
         lbl_w = max(50.0, est_text_width_px(ltxt, 9.0, bold=True) + 18.0)
         out.append(_ox_rect(
             next_id(), f"edge_lbl_{edge['id']}", lx - lbl_w / 2.0, ly - 9.0, lbl_w, 18.0,
-            adj=50000, fill="#FFFFFF", stroke="#CBD5E1", stroke_pt=0.6,
-            wrap="none", l_ins=7620, r_ins=7620, t_ins=0, b_ins=0,
-            paragraphs=[_ox_p([{"text": ltxt, "pt": 6.0, "bold": True, "color": "#334155"}], "ctr", 0, 100000)],
+            adj=50000, fill="#FFFFFF", stroke="#CBD5E1", stroke_pt=0.6 * pt_scale,
+            wrap="none", l_ins=int(round(7620 * pt_scale)), r_ins=int(round(7620 * pt_scale)), t_ins=0, b_ins=0,
+            paragraphs=[_ox_p([{"text": ltxt, "pt": max(4.5, 6.0 * pt_scale), "bold": True, "color": "#334155"}], "ctr", 0, 100000)],
+            emu_scale=emu_scale, ox_emu=ox_emu, oy_emu=oy_emu,
         ))
     return out
 
@@ -1573,7 +1592,17 @@ def _round_rect_cmds(x: float, y: float, w: float, h: float, r_in: float) -> Lis
     ]
 
 
-def compile_icon_to_ooxml_shapes(icon_key: str, px_x: float, px_y: float, px_size: float, next_id) -> List[str]:
+def compile_icon_to_ooxml_shapes(
+    icon_key: str,
+    px_x: float,
+    px_y: float,
+    px_size: float,
+    next_id,
+    *,
+    emu_scale: float = EMU_PER_PX,
+    ox_emu: int = 0,
+    oy_emu: int = 0,
+) -> List[str]:
     """Compiles an official GCP SVG icon into pure native DrawingML <a:custGeom> shapes (pic=0, 1:1 SVG parity)."""
     icons = load_gcp_icons()
     rec = icons.get(icon_key) or icons.get("gcp_cloud")
@@ -1582,9 +1611,9 @@ def compile_icon_to_ooxml_shapes(icon_key: str, px_x: float, px_y: float, px_siz
     vb_parts = [float(v) for v in str(rec.get("viewBox") or "0 0 24 24").split()]
     vb_w = vb_parts[2] if len(vb_parts) >= 3 and vb_parts[2] > 0 else 24.0
     vb_h = vb_parts[3] if len(vb_parts) >= 4 and vb_parts[3] > 0 else 24.0
-    scale_emu = (float(px_size) * EMU_PER_PX) / vb_w
-    base_off_x = int(round(float(px_x) * EMU_PER_PX))
-    base_off_y = int(round(float(px_y) * EMU_PER_PX))
+    scale_emu = (float(px_size) * emu_scale) / vb_w
+    base_off_x = ox_emu + int(round(float(px_x) * emu_scale))
+    base_off_y = oy_emu + int(round(float(px_y) * emu_scale))
 
     primitives: List[Dict[str, Any]] = []
     stack: List[Tuple[float, float]] = [(0.0, 0.0)]
@@ -1620,7 +1649,7 @@ def compile_icon_to_ooxml_shapes(icon_key: str, px_x: float, px_y: float, px_siz
         fill_xml = f'<a:solidFill><a:srgbClr val="{f_hex}"/></a:solidFill>' if f_hex else "<a:noFill/>"
         if s_hex:
             sw_px = float(attrs.get("stroke-width") or 1.5) * (float(px_size) / vb_w)
-            sw_emu = max(6350, int(round(sw_px * EMU_PER_PX)))
+            sw_emu = max(6350, int(round(sw_px * emu_scale)))
             cap = ' cap="rnd"' if attrs.get("stroke-linecap") == "round" else ""
             dash = '<a:prstDash val="sysDash"/>' if attrs.get("stroke-dasharray") else ""
             join = "<a:round/>" if attrs.get("stroke-linejoin") == "round" else ""
@@ -1715,7 +1744,7 @@ def compile_icon_to_ooxml_shapes(icon_key: str, px_x: float, px_y: float, px_siz
 
 
 def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_rid: str = "rId1") -> str:
-    """Compiles a canonical 1600x900 diagram spec directly into native editable PPTX slide XML (pic=0, full SVG icon parity)."""
+    """Compiles a canonical diagram spec (16:9 or slim portrait) into native editable PPTX slide XML (pic=0, full SVG icon parity)."""
     counter = [2]
 
     def _nid() -> int:
@@ -1724,73 +1753,104 @@ def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_
         return v
 
     cw = float(spec.get("canvasW") or CANVAS_W)
+    ch = float(spec.get("canvasH") or CANVAS_H)
+    if abs(cw - CANVAS_W) < 1.0 and abs(ch - CANVAS_H) < 1.0:
+        emu_scale = float(EMU_PER_PX)
+        ox_emu = 0
+        oy_emu = 0
+    else:
+        slide_w_emu = 12192000.0
+        avail_h_emu = 6610000.0  # reserve dedicated bottom footer band at y=6660000
+        avail_w_emu = 11960000.0
+        emu_scale = min(avail_w_emu / max(1.0, cw), avail_h_emu / max(1.0, ch))
+        ox_emu = int(round((slide_w_emu - cw * emu_scale) / 2.0))
+        oy_emu = int(round(max(0.0, (avail_h_emu - ch * emu_scale) / 2.0)))
+    pt_scale = emu_scale / float(EMU_PER_PX)
+
+    def _s_pt(v: float) -> float:
+        return max(4.4, float(v) * pt_scale)
+
+    def _s_ins(v: int) -> int:
+        return int(round(float(v) * pt_scale))
+
+    def _s_emu(px: float) -> int:
+        return int(round(float(px) * emu_scale))
+
+    def _r(sid: int, name: str, x: float, y: float, w: float, h: float, **kw: Any) -> str:
+        if "stroke_pt" in kw:
+            kw["stroke_pt"] = float(kw["stroke_pt"]) * pt_scale
+        return _ox_rect(sid, name, x, y, w, h, emu_scale=emu_scale, ox_emu=ox_emu, oy_emu=oy_emu, **kw)
+
+    def _ico(icon_key: str, px_x: float, px_y: float, px_size: float) -> List[str]:
+        return compile_icon_to_ooxml_shapes(icon_key, px_x, px_y, px_size, _nid, emu_scale=emu_scale, ox_emu=ox_emu, oy_emu=oy_emu)
+
     boxes = _build_boxes_map(spec)
     shapes: List[str] = []
 
     if spec.get("quadTopBar"):
         sw = cw / 4.0
         for idx, clr in enumerate(("#4285F4", "#EA4335", "#FBBC04", "#34A853")):
-            shapes.append(_ox_rect(_nid(), f"top_bar_{idx}", idx * sw, 0, sw, 6, prst="rect", fill=clr, stroke="none"))
+            shapes.append(_r(_nid(), f"top_bar_{idx}", idx * sw, 0, sw, 6, prst="rect", fill=clr, stroke="none"))
 
     if spec.get("gcpBezel"):
         bz = spec["gcpBezel"]
-        shapes.append(_ox_rect(
+        shapes.append(_r(
             _nid(), "gcp_bezel_outer", bz["x"], bz["y"], bz["w"], bz["h"],
-            adj=5000, fill="#1A73E8", stroke="#1A73E8", stroke_pt=0.75, anchor="t",
-            l_ins=152400, t_ins=30480,
-            paragraphs=[_ox_p([{"text": bz.get("label", "Google Cloud"), "pt": 11.2, "bold": True, "color": "#FFFFFF"}], "l")],
+            adj=3500, fill="#1A73E8", stroke="#1A73E8", stroke_pt=0.75, anchor="t",
+            l_ins=_s_ins(152400), t_ins=_s_ins(30480),
+            paragraphs=[_ox_p([{"text": bz.get("label", "Google Cloud"), "pt": _s_pt(11.6), "bold": True, "color": "#FFFFFF"}], "l")],
         ))
-        shapes.append(_ox_rect(
+        shapes.append(_r(
             _nid(), "gcp_bezel_inner", bz["x"] + 12, bz["y"] + 38, bz["w"] - 24, bz["h"] - 50,
-            adj=4000, fill="#FFFFFF", stroke="#1E293B", stroke_pt=0.85,
+            adj=2800, fill="#FFFFFF", stroke="#1E293B", stroke_pt=0.85,
         ))
 
-    top_right_xs = [float(p["x"]) for p in (spec.get("pills") or []) if float(p.get("y", 999)) < 60 and float(p.get("x", 0)) > 600]
+    top_right_xs = [float(p["x"]) for p in (spec.get("pills") or []) if float(p.get("y", 999)) < 60 and float(p.get("x", 0)) > cw * 0.45]
     title_max_w = (min(top_right_xs) - 56.0) if top_right_xs else float(cw - 64)
     if spec.get("title"):
         ty = float(spec.get("titleY", 12))
         t_sz = float(spec.get("titleSize", 20))
-        # Apply conservative 0.90 width margin for Google Slides bold Arial metrics so long titles NEVER wrap onto dividerY
+        # Apply conservative width margin for Google Slides bold Arial metrics so long titles NEVER wrap onto dividerY
         t_fit, t_fs = fit_single_line_px(spec["title"], title_max_w * 0.88, t_sz, bold=True)
-        shapes.append(_ox_rect(
+        shapes.append(_r(
             _nid(), "t_main", 32, ty, title_max_w, 34, prst="rect", fill="none", stroke="none",
             wrap="none", l_ins=0, r_ins=0, t_ins=0, b_ins=0,
-            paragraphs=[_ox_p([{"text": t_fit, "pt": t_fs * 0.68, "bold": True, "color": spec.get("titleColor", "#202124")}], "l")],
+            paragraphs=[_ox_p([{"text": t_fit, "pt": _s_pt(t_fs * 0.68), "bold": True, "color": spec.get("titleColor", "#202124")}], "l")],
         ))
     if spec.get("subtitle"):
         sub_fit, sub_fs = fit_single_line_px(spec["subtitle"], title_max_w * 0.92, 11.0, bold=False)
-        shapes.append(_ox_rect(
+        shapes.append(_r(
             _nid(), "t_sub", 32, float(spec.get("titleY", 12)) + 28, title_max_w, 18, prst="rect", fill="none", stroke="none",
             wrap="none", l_ins=0, r_ins=0, t_ins=0, b_ins=0,
-            paragraphs=[_ox_p([{"text": sub_fit, "pt": sub_fs * 0.70, "color": "#5F6368"}], "l")],
+            paragraphs=[_ox_p([{"text": sub_fit, "pt": _s_pt(sub_fs * 0.70), "color": "#5F6368"}], "l")],
         ))
     if spec.get("dividerY") is not None:
-        shapes.append(_ox_rect(_nid(), "mc_div_line", 32, float(spec["dividerY"]), cw - 64, 2, prst="rect", fill="#DADCE0", stroke="none"))
+        shapes.append(_r(_nid(), "mc_div_line", 32, float(spec["dividerY"]), cw - 64, 2, prst="rect", fill="#DADCE0", stroke="none"))
 
     for z in spec.get("zones") or []:
         algn = "ctr" if z.get("titleAlign") == "center" else "l"
         paras = None
         if z.get("title"):
-            paras = [_ox_p([{"text": z["title"], "pt": float(z.get("titleSize", 12)) * 0.66, "bold": True, "color": z.get("titleColor", "#1967D2")}], algn)]
+            paras = [_ox_p([{"text": z["title"], "pt": _s_pt(float(z.get("titleSize", 12)) * 0.66), "bold": True, "color": z.get("titleColor", "#1967D2")}], algn)]
             if z.get("subtitle"):
-                paras.append(_ox_p([{"text": z["subtitle"], "pt": 6.8, "color": "#475569"}], algn, 1.0))
-        shapes.append(_ox_rect(
+                paras.append(_ox_p([{"text": z["subtitle"], "pt": _s_pt(6.8), "color": "#475569"}], algn, 1.0 * pt_scale))
+        shapes.append(_r(
             _nid(), z["id"], z["x"], z["y"], z["w"], z["h"],
             adj=min(18000, round((z.get("rx", 14) / max(1, min(z["w"], z["h"]))) * 100000)),
             fill=z.get("fill") or "#F8F9FA", stroke=z.get("stroke") or "#DADCE0",
             stroke_pt=float(z.get("strokeWidth", 1.2)) * 0.8, dashed=bool(z.get("dashed")),
-            anchor="t", l_ins=68580, r_ins=68580, t_ins=45720, b_ins=22860, paragraphs=paras,
+            anchor="t", l_ins=_s_ins(68580), r_ins=_s_ins(68580), t_ins=_s_ins(45720), b_ins=_s_ins(22860), paragraphs=paras,
         ))
 
     for ll in spec.get("lifelines") or []:
-        shapes.extend(_ox_conn({"id": ll["id"], "stroke": ll.get("stroke", "#94A3B8"), "strokeWidth": ll.get("strokeWidth", 1.1), "dashed": ll.get("dashed", True), "noArrow": not ll.get("arrowEnd")}, [(ll["x1"], ll["y1"]), (ll["x2"], ll["y2"])], _nid))
+        shapes.extend(_ox_conn({"id": ll["id"], "stroke": ll.get("stroke", "#94A3B8"), "strokeWidth": ll.get("strokeWidth", 1.1), "dashed": ll.get("dashed", True), "noArrow": not ll.get("arrowEnd")}, [(ll["x1"], ll["y1"]), (ll["x2"], ll["y2"])], _nid, emu_scale=emu_scale, ox_emu=ox_emu, oy_emu=oy_emu))
 
     for lbl in spec.get("labels") or []:
         algn = "ctr" if lbl.get("align") == "center" else ("r" if lbl.get("align") == "right" else "l")
-        shapes.append(_ox_rect(
+        shapes.append(_r(
             _nid(), lbl["id"], lbl["x"], lbl["y"], lbl["w"], lbl["h"], prst="rect", fill="none", stroke="none",
             l_ins=0, r_ins=0, t_ins=0, b_ins=0,
-            paragraphs=[_ox_p([{"text": lbl["text"], "pt": float(lbl.get("size", 13)) * 0.68, "bold": lbl.get("bold") is not False, "color": lbl.get("color", "#202124")}], algn)],
+            paragraphs=[_ox_p([{"text": lbl["text"], "pt": _s_pt(float(lbl.get("size", 13)) * 0.68), "bold": lbl.get("bold") is not False, "color": lbl.get("color", "#202124")}], algn)],
         ))
 
     for c in spec.get("cards") or []:
@@ -1808,11 +1868,11 @@ def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_
         paras = [
             _ox_p([{
                 "text": ln.get("text", ""),
-                "pt": float(ln.get("size") or 11) * 0.65,
+                "pt": _s_pt(float(ln.get("size") or 11) * 0.65),
                 "bold": bool(ln.get("bold")),
                 "mono": bool(ln.get("mono")),
                 "color": ln.get("color") or ("#202124" if ln.get("bold") else "#5F6368"),
-            }], algn, float(ln.get("gapTop") or 0) * 0.45 if li > 0 else 0.0, 108000)
+            }], algn, float(ln.get("gapTop") or 0) * 0.45 * pt_scale if li > 0 else 0.0, 108000)
             for li, ln in enumerate(c.get("lines") or [])
         ] or None
 
@@ -1822,7 +1882,7 @@ def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_
             total_b = isz + 8.0 + th
             top_y = max(float(c["y"]) + 10.0, float(c["y"]) + (float(c["h"]) - total_b) / 2.0)
             ix = float(c["x"]) + (float(c["w"]) - isz) / 2.0
-            shapes.append(_ox_rect(
+            shapes.append(_r(
                 _nid(), c["id"], c["x"], c["y"], c["w"], c["h"],
                 adj=min(22000, round((c.get("rx", 12) / max(1, min(c["w"], c["h"]))) * 100000)),
                 fill=c.get("fill") or "#FFFFFF",
@@ -1830,44 +1890,44 @@ def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_
                 stroke_pt=float(c.get("strokeWidth", 1.2)) * 0.8, dashed=bool(c.get("dashed")),
                 paragraphs=None,
             ))
-            shapes.extend(compile_icon_to_ooxml_shapes(c["icon"], ix, top_y, isz, _nid))
+            shapes.extend(_ico(c["icon"], ix, top_y, isz))
             if paras:
-                shapes.append(_ox_rect(
+                shapes.append(_r(
                     _nid(), f"{c['id']}_txt", c["x"], top_y + isz + 6.0, c["w"], max(20.0, float(c["y"]) + float(c["h"]) - (top_y + isz + 10.0)),
                     prst="rect", fill="none", stroke="none", anchor="t",
-                    l_ins=px_to_emu(max(8, pad_l)), r_ins=px_to_emu(max(6, pad_r)), t_ins=0, b_ins=0,
+                    l_ins=_s_emu(max(8, pad_l)), r_ins=_s_emu(max(6, pad_r)), t_ins=0, b_ins=0,
                     paragraphs=paras,
                 ))
         else:
-            shapes.append(_ox_rect(
+            shapes.append(_r(
                 _nid(), c["id"], c["x"], c["y"], c["w"], c["h"],
                 adj=min(22000, round((c.get("rx", 12) / max(1, min(c["w"], c["h"]))) * 100000)),
                 fill=c.get("fill") or "#FFFFFF",
                 stroke=("none" if c.get("stroke") == "none" else (c.get("stroke") or "#DADCE0")),
                 stroke_pt=float(c.get("strokeWidth", 1.2)) * 0.8, dashed=bool(c.get("dashed")),
                 anchor="t" if is_ctr else "ctr",
-                l_ins=px_to_emu(max(8, pad_l)),
-                r_ins=px_to_emu(max(6, pad_r)),
-                t_ins=px_to_emu(pad_t),
-                b_ins=px_to_emu(c.get("padB") or 4),
+                l_ins=_s_emu(max(8, pad_l)),
+                r_ins=_s_emu(max(6, pad_r)),
+                t_ins=_s_emu(pad_t),
+                b_ins=_s_emu(c.get("padB") or 4),
                 paragraphs=paras,
             ))
             if c.get("icon"):
                 ix = float(c["x"]) + 12.0
                 iy = (float(c["y"]) + 10.0) if il == "top-left" else (float(c["y"]) + (float(c["h"]) - isz) / 2.0)
-                if il == "header-left" and str(c.get("fill", "")).upper() in ("#1A73E8", "#0F172A", "#174EA6", "#188038"):
+                if il == "header-left" and str(c.get("fill", "")).upper() in ("#1A73E8", "#0F172A", "#174EA6", "#188038", "#0D253F", "#155E75"):
                     r_halo = isz / 2.0 + 3.0
-                    shapes.append(_ox_rect(
+                    shapes.append(_r(
                         _nid(), f"{c['id']}_halo", ix + isz / 2.0 - r_halo, iy + isz / 2.0 - r_halo,
                         r_halo * 2.0, r_halo * 2.0, prst="ellipse", fill="#FFFFFF", stroke="none",
                     ))
-                shapes.extend(compile_icon_to_ooxml_shapes(c["icon"], ix, iy, isz, _nid))
+                shapes.extend(_ico(c["icon"], ix, iy, isz))
 
         if c.get("topAccent"):
-            shapes.append(_ox_rect(_nid(), f"{c['id']}_acc", float(c["x"]) + 1, c["y"], float(c["w"]) - 2, 5, adj=25000, fill=c["topAccent"], stroke="none"))
+            shapes.append(_r(_nid(), f"{c['id']}_acc", float(c["x"]) + 1, c["y"], float(c["w"]) - 2, 5, adj=25000, fill=c["topAccent"], stroke="none"))
 
         for tile in c.get("tiles") or []:
-            shapes.append(_ox_rect(
+            shapes.append(_r(
                 _nid(), tile["id"], tile["x"], tile["y"], tile["w"], tile["h"],
                 adj=20000, fill=tile.get("fill", "#F8FAFC"), stroke=tile.get("stroke", "#CBD5E1"), stroke_pt=0.75,
                 paragraphs=None,
@@ -1876,23 +1936,23 @@ def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_
             tix = float(tile["x"]) + (float(tile["w"]) - tisz) / 2.0
             tiy = float(tile["y"]) + (6.0 if tile.get("label") else (float(tile["h"]) - tisz) / 2.0)
             if tile.get("icon"):
-                shapes.extend(compile_icon_to_ooxml_shapes(tile["icon"], tix, tiy, tisz, _nid))
+                shapes.extend(_ico(tile["icon"], tix, tiy, tisz))
             if tile.get("label"):
-                shapes.append(_ox_rect(
+                shapes.append(_r(
                     _nid(), f"{tile['id']}_lbl", tile["x"], float(tile["y"]) + float(tile["h"]) - 18.0, tile["w"], 16.0,
                     prst="rect", fill="none", stroke="none", l_ins=0, r_ins=0, t_ins=0, b_ins=0,
-                    paragraphs=[_ox_p([{"text": str(tile["label"]), "pt": 6.5, "bold": True, "color": tile.get("labelColor", "#1F2937")}], "ctr", 0, 100000)],
+                    paragraphs=[_ox_p([{"text": str(tile["label"]), "pt": _s_pt(6.5), "bold": True, "color": tile.get("labelColor", "#1F2937")}], "ctr", 0, 100000)],
                 ))
 
     for b in spec.get("bars") or []:
-        shapes.append(_ox_rect(_nid(), b["id"], b["x"], b["y"], b["w"], b["h"], adj=20000, fill=b.get("fill", "#0F172A"), stroke="none"))
+        shapes.append(_r(_nid(), b["id"], b["x"], b["y"], b["w"], b["h"], adj=20000, fill=b.get("fill", "#0F172A"), stroke="none"))
 
     g = spec.get("planeGuide")
     if g:
-        shapes.append(_ox_rect(
+        shapes.append(_r(
             _nid(), g["id"], g["x"], g["y"], g["w"], g["h"], adj=6000,
-            fill="#F8FAFC", stroke="#CBD5E1", stroke_pt=0.85, anchor="t", l_ins=91440, t_ins=45720,
-            paragraphs=[_ox_p([{"text": g["title"], "pt": 7.0, "bold": True, "color": "#0F172A"}], "l")],
+            fill="#F8FAFC", stroke="#CBD5E1", stroke_pt=0.85, anchor="t", l_ins=_s_ins(91440), t_ins=_s_ins(45720),
+            paragraphs=[_ox_p([{"text": g["title"], "pt": _s_pt(7.0), "bold": True, "color": "#0F172A"}], "l")],
         ))
         rows = g.get("rows") or []
         foot_h = 26 if g.get("footnote") else 0
@@ -1900,43 +1960,43 @@ def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_
         for idx, r in enumerate(rows):
             pal = PLANE_PALETTE.get(r["plane"], PLANE_PALETTE["CONTROL"])
             ry = g["y"] + 28 + idx * (rh + 6)
-            shapes.append(_ox_rect(
+            shapes.append(_r(
                 _nid(), f"{g['id']}_r{idx}", g["x"] + 10, ry, g["w"] - 20, rh, adj=12000,
                 fill=pal["bg"], stroke=pal["border"], stroke_pt=0.7, anchor="ctr",
                 paragraphs=[
-                    _ox_p([{"text": f'{r["plane"]} PLANE  ', "pt": 6.8, "bold": True, "color": pal["text"]}, {"text": r["headline"], "pt": 6.8, "bold": True, "color": "#0F172A"}], "l"),
-                    _ox_p([{"text": r["detail"], "pt": 6.3, "color": "#475569"}], "l", 1.5),
+                    _ox_p([{"text": f'{r["plane"]} PLANE  ', "pt": _s_pt(6.8), "bold": True, "color": pal["text"]}, {"text": r["headline"], "pt": _s_pt(6.8), "bold": True, "color": "#0F172A"}], "l"),
+                    _ox_p([{"text": r["detail"], "pt": _s_pt(6.3), "color": "#475569"}], "l", 1.5 * pt_scale),
                 ],
             ))
 
     for leg in spec.get("planeLegend") or []:
         pal = PLANE_PALETTE.get(leg["plane"], PLANE_PALETTE["CONTROL"])
-        shapes.append(_ox_rect(
+        shapes.append(_r(
             _nid(), leg["id"], leg["x"], leg["y"], leg["w"], leg["h"], adj=18000,
             fill=pal["bg"], stroke=pal["border"], stroke_pt=0.7,
-            paragraphs=[_ox_p([{"text": f'{leg["plane"]}  ', "pt": 6.8, "bold": True, "color": pal["text"]}, {"text": leg["text"], "pt": 6.4, "color": "#1F2937"}], "l")],
+            paragraphs=[_ox_p([{"text": f'{leg["plane"]}  ', "pt": _s_pt(6.8), "bold": True, "color": pal["text"]}, {"text": leg["text"], "pt": _s_pt(6.4), "color": "#1F2937"}], "l")],
         ))
 
     for e in spec.get("edges") or []:
         pts = resolve_edge_polyline(e, boxes)
         if len(pts) >= 2:
-            shapes.extend(_ox_conn(e, pts, _nid))
+            shapes.extend(_ox_conn(e, pts, _nid, emu_scale=emu_scale, ox_emu=ox_emu, oy_emu=oy_emu))
 
     for cb in spec.get("circleBadges") or []:
         r = cb.get("r", 13)
-        shapes.append(_ox_rect(
+        shapes.append(_r(
             _nid(), cb["id"], cb["cx"] - r, cb["cy"] - r, r * 2, r * 2, prst="ellipse",
             fill=cb.get("fill", "#1967D2"), stroke="none", l_ins=0, r_ins=0, t_ins=0, b_ins=0,
-            paragraphs=[_ox_p([{"text": str(cb.get("text", "")), "pt": 7.5, "bold": True, "color": "#FFFFFF"}], "ctr")],
+            paragraphs=[_ox_p([{"text": str(cb.get("text", "")), "pt": _s_pt(float(cb.get("fontSize", 11)) * 0.68), "bold": True, "color": "#FFFFFF"}], "ctr")],
         ))
 
     for p in spec.get("pills") or []:
         pal = PLANE_PALETTE.get(p.get("plane", "CONTROL"), PLANE_PALETTE["CONTROL"])
-        shapes.append(_ox_rect(
+        shapes.append(_r(
             _nid(), p["id"], p["x"] - 2, p["y"], p["w"] + 4, p["h"], adj=50000,
             fill=p.get("bg") or pal["bg"], stroke=p.get("border") or pal["border"], stroke_pt=0.7,
-            wrap="none", l_ins=7620, r_ins=7620, t_ins=0, b_ins=0,
-            paragraphs=[_ox_p([{"text": p["text"], "pt": 5.6, "bold": True, "color": p.get("textColor") or pal["text"]}], "ctr", 0, 100000)],
+            wrap="none", l_ins=_s_ins(7620), r_ins=_s_ins(7620), t_ins=0, b_ins=0,
+            paragraphs=[_ox_p([{"text": p["text"], "pt": _s_pt(5.6), "bold": True, "color": p.get("textColor") or pal["text"]}], "ctr", 0, 100000)],
         ))
 
     # Footer with clickable Draw.io link — positioned cleanly in dedicated bottom margin (y=874px, zero overlap!)

@@ -51,7 +51,16 @@ def _rasterize_svgs_to_pngs(svg_paths: Dict[str, Path], out_dir: Path) -> Dict[s
         jobs = []
         for k, sp in svg_paths.items():
             out_p = out_dir / f"{k}.png"
-            jobs.append({"key": k, "svg": str(sp), "png": str(out_p)})
+            vb_w, vb_h = 1600, 900
+            try:
+                head = sp.read_text(encoding="utf-8", errors="ignore")[:800]
+                m_vb = re.search(r'viewBox="[^"]*?\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)"', head)
+                if m_vb:
+                    vb_w = max(320, int(round(float(m_vb.group(1)))))
+                    vb_h = max(320, int(round(float(m_vb.group(2)))))
+            except Exception:
+                pass
+            jobs.append({"key": k, "svg": str(sp), "png": str(out_p), "w": vb_w, "h": vb_h})
         js_script = out_dir / "_raster.mjs"
         js_script.write_text(
             f"""import fs from 'fs';
@@ -60,11 +69,13 @@ const jobs = JSON.parse(fs.readFileSync({json.dumps(str(out_dir / "_jobs.json"))
 const browser = await puppeteer.launch({{ headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox'] }});
 try {{
   const page = await browser.newPage();
-  await page.setViewport({{ width: 1600, height: 900, deviceScaleFactor: 2 }});
   for (const j of jobs) {{
+    const w = Number(j.w) || 1600;
+    const h = Number(j.h) || 900;
+    await page.setViewport({{ width: w, height: h, deviceScaleFactor: 2 }});
     const svg = fs.readFileSync(j.svg, 'utf8');
-    await page.setContent(`<!doctype html><html><body style="margin:0;padding:0;background:#fff;overflow:hidden;width:1600px;height:900px;">${{svg}}</body></html>`, {{ waitUntil: 'load' }});
-    await page.screenshot({{ path: j.png, type: 'png', clip: {{ x: 0, y: 0, width: 1600, height: 900 }} }});
+    await page.setContent(`<!doctype html><html><body style="margin:0;padding:0;background:#fff;overflow:hidden;width:${{w}}px;height:${{h}}px;">${{svg}}</body></html>`, {{ waitUntil: 'load' }});
+    await page.screenshot({{ path: j.png, type: 'png', clip: {{ x: 0, y: 0, width: w, height: h }} }});
   }}
 }} finally {{
   await browser.close();
