@@ -1797,11 +1797,12 @@ def compile_slide_preview_svgs(
                 left_w = 960 if sl.get("calloutValue") else 1472
                 for bi, b in enumerate(bullets[:5]):
                     by = 196 + bi * 116
+                    clean_b = re.sub(r"^(?:step\s*\d+[:.\-\s]+|\d+[.)]\s+)", "", b, flags=re.IGNORECASE).strip() or b
                     parts.append(f'<rect x="64" y="{by}" width="{left_w}" height="96" rx="10" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.3"/>')
                     parts.append(f'<circle cx="104" cy="{by + 48}" r="17" fill="#1A73E8"/>')
                     parts.append(f'<text x="104" y="{by + 54}" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14" font-weight="800" fill="#FFFFFF">{bi+1}</text>')
                     wrap_n = 76 if left_w == 960 else 112
-                    lines = _wrap_text(b, wrap_n, 2)
+                    lines = _wrap_text(clean_b, wrap_n, 2)
                     for li, ln in enumerate(lines):
                         parts.append(f'<text x="140" y="{by + (42 if len(lines) == 2 else 54) + li * 25}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="18.5" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
                 if sl.get("calloutValue"):
@@ -2194,10 +2195,11 @@ def compile_pptx_bytes(
                     left_w = 960 if sl.get("calloutValue") else 1472
                     for bi, b in enumerate(bullets[:5]):
                         by = 192 + bi * 114
+                        clean_b = re.sub(r"^(?:step\s*\d+[:.\-\s]+|\d+[.)]\s+)", "", b, flags=re.IGNORECASE).strip() or b
                         shapes.append(
                             _pptx_rect(
                                 sid, f"bcard_{bi}", 64, by, left_w, 94, fill_hex="F8FAFC", line_hex="CBD5E1", rounded=True,
-                                text_runs=[{"text": f"{bi+1}.  {_fit_clean_sentence(b, 155)}", "pt": 13.0, "color": "0F172A"}],
+                                text_runs=[{"text": f"{bi+1}.  {_fit_clean_sentence(clean_b, 155)}", "pt": 13.0, "color": "0F172A"}],
                                 valign="ctr", pad_lr=150000,
                             )
                         )
@@ -3440,7 +3442,7 @@ def run_deterministic_quality_gate(
         leaks.append("fixture_placeholder:acme")
     if stale_slide7_hits > 0:
         leaks.append("stale_proof_copy:Slide_7_on_12slide_deck")
-    _add("D-08", "Public-Repo F-13 Hygiene, Secret & Fixture Scan", len(leaks) == 0, "0 internal domains, tokens, @google.com leaks, or acme fixtures across all artifacts." if not leaks else f"Detected: {', '.join(leaks)}")
+    _add("D-08", "Public-Repo F-13 Hygiene, Secret & Fixture Scan", len(leaks) == 0, "0 internal domains, tokens, corporate email leaks, or placeholder fixtures across all artifacts." if not leaks else f"Detected: {', '.join(leaks)}")
 
     ledger = bp.get("claimLedger") or []
     valid_tags = all(c.get("provenance") in ALLOWED_PROVENANCE_TAGS for c in ledger)

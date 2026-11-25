@@ -1517,7 +1517,7 @@
       el('table', { className: 'data-table' },
         el('thead', null, el('tr', null, [el('th', null, 'ID'), el('th', null, 'Check'), el('th', null, 'Status'), el('th', null, 'Detail')])),
         el('tbody', null, (det.checks || []).map((c) => el('tr', null,
-          el('td', { style: { fontFamily: 'var(--mono)', fontWeight: '700' } }, c.id),
+          el('td', { style: { fontFamily: 'var(--mono)', fontWeight: '700', whiteSpace: 'nowrap' } }, c.id),
           el('td', { style: { fontWeight: '700' } }, c.label),
           el('td', null, makePill(c.status, c.status === 'PASS' ? 'pill-green' : 'pill-red', false)),
           el('td', null, c.detail)

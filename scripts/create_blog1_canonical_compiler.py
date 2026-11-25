@@ -1746,22 +1746,23 @@ def compile_spec_to_ooxml_slide(spec: Dict[str, Any], footer_prefix: str, hlink_
         ))
 
     top_right_xs = [float(p["x"]) for p in (spec.get("pills") or []) if float(p.get("y", 999)) < 60 and float(p.get("x", 0)) > 600]
-    title_max_w = (min(top_right_xs) - 48.0) if top_right_xs else float(cw - 64)
+    title_max_w = (min(top_right_xs) - 56.0) if top_right_xs else float(cw - 64)
     if spec.get("title"):
         ty = float(spec.get("titleY", 12))
         t_sz = float(spec.get("titleSize", 20))
-        t_fit, t_fs = fit_single_line_px(spec["title"], title_max_w, t_sz, bold=True)
+        # Apply conservative 0.90 width margin for Google Slides bold Arial metrics so long titles NEVER wrap onto dividerY
+        t_fit, t_fs = fit_single_line_px(spec["title"], title_max_w * 0.88, t_sz, bold=True)
         shapes.append(_ox_rect(
             _nid(), "t_main", 32, ty, title_max_w, 34, prst="rect", fill="none", stroke="none",
-            l_ins=0, r_ins=0, t_ins=0, b_ins=0,
-            paragraphs=[_ox_p([{"text": t_fit, "pt": t_fs * 0.72, "bold": True, "color": spec.get("titleColor", "#202124")}], "l")],
+            wrap="none", l_ins=0, r_ins=0, t_ins=0, b_ins=0,
+            paragraphs=[_ox_p([{"text": t_fit, "pt": t_fs * 0.68, "bold": True, "color": spec.get("titleColor", "#202124")}], "l")],
         ))
     if spec.get("subtitle"):
-        sub_fit, sub_fs = fit_single_line_px(spec["subtitle"], title_max_w, 11.0, bold=False)
+        sub_fit, sub_fs = fit_single_line_px(spec["subtitle"], title_max_w * 0.92, 11.0, bold=False)
         shapes.append(_ox_rect(
             _nid(), "t_sub", 32, float(spec.get("titleY", 12)) + 28, title_max_w, 18, prst="rect", fill="none", stroke="none",
-            l_ins=0, r_ins=0, t_ins=0, b_ins=0,
-            paragraphs=[_ox_p([{"text": sub_fit, "pt": sub_fs * 0.72, "color": "#5F6368"}], "l")],
+            wrap="none", l_ins=0, r_ins=0, t_ins=0, b_ins=0,
+            paragraphs=[_ox_p([{"text": sub_fit, "pt": sub_fs * 0.70, "color": "#5F6368"}], "l")],
         ))
     if spec.get("dividerY") is not None:
         shapes.append(_ox_rect(_nid(), "mc_div_line", 32, float(spec["dividerY"]), cw - 64, 2, prst="rect", fill="#DADCE0", stroke="none"))

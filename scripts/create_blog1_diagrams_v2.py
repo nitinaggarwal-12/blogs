@@ -726,13 +726,14 @@ def build_sequence_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         lifelines.append({"id": f"ll_v_{i}", "x1": cx, "y1": 224, "x2": cx, "y2": 698, "stroke": "#CBD5E1", "strokeWidth": 1.4, "dashed": True})
         circle_badges.append({"id": f"hub_{i}", "cx": cx, "cy": 212, "r": 10, "fill": bar_colors[i], "text": ""})
 
-    # Activation bars spanning actual active intervals (hub-orchestrator API lane 2 spans steps 2..6)
+    # Activation bars spanning actual active intervals (split AI/KMS lane 3 around Step 3 and Step 5 so Step 4 crosses clean white canvas)
     bars = [
         {"id": "bar_0", "x": lane_x[0] - 8, "y": 244, "w": 16, "h": 416, "fill": bar_colors[0]},
         {"id": "bar_1", "x": lane_x[1] - 8, "y": 250, "w": 16, "h": 110, "fill": bar_colors[1]},
         {"id": "bar_2", "x": lane_x[2] - 8, "y": 318, "w": 16, "h": 340, "fill": bar_colors[2]},
-        {"id": "bar_3", "x": lane_x[3] - 8, "y": 388, "w": 16, "h": 200, "fill": bar_colors[3]},
-        {"id": "bar_4", "x": lane_x[4] - 8, "y": 456, "w": 16, "h": 88, "fill": bar_colors[4]},
+        {"id": "bar_3a", "x": lane_x[3] - 8, "y": 384, "w": 16, "h": 46, "fill": bar_colors[3]},
+        {"id": "bar_3b", "x": lane_x[3] - 8, "y": 524, "w": 16, "h": 54, "fill": bar_colors[3]},
+        {"id": "bar_4", "x": lane_x[4] - 8, "y": 454, "w": 16, "h": 56, "fill": bar_colors[4]},
     ]
 
     # True actor-to-actor sequence routing (NEVER force a bogus left-to-right staircase!)
@@ -797,10 +798,12 @@ def build_sequence_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
             going_right = ti > fi
             x_start = lane_x[fi] + (8 if going_right else -8)
             x_end = lane_x[ti] + (-10 if going_right else 10)
-            mid_x = (x_start + x_end) / 2.0
-            span_w = max(180.0, abs(x_end - x_start) - 44.0)
-            wire_txt, wire_fs = _cc.fit_single_line_px(f"{st['title']}: {st['wire']}", span_w, 9.4, bold=True)
-            det_txt, det_fs = _cc.fit_single_line_px(st["detail"], span_w, 8.6, bold=False)
+            bx = x_start + (22 if going_right else -22)
+            # Reserve clear horizontal gutter past circle badge so text NEVER touches step badge #N
+            lbl_x = (bx + 18.0) if going_right else (x_end + 12.0)
+            span_w = max(165.0, (x_end - lbl_x - 10.0) if going_right else (bx - 18.0 - lbl_x))
+            wire_txt, wire_fs = _cc.fit_single_line_px(f"{st['title']}: {st['wire']}", span_w * 0.90, 9.0, bold=True)
+            det_txt, det_fs = _cc.fit_single_line_px(st["detail"], span_w * 0.90, 8.2, bold=False)
             edges.append({
                 "id": f"se_{i+1}",
                 "rawPoints": [(x_start, ry), (x_end, ry)],
@@ -809,10 +812,9 @@ def build_sequence_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
                 "dashed": is_resp,
                 "bidirectional": (not is_resp and fi == 2 and ti in (3, 4)),
             })
-            bx = x_start + (22 if going_right else -22)
             circle_badges.append({"id": f"sb_{i}", "cx": bx, "cy": ry, "r": 13, "text": str(i + 1), "fill": clr, "fontSize": 11.0})
-            labels.append({"id": f"slbl_t_{i}", "x": mid_x - span_w / 2.0, "y": ry - 22, "w": span_w, "h": 18, "text": wire_txt, "size": wire_fs, "color": clr, "align": "center"})
-            labels.append({"id": f"slbl_d_{i}", "x": mid_x - span_w / 2.0, "y": ry + 4, "w": span_w, "h": 16, "text": det_txt, "size": det_fs, "color": "#475569", "align": "center", "bold": False})
+            labels.append({"id": f"slbl_t_{i}", "x": lbl_x, "y": ry - 22, "w": span_w, "h": 18, "text": wire_txt, "size": wire_fs, "color": clr, "align": "center"})
+            labels.append({"id": f"slbl_d_{i}", "x": lbl_x, "y": ry + 5, "w": span_w, "h": 16, "text": det_txt, "size": det_fs, "color": "#475569", "align": "center", "bold": False})
 
     # Right-hand Transaction / Consistency Highlight + OTel 200 panel (dedicated clean gutter x=1274..1560)
     hl = sq.get("highlightBox") or {
