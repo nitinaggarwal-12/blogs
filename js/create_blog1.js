@@ -1746,6 +1746,19 @@
       }
     });
 
+    function syncTopbarHeight() {
+      const tb = document.querySelector('header.topbar');
+      const qb = document.querySelector('.quad-bar');
+      const h = Math.ceil((tb ? tb.getBoundingClientRect().height : 124) + (qb ? qb.getBoundingClientRect().height : 4));
+      document.documentElement.style.setProperty('--topbar-h', h + 'px');
+    }
+    syncTopbarHeight();
+    window.addEventListener('resize', syncTopbarHeight);
+    if (typeof ResizeObserver !== 'undefined') {
+      const tbEl = document.querySelector('header.topbar');
+      if (tbEl) new ResizeObserver(syncTopbarHeight).observe(tbEl);
+    }
+
     refreshCapabilities();
     refreshLibrary(true);
   }

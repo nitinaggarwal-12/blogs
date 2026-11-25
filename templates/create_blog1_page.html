@@ -43,7 +43,7 @@
       color: var(--text);
       line-height: 1.5;
       min-height: 100vh;
-      overflow-x: hidden;
+      overflow-x: clip;
     }
     .quad-bar {
       display: grid;
@@ -66,7 +66,7 @@
       background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border-strong);
-      padding: 12px clamp(14px, 2vw, 28px);
+      padding: 9px clamp(14px, 2vw, 28px);
       box-shadow: var(--shadow-sm);
     }
     .topbar-inner {
@@ -74,7 +74,7 @@
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 6px;
     }
     .topbar-row {
       display: flex;
@@ -222,14 +222,20 @@
       flex-direction: column;
       gap: 16px;
       position: sticky;
-      top: 104px;
-      max-height: calc(100vh - 116px);
+      top: calc(var(--topbar-h, 136px) + 10px);
+      max-height: calc(100vh - var(--topbar-h, 136px) - 22px);
       overflow-y: auto;
-      padding-right: 2px;
+      overscroll-behavior: contain;
+      padding-right: 4px;
+      padding-bottom: 18px;
       scrollbar-width: thin;
     }
+    .sidebar > .card {
+      flex: 0 0 auto;
+      flex-shrink: 0;
+    }
     @media (max-width: 1080px) {
-      .sidebar { position: static; max-height: none; overflow-y: visible; padding-right: 0; }
+      .sidebar { position: static; max-height: none; overflow-y: visible; padding-right: 0; padding-bottom: 0; }
     }
 
     .card {
@@ -238,6 +244,7 @@
       border-radius: 12px;
       box-shadow: var(--shadow-sm);
       overflow: hidden;
+      flex-shrink: 0;
     }
     .card-hdr {
       padding: 12px 15px;
