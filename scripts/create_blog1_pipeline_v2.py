@@ -289,13 +289,16 @@ def prose_stage_system_prompt() -> str:
         "2. Ground EVERY Google Cloud product name, GA/Preview feature, SQL/GQL/API syntax, quota, and SLA in the "
         "LIVE_SEARCH_GROUNDING dossier provided. Replace deprecated terms (e.g., use 'Vertex AI Vector Search', "
         "NOT 'Matching Engine'; use exact product access controls like 'Fine-Grained Access Control' where applicable).\n"
-        "3. NEVER invent customer emails, employee names, synthetic tenant placeholders ('acme', 'PolicyGraph'), internal shortlinks (go/...), issue IDs (b/...), or fake benchmarks.\n"
-        "4. Write DEEP, concrete engineering prose — include real inline fenced code blocks inside sections "
-        "(use exact language tags: `sql`, `hcl` for Terraform NEVER `yaml`, `python`, `bash`, `formula`), comparative tables, failure modes, compensating controls, and math.\n"
+        "3. NEVER invent real customer emails, employee names, synthetic tenant placeholders ('acme', 'PolicyGraph'), internal shortlinks (go/...), issue IDs (b/...), or fake benchmarks. Anchor the technical narrative in ONE continuous, realistic enterprise workload scenario across sections (e.g., an on-call SRE or security engineer operating a regulated workload such as FinVault or RetailStream) so every control is grounded in a concrete request path.\n"
+        "4. Write DEEP, publication-clean Google Cloud blog prose — keep inline `codeBlocks` surgical and concise (`8` to `22` lines proving ONE architectural invariant, policy, SQL/GQL query, or FinOps equation; give inline snippets descriptive architectural captions rather than filenames like `main.tf` or `app.py`, leaving full multi-resource files to `codeStarter`). Use exact language tags (`sql`, `hcl` for Terraform NEVER `yaml`, `python`, `bash`, `formula`), crisp comparative tables, failure modes, and compensating controls.\n"
         "5. Tag EVERY numeric claim/SLA/latency/cost assumption in `claimLedger` strictly as one of: "
         "GCP_DOCUMENTED | DERIVED_MODEL | EXAMPLE_TARGET | USER_SUPPLIED.\n"
         "6. Use current live Vertex AI model names (Gemini 4: gemini-4-neon / carbon / argon / hydrogen with location='global'; Gemini 3.x: gemini-3.8-flash; Gemini 2.5: gemini-2.5-pro / flash; embeddings: prefer gemini-embedding-001, or explicitly note text-embedding-005 retirement April 1, 2027) — NEVER invent non-existent model IDs like `gemini-4.0-flash` or `gemini-4-pro`, and NEVER reference retired Gemini 1.0/1.5 checkpoints.\n"
         "7. STRICT GCP ENGINEERING ACCURACY:\n"
+        "   - External B2B SaaS Identity: ALWAYS use Identity Platform multi-tenancy + Workload Identity Federation (WIF) for external B2B SaaS customer tenants; NEVER recommend Workforce Identity Federation for external B2B SaaS users (Workforce WIF is strictly for an organization's own workforce/employees).\n"
+        "   - Disaggregated Agentic Architecture (where agentic AI applies): separate the stateless Brain (Cloud Run v2 / Vertex AI Agent Engine), isolated zero-credential Hands (Agent Sandboxes in Gemini / gVisor), out-of-process Vault (Auth Manager / Secret Manager + Cloud KMS minting short-lived task-scoped 2LO/3LO credentials), and Policy Gateways (Model Armor + Cloud DLP).\n"
+        "   - Gemini Context Caching: shared immutable system/tool prefix requires a 4,096-token minimum (delivering up to 90% input token savings); NEVER cite a stale 32,768-token minimum.\n"
+        "   - Memory Bank in Gemini & Agent Identity: enforce exact-match scope keys plus perimeter Cloud IAM CEL conditions on `aiplatform.googleapis.com/memoryScope` (`roles/aiplatform.memoryUser`), and note Cloud Run Agent Identity (SPIFFE X.509 mTLS, Preview) where service-to-service agent auth applies.\n"
         "   - Google Cloud Model Armor ALWAYS requires a regional API endpoint (`modelarmor.<region>.rep.googleapis.com` via `ClientOptions(api_endpoint=...)`) and regional template resource paths (`projects/<project>/locations/<region>/templates/<template>`); NEVER use `locations/global/templates/...` or an unconfigured default `ModelArmorClient()`.\n"
         "   - Cloud Spanner Graph + ANN vector search (`APPROX_COSINE_DISTANCE`) MUST use the 2-stage pattern `MATCH (@{FORCE_INDEX=...} src:Label) ... ORDER BY distance LIMIT @k NEXT MATCH (src)-[rel:...]->(dst:...)` (a single-stage join silently defeats the vector index!).\n"
         "   - Cloud Spanner FGAC has a hard quota of 100 database roles per database (use workload/service-tier roles + mandatory parameterized `@tenantId`, NEVER claim 1:1 per-tenant DB roles for >100 SaaS tenants!). Grant `roles/spanner.fineGrainedAccessUser` + conditional `roles/spanner.databaseRoleUser`, NEVER `roles/spanner.databaseUser` when using FGAC; ensure the runtime role actually has `INSERT`/`UPDATE` privileges on every table it mutates.\n"
@@ -696,9 +699,9 @@ def apply_revision_patch(
     if repls:
         for o, n in repls:
             single_hits = 0
-            # Apply across title, subtitle, summary, keyTakeaways, sections, slides, codeStarter, faq, and all 6 diagrams
+            # Apply across title, subtitle, summary, keyTakeaways, sections, slides, codeStarter, faq, and all 7 diagrams
             for top_k in ("title", "subtitle", "summary", "keyTakeaways", "sections", "slides", "codeStarter", "faq",
-                          "platformDiagram", "cloudArchDiagram", "sequenceDiagram", "securityDiagram", "wireDiagram", "asyncDiagram"):
+                          "conceptDiagram", "platformDiagram", "cloudArchDiagram", "sequenceDiagram", "securityDiagram", "wireDiagram", "asyncDiagram"):
                 if top_k in bp and bp[top_k] is not None:
                     nv, h = _walk_replace_strings(bp[top_k], [(o, n)])
                     if h:
@@ -820,12 +823,13 @@ def apply_revision_patch(
 def diagram_architect_system_prompt() -> str:
     return (
         "You are a Principal Google Cloud Architecture Center Illustrator & Systems Architect. "
-        "Your ONLY job is to synthesize extraordinarily dense, quantified, WS1-grade technical blueprints for ALL 6 C4 diagrams "
+        "Your ONLY job is to synthesize extraordinarily dense, quantified, WS1-grade technical blueprints for the requested diagrams "
         "driving a deterministic 1600x900 parametric Draw.io / SVG / DrawingML compiler.\n\n"
         "RULES — CRITICAL FOR TECHNICAL DEPTH:\n"
         "- NEVER write vague marketing blurbs ('Hosts the API', 'Stores data', 'Secures traffic').\n"
         "- EVERY card bullet MUST contain concrete engineering specifics matching the blog prose & Claim Ledger EXACTLY (same latency budget, same `min_instance_count`, same edition/SLA, same graph/role/column names!). NEVER contradict the blog's latency budget or invent services like Memorystore that are NOT provisioned in Terraform!\n"
         "- NEVER use placeholder names like 'acme', 'tenant_acme_reader', or 'PolicyGraph'.\n"
+        "- For `conceptDiagram`, design a crisp 6-card executive mental-model diagram: 3 concrete left `pillars` (kicker, title, detail <=110 chars, icon), 1 central `gate` (kicker, title, icon, 4 bullets <=48 chars), `allowOutcome` (kicker, title, icon, 3 bullets), `denyOutcome` (kicker, title, icon, 3 bullets), and 5 short `principles` (<=30 chars each).\n"
         "- For bi-temporal queries in `wireDiagram`, ALWAYS use valid point-in-time predicates `(r.superseded_at IS NULL OR r.superseded_at > @asOf)` (NEVER bare `superseded_at IS NULL`!), use the exact graph/label names from the blog, and emit valid syntax.\n"
         "- For `securityDiagram`, align `threats[0..3]` 1-to-1 with `layers[0..3]` and set `layerIndex` (0..3) explicitly so every dashed arrow connects each threat to its exact defending layer!\n"
         "- For `sequenceDiagram`, set exact `fromIdx` (0..4) and `toIdx` (0..4) on EVERY step matching the REAL call graph (e.g., API actor 2 calls AI actor 3 AND Data actor 4, then API actor 2 returns HTTP 200 to Caller actor 0 — NEVER draw Vertex AI calling Spanner!). Include `iconKey` on all 5 actors.\n"
@@ -834,8 +838,18 @@ def diagram_architect_system_prompt() -> str:
         "- Use ONLY valid icon keys from: " + ALLOWED_ICON_KEYS_LIST + " (use `dataflow` for Cloud Dataflow!).\n"
         "- Reference current Vertex AI models requested by the prompt (e.g., Gemini 4 Neon, Gemini 3.8 Flash, Gemini 2.5 Pro) — NEVER write retired 'Gemini 1.5 Pro' or 'Gemini 1.0'.\n"
         "- Zero emojis. Zero markdown `**bold**` asterisks. Zero internal/corp URLs.\n\n"
-        "Output ONLY a single JSON object with EXACTLY these 6 top-level keys:\n"
+        "Output ONLY a single JSON object containing the requested subset of these top-level diagram keys:\n"
         "{\n"
+        '  "conceptDiagram": {\n'
+        '    "headline": "Core Design Principle & Isolation Invariants — concise topic headline",\n'
+        '    "pillars": [\n'
+        '      {"kicker":"1 · LOCK 1","title":"concise lock title (<=38 chars)","detail":"1 crisp engineering sentence <=105 chars","icon":"cloud_iam"}, ... 3 pillars exact\n'
+        '    ],\n'
+        '    "gate": {"kicker":"NON-NEGOTIABLE INVARIANT GATE","title":"concise gate name <=38 chars","icon":"model_armor","bullets":["b1 <=46 chars","b2","b3","b4"]},\n'
+        '    "allowOutcome": {"kicker":"VERIFIED ALLOWED PATH (200 OK)","title":"concise allowed outcome <=38 chars","icon":"spanner","bullets":["b1 <=48 chars","b2","b3"]},\n'
+        '    "denyOutcome": {"kicker":"DETERMINISTIC BLOCK (401 / 403 / 429)","title":"concise blocked outcome <=38 chars","icon":"scc","bullets":["b1 <=48 chars","b2","b3"]},\n'
+        '    "principles": ["Principle 1","Principle 2","Principle 3","Principle 4","Principle 5"]\n'
+        '  },\n'
         '  "platformDiagram": {\n'
         '    "controlPlaneTitle": "Google Cloud — Shared Governance & Control Plane (exact target from Claim Ledger)",\n'
         '    "callerLabel": "Caller Tiers",\n'
@@ -938,6 +952,7 @@ def diagram_architect_user_prompt(
     claims = (prose_raw.get("claimLedger") or [])[:8]
     g_sum = str((grounding or {}).get("summary") or "").strip()[:2800]
     kind_to_bp = {
+        "concept": "conceptDiagram",
         "architecture": "platformDiagram",
         "cloudarch": "cloudArchDiagram",
         "sequence": "sequenceDiagram",
@@ -949,9 +964,7 @@ def diagram_architect_user_prompt(
     if not req_keys:
         req_keys = list(kind_to_bp.values())
     diag_instruction = (
-        "Synthesize the ultra-crisp, domain-specific JSON specification for ALL 6 C4 diagrams now. Output ONLY valid raw JSON."
-        if len(req_keys) == 6
-        else f"Synthesize the ultra-crisp, domain-specific JSON specification for ONLY these {len(req_keys)} enabled diagram keys: {', '.join(req_keys)}. Omit disabled diagram keys. Output ONLY valid raw JSON."
+        f"Synthesize the ultra-crisp, domain-specific JSON specification for ONLY these {len(req_keys)} enabled diagram keys: {', '.join(req_keys)}. Omit disabled diagram keys. Output ONLY valid raw JSON."
     )
     return (
         f"TITLE: {prose_raw.get('title', '')}\n"

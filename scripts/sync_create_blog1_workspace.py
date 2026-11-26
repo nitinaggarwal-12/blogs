@@ -184,12 +184,12 @@ def sync_slug(bucket: str, slug: str, force: bool = False) -> Dict[str, Any]:
         subprocess.run(["gcloud", "storage", "cp", f"{base}/{slug}/docs/{slug}-whitepaper.docx", str(docx_p)], check=True)
         subprocess.run(["gcloud", "storage", "cp", f"{base}/{slug}/{slug}-bundle.zip", str(bundle_p)], check=False)
 
-        # Download SVGs & embed all 6 rasterized diagrams inline into the .docx before uploading to Google Docs
+        # Download SVGs & embed all enabled rasterized diagrams inline into the .docx before uploading to Google Docs
         diag_dir = td_p / "diagrams"
         diag_dir.mkdir(parents=True, exist_ok=True)
         svg_paths: Dict[str, Path] = {}
         d_meta = manifest.get("diagrams") if isinstance(manifest.get("diagrams"), dict) else {}
-        for dk in ("architecture", "cloudarch", "sequence", "security", "wire", "async"):
+        for dk in ("concept", "architecture", "cloudarch", "sequence", "security", "wire", "async"):
             if dk in d_meta:
                 sp = diag_dir / f"{slug}-{dk}.svg"
                 cp_r = subprocess.run(["gcloud", "storage", "cp", f"{base}/{slug}/diagrams/{slug}-{dk}.svg", str(sp)], capture_output=True)
@@ -206,7 +206,7 @@ def sync_slug(bucket: str, slug: str, force: bool = False) -> Dict[str, Any]:
                     dst_pf = td_p / rel_p
                     dst_pf.parent.mkdir(parents=True, exist_ok=True)
                     subprocess.run(["gcloud", "storage", "cp", f"{base}/{slug}/{rel_p}", str(dst_pf)], capture_output=True)
-            extra_urls = {k: str(d_meta[k].get("viewerUrl") or "") for k in ("cloudarch", "security", "wire", "async") if k in d_meta}
+            extra_urls = {k: str(d_meta[k].get("viewerUrl") or "") for k in ("concept", "cloudarch", "security", "wire", "async") if k in d_meta}
             docx_bytes = _cb1.compile_docx_bytes(
                 manifest["blueprint"],
                 slug,
@@ -217,6 +217,9 @@ def sync_slug(bucket: str, slug: str, force: bool = False) -> Dict[str, Any]:
                 extra_urls=extra_urls,
                 grounding=(manifest.get("quality") or {}).get("grounding") or {},
                 diagram_pngs=diagram_pngs,
+                slide_plan=manifest.get("slidePlan"),
+                outline=manifest.get("outline"),
+                diags_map=d_meta,
             )
             docx_p.write_bytes(docx_bytes)
             docx_rebuilt = True

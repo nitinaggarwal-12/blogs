@@ -28,28 +28,30 @@
       id: 'reference_architecture',
       name: 'Reference Architecture (Full Stack)',
       shortName: 'Reference Architecture',
-      description: 'Deep end-to-end Google Cloud Architecture Center guide with all 6 C4 diagrams, 12-slide native deck, and starter Terraform + Python kit.',
+      description: 'End-to-end Google Cloud reference architecture pairing a crisp micro-concept diagram, full GCP topology, identity/data locks, request trace, and starter Terraform + Python kit.',
       defaultDomain: 'Multi-Tenant Agentic AI',
       defaultAudience: 'Solutions Architects & Platform Engineers',
       includeStarterCode: true,
       recommendedOutline: [
-        { id: 'sec-1', type: 'section', title: 'Executive Thesis & Architecture Scope', enabled: true },
-        { id: 'diag-architecture', type: 'diagram', kind: 'architecture', title: 'Master Platform Architecture (C4 L2)', enabled: true },
-        { id: 'sec-2', type: 'section', title: 'Cloud Topology & Isolation Boundaries', enabled: true },
-        { id: 'diag-cloudarch', type: 'diagram', kind: 'cloudarch', title: 'Cloud Architecture Center Hub-and-Spoke Blueprint', enabled: true },
-        { id: 'sec-3', type: 'section', title: 'End-to-End Request Lifecycle & Identity Flow', enabled: true },
-        { id: 'diag-sequence', type: 'diagram', kind: 'sequence', title: 'Request Lifecycle Sequence (C4 L3)', enabled: true },
-        { id: 'sec-4', type: 'section', title: 'Security Perimeter & Zero-Trust Controls', enabled: true },
-        { id: 'diag-security', type: 'diagram', kind: 'security', title: 'Trust Perimeter & Security Boundary (C4 L1)', enabled: true },
-        { id: 'sec-5', type: 'section', title: 'Wire Contracts, Payloads & Schema Governance', enabled: true },
-        { id: 'diag-wire', type: 'diagram', kind: 'wire', title: 'Wire-Protocol & Schema Transformation (C4 L4)', enabled: true },
-        { id: 'sec-6', type: 'section', title: 'Async Lifecycle, FinOps Economics & Operations', enabled: true },
-        { id: 'diag-async', type: 'diagram', kind: 'async', title: 'Async Lifecycle, Export & Recovery Loop', enabled: true },
+        { id: 'sec-1', type: 'section', title: 'Core Design Principle & Conceptual Mental Model', enabled: true },
+        { id: 'diag-concept', type: 'diagram', kind: 'concept', title: 'Conceptual Mental Model & Core Isolation Invariants', enabled: true },
+        { id: 'sec-2', type: 'section', title: 'Google Cloud System Architecture & Plane Ownership', enabled: true },
+        { id: 'diag-cloudarch', type: 'diagram', kind: 'cloudarch', title: 'Google Cloud Reference Architecture (Hub-and-Spoke)', enabled: true },
+        { id: 'sec-3', type: 'section', title: 'Identity, Authorization & Credential Brokerage', enabled: true },
+        { id: 'diag-security', type: 'diagram', kind: 'security', title: 'Three-Layer Identity & Trust Perimeter (C4 L1)', enabled: true },
+        { id: 'sec-4', type: 'section', title: 'Stateless Compute, Sandboxes & Scoped Memory', enabled: true },
+        { id: 'diag-wire', type: 'diagram', kind: 'wire', title: 'Scoped Context, Memory & Wire Locks (C4 L4)', enabled: true },
+        { id: 'sec-5', type: 'section', title: 'Governed Egress, Data Locks & Hard GCP Quotas', enabled: true },
+        { id: 'sec-6', type: 'section', title: 'End-to-End Request Trace, Takeaways & Deployment', enabled: true },
+        { id: 'diag-sequence', type: 'diagram', kind: 'sequence', title: 'End-to-End Fail-Closed Request Trace (C4 L3)', enabled: true },
+        { id: 'diag-architecture', type: 'diagram', kind: 'architecture', title: 'Master Platform Architecture (C4 L2)', enabled: false },
+        { id: 'diag-async', type: 'diagram', kind: 'async', title: 'Async Lifecycle, Export & Recovery Loop', enabled: false },
       ],
     },
   ];
 
   const DIAGRAM_SHORT_LABELS = {
+    concept: 'Concept Micro-View',
     architecture: 'Platform L2',
     cloudarch: 'Cloud Arch Hub-Spoke',
     sequence: 'Sequence L3',
@@ -629,7 +631,9 @@
       }
       const tok = match[0];
       if (tok.startsWith('**') && tok.endsWith('**')) {
-        container.appendChild(el('strong', null, tok.slice(2, -2)));
+        const strongEl = el('strong');
+        renderInlineMarkdown(strongEl, tok.slice(2, -2));
+        container.appendChild(strongEl);
       } else if (tok.startsWith('`') && tok.endsWith('`')) {
         container.appendChild(el('code', null, tok.slice(1, -1)));
       } else if (tok.startsWith('[')) {
@@ -647,13 +651,56 @@
     }
   }
 
-  function buildMarkdownDom(mdText) {
+  function buildInlineFigureDom(blog, relPath, fallbackCaption) {
+    const slug = (blog && blog.slug) || '';
+    const dmap = (blog && blog.diagrams) || {};
+    const kindMatch = /-([a-z]+)\.(?:svg|drawio)$/i.exec(String(relPath || ''));
+    const kind = kindMatch ? kindMatch[1].toLowerCase() : '';
+    const diag = (kind && dmap[kind]) || Object.values(dmap).find((d) => d && (d.svgPath === relPath || d.drawioPath === relPath)) || null;
+    const svgRel = (diag && diag.svgPath) ? diag.svgPath : String(relPath || '');
+    const label = (diag && diag.title) || fallbackCaption || 'Architecture Figure';
+    const imgNode = el('img', {
+      src: slug ? assetUrl(slug, svgRel) : svgRel,
+      alt: label,
+      title: diag ? 'Click to maximize full-size diagram' : label,
+      onClick: diag ? () => openDiagramLightbox(slug, label, diag) : null,
+    });
+    const actBtns = [];
+    if (diag) {
+      actBtns.push(
+        el('button', { type: 'button', className: 'btn btn-sm', onClick: () => openDiagramLightbox(slug, label, diag) }, 'Maximize'),
+        el('a', { className: 'btn btn-sm', href: diag.viewerUrl, target: '_blank', rel: 'noopener noreferrer' }, 'viewer.diagrams.net ->'),
+        el('a', { className: 'btn btn-sm', href: diag.studioUrl, target: '_blank', rel: 'noopener noreferrer' }, 'Edit in Studio')
+      );
+    }
+    return el('figure', { className: 'inline-blog-figure' },
+      el('div', { className: 'inline-blog-figure-stage' }, imgNode),
+      el('figcaption', { className: 'inline-blog-figcaption' },
+        el('strong', { style: { color: '#0f172a', fontWeight: '700' } }, label),
+        actBtns.length ? el('div', { className: 'inline-blog-fig-actions' }, ...actBtns) : null
+      )
+    );
+  }
+
+  function buildMarkdownDom(mdText, blog) {
     const root = el('article', { className: 'article-body' });
     const lines = String(mdText || '').replace(/\r\n/g, '\n').split('\n');
     let i = 0;
     while (i < lines.length) {
       const ln = lines[i];
       if (!ln.trim()) { i += 1; continue; }
+      const imgMatch = /^!\[([^\]]*)\]\(([^)]+)\)\s*$/.exec(ln.trim());
+      if (imgMatch) {
+        const altTxt = imgMatch[1].trim();
+        const relP = imgMatch[2].trim();
+        i += 1;
+        while (i < lines.length && !lines[i].trim()) i += 1;
+        if (i < lines.length && /^\*(?:Figure\s+\d+|\[[A-Z_]+\]).*\*\s*$/.test(lines[i].trim())) {
+          i += 1;
+        }
+        root.appendChild(buildInlineFigureDom(blog, relP, altTxt));
+        continue;
+      }
       if (ln.startsWith('```')) {
         const langTag = ln.slice(3).trim().toUpperCase() || 'CODE';
         const codeLines = [];
@@ -671,11 +718,15 @@
         continue;
       }
       if (ln.startsWith('### ')) {
-        root.appendChild(el('h3', null, ln.slice(4).trim()));
+        const h3El = el('h3');
+        renderInlineMarkdown(h3El, ln.slice(4).trim());
+        root.appendChild(h3El);
         i += 1; continue;
       }
       if (ln.startsWith('## ')) {
-        root.appendChild(el('h2', null, ln.slice(3).trim()));
+        const h2El = el('h2');
+        renderInlineMarkdown(h2El, ln.slice(3).trim());
+        root.appendChild(h2El);
         i += 1; continue;
       }
       if (ln.startsWith('# ')) {
@@ -683,13 +734,20 @@
         i += 1; continue;
       }
       if (ln.startsWith('> ')) {
-        const bq = el('blockquote');
         const qLines = [];
         while (i < lines.length && lines[i].startsWith('> ')) {
           qLines.push(lines[i].slice(2).trim());
           i += 1;
         }
-        renderInlineMarkdown(bq, qLines.join(' '));
+        const qJoined = qLines.join(' ');
+        const legFig = /\*\*Figure\s+\d+[^*]*\*\*[\s\S]*?`(diagrams\/[^`]+\.(?:drawio|svg))`/.exec(qJoined);
+        if (legFig && blog) {
+          const ttlMatch = /\*\*(Figure\s+\d+[^*]*)\*\*/.exec(qJoined);
+          root.appendChild(buildInlineFigureDom(blog, legFig[1], ttlMatch ? ttlMatch[1] : 'Figure'));
+          continue;
+        }
+        const bq = el('blockquote');
+        renderInlineMarkdown(bq, qJoined);
         root.appendChild(bq);
         continue;
       }
@@ -1398,6 +1456,7 @@
   function getDiagramEntries(blog) {
     const dmap = (blog && blog.diagrams) || {};
     const defLabels = {
+      concept: 'Conceptual Mental Model & Invariant Lock',
       architecture: 'Master Platform Architecture (C4 L2)',
       cloudarch: 'Cloud Architecture Center Blueprint (Hub-and-Spoke)',
       sequence: 'Request Lifecycle Sequence (C4 L3)',
@@ -1538,29 +1597,16 @@
       );
       return;
     }
-    const diagEntries = getDiagramEntries(blog);
-    const figBox = el('div', { className: 'reader-fig-grid' });
-    diagEntries.forEach((ent) => {
-      figBox.appendChild(el('div', { className: 'diagram-card', style: { marginBottom: '0' } },
-        el('div', { className: 'diagram-hdr' },
-          el('strong', { style: { fontSize: '11.5px', lineHeight: '1.3' } }, ent.label),
-          el('a', { className: 'btn btn-sm', href: ent.diag.viewerUrl, target: '_blank', rel: 'noopener noreferrer' }, 'viewer ->')
-        ),
-        el('div', { className: 'diagram-stage' }, el('img', {
-          src: assetUrl(slug, ent.diag.svgPath),
-          alt: ent.diag.title,
-          title: 'Click to maximize',
-          onClick: () => openDiagramLightbox(slug, ent.label, ent.diag),
-        }))
-      ));
-    });
-    // Strip duplicate H1/subtitle metadata header & redundant Figures table in Reader view
-    // (Hero card + interactive 3x2 Figure grid above already present them; Copy Raw Markdown keeps full file).
+    // Clean publication reader: strip top H1/telemetry header (already in Hero card) & any legacy QA tables,
+    // rendering interactive full-width SVG figures inline right at each section's exact narrative boundary.
     let readerMd = String(blog.markdownText || '').replace(/\r\n/g, '\n');
     const execIdx = readerMd.indexOf('## Executive Summary');
     if (execIdx > 0) readerMd = readerMd.slice(execIdx);
-    readerMd = readerMd.replace(/\n## Figures & Editable C4 Diagrams[\s\S]*?(?=\n## )/m, '\n');
-    panel.replaceChildren(topBar, figBox, buildMarkdownDom(readerMd));
+    readerMd = readerMd.replace(/\n## Figures & Editable C4 Diagrams[\s\S]*?(?=\n## |$)/m, '\n');
+    readerMd = readerMd.replace(/\n## Claim Provenance Ledger[\s\S]*?(?=\n## |$)/m, '\n');
+    readerMd = readerMd.replace(/\n## Authentic Live Proofs \(Before \/ After Screenshots\)\s*\n+> \*\*0 live proofs uploaded yet[\s\S]*?(?=\n## |$)/m, '\n');
+    readerMd = readerMd.replace(/\n## Live Google Search Grounding Log[\s\S]*$/m, '\n');
+    panel.replaceChildren(topBar, buildMarkdownDom(readerMd, blog));
   }
 
   function openDiagramLightbox(slug, label, diag) {

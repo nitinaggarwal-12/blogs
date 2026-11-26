@@ -1561,6 +1561,216 @@ def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
 
 
 # ===========================================================================
+# MICRO-CONCEPT DIAGRAM: CORE MENTAL MODEL & INVARIANT LOCK (6 CARDS, <3s READ)
+# ===========================================================================
+
+def build_concept_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
+    """
+    Spacious 6-card 1600x900 executive/architectural micro-diagram modeled on
+    flagship Google Cloud Blog visuals (3 left input/lock pillars converging via
+    symmetrical orthogonal elbows into 1 central Invariant Gate, fanning out to
+    Verified Allowed vs. Fail-Closed Blocked outcomes + 5-principle footer strip).
+    """
+    title = _cc.strip_md(bp.get("title") or "Google Cloud Architecture")
+    cd = bp.get("conceptDiagram") if isinstance(bp.get("conceptDiagram"), dict) else {}
+    sec_diag = bp.get("securityDiagram") if isinstance(bp.get("securityDiagram"), dict) else {}
+
+    headline = _cc.strip_md(cd.get("headline") or f"Core Design Principle & Isolation Invariants — {title}")
+    raw_pillars = list(cd.get("pillars") or [])
+    if not raw_pillars and isinstance(sec_diag.get("layers"), list):
+        for li, lyr in enumerate(sec_diag["layers"][:3], 1):
+            if isinstance(lyr, dict):
+                raw_pillars.append({
+                    "kicker": f"{li} · {_cc.strip_md(lyr.get('layer') or f'LOCK {li}')[:36].upper()}",
+                    "title": _cc.strip_md(lyr.get("name") or f"Boundary Lock {li}")[:48],
+                    "detail": _cc.strip_md((lyr.get("controls") or ["Verified outside the model"])[0])[:110],
+                    "icon": infer_gcp_icon_key(str(lyr.get("iconKey") or ""), str(lyr.get("name") or "")),
+                })
+    default_pillars = [
+        {
+            "kicker": "1 · TENANT & IDENTITY LOCK",
+            "title": "Issuer-Bound Federation & Context",
+            "detail": "Identity Platform + WIF + IAP verify OIDC/DPoP and sign short-lived KMS context tokens.",
+            "icon": "cloud_iam",
+        },
+        {
+            "kicker": "2 · STATELESS BRAIN & HANDS",
+            "title": "Out-of-Process Isolated Sandboxes",
+            "detail": "High-concurrency stateless orchestrator dispatches untrusted code to zero-credential gVisor sandboxes.",
+            "icon": "cloud_run",
+        },
+        {
+            "kicker": "3 · OUT-OF-PROCESS VAULT",
+            "title": "Short-Lived 2LO & 3LO Broker",
+            "detail": "Auth Manager & Cloud KMS hold standing secrets outside runtime; issue task-bound credentials.",
+            "icon": "cloud_kms",
+        },
+    ]
+    while len(raw_pillars) < 3:
+        raw_pillars.append(default_pillars[len(raw_pillars)])
+
+    gate_cfg = cd.get("gate") if isinstance(cd.get("gate"), dict) else {}
+    gate_kicker, _ = _cc.fit_single_line_px(gate_cfg.get("kicker") or "NON-NEGOTIABLE INVARIANT GATE", 320, 9.8, bold=True)
+    gate_kicker = gate_kicker.upper()
+    gate_title_lines = _cc.wrap_px(gate_cfg.get("title") or "Tenant + User + Agent Policy Gate", 320, 14.2, bold=True, max_lines=2)
+    gate_icon = infer_gcp_icon_key(str(gate_cfg.get("icon") or ""), str(gate_cfg.get("title") or ""), "model_armor")
+    gate_bullets = list(gate_cfg.get("bullets") or [
+        "Enforced deterministically outside the LLM",
+        "Model Armor + Cloud DLP inline screening",
+        "Exact-match IAM CEL memory & tool scopes",
+        "Zero standing credentials inside runtime",
+    ])[:4]
+
+    allow_cfg = cd.get("allowOutcome") if isinstance(cd.get("allowOutcome"), dict) else {}
+    allow_kicker, _ = _cc.fit_single_line_px(allow_cfg.get("kicker") or "VERIFIED ALLOWED PATH (200 OK)", 350, 9.8, bold=True)
+    allow_kicker = allow_kicker.upper()
+    allow_title, allow_tfs = _cc.fit_single_line_px(allow_cfg.get("title") or "Scoped Data, Memory & SaaS Execution", 350, 13.8, bold=True)
+    allow_icon = infer_gcp_icon_key(str(allow_cfg.get("icon") or ""), allow_title, "spanner")
+    allow_bullets = list(allow_cfg.get("bullets") or [
+        "4,096-token shared immutable prefix cache (90% savings)",
+        "Kernel RLS / Spanner FGAC + @tenantId parameter lock",
+        "Partitioned user 3LO OAuth & Zero-PII audit telemetry",
+    ])[:3]
+
+    deny_cfg = cd.get("denyOutcome") if isinstance(cd.get("denyOutcome"), dict) else {}
+    deny_kicker, _ = _cc.fit_single_line_px(deny_cfg.get("kicker") or "DETERMINISTIC BLOCK (401 / 403 / 429)", 350, 9.8, bold=True)
+    deny_kicker = deny_kicker.upper()
+    deny_title, deny_tfs = _cc.fit_single_line_px(deny_cfg.get("title") or "Cross-Tenant & Injection Halted at Edge", 350, 13.8, bold=True)
+    deny_icon = infer_gcp_icon_key(str(deny_cfg.get("icon") or ""), deny_title, "scc")
+    deny_bullets = list(deny_cfg.get("bullets") or [
+        "Prompt-injected tool or SQL calls dropped pre-execution",
+        "Mismatched tenant, coworker, or SPIFFE agent rejected",
+        "Noisy-neighbor bursts throttled without VIP starvation",
+    ])[:3]
+
+    pillars_palette = [
+        ("#EFF6FF", "#2563EB", "#1D4ED8"),
+        ("#FFFBEB", "#D97706", "#B45309"),
+        ("#F5F3FF", "#7C3AED", "#6D28D9"),
+    ]
+
+    zones: List[Dict[str, Any]] = [
+        {
+            "id": "cp_canvas_z", "x": 34, "y": 78, "w": 1532, "h": 718, "rx": 16,
+            "fill": "#F8FAFC", "stroke": "#CBD5E1", "strokeWidth": 1.3,
+            "title": "SEPARATING TRUST, EXECUTION, CREDENTIALS & POLICY OUTSIDE THE MODEL",
+            "titleColor": "#334155", "titleSize": 11.5,
+        }
+    ]
+    cards: List[Dict[str, Any]] = []
+    pills: List[Dict[str, Any]] = [
+        {
+            "id": "cp_hdr_pill", "x": 1290, "y": 14, "w": 276, "h": 24,
+            "text": "CONCEPTUAL MENTAL MODEL", "fill": "#EFF6FF", "stroke": "#93C5FD", "color": "#1D4ED8", "fontSize": 9.2,
+        }
+    ]
+    edges: List[Dict[str, Any]] = []
+
+    p_ys = [132, 354, 576]
+    for idx in range(3):
+        p = raw_pillars[idx]
+        bg, bd, fg = pillars_palette[idx]
+        py = p_ys[idx]
+        pk, _ = _cc.fit_single_line_px(p.get("kicker") or f"{idx + 1} · LOCK {idx + 1}", 350, 9.8, bold=True)
+        pk = pk.upper()
+        pt, pt_fs = _cc.fit_single_line_px(p.get("title") or f"Pillar {idx + 1}", 350, 13.8, bold=True)
+        pd_txt = _cc.strip_md(p.get("detail") or "")
+        ic_key = infer_gcp_icon_key(str(p.get("icon") or ""), pt, pd_txt)
+        d_lines = _cc.wrap_px(pd_txt, 350, 11.2, max_lines=3, ellipsis_last=False)
+        cards.append({
+            "id": f"cp_pil_{idx}", "x": 62, "y": py, "w": 444, "h": 182,
+            "fill": "#FFFFFF", "stroke": bd, "strokeWidth": 1.8, "rx": 12, "shadow": True,
+            "icon": ic_key, "iconPos": "left", "iconSize": 34, "padL": 64, "padR": 16,
+            "lines": [
+                {"text": pk, "bold": True, "size": 9.8, "color": fg},
+                {"text": pt, "bold": True, "size": pt_fs, "color": "#0F172A", "gapTop": 4},
+                *[{"text": ln, "size": 11.2, "color": "#475569", "gapTop": 5 if li == 0 else 2} for li, ln in enumerate(d_lines)],
+            ],
+        })
+
+    # Center Non-Negotiable Invariant Gate card (x=612..988, y=224..666)
+    gate_sub_lines = _cc.wrap_px("Verified deterministically before any tool, memory, or data call:", 320, 10.6, max_lines=2)
+    g_bullet_lines = _norm_bullets(gate_bullets, max_items=4, max_width_px=316, fs=11.0, max_total_lines=9)
+    cards.append({
+        "id": "cp_center_gate", "x": 612, "y": 224, "w": 376, "h": 442,
+        "fill": "#FFFFFF", "stroke": "#0F172A", "strokeWidth": 2.2, "rx": 16, "shadow": True,
+        "icon": gate_icon, "iconPos": "top", "iconSize": 38, "padL": 24, "padR": 24,
+        "lines": [
+            {"text": gate_kicker, "bold": True, "size": 9.8, "color": "#1D4ED8", "gapTop": 6},
+            *[{"text": gl, "bold": True, "size": 14.2, "color": "#0F172A", "gapTop": 4 if gi == 0 else 2} for gi, gl in enumerate(gate_title_lines)],
+            *[{"text": sl, "size": 10.6, "color": "#475569", "gapTop": 6 if si == 0 else 2} for si, sl in enumerate(gate_sub_lines)],
+            *g_bullet_lines,
+        ],
+    })
+
+    # Right 2 Outcome Cards (Allowed 200 OK vs Blocked 403 Denied)
+    a_lines = _norm_bullets(allow_bullets, max_items=3, max_width_px=350, fs=11.0, max_total_lines=8)
+    cards.append({
+        "id": "cp_out_allow", "x": 1094, "y": 156, "w": 444, "h": 254,
+        "fill": "#ECFDF5", "stroke": "#059669", "strokeWidth": 1.8, "rx": 14, "shadow": True,
+        "icon": allow_icon, "iconPos": "left", "iconSize": 34, "padL": 64, "padR": 16,
+        "lines": [
+            {"text": allow_kicker, "bold": True, "size": 9.8, "color": "#047857"},
+            {"text": allow_title, "bold": True, "size": allow_tfs, "color": "#064E3B", "gapTop": 4},
+            *a_lines,
+        ],
+    })
+
+    d_lines_out = _norm_bullets(deny_bullets, max_items=3, max_width_px=350, fs=11.0, max_total_lines=8)
+    cards.append({
+        "id": "cp_out_deny", "x": 1094, "y": 480, "w": 444, "h": 254,
+        "fill": "#FEF2F2", "stroke": "#DC2626", "strokeWidth": 1.8, "rx": 14, "shadow": True,
+        "icon": deny_icon, "iconPos": "left", "iconSize": 34, "padL": 64, "padR": 16,
+        "lines": [
+            {"text": deny_kicker, "bold": True, "size": 9.8, "color": "#B91C1C"},
+            {"text": deny_title, "bold": True, "size": deny_tfs, "color": "#7F1D1D", "gapTop": 4},
+            *d_lines_out,
+        ],
+    })
+
+    # Symmetrical converging orthogonal elbows (Left Pillars -> Center Gate around y=425/445/465)
+    edges.extend([
+        {"id": "cp_e_in0", "rawPoints": [(506, 223), (558, 223), (558, 425), (612, 425)], "stroke": "#595959", "strokeWidth": 1.8},
+        {"id": "cp_e_in1", "rawPoints": [(506, 445), (612, 445)], "stroke": "#595959", "strokeWidth": 1.8},
+        {"id": "cp_e_in2", "rawPoints": [(506, 667), (558, 667), (558, 465), (612, 465)], "stroke": "#595959", "strokeWidth": 1.8},
+        # Symmetrical diverging orthogonal elbows (Center Gate -> Allowed / Denied)
+        {"id": "cp_e_allow", "rawPoints": [(988, 425), (1040, 425), (1040, 283), (1094, 283)], "stroke": "#059669", "strokeWidth": 2.0, "label": "200 OK", "labelX": 1040, "labelY": 354},
+        {"id": "cp_e_deny", "rawPoints": [(988, 465), (1040, 465), (1040, 607), (1094, 607)], "stroke": "#DC2626", "strokeWidth": 2.0, "dashed": True, "label": "403 DENY", "labelX": 1040, "labelY": 536},
+    ])
+
+    principles = list(cd.get("principles") or ["Zero Standing Keys", "Stateless Brain", "Isolated Hands", "Perimeter IAM CEL", "Portable Across Tiers"])[:5]
+    pw = 286
+    pgap = 24
+    px0 = 38
+    for pi, pr_txt in enumerate(principles):
+        pills.append({
+            "id": f"cp_pr_{pi}",
+            "x": px0 + pi * (pw + pgap),
+            "y": 822,
+            "w": pw,
+            "h": 32,
+            "text": _cc.strip_md(pr_txt)[:34].upper(),
+            "fill": "#EFF6FF" if pi % 2 == 0 else "#F0FDF4",
+            "stroke": "#93C5FD" if pi % 2 == 0 else "#86EFAC",
+            "color": "#1E3A8A" if pi % 2 == 0 else "#065F46",
+            "fontSize": 10.0,
+        })
+
+    return {
+        "id": f"{slug}-concept",
+        "diagramName": "Figure 1 - Conceptual Mental Model",
+        "title": headline[:96],
+        "titleY": 14,
+        "dividerY": 54,
+        "zones": zones,
+        "cards": cards,
+        "pills": pills,
+        "edges": edges,
+        "planeLegend": [],
+    }
+
+
+# ===========================================================================
 # UNIFIED 6-DIAGRAM + NATIVE PPTX SLIDE XML COMPILER ENTRYPOINT
 # ===========================================================================
 
@@ -1571,6 +1781,7 @@ def compile_all_v2_diagrams(
     slide_plan: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Dict[str, Any]]:
     builders_by_kind = {
+        "concept":      (build_concept_spec_v3,      "Conceptual Mental Model & Invariant Lock", "CONCEPT", 3),
         "architecture": (build_architecture_spec_v3, "Master Platform Architecture (C4 L2)", "C4 L2", 3),
         "cloudarch":    (build_cloudarch_spec_v3,    "Cloud Architecture Center Blueprint", "HUB-SPOKE", 4),
         "sequence":     (build_sequence_spec_v3,     "Request Lifecycle Sequence (C4 L3)", "C4 L3", 5),
@@ -1578,6 +1789,7 @@ def compile_all_v2_diagrams(
         "wire":         (build_wire_spec_v3,         "Wire-Protocol & Schema Transformation (C4 L4)", "C4 L4", 7),
         "async":        (build_async_spec_v3,        "Async State, Export & Lifecycle Loop", "ASYNC", 8),
     }
+    legacy_default_kinds = ["architecture", "cloudarch", "sequence", "security", "wire", "async"]
     total_slides = int((slide_plan or {}).get("totalSlides") or 12)
     ordered_entries: List[Tuple[str, str, int, int]] = []
     if isinstance(slide_plan, dict) and isinstance(slide_plan.get("enabledDiagrams"), list) and slide_plan["enabledDiagrams"]:
@@ -1589,7 +1801,7 @@ def compile_all_v2_diagrams(
                 s_num = int(d.get("slideNumber") or (2 + idx))
                 ordered_entries.append((dk, custom_title, idx, s_num))
     else:
-        kinds = [k for k in (enabled_kinds or list(builders_by_kind.keys())) if k in builders_by_kind]
+        kinds = [k for k in (enabled_kinds or legacy_default_kinds) if k in builders_by_kind]
         if not kinds:
             kinds = ["architecture"]
         for idx, dk in enumerate(kinds, 1):

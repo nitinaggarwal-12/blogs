@@ -21,6 +21,7 @@ sys.dont_write_bytecode = True
 VALID_ITERATE_SCOPES: Tuple[str, ...] = ("all", "prose", "diagrams", "slides", "code")
 
 DIAGRAM_BP_KEYS: Dict[str, str] = {
+    "concept": "conceptDiagram",
     "architecture": "platformDiagram",
     "cloudarch": "cloudArchDiagram",
     "sequence": "sequenceDiagram",
@@ -461,7 +462,7 @@ def build_scoped_iteration_prompt(
         '"addSections":[{"heading":"...","paragraphs":["..."],"bullets":["..."]}],'
         '"slidePatches":[{"number":1,"title":"...","subtitle":"...","bullets":["..."],"codeSnippet":"optional code snippet","speakerNotes":"...","calloutLabel":"...","calloutValue":"..."}],'
         '"claimLedger":[...],"faq":[...],"codeStarter":{...},'
-        '"platformDiagram":{...},"cloudArchDiagram":{...},"sequenceDiagram":{...},"securityDiagram":{...},"wireDiagram":{...},"asyncDiagram":{...}}'
+        '"conceptDiagram":{...},"platformDiagram":{...},"cloudArchDiagram":{...},"sequenceDiagram":{...},"securityDiagram":{...},"wireDiagram":{...},"asyncDiagram":{...}}'
     )
     sec_brief = [
         {"index": i, "heading": s.get("heading"), "paraCount": len(s.get("paragraphs") or []), "preview": str((s.get("paragraphs") or [""])[0])[:220]}

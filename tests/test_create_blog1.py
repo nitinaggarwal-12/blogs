@@ -1265,6 +1265,8 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         import ast as _ast
         for rel_py in (
             "server.py",
+            "scripts/create_blog_categories.py",
+            "scripts/create_blog_iteration.py",
             "scripts/create_blog1_canonical_compiler.py",
             "scripts/create_blog1_diagrams_v2.py",
             "scripts/create_blog1_engine.py",
@@ -1586,18 +1588,22 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertFalse(cb1.verify_stateless_csrf_token(tok[:-1] + ("0" if tok[-1] != "0" else "1"), "dev@example.com", secret_bytes=sec, now_ts=1700000100))
 
     def test_18_milestone_a_categories_dynamic_outline_and_preflight(self) -> None:
-        """Verifies 5 blog categories, reordered outlines, dynamic 7/9-slide decks without starter code, and prompt preflight."""
+        """Verifies 7 blog categories, reordered outlines, dynamic 7..11-slide decks without starter code, and prompt preflight."""
         st_cap, _, body_cap = self._req("/api/create-blog/capabilities")
         self.assertEqual(st_cap, 200)
         cap = json.loads(body_cap.decode("utf-8"))
         cats = cap.get("categories") or []
-        self.assertEqual(len(cats), 5)
+        self.assertEqual(len(cats), 7)
         cat_map = {c["id"]: c for c in cats}
-        self.assertEqual(cat_map["reference_architecture"]["recommendedSlideCount"], 12)
+        self.assertEqual(cat_map["reference_architecture"]["recommendedSlideCount"], 11)
+        self.assertEqual(cat_map["reference_architecture"]["recommendedDiagramCount"], 5)
         self.assertEqual(cat_map["pattern_tradeoff"]["recommendedSlideCount"], 8)
         self.assertEqual(cat_map["hands_on_runbook"]["recommendedSlideCount"], 9)
         self.assertEqual(cat_map["executive_brief"]["recommendedSlideCount"], 7)
-        self.assertEqual(cat_map["security_deep_dive"]["recommendedSlideCount"], 9)
+        self.assertEqual(cat_map["security_deep_dive"]["recommendedSlideCount"], 10)
+        self.assertEqual(cat_map["security_deep_dive"]["recommendedDiagramCount"], 4)
+        self.assertEqual(cat_map["product_launch"]["recommendedSlideCount"], 7)
+        self.assertEqual(cat_map["case_study_postmortem"]["recommendedSlideCount"], 7)
 
         # 1. Compile executive_brief (2 diagrams: security FIRST then architecture; NO sequence, NO starter code -> 7 slides)
         custom_outline = [
@@ -1644,14 +1650,17 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         d10_chk = next(c for c in man_exec["quality"]["deterministic"]["checks"] if c["id"] == "D-10")
         self.assertIn("N/A", d10_chk["detail"])
         md_exec = (Path(self._tmpdir.name) / "exec-brief-custom-order" / "blog.md").read_text(encoding="utf-8")
-        self.assertIn("13-check deterministic quality gate", md_exec)
+        self.assertNotIn("Authoring Model:", md_exec)
+        self.assertNotIn("## Claim Provenance Ledger", md_exec)
+        self.assertNotIn("## Figures & Editable C4 Diagrams", md_exec)
+        self.assertIn("![Figure 1: Custom Defense-in-Depth Perimeter](diagrams/exec-brief-custom-order-security.svg)", md_exec)
         self.assertLess(md_exec.index("Custom Defense-in-Depth Perimeter"), md_exec.index("Executive Target Architecture"))
 
-        # 2. Compile security_deep_dive (NO architecture diagram at all: security + sequence + wire -> 9 slides)
+        # 2. Compile security_deep_dive (concept + security + sequence + wire -> 10 slides, NO architecture diagram)
         sec_cat = cb1.get_category("security_deep_dive")
         plan_sec = cb1.compute_dynamic_slide_plan(sec_cat["recommendedOutline"], include_starter_code=True)
-        self.assertEqual(plan_sec["enabledDiagramKinds"], ["security", "sequence", "wire"])
-        self.assertEqual(plan_sec["totalSlides"], 9)
+        self.assertEqual(plan_sec["enabledDiagramKinds"], ["concept", "security", "sequence", "wire"])
+        self.assertEqual(plan_sec["totalSlides"], 10)
         raw_sec = _sample_blueprint()
         bp_sec = cb1.normalize_blueprint(
             raw_sec, "Zero-trust threat model and wire envelope enforcement",
@@ -1672,6 +1681,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
             include_starter_code=True,
         )
         self.assertTrue(man_sec["quality"]["deterministic"]["allPassed"], man_sec["quality"]["deterministic"])
+        self.assertIn("concept", man_sec["diagrams"])
         self.assertNotIn("architecture", man_sec["diagrams"])
 
         # 3. Legacy manifest hydration without slidePlan/outline
@@ -1757,7 +1767,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         """Verifies Milestone B: optimistic concurrency, manual edit, delta-TTS, MP4 invalidation, 2-way Draw.io, restore, AI iterate & Drive 409 guard."""
         slug = "milestone-b-sync-test"
         bp = _sample_blueprint()
-        bp["slides"] = bp["slides"] + [dict(bp["slides"][-1], number=i, title=f"Slide {i}") for i in range(10, 13)]
+        bp["slides"] = bp["slides"] + [dict(bp["slides"][-1], number=i, title=f"Slide {i}") for i in range(10, 12)]
         plan = cb1.compute_dynamic_slide_plan(cb1.get_category("reference_architecture")["recommendedOutline"], include_starter_code=True)
         bp = cb1.normalize_blueprint(
             bp, "Zero-trust multi-tenant gateway architecture", "Multi-Tenant Agentic AI", "Architects",
@@ -1775,7 +1785,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
 
         # Seed fake cached audio tracks + stale host MP4 to verify Delta-TTS hash reuse & MP4 invalidation
         fake_mp3 = b"ID3\x03\x00\x00\x00\x00\x00\x00" + (b"\xff\xfb\x90\x00" * 40)
-        for i in range(1, 13):
+        for i in range(1, 12):
             (blog_dir / "audio" / f"slide_{i:02d}.mp3").write_bytes(fake_mp3)
         (blog_dir / "video" / f"{slug}-host.mp4").write_bytes(b"fake-stale-mp4")
         m_disk = json.loads((blog_dir / "manifest.json").read_text(encoding="utf-8"))
@@ -1795,7 +1805,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
                 ).hexdigest(),
                 "provenance": "SYNTHETIC_CLOUD_TTS_CHIRP3_HD",
             }
-            for i in range(1, 13)
+            for i in range(1, 12)
         ]
         (blog_dir / "manifest.json").write_text(json.dumps(m_disk, indent=2), encoding="utf-8")
 
@@ -1830,7 +1840,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertFalse((blog_dir / "video" / f"{slug}-host.mp4").exists())
         self.assertIsNone(j_ed["manifest"]["assets"]["hostMp4"])
 
-        # 3. Manual slide edit of ONLY Slide 2 speakerNotes -> Delta-TTS reuses 11/12 tracks!
+        # 3. Manual slide edit of ONLY Slide 2 speakerNotes -> Delta-TTS reuses 10/11 tracks!
         tts_calls = []
         mod_ref = srv.create_blog1_mod
         orig_tts = mod_ref.synthesize_tts_mp3
@@ -1856,7 +1866,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
 
         # 4. 2-way Draw.io save: rejects XXE, persists valid edit -> marks customEdited=True, updates SVG + PPTX + #R URL
         st_xxe, _, _ = self._req(
-            f"/api/create-blog/blogs/{slug}/diagrams/architecture/save",
+            f"/api/create-blog/blogs/{slug}/diagrams/concept/save",
             method="POST",
             body={"xml": '<!DOCTYPE foo><mxfile><diagram><mxGraphModel/></diagram></mxfile>', "expectedRevision": 3},
             headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
@@ -1875,7 +1885,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
             '</root></mxGraphModel></diagram></mxfile>'
         )
         st_ds, _, b_ds = self._req(
-            f"/api/create-blog/blogs/{slug}/diagrams/architecture/save",
+            f"/api/create-blog/blogs/{slug}/diagrams/concept/save",
             method="POST",
             body={"xml": custom_xml, "expectedRevision": 3},
             headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
@@ -1885,7 +1895,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertTrue(j_ds["customEdited"])
         self.assertEqual(j_ds["revision"], 4)
         self.assertTrue(j_ds["deterministic"]["allPassed"], j_ds["deterministic"])
-        self.assertIn("Custom Cloud Armor WAF Node", (blog_dir / "diagrams" / f"{slug}-architecture.svg").read_text(encoding="utf-8"))
+        self.assertIn("Custom Cloud Armor WAF Node", (blog_dir / "diagrams" / f"{slug}-concept.svg").read_text(encoding="utf-8"))
         with zipfile.ZipFile(blog_dir / "slides" / f"{slug}-deck.pptx", "r") as zf:
             self.assertIn("Custom Cloud Armor WAF Node", zf.read("ppt/slides/slide3.xml").decode("utf-8"))
 
@@ -1900,7 +1910,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         j_rst = json.loads(b_rst.decode("utf-8"))
         self.assertEqual(j_rst["revision"], 5)
         self.assertNotEqual(j_rst["manifest"]["title"], "Hardened Zero-Trust MCP Gateway v2")
-        self.assertFalse(j_rst["manifest"]["diagrams"]["architecture"]["customEdited"])
+        self.assertFalse(j_rst["manifest"]["diagrams"]["concept"]["customEdited"])
 
         # Verify get_job_status accepts cb-iter-* job IDs (regression guard for UI Iterate polling)
         with self.assertRaises(cb1.CreateBlog1Error) as ctx_bad_jid:
@@ -1974,6 +1984,106 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         finally:
             mod_ref._drive_get_file_metadata = orig_meta
             mod_ref._drive_multipart_upload = orig_up
+
+    def test_20_concept_micro_diagram_inline_figures_and_clean_publication_hygiene(self) -> None:
+        """Verifies Concept micro-diagram geometry/OOXML, inline figure placement, and zero QA/ledger clutter in blog.md & .docx."""
+        bp_raw = _sample_blueprint()
+        bp_raw["conceptDiagram"] = {
+            "headline": "Disaggregated Brain, Hands & Vault Invariant Lock",
+            "pillars": [
+                {"kicker": "1 · IDENTITY LOCK", "title": "Identity Platform + WIF", "detail": "Verifies B2B tenant OIDC and signs short-lived KMS context tokens.", "icon": "cloud_iam"},
+                {"kicker": "2 · SANDBOXED HANDS", "title": "Agent Sandboxes in Gemini", "detail": "Executes untrusted tool code inside zero-credential gVisor sandboxes.", "icon": "cloud_run"},
+                {"kicker": "3 · CREDENTIAL VAULT", "title": "Out-of-Process Auth Broker", "detail": "Mints task-scoped 2LO/3LO credentials outside the agent process.", "icon": "cloud_kms"},
+            ],
+            "gate": {
+                "kicker": "NON-NEGOTIABLE INVARIANT GATE",
+                "title": "Tenant + User + Agent Policy Gate",
+                "icon": "model_armor",
+                "bullets": [
+                    "Model Armor regional template screening",
+                    "Memory Bank IAM CEL memoryScope lock",
+                    "4,096-token shared immutable prefix cache",
+                    "Cloud DLP outbound PII/secret redaction",
+                ],
+            },
+            "allowOutcome": {
+                "kicker": "VERIFIED ALLOWED PATH (200 OK)",
+                "title": "Scoped Memory, Data & Tool Call",
+                "icon": "spanner",
+                "bullets": ["Spanner FGAC + @tenantId parameter lock", "Zero-PII audit telemetry"],
+            },
+            "denyOutcome": {
+                "kicker": "DETERMINISTIC BLOCK (401 / 403 / 429)",
+                "title": "Prompt Injection Halted Pre-Execution",
+                "icon": "scc",
+                "bullets": ["Cross-tenant & coworker reads rejected", "Noisy-neighbor bursts throttled"],
+            },
+            "principles": ["Zero Standing Keys", "Stateless Brain", "Sandboxed Hands", "IAM CEL Scope", "SPIFFE mTLS"],
+        }
+        spec_c = cb1._diag_v2.build_concept_spec_v3(bp_raw, "concept-unit")
+        geom_c = cb1._diag_v2._cc.validate_spec_geometry(spec_c)
+        self.assertTrue(geom_c["valid"], geom_c["errors"])
+        self.assertEqual(geom_c["warnings"], [], f"Concept diagram had text width warnings: {geom_c['warnings']}")
+        self.assertGreaterEqual(geom_c["iconCount"], 6)
+
+        cat_pl = cb1.get_category("product_launch")
+        plan_pl = cb1.compute_dynamic_slide_plan(cat_pl["recommendedOutline"], include_starter_code=False)
+        self.assertEqual(plan_pl["enabledDiagramKinds"], ["concept", "sequence"])
+        self.assertEqual(plan_pl["totalSlides"], 7)
+
+        bp_pl = cb1.normalize_blueprint(
+            bp_raw,
+            "Launching Agent Sandboxes and Memory Bank IAM CEL controls",
+            "Multi-Tenant Agentic AI",
+            "Solutions Architects & Platform Engineers",
+            slide_plan=plan_pl,
+            category_id="product_launch",
+            outline=cat_pl["recommendedOutline"],
+        )
+        slug_pl = "product-launch-clean-pub"
+        man_pl = cb1.compile_and_save_blog(
+            blueprint=bp_pl,
+            slug=slug_pl,
+            model_used="gemini-4-neon",
+            auth_mode="vertex_ai_iam",
+            actor_email="author@example.com",
+            enable_tts=False,
+            enable_judge=False,
+            category_id="product_launch",
+            outline=cat_pl["recommendedOutline"],
+            slide_plan=plan_pl,
+            include_starter_code=False,
+            grounding={"status": "GROUNDED", "queries": ["vertex ai memory bank iam cel"], "sources": [{"title": "Vertex AI", "uri": "https://cloud.google.com/vertex-ai"}]},
+        )
+        self.assertTrue(man_pl["quality"]["deterministic"]["allPassed"], man_pl["quality"]["deterministic"])
+        blog_dir_pl = Path(self._tmpdir.name) / slug_pl
+        md_pl = (blog_dir_pl / "blog.md").read_text(encoding="utf-8")
+        # Inline figures present; zero Studio QA / ledger / grounding query dump clutter!
+        self.assertIn(f"![Figure 1: Core Capability & Developer Mental Model](diagrams/{slug_pl}-concept.svg)", md_pl)
+        self.assertIn(f"![Figure 2: End-to-End Quickstart Execution Flow](diagrams/{slug_pl}-sequence.svg)", md_pl)
+        for purged in (
+            "Authoring Model:",
+            "Verification Status:",
+            "Starter Code Status:",
+            "## Figures & Editable C4 Diagrams",
+            "## Claim Provenance Ledger",
+            "0 live proofs uploaded yet",
+            "## Live Google Search Grounding Log",
+        ):
+            self.assertNotIn(purged, md_pl, f"Clutter leaked into blog.md: {purged}")
+
+        with zipfile.ZipFile(blog_dir_pl / "docs" / f"{slug_pl}-whitepaper.docx", "r") as zf:
+            dxml_pl = zf.read("word/document.xml").decode("utf-8")
+            self.assertIn("Figure 1", dxml_pl)
+            self.assertIn("Figure 2", dxml_pl)
+            self.assertNotIn("Claim Provenance Ledger", dxml_pl)
+            self.assertNotIn("0 live screenshots uploaded yet", dxml_pl)
+
+        # Studio endpoint resolves opaque ID for new 'concept' diagram kind
+        concept_pid = man_pl["diagrams"]["concept"]["publicId"]
+        st_c, _, body_c = self._req(f"/api/drawio/item/{concept_pid}")
+        self.assertEqual(st_c, 200)
+        self.assertIn("Disaggregated Brain", json.loads(body_c.decode("utf-8"))["xml"])
 
 
 if __name__ == "__main__":

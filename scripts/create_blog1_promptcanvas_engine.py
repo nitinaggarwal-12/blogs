@@ -62,6 +62,17 @@ def is_global_model(model: str) -> bool:
     return model.startswith(("gemini-4", "gemini-3"))
 
 VIEW_GUIDANCE: Dict[str, Dict[str, str]] = {
+    "concept": {
+        "name": "Figure 1 - Conceptual Mental Model & Invariant Lock",
+        "c4": "CONCEPT · MENTAL MODEL",
+        "direction": (
+            "Spacious executive Google Cloud micro-concept diagram on white canvas. "
+            "Left column: 3 crisp rounded lock/pillar cards with official GCP icons converging via symmetrical orthogonal elbows "
+            "into 1 central bold Non-Negotiable Invariant Gate card, fanning out on the right to 2 outcome cards: "
+            "top green Verified Allowed Path (200 OK) and bottom red Deterministic Fail-Closed Block (401/403/429), "
+            "plus 5 concise principle pills across the bottom."
+        ),
+    },
     "architecture": {
         "name": "Figure 1 - Master Platform Architecture",
         "c4": "C4 L2 · PLATFORM ARCHITECTURE",
