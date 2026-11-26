@@ -650,22 +650,6 @@
     .proof-card img { width: 100%; aspect-ratio: 16/9; object-fit: contain; background: #0f172a; display: block; }
     .proof-card-body { padding: 10px 12px; font-size: 12px; }
 
-    .welcome-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 11px;
-      margin: 14px 0;
-    }
-    .welcome-tile {
-      border: 1px solid var(--border-strong);
-      border-radius: 10px;
-      padding: 12px 13px;
-      background: #f8fafc;
-    }
-    .welcome-tile h3 { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
-    .welcome-tile p { font-size: 12px; color: var(--muted); line-height: 1.4; overflow-wrap: anywhere; }
-    .welcome-tile code { font-family: var(--mono); font-size: 10.75px; background: #e2e8f0; padding: 1px 4px; border-radius: 4px; overflow-wrap: anywhere; word-break: break-word; }
-
     .caption-bar {
       background: #0f172a;
       color: #f8fafc;
@@ -701,7 +685,6 @@
       color: #b91c1c;
       background: #fef2f2;
     }
-    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
     .hidden { display: none !important; }
 
     .shell.shell-collapsed { grid-template-columns: minmax(0, 1fr); }
@@ -893,7 +876,7 @@
       box-shadow: 0 2px 8px rgba(26, 115, 232, 0.12);
     }
 
-    /* Post-generation Iteration Drawer & Inline Edit surface (Milestone B ready) */
+    /* Post-generation Iteration Drawer & Inline Edit surface */
     .iterate-drawer {
       margin-top: 12px;
       padding: 14px;
@@ -921,7 +904,7 @@
     <div class="topbar-inner">
       <div class="topbar-row">
         <div class="brand-group">
-          <div class="brand-mark" aria-hidden="true">CB</div>
+          <a href="/" class="brand-mark" aria-label="Back to Portal Home" style="text-decoration:none;">CB</a>
           <div style="min-width:0;">
             <div class="brand-title">
               <span>Create Blog</span>
@@ -1198,6 +1181,6 @@
     </div>
     <div class="diag-modal-body" id="diag-lightbox-body"></div>
   </div>
-  <script src="/js/create_blog1.js?v=20261126-v110" defer></script>
+  <script src="/js/create_blog1.js?v=20261126-v112" defer></script>
 </body>
 </html>

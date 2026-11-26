@@ -65,6 +65,7 @@ _pipe_v2 = _load_sibling_mod("create_blog1_pipeline_v2", "create_blog1_pipeline_
 _pc_engine = _load_sibling_mod("create_blog1_promptcanvas_engine", "create_blog1_promptcanvas_engine.py")
 _hardening = _load_sibling_mod("create_blog_hardening", "create_blog_hardening.py")
 _cats = _load_sibling_mod("create_blog_categories", "create_blog_categories.py")
+_iter = _load_sibling_mod("create_blog_iteration", "create_blog_iteration.py")
 
 # Re-export unified hardening, category planner & grounding verification primitives
 resolve_grounding_redirect_url = _hardening.resolve_grounding_redirect_url
@@ -286,21 +287,6 @@ _BANNED_STATUS_EMOJIS = (
     "\U0001f6a8",
     "\U0001f512",
     "\U0001f3af",
-)
-
-_ZONE_THEMES = (
-    {"bg": "#E8F0FE", "border": "#1A73E8", "badge": "#1A73E8", "text": "#174EA6"},
-    {"bg": "#E6F4EA", "border": "#137333", "badge": "#137333", "text": "#0D652D"},
-    {"bg": "#FEF7E0", "border": "#B06000", "badge": "#EA8600", "text": "#8A4600"},
-    {"bg": "#F3E8FD", "border": "#6D28D9", "badge": "#6D28D9", "text": "#4C1D95"},
-)
-
-_ACTOR_THEMES = (
-    ("#1A73E8", "#E8F0FE"),
-    ("#137333", "#E6F4EA"),
-    ("#B06000", "#FEF7E0"),
-    ("#6D28D9", "#F3E8FD"),
-    ("#0F766E", "#E6FFFA"),
 )
 
 
@@ -868,6 +854,10 @@ def get_capabilities() -> Dict[str, Any]:
             "dynamicSlideRange": [6, 12],
             "categoryOutlinePlanner": True,
             "livePromptPreflight": has_vertex or has_env_key,
+            "postGenIteration": True,
+            "inlineStructuredEditors": True,
+            "twoWayDrawioSync": True,
+            "conflictSafeDriveSync": True,
             "deterministicGateChecks": 13,
             "hardening": {
                 "d13NumericCoverage": True,
@@ -1666,24 +1656,6 @@ def normalize_blueprint(
             if isinstance(sl, dict) and sl.get("calloutValue"):
                 sl["calloutValue"] = _strip_provenance_enum_suffix(str(sl["calloutValue"]))
     return bp_out
-
-
-def encode_drawio_viewer_url(xml_str: str) -> str:
-    """Builds a live viewer.diagrams.net/?...#R<xml> self-contained URL matching portal conventions."""
-    xml_frag = urllib.parse.quote(xml_str, safe="")
-    if len(xml_frag) <= 32000:
-        return (
-            "https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff"
-            f"&edit=_blank&layers=1&nav=1#R{xml_frag}"
-        )
-    raw_bytes = urllib.parse.quote(xml_str, safe="~()*!.'").encode("utf-8")
-    comp = zlib.compressobj(9, zlib.DEFLATED, -15)
-    deflated = comp.compress(raw_bytes) + comp.flush()
-    b64 = base64.b64encode(deflated).decode("ascii")
-    return (
-        "https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff"
-        f"&edit=_blank&layers=1&nav=1#R{urllib.parse.quote(b64, safe='')}"
-    )
 
 
 def _wrap_text(text: str, max_chars: int, max_lines: int = 3) -> List[str]:
@@ -5551,10 +5523,12 @@ def get_diagram_record_for_studio(diag_id: str) -> Optional[Dict[str, Any]]:
             "diagramId": public_id,
             "id": public_id,
             "publicId": public_id,
+            "slug": slug,
             "kind": kind,
             "title": display_title,
             "slideNumber": slide_map.get(kind, 3),
             "origin": "create-blog1",
+            "saveApiUrl": f"/api/create-blog/blogs/{urllib.parse.quote(slug)}/diagrams/{urllib.parse.quote(kind)}/save",
             "drawioDownloadUrl": f"/api/drawio/download/{public_id}?fmt=drawio",
             "svgDownloadUrl": f"/api/drawio/download/{public_id}?fmt=svg",
             "standaloneAppDiagramsNetUrl": _diag_v2._cc.build_viewer_url(xml_str, public_id, f"{public_id}.drawio"),
@@ -5565,24 +5539,780 @@ def get_diagram_record_for_studio(diag_id: str) -> Optional[Dict[str, Any]]:
     }
 
 
+_SLUG_LOCKS_GUARD = threading.Lock()
+_SLUG_LOCKS: Dict[str, threading.Lock] = {}
+
+
+def _get_slug_lock(slug: str) -> threading.Lock:
+    with _SLUG_LOCKS_GUARD:
+        lk = _SLUG_LOCKS.get(slug)
+        if lk is None:
+            lk = threading.Lock()
+            _SLUG_LOCKS[slug] = lk
+        return lk
+
+
+def _check_expected_revision(manifest: Dict[str, Any], expected_revision: Optional[int]) -> None:
+    if expected_revision is None:
+        return
+    cur_rev = int(manifest.get("revision") or 1)
+    try:
+        exp_int = int(expected_revision)
+    except Exception:
+        raise CreateBlog1Error("Invalid expectedRevision value.", 400, "INVALID_REVISION") from None
+    if exp_int != cur_rev:
+        raise CreateBlog1Error(
+            f"Blog was modified in another session (expected revision v{exp_int}, current is v{cur_rev}). Reload before saving.",
+            409,
+            "REVISION_CONFLICT",
+        )
+
+
+def _save_revision_snapshot(
+    blog_dir: Path,
+    manifest: Dict[str, Any],
+    *,
+    summary: str,
+    scope: str,
+    actor_email: str,
+) -> None:
+    rev = int(manifest.get("revision") or 1)
+    slug = manifest["slug"]
+    custom_xmls: Dict[str, str] = {}
+    for dk, dv in (manifest.get("diagrams") or {}).items():
+        if isinstance(dv, dict) and dv.get("customEdited"):
+            xp = blog_dir / f"diagrams/{slug}-{dk}.drawio"
+            if xp.is_file():
+                custom_xmls[dk] = xp.read_text(encoding="utf-8")
+    snap = {
+        "revision": rev,
+        "createdAt": _now_iso(),
+        "actor": actor_email or "local-operator",
+        "summary": str(summary or f"Revision v{rev}")[:220],
+        "scope": str(scope or "edit")[:40],
+        "category": manifest.get("category") or DEFAULT_CATEGORY_ID,
+        "includeStarterCode": bool(manifest.get("includeStarterCode", True)),
+        "outline": manifest.get("outline") or [],
+        "slidePlan": manifest.get("slidePlan"),
+        "blueprint": manifest.get("blueprint") or {},
+        "customDiagramXmls": custom_xmls,
+    }
+    rev_dir = blog_dir / "revisions"
+    rev_dir.mkdir(parents=True, exist_ok=True)
+    (rev_dir / f"v{rev}.json").write_text(json.dumps(snap, indent=2), encoding="utf-8")
+    hist = list(manifest.get("revisions") or [])
+    if not any(isinstance(r, dict) and int(r.get("revision") or 0) == rev for r in hist):
+        hist.append({
+            "revision": rev,
+            "createdAt": snap["createdAt"],
+            "actor": snap["actor"],
+            "summary": snap["summary"],
+            "scope": snap["scope"],
+        })
+    manifest["revisions"] = hist[-25:]
+
+
+def _recompile_full_blog_state(
+    slug: str,
+    manifest: Dict[str, Any],
+    *,
+    affected_artifacts: List[str],
+    actor_email: str,
+    summary: str,
+    scope: str,
+    custom_xml_overrides: Optional[Dict[str, str]] = None,
+    refresh_tts_delta: bool = True,
+) -> Dict[str, Any]:
+    """
+    Recompiles all derived artifacts cleanly from manifest['blueprint'] + customEdited .drawio XMLs,
+    runs content-hash Delta-TTS, invalidates stale host MP4, marks Drive sync stale, bumps revision,
+    writes lightweight v<N>.json snapshot, rebuilds bundle.zip, and syncs to GCS.
+    """
+    hydrate_legacy_manifest_plan(manifest)
+    blog_dir = get_storage_root() / slug
+    for sub in ("diagrams", "slides", "docs", "audio", "proofs", "video", "revisions"):
+        (blog_dir / sub).mkdir(parents=True, exist_ok=True)
+
+    bp = manifest["blueprint"]
+    plan = manifest["slidePlan"]
+    outline = manifest["outline"]
+    inc_code = bool(manifest.get("includeStarterCode", plan.get("includeStarterCode", True)))
+    proofs = manifest.get("proofs") or []
+    d_meta_prev = manifest.get("diagrams") if isinstance(manifest.get("diagrams"), dict) else {}
+    overrides = dict(custom_xml_overrides or {})
+
+    # 1. Compile canonical diagrams for non-custom kinds, and custom XML -> SVG/OOXML for manually edited kinds
+    if inc_code:
+        _sync_inline_code_with_starter(bp, slide_plan=plan)
+    canonical_diags = compile_all_diagrams_v2(
+        bp, slug, enabled_kinds=plan["enabledDiagramKinds"], slide_plan=plan
+    )
+    diags_final: Dict[str, Dict[str, Any]] = {}
+    total_slides = int(plan.get("totalSlides") or len(bp.get("slides") or []) or 12)
+    for ed in plan["enabledDiagrams"]:
+        dk = ed["kind"]
+        s_num = int(ed["slideNumber"])
+        public_id = _diag_v2._cc.make_diagram_public_id(slug, dk)
+        prev_custom = bool((d_meta_prev.get(dk) or {}).get("customEdited", False))
+        custom_xml = overrides.get(dk)
+        if custom_xml is None and prev_custom:
+            xp = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{dk}.drawio")
+            if xp and xp.is_file():
+                custom_xml = xp.read_text(encoding="utf-8")
+        if custom_xml is not None:
+            v_url = _diag_v2._cc.build_viewer_url(custom_xml, public_id, f"{public_id}.drawio")
+            layer_str = (d_meta_prev.get(dk) or {}).get("layer") or DIAGRAM_KIND_META.get(dk, {}).get("layer", dk.upper())
+            title_str = f"Figure {ed['figureNum']} — {ed['title']}"
+            svg_c, ooxml_c, metrics = _iter.compile_custom_drawio_xml_to_svg_and_ooxml(
+                custom_xml,
+                public_id=public_id,
+                title=title_str,
+                slide_badge=f"[Slide {s_num:02d}/{total_slides:02d} • {layer_str[:18]}]",
+                viewer_url=v_url,
+                hlink_rid="rId10",
+            )
+            diags_final[dk] = {
+                "id": f"{slug}-{dk}",
+                "publicId": public_id,
+                "kind": dk,
+                "layer": layer_str,
+                "figureNum": ed["figureNum"],
+                "slide": s_num,
+                "title": title_str,
+                "label": title_str,
+                "customEdited": True,
+                "xml": custom_xml,
+                "svg": svg_c,
+                "viewerUrl": v_url,
+                "ooxmlSlideXml": ooxml_c,
+                "vertexCount": metrics["vertexCount"],
+                "edgeCount": metrics["edgeCount"],
+                "iconCount": metrics["iconCount"],
+                "geometry": metrics["geometry"],
+                "engineUsed": "custom_drawio_2way",
+                "drawioPath": f"diagrams/{slug}-{dk}.drawio",
+                "svgPath": f"diagrams/{slug}-{dk}.svg",
+            }
+        elif dk in canonical_diags:
+            dv = dict(canonical_diags[dk])
+            dv["customEdited"] = False
+            diags_final[dk] = dv
+
+    for dk, dv in diags_final.items():
+        (blog_dir / "diagrams" / f"{slug}-{dk}.drawio").write_text(dv["xml"], encoding="utf-8")
+        (blog_dir / "diagrams" / f"{slug}-{dk}.svg").write_text(dv["svg"], encoding="utf-8")
+
+    # 2. Rebuild slides SVGs, .pptx, blog.md, .docx, starter.zip
+    native_slides: Dict[int, Tuple[str, str]] = {}
+    for ed in plan["enabledDiagrams"]:
+        dk = ed["kind"]
+        s_num = int(ed["slideNumber"])
+        if dk in diags_final and diags_final[dk].get("ooxmlSlideXml"):
+            native_slides[s_num] = (diags_final[dk]["ooxmlSlideXml"], diags_final[dk]["viewerUrl"])
+
+    arch_d = diags_final.get("architecture") or {}
+    seq_d = diags_final.get("sequence") or {}
+    extra_svgs = {k: v["svg"] for k, v in diags_final.items() if k not in ("architecture", "sequence")}
+    extra_urls = {k: v["viewerUrl"] for k, v in diags_final.items() if k not in ("architecture", "sequence")}
+
+    slide_svgs = compile_slide_preview_svgs(
+        bp, slug, arch_d.get("svg", ""), seq_d.get("svg", ""), proofs, blog_dir,
+        extra_svgs=extra_svgs or None, slide_plan=plan, diags_map=diags_final,
+    )
+    for i, s_svg in enumerate(slide_svgs, 1):
+        (blog_dir / "slides" / f"slide_{i:02d}.svg").write_text(s_svg, encoding="utf-8")
+
+    pptx_bytes = compile_pptx_bytes(
+        bp, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""), proofs, blog_dir,
+        extra_urls=extra_urls or None, native_slide_xmls=native_slides, slide_plan=plan, diags_map=diags_final,
+    )
+    (blog_dir / "slides" / f"{slug}-deck.pptx").write_bytes(pptx_bytes)
+
+    grounding_info = (manifest.get("quality") or {}).get("grounding") or {}
+    md_text = compile_blog_markdown(
+        bp, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""),
+        proofs, (manifest.get("generation") or {}).get("model", DEFAULT_MODEL),
+        extra_urls=extra_urls or None, grounding=grounding_info,
+        slide_plan=plan, outline=outline, diags_map=diags_final,
+    )
+    (blog_dir / "blog.md").write_text(md_text, encoding="utf-8")
+
+    docx_bytes = compile_docx_bytes(
+        bp, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""),
+        proofs, blog_dir, extra_urls=extra_urls or None, grounding=grounding_info,
+        slide_plan=plan, outline=outline, diags_map=diags_final,
+    )
+    (blog_dir / "docs" / f"{slug}-whitepaper.docx").write_bytes(docx_bytes)
+
+    sz_b, s_files, ast_ok, ast_err = compile_starter_zip(bp, slug, include_starter_code=inc_code)
+    (blog_dir / f"{slug}-starter.zip").write_bytes(sz_b)
+
+    det = run_deterministic_quality_gate(
+        bp=bp,
+        md_text=md_text,
+        arch_drawio=arch_d.get("xml", ""),
+        arch_svg=arch_d.get("svg", ""),
+        seq_drawio=seq_d.get("xml", ""),
+        seq_svg=seq_d.get("svg", ""),
+        pptx_bytes=pptx_bytes,
+        docx_bytes=docx_bytes,
+        py_ast_ok=ast_ok,
+        py_ast_err=ast_err,
+        starter_files=s_files,
+        extra_diagrams=diags_final,
+        arch_icon_count=arch_d.get("iconCount"),
+        slide_plan=plan,
+    )
+
+    # 3. Content-Hash Delta-TTS: only re-synthesize slides whose speakerNotes SHA-256 changed!
+    slide_n = len(slide_svgs)
+    audio_meta = manifest.get("audio") if isinstance(manifest.get("audio"), dict) else {}
+    voice_name = str(audio_meta.get("voice") or "en-US-Chirp3-HD-Charon")
+    audio_enabled = bool(audio_meta.get("enabled", True))
+    existing_tracks = list(audio_meta.get("tracks") or [])
+    tts_delta_plan = _iter.compute_delta_tts_plan(
+        (bp.get("slides") or [])[:slide_n],
+        existing_tracks,
+        voice_name,
+        audio_exists_fn=lambda rel: bool(_ensure_rel_hydrated(slug, rel) and (blog_dir / rel).is_file()),
+        strip_md_fn=strip_inline_md,
+    )
+    new_tracks: List[Dict[str, Any]] = []
+    durations: List[float] = []
+    audio_errors: List[str] = []
+    tts_resynthesized_count = 0
+    for item_t in tts_delta_plan:
+        sn = item_t["slideNumber"]
+        if item_t["reuse"] and item_t["existingTrack"]:
+            tr_old = dict(item_t["existingTrack"])
+            tr_old["title"] = strip_inline_md((bp["slides"][sn - 1]).get("title") or "")
+            new_tracks.append(tr_old)
+            durations.append(float(tr_old.get("durationSec") or 8.0))
+        elif audio_enabled and refresh_tts_delta and _get_gcp_bearer_token():
+            mp3_b, tts_err = synthesize_tts_mp3(item_t["text"], voice_name=voice_name)
+            if mp3_b:
+                rel = f"audio/slide_{sn:02d}.mp3"
+                (blog_dir / rel).write_bytes(mp3_b)
+                dur = estimate_mp3_duration_seconds(mp3_b)
+                durations.append(dur)
+                tts_resynthesized_count += 1
+                new_tracks.append({
+                    "slideNumber": sn,
+                    "title": strip_inline_md((bp["slides"][sn - 1]).get("title") or ""),
+                    "relPath": rel,
+                    "bytes": len(mp3_b),
+                    "durationSec": dur,
+                    "voice": voice_name,
+                    "speakerNotesSha256": item_t["sha256"],
+                    "provenance": "SYNTHETIC_CLOUD_TTS_CHIRP3_HD",
+                })
+            else:
+                durations.append(8.0)
+                if tts_err and tts_err not in audio_errors:
+                    audio_errors.append(tts_err)
+        else:
+            durations.append(8.0)
+
+    vtt_text = build_webvtt((bp.get("slides") or [])[:slide_n], durations)
+    (blog_dir / "audio" / "captions.vtt").write_text(vtt_text, encoding="utf-8")
+
+    # 4. Invalidate stale host MP4 whenever slides, diagrams, or audio changed
+    mp4_stale = any(a in affected_artifacts for a in ("slides", "diagrams", "audio")) or tts_resynthesized_count > 0
+    if mp4_stale:
+        old_mp4 = manifest.get("assets", {}).get("hostMp4")
+        if old_mp4:
+            mp4_p = (blog_dir / old_mp4).resolve()
+            if str(mp4_p).startswith(str(blog_dir.resolve()) + os.sep) and mp4_p.is_file():
+                mp4_p.unlink(missing_ok=True)
+            _gcs_delete_object(f"{slug}/{old_mp4}")
+        manifest.setdefault("assets", {})["hostMp4"] = None
+        audio_meta["hostMp4Available"] = False
+        audio_meta["hostMp4Provenance"] = None
+
+    audio_meta["tracks"] = new_tracks
+    audio_meta["tracksGenerated"] = len(new_tracks)
+    audio_meta["totalDurationSec"] = round(sum(float(t.get("durationSec") or 0.0) for t in new_tracks), 2)
+    audio_meta["errors"] = audio_errors
+    audio_meta["lastDeltaSynthesized"] = tts_resynthesized_count
+    manifest["audio"] = audio_meta
+
+    # 5. Refresh diagrams manifest, starterMeta, quality, assets, revision & snapshot
+    diagrams_manifest: Dict[str, Any] = {}
+    for dk in plan["enabledDiagramKinds"]:
+        if dk not in diags_final:
+            continue
+        dv = diags_final[dk]
+        geom = dv.get("geometry") or {}
+        diagrams_manifest[dk] = {
+            "id": dv["id"],
+            "publicId": dv["publicId"],
+            "kind": dk,
+            "layer": dv["layer"],
+            "figureNum": dv.get("figureNum"),
+            "slideNumber": dv["slide"],
+            "title": dv.get("label") or dv.get("title") or dk.title(),
+            "customEdited": bool(dv.get("customEdited", False)),
+            "iconCount": dv.get("iconCount", 0),
+            "vertexCount": dv.get("vertexCount", 0),
+            "edgeCount": dv.get("edgeCount", 0),
+            "geometryValid": bool(geom.get("valid", True)),
+            "geometryErrors": geom.get("errors") or [],
+            "drawioPath": f"diagrams/{slug}-{dk}.drawio",
+            "svgPath": f"diagrams/{slug}-{dk}.svg",
+            "refImagePath": (d_meta_prev.get(dk) or {}).get("refImagePath") or "",
+            "engineUsed": dv.get("engineUsed") or "promptcanvas_canonical_ws1",
+            "viewerUrl": dv["viewerUrl"],
+            "studioUrl": f"/drawio-editor?id={urllib.parse.quote(dv['publicId'])}",
+        }
+    manifest["diagrams"] = diagrams_manifest
+    manifest["title"] = bp["title"]
+    manifest["subtitle"] = bp["subtitle"]
+    manifest["summary"] = bp["summary"]
+    manifest.setdefault("generation", {})["slideCount"] = slide_n
+    manifest["generation"]["diagramCount"] = len(diagrams_manifest)
+    manifest["generation"]["totalEmbeddedIcons"] = sum(int(d.get("iconCount") or 0) for d in diagrams_manifest.values())
+    manifest.setdefault("assets", {})["slidePreviews"] = [f"slides/slide_{i:02d}.svg" for i in range(1, slide_n + 1)]
+    manifest["starterMeta"] = {
+        "enabled": inc_code,
+        "status": "GENERATED_TEMPLATE_UNDEPLOYED" if inc_code else "DISABLED_BY_CATEGORY",
+        "pythonAstValid": ast_ok,
+        "pythonAstError": ast_err,
+        "tfSecurityFindings": det.get("tfFindings") or [],
+        "files": s_files,
+    }
+    manifest.setdefault("quality", {})["deterministic"] = det
+    manifest["quality"]["checkedAt"] = _now_iso()
+    ws_prev = manifest.get("workspaceSync")
+    if isinstance(ws_prev, dict) and ws_prev.get("status") == "SYNCED":
+        ws_prev["status"] = "STALE"
+        ws_prev["staleSince"] = _now_iso()
+        ws_prev["staleReason"] = f"{summary} — click Re-sync Google Slides & Docs to update Drive."
+
+    manifest["revision"] = int(manifest.get("revision") or 1) + 1
+    manifest["updatedAt"] = _now_iso()
+    _save_revision_snapshot(blog_dir, manifest, summary=summary, scope=scope, actor_email=actor_email)
+    (blog_dir / "quality_report.json").write_text(json.dumps(manifest["quality"], indent=2), encoding="utf-8")
+    (blog_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    _rebuild_bundle_zip(blog_dir, slug)
+    index_bytes = _update_index_entry(manifest)
+    _sync_blog_dir_to_gcs_async(slug, blog_dir, index_bytes)
+    return manifest
+
+
+def apply_manual_edit(
+    slug: str,
+    payload: Dict[str, Any],
+    *,
+    actor_email: str = "local-operator",
+) -> Dict[str, Any]:
+    clean = validate_existing_slug(slug)
+    with _get_slug_lock(clean):
+        mp = _ensure_rel_hydrated(clean, "manifest.json")
+        if mp is None or not mp.is_file():
+            raise CreateBlog1Error(f"Blog '{clean}' not found.", 404, "BLOG_NOT_FOUND")
+        manifest = json.loads(mp.read_text(encoding="utf-8"))
+        hydrate_legacy_manifest_plan(manifest)
+        _check_expected_revision(manifest, payload.get("expectedRevision"))
+
+        # Ensure initial v1 snapshot exists before first edit on legacy blogs
+        blog_dir = get_storage_root() / clean
+        if not (blog_dir / "revisions" / f"v{int(manifest.get('revision') or 1)}.json").is_file():
+            _save_revision_snapshot(blog_dir, manifest, summary="Pre-edit baseline", scope="baseline", actor_email=actor_email)
+
+        bp = manifest["blueprint"]
+        changes, affected, drift_hints = _iter.apply_manual_edit_patch(
+            bp,
+            manifest,
+            payload,
+            sanitize_fn=_sanitize_for_public_output,
+            strip_emoji_fn=strip_inline_md,
+            allowed_tags=ALLOWED_PROVENANCE_TAGS,
+            normalize_outline_fn=normalize_blog_outline,
+            compute_slide_plan_fn=compute_dynamic_slide_plan,
+        )
+        if not changes:
+            return {
+                "ok": True,
+                "noChanges": True,
+                "revision": int(manifest.get("revision") or 1),
+                "changes": [],
+                "affectedArtifacts": [],
+                "driftHints": [],
+                "manifest": get_blog_detail(clean),
+            }
+
+        target = str(payload.get("target") or "blog").strip().lower()
+        summary = "; ".join(changes[:3])[:180]
+        updated = _recompile_full_blog_state(
+            clean,
+            manifest,
+            affected_artifacts=affected,
+            actor_email=actor_email,
+            summary=f"Manual edit ({target}): {summary}",
+            scope=f"edit:{target}",
+            refresh_tts_delta=("audio" in affected),
+        )
+        return {
+            "ok": True,
+            "revision": updated["revision"],
+            "changes": changes,
+            "affectedArtifacts": affected,
+            "driftHints": drift_hints,
+            "deterministic": updated["quality"]["deterministic"],
+            "manifest": get_blog_detail(clean),
+        }
+
+
+def save_diagram_and_recompile(
+    slug: str,
+    kind: str,
+    xml_content: str,
+    *,
+    expected_revision: Optional[int] = None,
+    actor_email: str = "local-operator",
+) -> Dict[str, Any]:
+    """True 2-way Draw.io sync: validates XML, marks customEdited=True, builds SVG + OOXML + #R URL, recompiles deck/doc/bundle."""
+    clean = validate_existing_slug(slug)
+    dk = str(kind or "").strip().lower()
+    if dk not in VALID_DIAGRAM_KINDS:
+        raise CreateBlog1Error(f"Unsupported diagram kind '{dk}'.", 400, "INVALID_DIAGRAM_KIND")
+    ok_xml, xml_err = _iter.validate_drawio_xml_safe(xml_content)
+    if not ok_xml:
+        raise CreateBlog1Error(xml_err, 400, "INVALID_DRAWIO_XML")
+    leaks = scan_for_f13_leaks(xml_content)
+    if leaks:
+        raise CreateBlog1Error(f"Diagram XML blocked by F-13 hygiene check ({', '.join(leaks[:4])}).", 400, "HYGIENE_BLOCKED")
+
+    with _get_slug_lock(clean):
+        mp = _ensure_rel_hydrated(clean, "manifest.json")
+        if mp is None or not mp.is_file():
+            raise CreateBlog1Error(f"Blog '{clean}' not found.", 404, "BLOG_NOT_FOUND")
+        manifest = json.loads(mp.read_text(encoding="utf-8"))
+        hydrate_legacy_manifest_plan(manifest)
+        _check_expected_revision(manifest, expected_revision)
+
+        blog_dir = get_storage_root() / clean
+        if not (blog_dir / "revisions" / f"v{int(manifest.get('revision') or 1)}.json").is_file():
+            _save_revision_snapshot(blog_dir, manifest, summary="Pre-diagram-edit baseline", scope="baseline", actor_email=actor_email)
+
+        updated = _recompile_full_blog_state(
+            clean,
+            manifest,
+            affected_artifacts=["diagrams", "slides", "docx", "blog.md"],
+            actor_email=actor_email,
+            summary=f"2-way Draw.io save: '{dk}' diagram edited & synced to Slides/Docs",
+            scope=f"drawio:{dk}",
+            custom_xml_overrides={dk: xml_content},
+            refresh_tts_delta=False,
+        )
+        public_id = _diag_v2._cc.make_diagram_public_id(clean, dk)
+        return {
+            "ok": True,
+            "slug": clean,
+            "kind": dk,
+            "publicId": public_id,
+            "path": f"{public_id}.drawio",
+            "bytes": len(xml_content.encode("utf-8")),
+            "revision": updated["revision"],
+            "customEdited": True,
+            "viewerUrl": (updated.get("diagrams") or {}).get(dk, {}).get("viewerUrl", ""),
+            "deterministic": updated["quality"]["deterministic"],
+        }
+
+
 def save_studio_diagram_xml(diag_id: str, xml_content: str) -> Optional[Dict[str, Any]]:
-    """Persists edited Draw.io XML from /drawio-editor back to Create Blog1 storage & GCS."""
+    """Persists edited Draw.io XML from /drawio-editor back to Create Blog with full 2-way SVG/PPTX/DOCX/GCS sync."""
     slug, kind, _ = _resolve_studio_slug_and_kind(diag_id)
     if not slug or not kind:
         return None
+    mp = _ensure_rel_hydrated(slug, "manifest.json")
+    if mp is not None and mp.is_file():
+        return save_diagram_and_recompile(slug, kind, xml_content, actor_email="studio-editor")
     drawio_p = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{kind}.drawio")
     if drawio_p is None:
         return None
     raw_bytes = xml_content.encode("utf-8")
     drawio_p.parent.mkdir(parents=True, exist_ok=True)
     drawio_p.write_bytes(raw_bytes)
-    if _is_gcs_sync_enabled():
-        try:
-            _gcs_upload_bytes(f"{slug}/diagrams/{slug}-{kind}.drawio", raw_bytes, "application/xml")
-        except Exception:
-            pass
     public_id = _diag_v2._cc.make_diagram_public_id(slug, kind)
     return {"ok": True, "publicId": public_id, "path": f"{public_id}.drawio", "bytes": len(raw_bytes)}
+
+
+def restore_blog_revision(
+    slug: str,
+    target_revision: int,
+    *,
+    expected_revision: Optional[int] = None,
+    actor_email: str = "local-operator",
+) -> Dict[str, Any]:
+    clean = validate_existing_slug(slug)
+    try:
+        t_rev = int(target_revision)
+    except Exception:
+        raise CreateBlog1Error("Invalid targetRevision.", 400, "INVALID_REVISION") from None
+    if t_rev < 1:
+        raise CreateBlog1Error("targetRevision must be >= 1.", 400, "INVALID_REVISION")
+
+    with _get_slug_lock(clean):
+        mp = _ensure_rel_hydrated(clean, "manifest.json")
+        if mp is None or not mp.is_file():
+            raise CreateBlog1Error(f"Blog '{clean}' not found.", 404, "BLOG_NOT_FOUND")
+        manifest = json.loads(mp.read_text(encoding="utf-8"))
+        _check_expected_revision(manifest, expected_revision)
+
+        snap_p = _ensure_rel_hydrated(clean, f"revisions/v{t_rev}.json")
+        if snap_p is None or not snap_p.is_file():
+            raise CreateBlog1Error(f"Revision snapshot v{t_rev} not found for '{clean}'.", 404, "REVISION_NOT_FOUND")
+        snap = json.loads(snap_p.read_text(encoding="utf-8"))
+
+        manifest["category"] = snap.get("category") or manifest.get("category") or DEFAULT_CATEGORY_ID
+        manifest["includeStarterCode"] = bool(snap.get("includeStarterCode", True))
+        manifest["outline"] = snap.get("outline") or manifest.get("outline")
+        manifest["slidePlan"] = snap.get("slidePlan") or manifest.get("slidePlan")
+        manifest["blueprint"] = snap.get("blueprint") or manifest.get("blueprint")
+        custom_xmls = snap.get("customDiagramXmls") if isinstance(snap.get("customDiagramXmls"), dict) else {}
+        # Reset customEdited flags to match the restored snapshot cleanly
+        for dk, dv in (manifest.get("diagrams") or {}).items():
+            if isinstance(dv, dict):
+                dv["customEdited"] = dk in custom_xmls
+
+        updated = _recompile_full_blog_state(
+            clean,
+            manifest,
+            affected_artifacts=["blog.md", "docx", "diagrams", "slides", "audio", "starter.zip"],
+            actor_email=actor_email,
+            summary=f"Restored revision v{t_rev}",
+            scope=f"restore:v{t_rev}",
+            custom_xml_overrides=custom_xmls,
+            refresh_tts_delta=True,
+        )
+        return {
+            "ok": True,
+            "restoredFrom": t_rev,
+            "revision": updated["revision"],
+            "manifest": get_blog_detail(clean),
+        }
+
+
+def start_iteration_job(
+    slug: str,
+    payload: Dict[str, Any],
+    *,
+    api_key_override: Optional[str] = None,
+    actor_email: str = "local-operator",
+) -> Dict[str, Any]:
+    """Post-generation scoped AI prompt iteration with optimistic concurrency, diff summary & auto-rollback."""
+    clean = validate_existing_slug(slug)
+    instruction = str(payload.get("instruction") or payload.get("prompt") or "").strip()
+    if len(instruction) < 6:
+        raise CreateBlog1Error("Please enter an iteration instruction of at least 6 characters.", 400, "INSTRUCTION_TOO_SHORT")
+    if len(instruction) > 2500:
+        raise CreateBlog1Error("Iteration instruction exceeds 2,500 characters.", 400, "INSTRUCTION_TOO_LONG")
+    leaks_i = scan_for_f13_leaks(instruction)
+    if leaks_i:
+        raise CreateBlog1Error(f"Iteration instruction blocked by F-13 check ({', '.join(leaks_i[:4])}).", 400, "HYGIENE_BLOCKED")
+
+    scope = str(payload.get("scope") or "all").strip().lower()
+    if scope not in _iter.VALID_ITERATE_SCOPES:
+        scope = "all"
+    unlock_custom = bool(payload.get("unlockCustomDiagrams", False))
+    expected_rev = payload.get("expectedRevision")
+    model = str(payload.get("model") or DEFAULT_MODEL).strip()
+    if model not in ALLOWED_MODELS:
+        model = DEFAULT_MODEL
+
+    mp = _ensure_rel_hydrated(clean, "manifest.json")
+    if mp is None or not mp.is_file():
+        raise CreateBlog1Error(f"Blog '{clean}' not found.", 404, "BLOG_NOT_FOUND")
+    cur_manifest = json.loads(mp.read_text(encoding="utf-8"))
+    _check_expected_revision(cur_manifest, expected_rev)
+
+    has_key = bool((api_key_override or "").strip() or os.environ.get("GEMINI_API_KEY", "").strip())
+    has_vertex = bool(_get_gcp_bearer_token())
+    if not (has_key or has_vertex):
+        raise ModelAuthUnavailableError(
+            "No live Gemini credentials available for AI iteration (Vertex AI IAM bearer token unavailable and no GEMINI_API_KEY / X-Gemini-Api-Key provided)."
+        )
+    _check_rate_limit(f"iterate:{actor_email}", limit_per_hour=30)
+
+    job_id = f"cb-iter-{uuid.uuid4().hex[:10]}"
+    transient_key = (api_key_override or "").strip() or None
+    job_rec = {
+        "jobId": job_id,
+        "type": "iterate",
+        "slug": clean,
+        "scope": scope,
+        "status": "QUEUED",
+        "progress": 8,
+        "stage": "QUEUED",
+        "message": f"Starting scoped AI iteration ({scope}) via {model}...",
+        "model": model,
+        "changes": [],
+        "affectedArtifacts": [],
+        "revision": int(cur_manifest.get("revision") or 1),
+        "error": None,
+        "errorCode": None,
+        "createdAt": _now_iso(),
+        "updatedAt": _now_iso(),
+        "steps": [
+            {"id": "ITERATE_LLM", "label": f"Gemini Surgical Patch ({scope} · {model})", "status": "pending"},
+            {"id": "RECOMPILE_SYNC", "label": "Recompile Blog, Diagrams, Slides, Docs & Delta-TTS", "status": "pending"},
+            {"id": "VERIFY_GATE", "label": "Verify 13-Check Quality Gate (Auto-Rollback on Regression)", "status": "pending"},
+        ],
+    }
+    with _JOBS_LOCK:
+        _JOBS[job_id] = job_rec
+        init_snap = json.loads(json.dumps(job_rec))
+    _persist_job_state_to_gcs(init_snap, sync=True)
+
+    def _upd(pct: int, stage: str, msg: str) -> None:
+        with _JOBS_LOCK:
+            jr = _JOBS.get(job_id)
+            if not jr:
+                return
+            jr["progress"] = pct
+            jr["stage"] = stage
+            jr["message"] = msg
+            jr["updatedAt"] = _now_iso()
+            seen = False
+            for st in jr["steps"]:
+                if st["id"] == stage:
+                    st["status"] = "running"
+                    seen = True
+                elif not seen:
+                    st["status"] = "done"
+            if stage == "COMPLETED":
+                for st in jr["steps"]:
+                    st["status"] = "done"
+            snap = json.loads(json.dumps(jr))
+        _persist_job_state_to_gcs(snap, sync=False)
+
+    def _run_iter() -> None:
+        try:
+            with _JOBS_LOCK:
+                _JOBS[job_id]["status"] = "RUNNING"
+            with _get_slug_lock(clean):
+                mp_live = _ensure_rel_hydrated(clean, "manifest.json")
+                if mp_live is None or not mp_live.is_file():
+                    raise CreateBlog1Error(f"Blog '{clean}' not found.", 404, "BLOG_NOT_FOUND")
+                manifest_live = json.loads(mp_live.read_text(encoding="utf-8"))
+                hydrate_legacy_manifest_plan(manifest_live)
+                _check_expected_revision(manifest_live, expected_rev)
+
+                blog_dir = get_storage_root() / clean
+                if not (blog_dir / "revisions" / f"v{int(manifest_live.get('revision') or 1)}.json").is_file():
+                    _save_revision_snapshot(blog_dir, manifest_live, summary="Pre-iteration baseline", scope="baseline", actor_email=actor_email)
+
+                import copy as _copy
+                backup_manifest = _copy.deepcopy(manifest_live)
+                prev_det_passed = int(((manifest_live.get("quality") or {}).get("deterministic") or {}).get("passed") or 0)
+                custom_kinds = [
+                    dk for dk, dv in (manifest_live.get("diagrams") or {}).items()
+                    if isinstance(dv, dict) and dv.get("customEdited")
+                ]
+
+                _upd(28, "ITERATE_LLM", f"Generating surgical '{scope}' JSON patch with {model}...")
+                sys_p, usr_p = _iter.build_scoped_iteration_prompt(
+                    manifest_live["blueprint"],
+                    instruction,
+                    scope,
+                    manifest_live["slidePlan"],
+                    custom_kinds,
+                    unlock_custom_diagrams=unlock_custom,
+                )
+                patch_obj, _ = call_gemini_json(
+                    system_prompt=sys_p,
+                    user_prompt=usr_p,
+                    model=model,
+                    api_key_override=transient_key,
+                    max_output_tokens=24576 if is_global_vertex_model(model) else 16384,
+                    thinking_budget=1024,
+                    thinking_level="LOW",
+                    temperature=0.18,
+                    timeout_s=130.0,
+                )
+
+                changes, affected = _iter.apply_scoped_iteration_patch(
+                    manifest_live["blueprint"],
+                    patch_obj,
+                    scope=scope,
+                    slide_plan=manifest_live["slidePlan"],
+                    custom_edited_kinds=custom_kinds,
+                    unlock_custom_diagrams=unlock_custom,
+                    allowed_tags=ALLOWED_PROVENANCE_TAGS,
+                    sanitize_fn=_sanitize_for_public_output,
+                    strip_emoji_fn=strip_inline_md,
+                )
+                if unlock_custom and scope in ("all", "diagrams"):
+                    for dk in custom_kinds:
+                        if dk in (manifest_live.get("diagrams") or {}):
+                            manifest_live["diagrams"][dk]["customEdited"] = False
+
+                if not changes:
+                    changes = list(patch_obj.get("changeSummary") or ["No structural mutations required."])[:5]
+
+                _upd(65, "RECOMPILE_SYNC", "Recompiling blog.md, diagrams, .pptx, .docx, starter kit & Delta-TTS...")
+                updated = _recompile_full_blog_state(
+                    clean,
+                    manifest_live,
+                    affected_artifacts=affected or ["blog.md", "docx", "slides"],
+                    actor_email=actor_email,
+                    summary=f"AI iterate ({scope}): {instruction[:110]}",
+                    scope=f"iterate:{scope}",
+                    refresh_tts_delta=("audio" in affected),
+                )
+                _upd(90, "VERIFY_GATE", "Verifying 13-check deterministic quality gate...")
+                new_det = updated["quality"]["deterministic"]
+                d8_chk = next((c for c in new_det["checks"] if c["id"] == "D-08"), {"status": "PASS"})
+                # Auto-rollback if F-13 hygiene failed OR deterministic pass count dropped severely
+                if d8_chk["status"] != "PASS" or (prev_det_passed >= 12 and int(new_det["passed"]) < prev_det_passed - 1):
+                    _recompile_full_blog_state(
+                        clean,
+                        backup_manifest,
+                        affected_artifacts=["blog.md", "docx", "diagrams", "slides"],
+                        actor_email=actor_email,
+                        summary="Auto-rollback after failed iteration gate",
+                        scope="rollback",
+                        refresh_tts_delta=False,
+                    )
+                    raise CreateBlog1Error(
+                        f"AI iteration auto-rolled back because quality gate regressed ({new_det['passed']}/{new_det['total']}, D-08={d8_chk['status']}).",
+                        422,
+                        "ITERATION_ROLLED_BACK",
+                    )
+
+                with _JOBS_LOCK:
+                    jr = _JOBS[job_id]
+                    jr["status"] = "COMPLETED"
+                    jr["progress"] = 100
+                    jr["stage"] = "COMPLETED"
+                    jr["revision"] = updated["revision"]
+                    jr["changes"] = changes[:8]
+                    jr["affectedArtifacts"] = affected
+                    jr["message"] = f"Applied v{updated['revision']}: " + "; ".join(changes[:3])
+                    jr["updatedAt"] = _now_iso()
+                    for st in jr["steps"]:
+                        st["status"] = "done"
+                    done_snap = json.loads(json.dumps(jr))
+                _persist_job_state_to_gcs(done_snap, sync=True)
+        except Exception as exc:
+            err_msg = _redact_secret(getattr(exc, "message", str(exc)), transient_key)
+            err_code = getattr(exc, "code", "ITERATION_FAILED")
+            with _JOBS_LOCK:
+                jr = _JOBS[job_id]
+                jr["status"] = "FAILED"
+                jr["error"] = err_msg
+                jr["errorCode"] = err_code
+                jr["message"] = f"Iteration failed: {err_msg}"
+                jr["updatedAt"] = _now_iso()
+                for st in jr["steps"]:
+                    if st["status"] == "running":
+                        st["status"] = "error"
+                fail_snap = json.loads(json.dumps(jr))
+            _persist_job_state_to_gcs(fail_snap, sync=True)
+
+    threading.Thread(target=_run_iter, daemon=True).start()
+    return json.loads(json.dumps(job_rec))
 
 
 def _drive_url_with_resourcekey(base_url: str, resource_key: str = "", webview_link: str = "") -> str:
@@ -5595,6 +6325,23 @@ def _drive_url_with_resourcekey(base_url: str, resource_key: str = "", webview_l
         sep = "&" if "?" in base_url else "?"
         return f"{base_url}{sep}resourcekey={urllib.parse.quote(rk, safe='-_')}"
     return base_url
+
+
+def _drive_get_file_metadata(token: str, file_id: str) -> Tuple[int, Dict[str, Any]]:
+    """Checks Drive v3 modifiedTime / headRevisionId before in-place PATCH to guard against silent clobbering."""
+    headers = {"Authorization": f"Bearer {token}"}
+    if DEFAULT_GCP_PROJECT:
+        headers["x-goog-user-project"] = DEFAULT_GCP_PROJECT
+    url = (
+        f"https://www.googleapis.com/drive/v3/files/{urllib.parse.quote(file_id, safe='')}"
+        "?supportsAllDrives=true&fields=id,name,modifiedTime,headRevisionId,trashed"
+    )
+    req = urllib.request.Request(url, headers=headers, method="GET")
+    try:
+        with urllib.request.urlopen(req, timeout=20.0) as resp:
+            return 200, json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        return int(exc.code), {}
 
 
 def _drive_multipart_upload(
@@ -5621,7 +6368,7 @@ def _drive_multipart_upload(
     }
     if DEFAULT_GCP_PROJECT:
         headers["x-goog-user-project"] = DEFAULT_GCP_PROJECT
-    fields = "id,name,webViewLink,resourceKey"
+    fields = "id,name,webViewLink,resourceKey,modifiedTime,headRevisionId"
     if existing_id:
         try:
             patch_req = urllib.request.Request(
@@ -5687,6 +6434,7 @@ def sync_to_google_workspace(
     *,
     access_token_override: Optional[str] = None,
     force_new: bool = False,
+    conflict_resolution: str = "check",
 ) -> Dict[str, Any]:
     clean = validate_existing_slug(slug)
     mp = _ensure_rel_hydrated(clean, "manifest.json")
@@ -5729,9 +6477,68 @@ def sync_to_google_workspace(
     if not pptx_p or not docx_p:
         raise CreateBlog1Error("Missing compiled .pptx or .docx artifact for sync.", 404, "ASSET_NOT_FOUND")
 
+    res_mode = str(conflict_resolution or "check").strip().lower()
+    if res_mode == "copy":
+        force_new = True
+
     prev_ws = manifest.get("workspaceSync") if isinstance(manifest.get("workspaceSync"), dict) else {}
     existing_slides_id = None if force_new else (str(prev_ws.get("slidesId") or "").strip() or None)
     existing_doc_id = None if force_new else (str(prev_ws.get("docId") or "").strip() or None)
+
+    # Conflict-safe Drive metadata check before PATCHing existing Google Slides / Google Docs
+    if token and res_mode == "check" and not force_new:
+        for tgt_label, fid, last_mtime, last_rev in (
+            ("Google Slides", existing_slides_id, str(prev_ws.get("slidesDriveModifiedTime") or ""), str(prev_ws.get("slidesHeadRevisionId") or "")),
+            ("Google Docs", existing_doc_id, str(prev_ws.get("docDriveModifiedTime") or ""), str(prev_ws.get("docHeadRevisionId") or "")),
+        ):
+            if not fid or not (last_mtime or last_rev):
+                continue
+            m_status, meta = _drive_get_file_metadata(token, fid)
+            if m_status in (403, 404):
+                return {
+                    "ok": False,
+                    "statusCode": 409,
+                    "code": "WORKSPACE_CONFLICT",
+                    "reason": "DRIVE_ACCESS_OR_DELETED",
+                    "conflictTarget": tgt_label,
+                    "canOverwrite": False,
+                    "canForkNewCopy": True,
+                    "error": (
+                        f"Existing {tgt_label} file is owned by another user under drive.file scope or was deleted (HTTP {m_status}). "
+                        "Choose 'Save as New Drive Copy' to avoid losing links."
+                    ),
+                }
+            if m_status == 200:
+                if meta.get("trashed"):
+                    return {
+                        "ok": False,
+                        "statusCode": 409,
+                        "code": "WORKSPACE_CONFLICT",
+                        "reason": "DRIVE_TRASHED",
+                        "conflictTarget": tgt_label,
+                        "canOverwrite": False,
+                        "canForkNewCopy": True,
+                        "error": f"Existing {tgt_label} file is in Trash. Choose 'Save as New Drive Copy'.",
+                    }
+                rem_mtime = str(meta.get("modifiedTime") or "")
+                rem_rev = str(meta.get("headRevisionId") or "")
+                changed_ext = (bool(last_mtime and rem_mtime and rem_mtime != last_mtime) or bool(last_rev and rem_rev and rem_rev != last_rev))
+                if changed_ext:
+                    return {
+                        "ok": False,
+                        "statusCode": 409,
+                        "code": "WORKSPACE_CONFLICT",
+                        "reason": "EXTERNAL_EDIT_DETECTED",
+                        "conflictTarget": tgt_label,
+                        "externalModifiedTime": rem_mtime,
+                        "lastSyncedModifiedTime": last_mtime,
+                        "canOverwrite": True,
+                        "canForkNewCopy": True,
+                        "error": (
+                            f"{tgt_label} was modified externally in Google Drive at {rem_mtime} (since last sync {last_mtime}). "
+                            "Overwrite will replace Drive edits/comments — choose 'Overwrite Existing' or 'Save as New Drive Copy'."
+                        ),
+                    }
 
     slide_count = len((manifest.get("blueprint") or {}).get("slides") or []) or 12
     title = manifest["title"][:90]
@@ -5795,6 +6602,8 @@ def sync_to_google_workspace(
         "syncedAt": _now_iso(),
         "provider": auth_provider or "google_drive_native",
         "slidesId": slides_id,
+        "slidesDriveModifiedTime": str(slides_res.get("modifiedTime") or ""),
+        "slidesHeadRevisionId": str(slides_res.get("headRevisionId") or ""),
         "slidesUrl": _drive_url_with_resourcekey(
             f"https://docs.google.com/presentation/d/{slides_id}/edit", slides_rk, slides_wv
         ),
@@ -5802,6 +6611,8 @@ def sync_to_google_workspace(
             f"https://docs.google.com/presentation/d/{slides_id}/embed", slides_rk, slides_wv
         ),
         "docId": doc_id,
+        "docDriveModifiedTime": str(docs_res.get("modifiedTime") or ""),
+        "docHeadRevisionId": str(docs_res.get("headRevisionId") or ""),
         "docUrl": _drive_url_with_resourcekey(
             f"https://docs.google.com/document/d/{doc_id}/edit", doc_rk, doc_wv
         ),

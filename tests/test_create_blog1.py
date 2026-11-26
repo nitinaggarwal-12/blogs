@@ -8,6 +8,7 @@ Hermetic, fail-closed unit & HTTP API test suite for the unified Create Blog stu
 from __future__ import annotations
 
 import base64
+import hashlib
 import io
 import json
 import os
@@ -1741,6 +1742,208 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertEqual(pf_mock["verdict"], "NEEDS_CLARIFICATION")
         self.assertTrue(pf_mock["canBypass"])
         self.assertEqual(len(pf_mock["options"]), 3)
+
+    def test_19_milestone_b_iteration_manual_edit_2way_drawio_delta_tts_and_conflict_sync(self) -> None:
+        """Verifies Milestone B: optimistic concurrency, manual edit, delta-TTS, MP4 invalidation, 2-way Draw.io, restore, AI iterate & Drive 409 guard."""
+        slug = "milestone-b-sync-test"
+        bp = _sample_blueprint()
+        bp["slides"] = bp["slides"] + [dict(bp["slides"][-1], number=i, title=f"Slide {i}") for i in range(10, 13)]
+        plan = cb1.compute_dynamic_slide_plan(cb1.get_category("reference_architecture")["recommendedOutline"], include_starter_code=True)
+        bp = cb1.normalize_blueprint(
+            bp, "Zero-trust multi-tenant gateway architecture", "Multi-Tenant Agentic AI", "Architects",
+            slide_plan=plan, category_id="reference_architecture",
+            outline=cb1.get_category("reference_architecture")["recommendedOutline"],
+        )
+        man = cb1.compile_and_save_blog(
+            blueprint=bp, slug=slug, model_used="gemini-4-neon", auth_mode="vertex_ai_iam",
+            actor_email="author@example.com", enable_tts=False, enable_judge=False,
+            category_id="reference_architecture", slide_plan=plan, include_starter_code=True,
+        )
+        self.assertEqual(man["revision"], 1)
+        blog_dir = Path(self._tmpdir.name) / slug
+        self.assertTrue((blog_dir / "revisions" / "v1.json").is_file())
+
+        # Seed fake cached audio tracks + stale host MP4 to verify Delta-TTS hash reuse & MP4 invalidation
+        fake_mp3 = b"ID3\x03\x00\x00\x00\x00\x00\x00" + (b"\xff\xfb\x90\x00" * 40)
+        for i in range(1, 13):
+            (blog_dir / "audio" / f"slide_{i:02d}.mp3").write_bytes(fake_mp3)
+        (blog_dir / "video" / f"{slug}-host.mp4").write_bytes(b"fake-stale-mp4")
+        m_disk = json.loads((blog_dir / "manifest.json").read_text(encoding="utf-8"))
+        m_disk["assets"]["hostMp4"] = f"video/{slug}-host.mp4"
+        m_disk["audio"]["hostMp4Available"] = True
+        m_disk["audio"]["enabled"] = True
+        m_disk["audio"]["tracks"] = [
+            {
+                "slideNumber": i,
+                "title": m_disk["blueprint"]["slides"][i - 1]["title"],
+                "relPath": f"audio/slide_{i:02d}.mp3",
+                "bytes": len(fake_mp3),
+                "durationSec": 6.0,
+                "voice": m_disk["audio"]["voice"],
+                "speakerNotesSha256": hashlib.sha256(
+                    cb1.strip_inline_md(m_disk["blueprint"]["slides"][i - 1]["speakerNotes"]).encode("utf-8")
+                ).hexdigest(),
+                "provenance": "SYNTHETIC_CLOUD_TTS_CHIRP3_HD",
+            }
+            for i in range(1, 13)
+        ]
+        (blog_dir / "manifest.json").write_text(json.dumps(m_disk, indent=2), encoding="utf-8")
+
+        # 1. Stale expectedRevision rejected with HTTP 409 REVISION_CONFLICT
+        st_409, _, b_409 = self._req(
+            f"/api/create-blog/blogs/{slug}/edit",
+            method="POST",
+            body={"target": "blog", "expectedRevision": 99, "title": "Stale Update"},
+            headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
+        )
+        self.assertEqual(st_409, 409)
+        self.assertEqual(json.loads(b_409.decode("utf-8"))["code"], "REVISION_CONFLICT")
+
+        # 2. Manual structured blog edit -> v2, recompiles blog.md + docx + slides
+        st_ed, _, b_ed = self._req(
+            f"/api/create-blog/blogs/{slug}/edit",
+            method="POST",
+            body={
+                "target": "blog",
+                "expectedRevision": 1,
+                "title": "Hardened Zero-Trust MCP Gateway v2",
+                "summary": "Updated executive thesis focusing on strict CMEK isolation and Cloud Armor rate limits.",
+            },
+            headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
+        )
+        self.assertEqual(st_ed, 200)
+        j_ed = json.loads(b_ed.decode("utf-8"))
+        self.assertEqual(j_ed["revision"], 2)
+        self.assertTrue(j_ed["deterministic"]["allPassed"], j_ed["deterministic"])
+        self.assertIn("Hardened Zero-Trust MCP Gateway v2", (blog_dir / "blog.md").read_text(encoding="utf-8"))
+        # Stale host MP4 invalidated cleanly on slide/title edit!
+        self.assertFalse((blog_dir / "video" / f"{slug}-host.mp4").exists())
+        self.assertIsNone(j_ed["manifest"]["assets"]["hostMp4"])
+
+        # 3. Manual slide edit of ONLY Slide 2 speakerNotes -> Delta-TTS reuses 11/12 tracks!
+        tts_calls = []
+        mod_ref = srv.create_blog1_mod
+        orig_tts = mod_ref.synthesize_tts_mp3
+        orig_tok = mod_ref._get_gcp_bearer_token
+        try:
+            mod_ref._get_gcp_bearer_token = lambda force_refresh=False: "fake-tok"
+            mod_ref.synthesize_tts_mp3 = lambda txt, voice_name="": (tts_calls.append(txt) or (fake_mp3, None))
+            st_sl, _, b_sl = self._req(
+                f"/api/create-blog/blogs/{slug}/edit",
+                method="POST",
+                body={
+                    "target": "slides",
+                    "expectedRevision": 2,
+                    "slides": [{"number": 2, "title": "Updated Slide 2 Goals", "speakerNotes": "Brand new spoken narration specifically for slide two after manual edit."}],
+                },
+                headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
+            )
+            self.assertEqual(st_sl, 200)
+            self.assertEqual(len(tts_calls), 1, f"Delta-TTS must synthesize ONLY 1 changed slide, got {len(tts_calls)}")
+        finally:
+            mod_ref.synthesize_tts_mp3 = orig_tts
+            mod_ref._get_gcp_bearer_token = orig_tok
+
+        # 4. 2-way Draw.io save: rejects XXE, persists valid edit -> marks customEdited=True, updates SVG + PPTX + #R URL
+        st_xxe, _, _ = self._req(
+            f"/api/create-blog/blogs/{slug}/diagrams/architecture/save",
+            method="POST",
+            body={"xml": '<!DOCTYPE foo><mxfile><diagram><mxGraphModel/></diagram></mxfile>', "expectedRevision": 3},
+            headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
+        )
+        self.assertEqual(st_xxe, 400)
+
+        custom_xml = (
+            '<mxfile host="app.diagrams.net"><diagram id="custom-arch" name="Custom Edited Arch">'
+            '<mxGraphModel dx="1600" dy="900"><root><mxCell id="0"/><mxCell id="1" parent="0"/>'
+            '<mxCell id="n1" value="Custom Cloud Armor WAF Node" style="rounded=1;fillColor=#E8F0FE;strokeColor=#1A73E8;" vertex="1" parent="1">'
+            '<mxGeometry x="80" y="120" width="260" height="80" as="geometry"/></mxCell>'
+            '<mxCell id="n2" value="Custom Private Cloud Run Gateway" style="rounded=1;fillColor=#E6F4EA;strokeColor=#137333;" vertex="1" parent="1">'
+            '<mxGeometry x="460" y="120" width="280" height="80" as="geometry"/></mxCell>'
+            '<mxCell id="e1" value="mTLS" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#595959;" edge="1" parent="1" source="n1" target="n2">'
+            '<mxGeometry relative="1" as="geometry"/></mxCell>'
+            '</root></mxGraphModel></diagram></mxfile>'
+        )
+        st_ds, _, b_ds = self._req(
+            f"/api/create-blog/blogs/{slug}/diagrams/architecture/save",
+            method="POST",
+            body={"xml": custom_xml, "expectedRevision": 3},
+            headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
+        )
+        self.assertEqual(st_ds, 200, b_ds.decode("utf-8"))
+        j_ds = json.loads(b_ds.decode("utf-8"))
+        self.assertTrue(j_ds["customEdited"])
+        self.assertEqual(j_ds["revision"], 4)
+        self.assertTrue(j_ds["deterministic"]["allPassed"], j_ds["deterministic"])
+        self.assertIn("Custom Cloud Armor WAF Node", (blog_dir / "diagrams" / f"{slug}-architecture.svg").read_text(encoding="utf-8"))
+        with zipfile.ZipFile(blog_dir / "slides" / f"{slug}-deck.pptx", "r") as zf:
+            self.assertIn("Custom Cloud Armor WAF Node", zf.read("ppt/slides/slide3.xml").decode("utf-8"))
+
+        # 5. 1-Click Undo / Restore to v1 restores original title and clears customEdited lock cleanly
+        st_rst, _, b_rst = self._req(
+            f"/api/create-blog/blogs/{slug}/restore",
+            method="POST",
+            body={"targetRevision": 1, "expectedRevision": 4},
+            headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
+        )
+        self.assertEqual(st_rst, 200, b_rst.decode("utf-8"))
+        j_rst = json.loads(b_rst.decode("utf-8"))
+        self.assertEqual(j_rst["revision"], 5)
+        self.assertNotEqual(j_rst["manifest"]["title"], "Hardened Zero-Trust MCP Gateway v2")
+        self.assertFalse(j_rst["manifest"]["diagrams"]["architecture"]["customEdited"])
+
+        # 6. Conflict-Safe Google Workspace Drive Sync (409 WORKSPACE_CONFLICT on modifiedTime drift + resolve with overwrite/copy)
+        m_ws = json.loads((blog_dir / "manifest.json").read_text(encoding="utf-8"))
+        m_ws["workspaceSync"] = {
+            "status": "SYNCED",
+            "slidesId": "drv-slides-1",
+            "docId": "drv-doc-1",
+            "slidesDriveModifiedTime": "2026-11-26T01:00:00Z",
+            "docDriveModifiedTime": "2026-11-26T01:00:00Z",
+        }
+        (blog_dir / "manifest.json").write_text(json.dumps(m_ws, indent=2), encoding="utf-8")
+
+        orig_meta = mod_ref._drive_get_file_metadata
+        orig_up = mod_ref._drive_multipart_upload
+        try:
+            mod_ref._drive_get_file_metadata = lambda tok, fid: (200, {"id": fid, "modifiedTime": "2026-11-26T05:30:00Z", "headRevisionId": "rev-ext-99", "trashed": False})
+            mod_ref._drive_multipart_upload = lambda tok, fn, sm, dm, rb, existing_id=None: {
+                "id": existing_id or "new-fork-id", "resourceKey": "rk-1", "modifiedTime": "2026-11-26T06:00:00Z", "headRevisionId": "rev-100"
+            }
+            st_conf, _, b_conf = self._req(
+                f"/api/create-blog/blogs/{slug}/sync-workspace",
+                method="POST",
+                body={"conflictResolution": "check"},
+                headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN, "X-Google-Workspace-Token": "test-workspace-token"},
+            )
+            self.assertEqual(st_conf, 409)
+            j_conf = json.loads(b_conf.decode("utf-8"))
+            self.assertEqual(j_conf["code"], "WORKSPACE_CONFLICT")
+            self.assertTrue(j_conf["canOverwrite"])
+            self.assertTrue(j_conf["canForkNewCopy"])
+
+            # Overwrite explicitly resolves 409 and updates modifiedTime
+            st_ov, _, b_ov = self._req(
+                f"/api/create-blog/blogs/{slug}/sync-workspace",
+                method="POST",
+                body={"conflictResolution": "overwrite"},
+                headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN, "X-Google-Workspace-Token": "test-workspace-token"},
+            )
+            self.assertEqual(st_ov, 200)
+            self.assertEqual(json.loads(b_ov.decode("utf-8"))["workspaceSync"]["slidesId"], "drv-slides-1")
+
+            # Copy creates new Drive copy cleanly
+            st_cp, _, b_cp = self._req(
+                f"/api/create-blog/blogs/{slug}/sync-workspace",
+                method="POST",
+                body={"conflictResolution": "copy"},
+                headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN, "X-Google-Workspace-Token": "test-workspace-token"},
+            )
+            self.assertEqual(st_cp, 200)
+            self.assertEqual(json.loads(b_cp.decode("utf-8"))["workspaceSync"]["slidesId"], "new-fork-id")
+        finally:
+            mod_ref._drive_get_file_metadata = orig_meta
+            mod_ref._drive_multipart_upload = orig_up
 
 
 if __name__ == "__main__":

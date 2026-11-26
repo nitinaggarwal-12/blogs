@@ -94,6 +94,13 @@
     workspaceSyncBusy: false,
     gisLoaded: false,
     iterateDrawerOpen: false,
+    iterateBusy: false,
+    iterateScope: 'all',
+    iteratePollTimer: null,
+    iterateDiffSummary: [],
+    editingTab: null,
+    dirtyUnsaved: false,
+    driftHint: '',
   };
 
   function makeSvgBadgeIcon(kind) {
@@ -252,6 +259,23 @@
       }
     }
     return node;
+  }
+
+  function setChildren(node, ...children) {
+    if (!node) return;
+    const flat = [];
+    const push = (item) => {
+      if (item === null || item === undefined || item === false) return;
+      if (Array.isArray(item)) {
+        item.forEach(push);
+      } else if (typeof item === 'string' || typeof item === 'number') {
+        flat.push(document.createTextNode(String(item)));
+      } else {
+        flat.push(item);
+      }
+    };
+    children.forEach(push);
+    node.replaceChildren(...flat);
   }
 
   function formatBytes(n) {
@@ -838,8 +862,10 @@
       const data = await apiGet('/api/create-blog/blogs/' + encodeURIComponent(slug));
       state.activeSlug = slug;
       state.activeBlog = data;
-      state.activeSlide = 1;
-      state.playerSlide = 1;
+      state.activeSlide = Math.min(state.activeSlide || 1, getSlideCount(data));
+      state.playerSlide = Math.min(state.playerSlide || 1, getSlideCount(data));
+      state.editingTab = null;
+      state.dirtyUnsaved = false;
       state.slideCacheBust = Date.now();
       const files = (data.starterMeta && data.starterMeta.files) || {};
       const keys = Object.keys(files);
@@ -904,14 +930,14 @@
           target: '_blank',
           rel: 'noopener noreferrer',
           title: 'Open native editable ' + slideCount + '-slide presentation directly in Google Slides',
-        }, makeSvgBadgeIcon('slides'), 'Google Slides (' + slideCount + ')')
+        }, makeSvgBadgeIcon('slides'), 'Open with Google Slides (' + slideCount + ')')
       : el('button', {
           type: 'button',
           className: 'btn btn-gslides btn-sm',
           id: 'btn-open-gslides',
           title: 'Sync & open native editable ' + slideCount + '-slide presentation in Google Slides',
           onClick: () => openInGoogleWorkspace(slug, 'slides'),
-        }, makeSvgBadgeIcon('slides'), 'Google Slides (' + slideCount + ')');
+        }, makeSvgBadgeIcon('slides'), 'Open with Google Slides (' + slideCount + ')');
 
     const openDocsBtn = isSynced
       ? el('a', {
@@ -921,14 +947,14 @@
           target: '_blank',
           rel: 'noopener noreferrer',
           title: 'Open native editable architecture brief directly in Google Docs',
-        }, makeSvgBadgeIcon('docs'), 'Google Docs')
+        }, makeSvgBadgeIcon('docs'), 'Open with Google Docs')
       : el('button', {
           type: 'button',
           className: 'btn btn-gdocs btn-sm',
           id: 'btn-open-gdocs',
           title: 'Sync & open native editable architecture brief in Google Docs',
           onClick: () => openInGoogleWorkspace(slug, 'docs'),
-        }, makeSvgBadgeIcon('docs'), 'Google Docs');
+        }, makeSvgBadgeIcon('docs'), 'Open with Google Docs');
 
     const iterateBtn = el('button', {
       type: 'button',
@@ -956,6 +982,22 @@
       el('a', { className: 'action-menu-item', href: assetUrl(slug, a.pptx, true) }, 'Download .pptx Deck'),
       el('a', { className: 'action-menu-item', href: assetUrl(slug, a.docx, true) }, 'Download .docx Whitepaper'),
       el('div', { className: 'action-menu-sep' }),
+      ...((blog.revisions || []).length > 1
+        ? [
+            el('div', { style: { fontSize: '10.5px', fontWeight: '800', color: '#64748b', padding: '4px 10px' } }, 'VERSION HISTORY (1-CLICK UNDO)'),
+            ...(blog.revisions || []).slice().reverse().slice(0, 6).map((rv) => {
+              const isCur = Number(rv.revision) === Number(blog.revision || 1);
+              return el('button', {
+                type: 'button',
+                className: 'action-menu-item',
+                disabled: isCur,
+                title: rv.summary || '',
+                onClick: () => restoreBlogRevision(slug, rv.revision),
+              }, 'v' + rv.revision + (isCur ? ' (Current)' : ' — Restore') + ' · ' + String(rv.summary || '').slice(0, 26));
+            }),
+            el('div', { className: 'action-menu-sep' }),
+          ]
+        : []),
       el('button', {
         type: 'button',
         className: 'action-menu-item',
@@ -971,7 +1013,29 @@
     renderIterateDrawer(blog);
 
     const syncBanner = document.getElementById('workspace-sync-banner');
-    if (isStale) {
+    if (state.driftHint) {
+      syncBanner.className = 'banner banner-info';
+      syncBanner.replaceChildren(
+        el('strong', null, 'Sync Hint: '),
+        state.driftHint + ' ',
+        el('button', {
+          type: 'button',
+          className: 'btn btn-sm btn-primary',
+          style: { marginLeft: '6px' },
+          onClick: () => {
+            state.iterateDrawerOpen = true;
+            state.iterateScope = 'all';
+            renderIterateDrawer(blog, 'Propagate my recent manual edits cleanly across Slides, Diagrams, Speaker Notes, and Docs.');
+          },
+        }, 'Propagate with AI'),
+        el('button', {
+          type: 'button',
+          className: 'btn btn-sm',
+          style: { marginLeft: '6px' },
+          onClick: () => { state.driftHint = ''; renderHero(blog); },
+        }, 'Dismiss')
+      );
+    } else if (isStale) {
       syncBanner.className = 'banner banner-warn';
       syncBanner.replaceChildren(
         el('strong', null, 'Workspace Deck & Doc Out of Sync: '),
@@ -983,21 +1047,179 @@
     }
   }
 
-  function renderIterateDrawer(blog) {
+  async function restoreBlogRevision(slug, targetRev) {
+    const banner = document.getElementById('workspace-sync-banner');
+    try {
+      const res = await apiPost('/api/create-blog/blogs/' + encodeURIComponent(slug) + '/restore', {
+        targetRevision: targetRev,
+        expectedRevision: state.activeBlog ? state.activeBlog.revision : undefined,
+      });
+      if (res && res.ok) {
+        state.driftHint = '';
+        state.iterateDiffSummary = ['Restored snapshot v' + targetRev + ' as new revision v' + res.revision + '.'];
+        await selectBlog(slug);
+        await refreshLibrary(false);
+      }
+    } catch (err) {
+      if (banner) {
+        banner.className = 'banner banner-err';
+        banner.textContent = 'Restore failed: ' + err.message;
+      }
+    }
+  }
+
+  function pollIterationJob(slug, jobId, statusEl, applyBtn) {
+    if (state.iteratePollTimer) clearInterval(state.iteratePollTimer);
+    state.iteratePollTimer = setInterval(async () => {
+      try {
+        const res = await apiGet('/api/create-blog/jobs/' + encodeURIComponent(jobId));
+        const job = res.job || res;
+        if (statusEl) statusEl.textContent = (job.progress || 0) + '% · ' + (job.message || job.stage || 'Working...');
+        if (job.status === 'COMPLETED') {
+          clearInterval(state.iteratePollTimer);
+          state.iteratePollTimer = null;
+          state.iterateBusy = false;
+          state.driftHint = '';
+          state.iterateDiffSummary = Array.isArray(job.changes) ? job.changes : [job.message || 'Iteration applied.'];
+          if (applyBtn) { applyBtn.disabled = false; applyBtn.textContent = 'Apply AI Iteration'; }
+          await selectBlog(slug);
+          await refreshLibrary(false);
+        } else if (job.status === 'FAILED') {
+          clearInterval(state.iteratePollTimer);
+          state.iteratePollTimer = null;
+          state.iterateBusy = false;
+          if (applyBtn) { applyBtn.disabled = false; applyBtn.textContent = 'Apply AI Iteration'; }
+          if (statusEl) statusEl.textContent = 'Failed: ' + (job.error || job.message || 'Iteration error');
+        }
+      } catch (err) {
+        clearInterval(state.iteratePollTimer);
+        state.iteratePollTimer = null;
+        state.iterateBusy = false;
+        if (applyBtn) { applyBtn.disabled = false; applyBtn.textContent = 'Apply AI Iteration'; }
+        if (statusEl) statusEl.textContent = 'Poll error: ' + err.message;
+      }
+    }, 1200);
+  }
+
+  function renderIterateDrawer(blog, prefillText) {
     const drawer = document.getElementById('iterate-drawer');
+    const toggleBtn = document.getElementById('btn-toggle-iterate');
+    if (toggleBtn) toggleBtn.textContent = state.iterateDrawerOpen ? 'Close Iterate' : 'Iterate / Refine';
     if (!drawer) return;
     if (!state.iterateDrawerOpen) {
       drawer.classList.add('hidden');
-      drawer.replaceChildren();
+      setChildren(drawer);
       return;
     }
     drawer.classList.remove('hidden');
-    drawer.replaceChildren(
-      el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' } },
-        el('strong', { style: { fontSize: '13px', color: '#5b21b6' } }, 'Iterate & Sync (Revision v' + (blog.revision || 1) + ')'),
-        el('button', { type: 'button', className: 'btn btn-sm', onClick: () => { state.iterateDrawerOpen = false; renderIterateDrawer(blog); } }, 'Close')
+    const slug = blog.slug;
+    const lockedDiags = Object.keys(blog.diagrams || {}).filter((k) => blog.diagrams[k] && blog.diagrams[k].customEdited);
+
+    const scopeSel = el('select', {
+      id: 'iter-scope',
+      style: { padding: '6px 9px', borderRadius: '7px', border: '1px solid var(--border-strong)', fontSize: '12px', fontWeight: '700' },
+      onChange: (ev) => { state.iterateScope = ev.target.value; },
+    }, [
+      el('option', { value: 'all' }, 'Whole Blog (Prose + Diagrams + Slides + Docs)'),
+      el('option', { value: 'prose' }, 'Blog Prose, Tables & Claims Only'),
+      el('option', { value: 'diagrams' }, 'Architecture Diagrams Only'),
+      el('option', { value: 'slides' }, 'Slides & Speaker Notes (Delta-TTS)'),
+      el('option', { value: 'code' }, 'Starter Code & Terraform Only'),
+    ]);
+    scopeSel.value = state.iterateScope || 'all';
+
+    const instrArea = el('textarea', {
+      id: 'iter-instruction',
+      maxlength: '2500',
+      placeholder: 'Describe your refinement (e.g., "Add Cloud Armor rate-limiting thresholds to Security section, Slide 6, and Trust Perimeter diagram")...',
+      style: { width: '100%', minHeight: '72px', padding: '8px 10px', borderRadius: '8px', border: '1px solid var(--purple-border)', fontFamily: 'inherit', fontSize: '12.5px', margin: '8px 0' },
+    });
+    if (prefillText) instrArea.value = prefillText;
+
+    let unlockCustom = false;
+    const unlockRow = lockedDiags.length
+      ? (() => {
+          const c = el('input', { type: 'checkbox', onChange: (ev) => { unlockCustom = Boolean(ev.target.checked); } });
+          return el('label', { className: 'check-row', style: { fontSize: '11.5px', color: '#5b21b6' } },
+            c,
+            el('span', null, 'Unlock manually edited diagram(s) (' + lockedDiags.join(', ') + ') for AI regeneration')
+          );
+        })()
+      : null;
+
+    const statusLine = el('div', { className: 'hint', id: 'iter-status-line', style: { marginTop: '6px', color: '#4c1d95', fontWeight: '600' } }, '');
+    const applyBtn = el('button', {
+      type: 'button',
+      className: 'btn btn-primary btn-sm',
+      id: 'btn-run-iterate',
+      disabled: state.iterateBusy,
+      onClick: async () => {
+        const txt = instrArea.value.trim();
+        if (txt.length < 6) {
+          statusLine.textContent = 'Enter at least 6 characters describing what to refine.';
+          return;
+        }
+        state.iterateBusy = true;
+        applyBtn.disabled = true;
+        applyBtn.textContent = 'Refining with Gemini...';
+        statusLine.textContent = 'Submitting surgical iteration job...';
+        const apiKeyVal = (document.getElementById('inp-apikey') && document.getElementById('inp-apikey').value || '').trim();
+        const extraHdrs = apiKeyVal ? { 'X-Gemini-Api-Key': apiKeyVal } : {};
+        try {
+          const res = await apiPost('/api/create-blog/blogs/' + encodeURIComponent(slug) + '/iterate', {
+            instruction: txt,
+            scope: scopeSel.value,
+            expectedRevision: blog.revision || 1,
+            unlockCustomDiagrams: unlockCustom,
+            model: (document.getElementById('inp-model') ? document.getElementById('inp-model').value : 'gemini-4-neon'),
+          }, extraHdrs);
+          const job = res.job || res;
+          statusLine.textContent = 'Running job ' + job.jobId + '...';
+          pollIterationJob(slug, job.jobId, statusLine, applyBtn);
+        } catch (err) {
+          state.iterateBusy = false;
+          applyBtn.disabled = false;
+          applyBtn.textContent = 'Apply AI Iteration';
+          statusLine.textContent = 'Error: ' + err.message;
+        }
+      },
+    }, state.iterateBusy ? 'Refining...' : 'Apply AI Iteration');
+
+    const diffBox = (state.iterateDiffSummary && state.iterateDiffSummary.length)
+      ? el('div', { className: 'banner banner-ok', style: { marginTop: '8px', marginBottom: '0', fontSize: '11.5px' } },
+          el('strong', null, 'Last Change (v' + (blog.revision || 1) + '): '),
+          state.iterateDiffSummary.join(' · ')
+        )
+      : null;
+
+    const prevRev = (blog.revisions || []).length > 1
+      ? (blog.revisions || [])[(blog.revisions || []).length - 2]
+      : null;
+    const undoBtn = prevRev
+      ? el('button', {
+          type: 'button',
+          className: 'btn btn-sm',
+          id: 'btn-undo-revision',
+          onClick: () => restoreBlogRevision(slug, prevRev.revision),
+        }, 'Undo to v' + prevRev.revision)
+      : null;
+
+    setChildren(
+      drawer,
+      el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', flexWrap: 'wrap' } },
+        el('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' } },
+          el('strong', { style: { fontSize: '13px', color: '#5b21b6' } }, 'Iterate with Gemini (v' + (blog.revision || 1) + ')'),
+          scopeSel
+        ),
+        el('div', { style: { display: 'flex', gap: '6px' } },
+          undoBtn,
+          el('button', { type: 'button', className: 'btn btn-sm', onClick: () => { state.iterateDrawerOpen = false; renderIterateDrawer(blog); } }, 'Close')
+        )
       ),
-      el('div', { className: 'hint' }, 'Post-generation AI iteration, inline tab editors, 2-way Draw.io sync, and version undo are wired cleanly in Milestone B.')
+      instrArea,
+      unlockRow,
+      el('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' } }, applyBtn, statusLine),
+      diffBox
     );
   }
 
@@ -1027,9 +1249,10 @@
     }
   }
 
-  async function triggerWorkspaceSync(slug, openMode) {
+  async function triggerWorkspaceSync(slug, openMode, conflictResolution) {
     if (state.workspaceSyncBusy) return null;
     state.workspaceSyncBusy = true;
+    const resMode = conflictResolution || 'check';
     const syncBtn = document.getElementById('btn-sync-workspace');
     const slidesBtn = document.getElementById('btn-open-gslides');
     const docsBtn = document.getElementById('btn-open-gdocs');
@@ -1044,9 +1267,10 @@
       const extraHdrs = state.workspaceToken && Date.now() < state.workspaceTokenExp - 60000
         ? { 'X-Google-Workspace-Token': state.workspaceToken }
         : {};
+      const bodyPayload = { conflictResolution: resMode, forceNew: resMode === 'copy' };
       let res;
       try {
-        res = await apiPost('/api/create-blog/blogs/' + encodeURIComponent(slug) + '/sync-workspace', {}, extraHdrs);
+        res = await apiPost('/api/create-blog/blogs/' + encodeURIComponent(slug) + '/sync-workspace', bodyPayload, extraHdrs);
       } catch (firstErr) {
         const p = firstErr.payload || {};
         if (firstErr.status === 412 && p.code === 'WORKSPACE_OAUTH_REQUIRED') {
@@ -1062,9 +1286,30 @@
           setBusy(true, 'Converting in Drive...');
           res = await apiPost(
             '/api/create-blog/blogs/' + encodeURIComponent(slug) + '/sync-workspace',
-            {},
+            bodyPayload,
             { 'X-Google-Workspace-Token': accessTok }
           );
+        } else if (firstErr.status === 409 && p.code === 'WORKSPACE_CONFLICT') {
+          banner.className = 'banner banner-warn';
+          const actBtns = [];
+          if (p.canOverwrite) {
+            actBtns.push(el('button', {
+              type: 'button',
+              className: 'btn btn-sm btn-danger',
+              onClick: () => triggerWorkspaceSync(slug, openMode, 'overwrite'),
+            }, 'Overwrite Existing Drive Files'));
+          }
+          actBtns.push(el('button', {
+            type: 'button',
+            className: 'btn btn-sm btn-primary',
+            onClick: () => triggerWorkspaceSync(slug, openMode, 'copy'),
+          }, 'Save as New Drive Copy'));
+          banner.replaceChildren(
+            el('strong', null, 'Google Drive Conflict Detected: '),
+            String(p.error || 'External modifications detected in Google Drive.'),
+            el('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '8px' } }, ...actBtns)
+          );
+          return null;
         } else {
           if (firstErr.status === 401 && state.workspaceToken) {
             state.workspaceToken = '';
@@ -1102,14 +1347,37 @@
       const syncedNow = curWs.status === 'SYNCED' && isSafeHref(curWs.slidesUrl) && isSafeHref(curWs.docUrl);
       if (syncBtn) {
         syncBtn.disabled = false;
-        syncBtn.textContent = syncedNow ? 'Re-sync Slides & Docs' : 'Sync to Google Workspace';
+        syncBtn.textContent = syncedNow ? 'Re-sync Google Slides & Docs' : 'Sync to Google Workspace';
       }
       if (slidesBtn && slidesBtn.tagName === 'BUTTON') slidesBtn.disabled = false;
       if (docsBtn && docsBtn.tagName === 'BUTTON') docsBtn.disabled = false;
     }
   }
 
-  function switchTab(tabKey) {
+  function switchTab(tabKey, forceDiscard) {
+    if (state.dirtyUnsaved && !forceDiscard && tabKey !== state.activeTab) {
+      const banner = document.getElementById('workspace-sync-banner');
+      if (banner) {
+        banner.className = 'banner banner-warn';
+        banner.replaceChildren(
+          el('strong', null, 'Unsaved Changes: '),
+          'Save or cancel your inline edits before switching tabs, or ',
+          el('button', {
+            type: 'button',
+            className: 'btn btn-sm btn-danger',
+            style: { marginLeft: '6px' },
+            onClick: () => {
+              state.dirtyUnsaved = false;
+              state.editingTab = null;
+              if (state.activeBlog) renderAllTabs(state.activeBlog);
+              switchTab(tabKey, true);
+              banner.className = 'banner hidden';
+            },
+          }, 'Discard & Switch')
+        );
+      }
+      return;
+    }
     state.activeTab = tabKey;
     document.querySelectorAll('#asset-tablist .wtab').forEach((btn) => {
       const on = btn.dataset.tab === tabKey;
@@ -1171,8 +1439,7 @@
   function renderReaderTab(blog) {
     const panel = document.getElementById('panel-reader');
     const slug = blog.slug;
-    const arch = blog.diagrams && blog.diagrams.architecture;
-    const seq = blog.diagrams && blog.diagrams.sequence;
+    const isEditing = state.editingTab === 'reader';
     const copyBtn = el('button', {
       type: 'button', className: 'btn btn-sm',
       onClick: async () => {
@@ -1183,19 +1450,94 @@
         } catch (_) {}
       },
     }, 'Copy Raw Markdown');
+    const editBtn = el('button', {
+      type: 'button',
+      className: 'btn btn-sm' + (isEditing ? ' btn-primary' : ''),
+      id: 'btn-edit-blog',
+      onClick: () => {
+        state.editingTab = isEditing ? null : 'reader';
+        state.dirtyUnsaved = false;
+        renderReaderTab(blog);
+      },
+    }, isEditing ? 'Cancel Edit' : 'Edit Blog');
+
     const topBar = el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '14px' } },
-      el('span', { className: 'pill pill-blue' }, 'Google Cloud Architecture Center Format'),
-      (() => {
-        const ws = blog.workspaceSync || {};
-        const docBtn = (ws.status === 'SYNCED' && isSafeHref(ws.docUrl))
-          ? el('a', { className: 'btn btn-gdocs btn-sm', href: ws.docUrl, target: '_blank', rel: 'noopener noreferrer' }, makeSvgBadgeIcon('docs'), 'Open with Google Docs')
-          : el('button', { type: 'button', className: 'btn btn-gdocs btn-sm', onClick: () => openInGoogleWorkspace(slug, 'docs') }, makeSvgBadgeIcon('docs'), 'Open with Google Docs');
-        return el('div', { style: { display: 'flex', gap: '7px', flexWrap: 'wrap' } },
-          docBtn,
-          copyBtn
-        );
-      })()
+      el('span', { className: 'pill pill-blue' }, isEditing ? 'Structured Blog Editor (Live Sync to Docs & Slides)' : 'Google Cloud Architecture Center Format'),
+      el('div', { style: { display: 'flex', gap: '7px', flexWrap: 'wrap' } },
+        editBtn,
+        copyBtn
+      )
     );
+
+    if (isEditing) {
+      const bp = blog.blueprint || {};
+      const statusMsg = el('div', { className: 'banner hidden' });
+      const titleInp = el('input', { type: 'text', id: 'edit-blog-title', value: bp.title || '', maxlength: '140', onInput: () => { state.dirtyUnsaved = true; } });
+      const subInp = el('input', { type: 'text', id: 'edit-blog-sub', value: bp.subtitle || '', maxlength: '260', onInput: () => { state.dirtyUnsaved = true; } });
+      const sumInp = el('textarea', { id: 'edit-blog-summary', style: { minHeight: '78px' }, onInput: () => { state.dirtyUnsaved = true; } });
+      sumInp.value = bp.summary || '';
+      const secInputs = [];
+      const secCards = (bp.sections || []).map((sec, sIdx) => {
+        const hInp = el('input', { type: 'text', value: sec.heading || '', maxlength: '140', onInput: () => { state.dirtyUnsaved = true; } });
+        const pInp = el('textarea', { style: { minHeight: '110px' }, onInput: () => { state.dirtyUnsaved = true; } });
+        pInp.value = (sec.paragraphs || []).join('\n\n');
+        const bInp = el('textarea', { style: { minHeight: '64px' }, onInput: () => { state.dirtyUnsaved = true; } });
+        bInp.value = (sec.bullets || []).join('\n');
+        secInputs.push({ hInp, pInp, bInp });
+        return el('div', { className: 'edit-card' },
+          el('div', { className: 'field' }, el('label', null, 'Section ' + (sIdx + 1) + ' Heading'), hInp),
+          el('div', { className: 'field' }, el('label', null, 'Paragraphs (separate with blank line)'), pInp),
+          el('div', { className: 'field', style: { marginBottom: '0' } }, el('label', null, 'Key Bullets (one per line)'), bInp)
+        );
+      });
+      const saveBtn = el('button', {
+        type: 'button',
+        className: 'btn btn-primary btn-sm',
+        id: 'btn-save-blog-edit',
+        onClick: async () => {
+          saveBtn.disabled = true;
+          saveBtn.textContent = 'Saving & Recompiling...';
+          try {
+            const res = await apiPost('/api/create-blog/blogs/' + encodeURIComponent(slug) + '/edit', {
+              target: 'blog',
+              expectedRevision: blog.revision || 1,
+              title: titleInp.value.trim(),
+              subtitle: subInp.value.trim(),
+              summary: sumInp.value.trim(),
+              sections: secInputs.map((si) => ({
+                heading: si.hInp.value.trim(),
+                paragraphs: si.pInp.value,
+                bullets: si.bInp.value,
+              })),
+            });
+            state.editingTab = null;
+            state.dirtyUnsaved = false;
+            state.driftHint = (res.driftHints && res.driftHints[0]) || '';
+            await selectBlog(slug);
+            await refreshLibrary(false);
+          } catch (err) {
+            setBanner(statusMsg, 'banner-err', 'Save failed: ' + err.message);
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save & Recompile All';
+          }
+        },
+      }, 'Save & Recompile All');
+      panel.replaceChildren(
+        topBar,
+        statusMsg,
+        el('div', { className: 'edit-card' },
+          el('div', { className: 'field' }, el('label', { for: 'edit-blog-title' }, 'Blog Title'), titleInp),
+          el('div', { className: 'field' }, el('label', { for: 'edit-blog-sub' }, 'Subtitle'), subInp),
+          el('div', { className: 'field', style: { marginBottom: '0' } }, el('label', { for: 'edit-blog-summary' }, 'Executive Summary (BLUF)'), sumInp)
+        ),
+        ...secCards,
+        el('div', { style: { display: 'flex', gap: '8px', marginTop: '10px' } },
+          saveBtn,
+          el('button', { type: 'button', className: 'btn btn-sm', onClick: () => { state.editingTab = null; state.dirtyUnsaved = false; renderReaderTab(blog); } }, 'Cancel')
+        )
+      );
+      return;
+    }
     const diagEntries = getDiagramEntries(blog);
     const figBox = el('div', { className: 'reader-fig-grid' });
     diagEntries.forEach((ent) => {
@@ -1294,17 +1636,61 @@
       }
       const dlDrawio = diag.publicId ? ('/api/drawio/download/' + encodeURIComponent(diag.publicId) + '?fmt=drawio') : assetUrl(slug, diag.drawioPath, true);
       const dlSvg = diag.publicId ? ('/api/drawio/download/' + encodeURIComponent(diag.publicId) + '?fmt=svg') : assetUrl(slug, diag.svgPath, true);
+      const importInput = el('input', {
+        type: 'file',
+        accept: '.drawio,.xml,application/xml,text/xml',
+        className: 'hidden',
+        onChange: async (ev) => {
+          const f = ev.target.files && ev.target.files[0];
+          if (!f) return;
+          try {
+            const xmlText = await f.text();
+            await apiPost('/api/create-blog/blogs/' + encodeURIComponent(slug) + '/diagrams/' + encodeURIComponent(ent.key) + '/save', {
+              xml: xmlText,
+              expectedRevision: blog.revision || 1,
+            });
+            state.driftHint = 'Imported edited .drawio for "' + ent.key + '" — SVG, #R link, Slides, and Docs are synced.';
+            await selectBlog(slug);
+            await refreshLibrary(false);
+          } catch (err) {
+            setBanner(document.getElementById('workspace-sync-banner'), 'banner-err', 'Draw.io import failed: ' + err.message);
+          } finally {
+            ev.target.value = '';
+          }
+        },
+      });
       btns.push(
+        importInput,
+        el('button', { type: 'button', className: 'btn btn-sm', onClick: () => importInput.click() }, 'Import .drawio'),
         el('a', { className: 'btn btn-sm', href: dlDrawio }, 'Download .drawio'),
         el('a', { className: 'btn btn-sm', href: dlSvg }, 'Download .svg')
       );
+      if (diag.customEdited) {
+        btns.push(el('button', {
+          type: 'button',
+          className: 'btn btn-sm',
+          title: 'Allow future AI iterations to regenerate this diagram from blueprint JSON',
+          onClick: async () => {
+            await apiPost('/api/create-blog/blogs/' + encodeURIComponent(slug) + '/edit', {
+              target: 'diagram_lock',
+              kind: ent.key,
+              customEdited: false,
+              expectedRevision: blog.revision || 1,
+            });
+            await selectBlog(slug);
+          },
+        }, 'Unlock for AI'));
+      }
       if (diag.refImagePath) {
         btns.push(el('a', { className: 'btn btn-sm', href: assetUrl(slug, diag.refImagePath, true) }, 'Ref PNG'));
       }
       return el('div', { className: 'diagram-card' },
         el('div', { className: 'diagram-hdr' },
           el('div', null,
-            el('strong', { style: { fontSize: '13.5px' } }, ent.label),
+            el('div', { style: { display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' } },
+              el('strong', { style: { fontSize: '13.5px' } }, ent.label),
+              diag.customEdited ? makePill('Locked (Manual XML)', 'pill-amber', false) : null
+            ),
             el('div', { className: 'hint' }, parts.join('  ·  '))
           ),
           el('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px' } }, ...btns)
@@ -1322,29 +1708,34 @@
     const n = state.activeSlide;
     const cur = slides[n - 1] || {};
     const imgRel = 'slides/slide_' + String(n).padStart(2, '0') + '.svg';
+    const isEditing = state.editingTab === 'slides';
+
+    const editSlideBtn = el('button', {
+      type: 'button',
+      className: 'btn btn-sm' + (isEditing ? ' btn-primary' : ''),
+      id: 'btn-edit-slide',
+      onClick: () => {
+        state.editingTab = isEditing ? null : 'slides';
+        state.dirtyUnsaved = false;
+        renderSlidesTab(blog);
+      },
+    }, isEditing ? 'Cancel Edit' : 'Edit Slide');
 
     const navBar = el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' } },
       el('div', { style: { display: 'flex', alignItems: 'center', gap: '8px' } },
         el('button', {
           type: 'button', className: 'btn btn-sm', disabled: n <= 1,
-          onClick: () => { state.activeSlide = Math.max(1, n - 1); renderSlidesTab(blog); },
+          onClick: () => { state.activeSlide = Math.max(1, n - 1); state.editingTab = null; renderSlidesTab(blog); },
         }, '<- Prev'),
         el('strong', { style: { fontSize: '13.5px' } }, 'Slide ' + n + ' / ' + getSlideCount(blog) + ': ' + (cur.title || '')),
         el('button', {
           type: 'button', className: 'btn btn-sm', disabled: n >= getSlideCount(blog),
-          onClick: () => { state.activeSlide = Math.min(getSlideCount(blog), n + 1); renderSlidesTab(blog); },
+          onClick: () => { state.activeSlide = Math.min(getSlideCount(blog), n + 1); state.editingTab = null; renderSlidesTab(blog); },
         }, 'Next ->')
       ),
-      (() => {
-        const ws = blog.workspaceSync || {};
-        const isWs = ws.status === 'SYNCED' && isSafeHref(ws.slidesUrl);
-        return el('div', { style: { display: 'flex', gap: '6px', flexWrap: 'wrap' } },
-          isWs
-            ? el('a', { className: 'btn btn-gslides btn-sm', href: ws.slidesUrl, target: '_blank', rel: 'noopener noreferrer' }, makeSvgBadgeIcon('slides'), 'Open with Google Slides (' + getSlideCount(blog) + ' Slides)')
-            : el('button', { type: 'button', className: 'btn btn-gslides btn-sm', onClick: () => openInGoogleWorkspace(slug, 'slides') }, makeSvgBadgeIcon('slides'), 'Open with Google Slides (' + getSlideCount(blog) + ' Slides)'),
-          el('button', { type: 'button', className: 'btn btn-sm', onClick: () => triggerWorkspaceSync(slug) }, isWs ? 'Re-sync Slides & Docs' : 'Sync to Google Workspace')
-        );
-      })()
+      el('div', { style: { display: 'flex', gap: '6px', flexWrap: 'wrap' } },
+        editSlideBtn
+      )
     );
 
     const stage = el('div', { className: 'slide-stage-wrap' },
@@ -1358,8 +1749,66 @@
       strip.appendChild(el('button', {
         type: 'button',
         className: 'thumb-btn' + (i === n ? ' active' : ''),
-        onClick: () => { state.activeSlide = i; renderSlidesTab(blog); },
+        onClick: () => { state.activeSlide = i; state.editingTab = null; renderSlidesTab(blog); },
       }, el('img', { src: assetUrl(slug, tRel), alt: 'Slide ' + i }), el('span', null, 'S' + String(i).padStart(2, '0'))));
+    }
+
+    if (isEditing) {
+      const statusBox = el('div', { className: 'banner hidden' });
+      const kickerInp = el('input', { type: 'text', value: cur.kicker || '', maxlength: '44', onInput: () => { state.dirtyUnsaved = true; } });
+      const titleInp = el('input', { type: 'text', id: 'edit-slide-title', value: cur.title || '', maxlength: '88', onInput: () => { state.dirtyUnsaved = true; } });
+      const subInp = el('input', { type: 'text', value: cur.subtitle || '', maxlength: '160', onInput: () => { state.dirtyUnsaved = true; } });
+      const bulInp = el('textarea', { style: { minHeight: '80px' }, onInput: () => { state.dirtyUnsaved = true; } });
+      bulInp.value = (cur.bullets || []).join('\n');
+      const notesInp = el('textarea', { id: 'edit-slide-notes', style: { minHeight: '84px' }, onInput: () => { state.dirtyUnsaved = true; } });
+      notesInp.value = cur.speakerNotes || '';
+      const saveBtn = el('button', {
+        type: 'button',
+        className: 'btn btn-primary btn-sm',
+        id: 'btn-save-slide-edit',
+        onClick: async () => {
+          saveBtn.disabled = true;
+          saveBtn.textContent = 'Saving & Delta-Syncing Audio...';
+          try {
+            await apiPost('/api/create-blog/blogs/' + encodeURIComponent(slug) + '/edit', {
+              target: 'slides',
+              expectedRevision: blog.revision || 1,
+              slides: [{
+                number: n,
+                kicker: kickerInp.value.trim(),
+                title: titleInp.value.trim(),
+                subtitle: subInp.value.trim(),
+                bullets: bulInp.value,
+                speakerNotes: notesInp.value.trim(),
+              }],
+            });
+            state.editingTab = null;
+            state.dirtyUnsaved = false;
+            await selectBlog(slug);
+            await refreshLibrary(false);
+          } catch (err) {
+            setBanner(statusBox, 'banner-err', 'Save slide failed: ' + err.message);
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save Slide & Delta-Sync Audio';
+          }
+        },
+      }, 'Save Slide & Delta-Sync Audio');
+      const editorBox = el('div', { className: 'edit-card', style: { marginTop: '12px' } },
+        statusBox,
+        el('div', { className: 'two-col' },
+          el('div', { className: 'field' }, el('label', null, 'Kicker'), kickerInp),
+          el('div', { className: 'field' }, el('label', { for: 'edit-slide-title' }, 'Slide Title'), titleInp)
+        ),
+        el('div', { className: 'field' }, el('label', null, 'Subtitle'), subInp),
+        el('div', { className: 'field' }, el('label', null, 'Bullets (one per line)'), bulInp),
+        el('div', { className: 'field' }, el('label', { for: 'edit-slide-notes' }, 'Spoken Speaker Notes (Delta-TTS updates only this slide MP3)'), notesInp),
+        el('div', { style: { display: 'flex', gap: '8px' } },
+          saveBtn,
+          el('button', { type: 'button', className: 'btn btn-sm', onClick: () => { state.editingTab = null; state.dirtyUnsaved = false; renderSlidesTab(blog); } }, 'Cancel')
+        )
+      );
+      panel.replaceChildren(navBar, stage, strip, editorBox);
+      return;
     }
 
     const notes = el('div', { className: 'notes-box' },
@@ -1572,7 +2021,7 @@
       ? el('div', { className: 'banner banner-warn', style: { marginTop: '10px' } }, 'TTS Note: ' + audioMeta.errors.join(' | '))
       : null;
 
-    panel.replaceChildren(disclosure, stage, caption, controls, exportStatus, exportDl, chapRow, extraErr);
+    setChildren(panel, disclosure, stage, caption, controls, exportStatus, exportDl, chapRow, extraErr);
   }
 
   function renderProofsTab(blog) {
@@ -1777,9 +2226,22 @@
       },
     }, 'Copy File');
 
+    const isEditingCode = state.editingTab === 'code';
+    const editCodeBtn = el('button', {
+      type: 'button',
+      className: 'btn btn-sm' + (isEditingCode ? ' btn-primary' : ''),
+      id: 'btn-edit-code',
+      onClick: () => {
+        state.editingTab = isEditingCode ? null : 'code';
+        state.dirtyUnsaved = false;
+        renderCodeTab(blog);
+      },
+    }, isEditingCode ? 'Cancel Edit' : 'Edit File');
+
     const hdr = el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '10px' } },
       astPill,
-      el('div', { style: { display: 'flex', gap: '7px' } },
+      el('div', { style: { display: 'flex', gap: '7px', flexWrap: 'wrap' } },
+        editCodeBtn,
         copyBtn,
         el('a', { className: 'btn btn-primary btn-sm', href: assetUrl(blog.slug, blog.assets.starterZip, true) }, 'Download starter.zip')
       )
@@ -1789,9 +2251,46 @@
       keys.map((k) => el('button', {
         type: 'button',
         className: 'file-tab' + (k === curKey ? ' active' : ''),
-        onClick: () => { state.activeCodeFile = k; renderCodeTab(blog); },
+        onClick: () => { state.activeCodeFile = k; state.editingTab = null; renderCodeTab(blog); },
       }, k))
     );
+    if (isEditingCode && curKey) {
+      const codeStatus = el('div', { className: 'banner hidden' });
+      const codeArea = el('textarea', {
+        id: 'edit-code-area',
+        style: { width: '100%', minHeight: '360px', fontFamily: 'var(--mono)', fontSize: '12px', padding: '12px', borderRadius: '8px', background: '#0f172a', color: '#e2e8f0', border: '1px solid #334155' },
+        onInput: () => { state.dirtyUnsaved = true; },
+      });
+      codeArea.value = files[curKey] || '';
+      const saveCodeBtn = el('button', {
+        type: 'button',
+        className: 'btn btn-primary btn-sm',
+        id: 'btn-save-code-edit',
+        onClick: async () => {
+          saveCodeBtn.disabled = true;
+          saveCodeBtn.textContent = 'Saving & Checking AST / D-11...';
+          try {
+            const filesObj = {};
+            filesObj[curKey] = codeArea.value;
+            await apiPost('/api/create-blog/blogs/' + encodeURIComponent(blog.slug) + '/edit', {
+              target: 'code',
+              expectedRevision: blog.revision || 1,
+              files: filesObj,
+            });
+            state.editingTab = null;
+            state.dirtyUnsaved = false;
+            await selectBlog(blog.slug);
+            await refreshLibrary(false);
+          } catch (err) {
+            setBanner(codeStatus, 'banner-err', 'Save code failed: ' + err.message);
+            saveCodeBtn.disabled = false;
+            saveCodeBtn.textContent = 'Save & Validate File';
+          }
+        },
+      }, 'Save & Validate File');
+      panel.replaceChildren(banner, hdr, tabs, codeStatus, codeArea, el('div', { style: { display: 'flex', gap: '8px', marginTop: '8px' } }, saveCodeBtn));
+      return;
+    }
     const viewer = el('pre', { className: 'code-viewer', style: curKey === 'README.md' ? { whiteSpace: 'pre-wrap' } : {} }, files[curKey] || '(empty)');
     panel.replaceChildren(banner, hdr, tabs, viewer);
   }
@@ -2090,7 +2589,8 @@
       }, 'Dismiss')
     );
 
-    pfBox.replaceChildren(
+    setChildren(
+      pfBox,
       el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '6px', marginBottom: '5px' } },
         el('strong', { style: { fontSize: '12px', color: '#92400e' } }, 'Gemini Prompt Assessment — Pick 1 of 3 Tailored Options'),
         makePill(verdict + (typeof pf.score === 'number' ? ' · ' + pf.score : ''), pillCls, false)
@@ -2101,6 +2601,9 @@
       footerRow
     );
     pfBox.classList.remove('hidden');
+    if (typeof pfBox.scrollIntoView === 'function') {
+      pfBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }
 
   function init() {

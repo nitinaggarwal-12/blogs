@@ -2855,6 +2855,8 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
   <script>
     let currentDiagramId = {json.dumps(safe_id)};
+    let currentItemMeta = null;
+    const studioCsrfToken = {json.dumps(_PORTAL_CSRF_TOKEN)};
     const isInlineStudio = {json.dumps(bool(is_inline))};
     let xmlDoc = null;
     let latestXml = '';
@@ -3105,6 +3107,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
         }}
         if (xmlStr) {{
           latestXml = xmlStr;
+          currentItemMeta = itemMeta;
           const displayLabel = (itemMeta && itemMeta.title) ? itemMeta.title : diagId;
           // Populate dropdown cleanly if this diagram uses a dynamic/opaque ID not in the static list
           const selEl = document.getElementById('studio-diag-select');
@@ -3610,16 +3613,24 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
     async function saveXmlToServer(xmlContent) {{
       const statusEl = document.getElementById('studio-status');
       if (!xmlContent) return;
-      if (statusEl) statusEl.textContent = '💾 Saving to diagrams/' + currentDiagramId + '.drawio...';
+      const isCreateBlog = Boolean(currentItemMeta && currentItemMeta.saveApiUrl && String(currentItemMeta.saveApiUrl).startsWith('/api/create-blog/'));
+      const endpoint = isCreateBlog ? currentItemMeta.saveApiUrl : '/api/save-drawio';
+      if (statusEl) statusEl.textContent = isCreateBlog ? '💾 Saving & recompiling Slides/Docs/SVG...' : ('💾 Saving to diagrams/' + currentDiagramId + '.drawio...');
       try {{
-        const res = await fetch('/api/save-drawio', {{
+        const res = await fetch(endpoint, {{
           method: 'POST',
-          headers: {{ 'Content-Type': 'application/json' }},
-          body: JSON.stringify({{ id: currentDiagramId, xml: xmlContent }})
+          headers: {{ 'Content-Type': 'application/json', 'X-Portal-CSRF': studioCsrfToken }},
+          body: JSON.stringify(isCreateBlog ? {{ xml: xmlContent }} : {{ id: currentDiagramId, xml: xmlContent }})
         }});
         const out = await res.json();
         if (out && out.ok) {{
-          if (statusEl) statusEl.textContent = '✅ Saved to ' + out.path + ' (' + Math.round(out.bytes / 1024) + ' KB)';
+          if (out.viewerUrl) {{
+            const dnEl = document.getElementById('studio-diagramsnet-link');
+            if (dnEl) dnEl.href = out.viewerUrl;
+          }}
+          if (statusEl) statusEl.textContent = isCreateBlog
+            ? ('✅ Saved v' + (out.revision || '') + ' & synced SVG + Slides + Docs (' + Math.round((out.bytes || 0) / 1024) + ' KB)')
+            : ('✅ Saved to ' + out.path + ' (' + Math.round(out.bytes / 1024) + ' KB)');
         }} else {{
           if (statusEl) statusEl.textContent = '⚠️ Save error: ' + (out.error || 'Unknown');
         }}
@@ -5241,14 +5252,100 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 raw_slug = urllib.parse.unquote(m_cb1_sync.group(1))
                 transient_ws_token = str(self.headers.get("X-Google-Workspace-Token") or "").strip() or None
                 force_new = bool(body.get("forceNew", False)) if isinstance(body, dict) else False
+                conflict_res = str(body.get("conflictResolution") or "check") if isinstance(body, dict) else "check"
                 try:
                     res = create_blog1_mod.sync_to_google_workspace(
                         raw_slug,
                         bridge_mod=bridge_mod,
                         access_token_override=transient_ws_token,
                         force_new=force_new,
+                        conflict_resolution=conflict_res,
                     )
                     self._send_json(int(res.get("statusCode", 200)), res)
+                except create_blog1_mod.CreateBlog1Error as exc:
+                    self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
+                return
+
+            m_cb1_iter = re.fullmatch(r"/api/create-blog1/blogs/([^/]+)/iterate/?", cb_post_path)
+            if m_cb1_iter:
+                ok_auth, auth_status, auth_code, auth_msg = self._authorize_blog_diagram_mutation()
+                if not ok_auth:
+                    self._send_json(auth_status, {"ok": False, "code": auth_code, "error": auth_msg})
+                    return
+                raw_slug = urllib.parse.unquote(m_cb1_iter.group(1))
+                _, actor_email, _ = self._detect_iap_actor(body if isinstance(body, dict) else {})
+                transient_api_key = str(self.headers.get("X-Gemini-Api-Key") or "").strip() or None
+                try:
+                    job = create_blog1_mod.start_iteration_job(
+                        raw_slug,
+                        body if isinstance(body, dict) else {},
+                        api_key_override=transient_api_key,
+                        actor_email=actor_email or "local-operator",
+                    )
+                    self._send_json(202, {"ok": True, "job": job})
+                except create_blog1_mod.CreateBlog1Error as exc:
+                    self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
+                return
+
+            m_cb1_edit = re.fullmatch(r"/api/create-blog1/blogs/([^/]+)/edit/?", cb_post_path)
+            if m_cb1_edit:
+                ok_auth, auth_status, auth_code, auth_msg = self._authorize_blog_diagram_mutation()
+                if not ok_auth:
+                    self._send_json(auth_status, {"ok": False, "code": auth_code, "error": auth_msg})
+                    return
+                raw_slug = urllib.parse.unquote(m_cb1_edit.group(1))
+                _, actor_email, _ = self._detect_iap_actor(body if isinstance(body, dict) else {})
+                try:
+                    res = create_blog1_mod.apply_manual_edit(
+                        raw_slug,
+                        body if isinstance(body, dict) else {},
+                        actor_email=actor_email or "local-operator",
+                    )
+                    self._send_json(200, res)
+                except create_blog1_mod.CreateBlog1Error as exc:
+                    self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
+                return
+
+            m_cb1_restore = re.fullmatch(r"/api/create-blog1/blogs/([^/]+)/restore/?", cb_post_path)
+            if m_cb1_restore:
+                ok_auth, auth_status, auth_code, auth_msg = self._authorize_blog_diagram_mutation()
+                if not ok_auth:
+                    self._send_json(auth_status, {"ok": False, "code": auth_code, "error": auth_msg})
+                    return
+                raw_slug = urllib.parse.unquote(m_cb1_restore.group(1))
+                _, actor_email, _ = self._detect_iap_actor(body if isinstance(body, dict) else {})
+                b_dict = body if isinstance(body, dict) else {}
+                try:
+                    res = create_blog1_mod.restore_blog_revision(
+                        raw_slug,
+                        b_dict.get("targetRevision"),
+                        expected_revision=b_dict.get("expectedRevision"),
+                        actor_email=actor_email or "local-operator",
+                    )
+                    self._send_json(200, res)
+                except create_blog1_mod.CreateBlog1Error as exc:
+                    self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
+                return
+
+            m_cb1_dsave = re.fullmatch(r"/api/create-blog1/blogs/([^/]+)/diagrams/([^/]+)/save/?", cb_post_path)
+            if m_cb1_dsave:
+                ok_auth, auth_status, auth_code, auth_msg = self._authorize_blog_diagram_mutation()
+                if not ok_auth:
+                    self._send_json(auth_status, {"ok": False, "code": auth_code, "error": auth_msg})
+                    return
+                raw_slug = urllib.parse.unquote(m_cb1_dsave.group(1))
+                raw_kind = urllib.parse.unquote(m_cb1_dsave.group(2))
+                _, actor_email, _ = self._detect_iap_actor(body if isinstance(body, dict) else {})
+                b_dict = body if isinstance(body, dict) else {}
+                try:
+                    res = create_blog1_mod.save_diagram_and_recompile(
+                        raw_slug,
+                        raw_kind,
+                        str(b_dict.get("xml") or ""),
+                        expected_revision=b_dict.get("expectedRevision"),
+                        actor_email=actor_email or "local-operator",
+                    )
+                    self._send_json(200, res)
                 except create_blog1_mod.CreateBlog1Error as exc:
                     self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
                 return
