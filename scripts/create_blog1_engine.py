@@ -398,7 +398,7 @@ def scan_for_f13_leaks(text: str) -> List[str]:
         hits.append("secret_pattern:google_api_key")
     if re.search(r"ya29\.[0-9A-Za-z_\-\.]{20,}", str(text or "")):
         hits.append("secret_pattern:oauth_access_token")
-    if re.search(r"\bgo/[a-z0-9_\-]{3,}", low):
+    if re.search(r"\bgo/(?!no-?go\b)[a-z0-9_\-]{3,}", low):
         hits.append("internal_shortlink:go_link")
     if re.search(r"\bb/\d{6,10}\b", low):
         hits.append("internal_ref:unverified_issue_id")
@@ -411,7 +411,7 @@ def _sanitize_for_public_output(text: str) -> str:
     out = str(text or "")
     for token in _forbidden_words():
         out = re.sub(re.escape(token), "[redacted-internal-ref]", out, flags=re.IGNORECASE)
-    out = re.sub(r"\bgo/[A-Za-z0-9_\-]{3,}", "[internal-link-removed]", out)
+    out = re.sub(r"\bgo/(?!no-?go\b)[A-Za-z0-9_\-]{3,}", "[internal-link-removed]", out, flags=re.IGNORECASE)
     out = re.sub(r"\bb/\d{6,10}\b", "[issue-ref-removed]", out)
     out = re.sub(r"AIza[0-9A-Za-z_\-]{20,}", "[REDACTED_API_KEY]", out)
     out = re.sub(r"ya29\.[0-9A-Za-z_\-\.]{20,}", "[REDACTED_TOKEN]", out)
@@ -3970,34 +3970,53 @@ def run_orthogonal_llm_judge(
     api_key_override: Optional[str] = None,
     grounding: Optional[Dict[str, Any]] = None,
     tf_findings: Optional[List[Dict[str, str]]] = None,
+    slide_plan: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     judge_model = select_orthogonal_judge_model(generator_model)
+    diag_field_map = {
+        "architecture": ("platformDiagram", "figure1_platformDiagram"),
+        "cloudarch": ("cloudArchDiagram", "figure2_cloudArchDiagram"),
+        "sequence": ("sequenceDiagram", "figure3_sequenceDiagram"),
+        "security": ("securityDiagram", "figure4_securityDiagram"),
+        "wire": ("wireDiagram", "figure5_wireDiagram"),
+        "async": ("asyncDiagram", "figure6_asyncDiagram"),
+    }
+    if slide_plan and isinstance(slide_plan.get("enabledDiagramKinds"), list) and slide_plan["enabledDiagramKinds"]:
+        enabled_kinds = [k for k in slide_plan["enabledDiagramKinds"] if k in diag_field_map]
+    else:
+        enabled_kinds = [k for k, (bf, _) in diag_field_map.items() if isinstance(bp.get(bf), dict) and bp.get(bf)]
+        if not enabled_kinds:
+            enabled_kinds = list(diag_field_map.keys())
+    cat_id = str(bp.get("category") or (slide_plan or {}).get("category") or "reference_architecture")
+    inc_code = bool((slide_plan or {}).get("includeStarterCode", bool(bp.get("codeStarter"))))
+    enabled_diag_names = [diag_field_map[k][0] for k in enabled_kinds]
+    total_slides_n = len(bp.get("slides") or []) or int((slide_plan or {}).get("totalSlides") or 12)
+
     sys_p = (
         f"Today is {datetime.now(timezone.utc).strftime('%Y-%m-%d')}. You are an independent adversarial Google Cloud architecture reviewer (strict orthogonal judge running on {judge_model}). "
         "GROUNDING FACTS (mandatory): "
         "1. Gemini 4 (`gemini-4-neon`, `gemini-4-carbon`, `gemini-4-argon`, `gemini-4-hydrogen`), "
         "Gemini 3.x (`gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.5-flash`, `gemini-3.1-pro-preview`, `gemini-3-flash-preview`, `gemini-3-pro-image`, `gemini-3.1-flash-image`), "
         "AND Gemini 2.5 (`gemini-2.5-pro`, `gemini-2.5-flash`, `gemini-2.5-flash-image`) ARE ALL LIVE Google Cloud Vertex AI models — "
-        "NEVER claim these models are fake, unconfirmed, or deprecated, and NEVER recommend downgrading them to Gemini 1.5. "
+        "NEVER claim these models are fake, unconfirmed, or deprecated, and NEVER recommend downgrading them to Gemini 1.5. Conversely, DO flag invented non-existent IDs like `gemini-4.0-flash` or `gemini-4-pro`. "
         "2. Cloud Spanner Graph (`CREATE PROPERTY GRAPH`, ISO GQL `GRAPH_TABLE`), Spanner vector search, Spanner full-text search (`TOKENLIST`/`TOKENIZE_FULLTEXT`), and Cloud Run v2 (`google_cloud_run_v2_service`) are real Google Cloud capabilities — verify exact syntax against the LIVE_GOOGLE_SEARCH_GROUNDING dossier and Google Search before rejecting. "
         "3. Treat the LIVE_GOOGLE_SEARCH_GROUNDING dossier below as verified live web evidence. Never flag text truncated at the prompt excerpt boundary as an incomplete article or broken snippet. "
-        "STRICT AUDIT CHECKLIST (flag P0/P1 for ANY violation found across prose, diagrams, slides, or starter code): "
+        f"4. CATEGORY & DIAGRAM SCOPE: This blog uses category `{cat_id}` with EXACTLY {len(enabled_kinds)} enabled diagram(s) ({', '.join(enabled_diag_names)}), {total_slides_n} slide(s), and starter code {'ENABLED' if inc_code else 'DISABLED (intentionally omitted by category)'}. "
+        "Verify ONLY the enabled diagram(s) included below — NEVER penalize diagram kinds or starter code intentionally omitted by this category! "
+        "STRICT AUDIT CHECKLIST (flag P0/P1 for ANY violation found across prose, enabled diagrams, slides, or enabled starter code): "
         "- Spanner Graph ANN: `APPROX_COSINE_DISTANCE` inside single-stage `MATCH (src)-[rel]->(dst)` silently defeats the vector index (must use 2-stage `MATCH (@{FORCE_INDEX=...} src) ... ORDER BY distance LIMIT @k NEXT MATCH ...`). "
         "- Spanner FGAC: hard limit is 100 database roles per database (never propose 1-role-per-tenant for >100 tenants); never grant `roles/spanner.databaseUser` to an FGAC-restricted service account. "
         "- Spanner Editions: Enterprise is regional-only (99.99% SLA, $1.23/hr per 1,000 PUs us-central1 list); Enterprise Plus is required for multi-region 99.999% SLA. "
-        "- Security & Code: IAP `X-Goog-IAP-JWT-Assertion` MUST be cryptographically verified (`verify_token`); Cloud Run ingress annotation is top-level `metadata.annotations['run.googleapis.com/ingress']` (NOT `spec.template.metadata.annotations`); `os.environ` vars in `app.py` must match `main.tf`; inline code blocks & Slide 9 MUST match `starter.zip` (zero contradictory graph names or broken syntax); zero `acme` placeholder names. "
-        "- Diagrams: verify ALL 6 rendered diagrams (`platformDiagram`, `cloudArchDiagram`, `sequenceDiagram`, `securityDiagram`, `wireDiagram`, `asyncDiagram`) match the article's real GCP services and directional data flows with zero unrelated services or wrong arrows. "
+        "- Model Armor: requires regional API endpoint (`modelarmor.<region>.rep.googleapis.com` via `ClientOptions`) and regional template path (`locations/<region>/templates/...`), never `locations/global/templates/...`. "
+        "- Security & Code: IAP `X-Goog-IAP-JWT-Assertion` MUST be cryptographically verified (`verify_token`); Cloud Run ingress annotation is top-level `metadata.annotations['run.googleapis.com/ingress']` (NOT `spec.template.metadata.annotations`); `os.environ` vars in `app.py` must match `main.tf`; inline code blocks & slides MUST match `starter.zip` (when starter code is enabled) with zero contradictory graph/table/env names or broken syntax; zero `acme` placeholder names. "
+        f"- Diagrams: verify ALL {len(enabled_kinds)} enabled diagram(s) ({', '.join(enabled_diag_names)}) match the article's real GCP services and directional data flows with zero unrelated services or wrong arrows. "
         "Return ONLY raw JSON (no prose wrapper, no markdown headings): "
         '{"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"summary":"1-2 crisp sentences",'
         '"strengths":["..."],"findings":[{"severity":"P0|P1|P2","category":"grounding|security|diagram|code|clarity","detail":"..."}]}'
     )
     rendered_diagrams = {
-        "figure1_platformDiagram": bp.get("platformDiagram") or {},
-        "figure2_cloudArchDiagram": bp.get("cloudArchDiagram") or {},
-        "figure3_sequenceDiagram": bp.get("sequenceDiagram") or {},
-        "figure4_securityDiagram": bp.get("securityDiagram") or {},
-        "figure5_wireDiagram": bp.get("wireDiagram") or {},
-        "figure6_asyncDiagram": bp.get("asyncDiagram") or {},
+        diag_field_map[k][1]: (bp.get(diag_field_map[k][0]) or {})
+        for k in enabled_kinds
     }
     slides_summary = [
         {
@@ -4030,14 +4049,15 @@ def run_orthogonal_llm_judge(
         if str(cs.get(k) or "").strip()
     }
     usr_p = (
-        f"TITLE: {bp['title']}\nDOMAIN: {bp['domain']}\nGENERATOR_MODEL: {generator_model}\n\n"
+        f"TITLE: {bp['title']}\nCATEGORY: {cat_id} ({len(enabled_kinds)} enabled diagrams, {total_slides_n} slides, starterCode={'ON' if inc_code else 'OFF'})\n"
+        f"DOMAIN: {bp['domain']}\nGENERATOR_MODEL: {generator_model}\n\n"
         f"KEY_TAKEAWAYS:\n{json.dumps(bp.get('keyTakeaways') or [], indent=2)}\n\n"
         + (f"LIVE_GOOGLE_SEARCH_GROUNDING (status={(grounding or {}).get('status')}):\n{g_sum[:5000]}\n\n" if g_sum else "")
         + f"TERRAFORM_SECURITY_FINDINGS (D-11):\n{tf_block}\n\n"
-        + f"ALL_6_RENDERED_DIAGRAMS_JSON:\n{json.dumps(rendered_diagrams, indent=2)[:16000]}\n\n"
-        + f"SLIDES_SUMMARY_12:\n{json.dumps(slides_summary, indent=2)[:10000]}\n\n"
+        + f"RENDERED_DIAGRAMS_JSON ({len(enabled_kinds)} enabled for category '{cat_id}'):\n{json.dumps(rendered_diagrams, indent=2)[:16000]}\n\n"
+        + f"SLIDES_SUMMARY ({len(slides_summary)} slides):\n{json.dumps(slides_summary, indent=2)[:10000]}\n\n"
         + f"COMPLETE_CLAIM_LEDGER ({len(bp.get('claimLedger') or [])} rows):\n{ledger_json}\n\n"
-        + f"STARTER_KIT_CODE_FILES:\n{json.dumps(starter_bundle, indent=2)[:14000]}\n\n"
+        + (f"STARTER_KIT_CODE_FILES:\n{json.dumps(starter_bundle, indent=2)[:14000]}\n\n" if inc_code else "STARTER_KIT_CODE_FILES: (DISABLED BY CATEGORY)\n\n")
         + f"BLOG_MARKDOWN:\n{md_excerpt}\n"
     )
     try:
@@ -4412,6 +4432,7 @@ def compile_and_save_blog(
             api_key_override=api_key_override,
             grounding=g_info,
             tf_findings=det_report.get("tfFindings") or [],
+            slide_plan=eff_plan,
         )
         has_p0_p1 = any(
             str(f.get("severity") or "").upper() in ("P0", "P1")
@@ -4475,6 +4496,10 @@ def compile_and_save_blog(
                         applied.append("Fixed verify.sh: queried top-level metadata.annotations['run.googleapis.com/ingress'] (SH-BUG-01).")
                 art_r2 = _compile_artifacts(blueprint)
                 det_r2 = art_r2["det"]
+                if det_r2.get("unledgeredClaims"):
+                    _hardening.auto_bind_unledgered_claims_in_place(blueprint, det_r2["unledgeredClaims"])
+                    art_r2 = _compile_artifacts(blueprint)
+                    det_r2 = art_r2["det"]
                 judge_r2 = run_orthogonal_llm_judge(
                     bp=blueprint,
                     md_text=art_r2["mdText"],
@@ -4482,6 +4507,7 @@ def compile_and_save_blog(
                     api_key_override=api_key_override,
                     grounding=g_info,
                     tf_findings=det_r2.get("tfFindings") or [],
+                    slide_plan=eff_plan,
                 )
                 r1_score = r1_snap.get("score") if isinstance(r1_snap.get("score"), int) else 0
                 r2_score = judge_r2.get("score") if isinstance(judge_r2.get("score"), int) else 0
@@ -5763,6 +5789,37 @@ def _recompile_full_blog_state(
         arch_icon_count=arch_d.get("iconCount"),
         slide_plan=plan,
     )
+    if det.get("unledgeredClaims"):
+        _hardening.auto_bind_unledgered_claims_in_place(bp, det["unledgeredClaims"])
+        md_text = compile_blog_markdown(
+            bp, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""),
+            proofs, (manifest.get("generation") or {}).get("model", DEFAULT_MODEL),
+            extra_urls=extra_urls or None, grounding=grounding_info,
+            slide_plan=plan, outline=outline, diags_map=diags_final,
+        )
+        (blog_dir / "blog.md").write_text(md_text, encoding="utf-8")
+        docx_bytes = compile_docx_bytes(
+            bp, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""),
+            proofs, blog_dir, extra_urls=extra_urls or None, grounding=grounding_info,
+            slide_plan=plan, outline=outline, diags_map=diags_final,
+        )
+        (blog_dir / "docs" / f"{slug}-whitepaper.docx").write_bytes(docx_bytes)
+        det = run_deterministic_quality_gate(
+            bp=bp,
+            md_text=md_text,
+            arch_drawio=arch_d.get("xml", ""),
+            arch_svg=arch_d.get("svg", ""),
+            seq_drawio=seq_d.get("xml", ""),
+            seq_svg=seq_d.get("svg", ""),
+            pptx_bytes=pptx_bytes,
+            docx_bytes=docx_bytes,
+            py_ast_ok=ast_ok,
+            py_ast_err=ast_err,
+            starter_files=s_files,
+            extra_diagrams=diags_final,
+            arch_icon_count=arch_d.get("iconCount"),
+            slide_plan=plan,
+        )
 
     # 3. Content-Hash Delta-TTS: only re-synthesize slides whose speakerNotes SHA-256 changed!
     slide_n = len(slide_svgs)
@@ -6280,6 +6337,33 @@ def start_iteration_job(
                         422,
                         "ITERATION_ROLLED_BACK",
                     )
+
+                # Re-run orthogonal Gemini Judge when the blog originally ran the judge (unless skipJudge=True)
+                prev_judge = (backup_manifest.get("quality") or {}).get("orthogonalJudge") or {}
+                should_rejudge = (
+                    not bool(payload.get("skipJudge", False))
+                    and (prev_judge.get("status") == "COMPLETED" or bool(payload.get("rejudge", False)))
+                )
+                if should_rejudge:
+                    _upd(94, "VERIFY_GATE", "Running post-iteration orthogonal Gemini Judge audit...")
+                    md_cur = (blog_dir / "blog.md").read_text(encoding="utf-8") if (blog_dir / "blog.md").is_file() else ""
+                    new_judge = run_orthogonal_llm_judge(
+                        bp=updated["blueprint"],
+                        md_text=md_cur,
+                        generator_model=model,
+                        api_key_override=transient_key,
+                        grounding=(updated.get("quality") or {}).get("grounding") or {},
+                        tf_findings=new_det.get("tfFindings") or [],
+                        slide_plan=updated.get("slidePlan"),
+                    )
+                    if new_judge.get("status") == "COMPLETED":
+                        updated.setdefault("quality", {})["orthogonalJudge"] = new_judge
+                        updated["quality"]["checkedAt"] = _now_iso()
+                        (blog_dir / "quality_report.json").write_text(json.dumps(updated["quality"], indent=2), encoding="utf-8")
+                        (blog_dir / "manifest.json").write_text(json.dumps(updated, indent=2), encoding="utf-8")
+                        _rebuild_bundle_zip(blog_dir, clean)
+                        idx_b2 = _update_index_entry(updated)
+                        _sync_blog_dir_to_gcs_async(clean, blog_dir, idx_b2, sync=True)
 
                 with _JOBS_LOCK:
                     jr = _JOBS[job_id]

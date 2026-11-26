@@ -313,9 +313,9 @@ _D13_QUANT_REGEX = re.compile(
     (?:
         \$\s*\d+(?:,\d{3})*(?:\.\d+)?(?:\s*[KMBT]\b)?
         |
-        \b\d+(?:,\d{3})*(?:\.\d+)?\s*USD\b
+        (?<![A-Za-z0-9._$-])\d+(?:,\d{3})*(?:\.\d+)?\s*(?:USD|dollars?)\b
         |
-        \b\d+(?:,\d{3})*(?:\.\d+)?
+        (?<![A-Za-z0-9._$-])\d+(?:,\d{3})*(?:\.\d+)?
         (?:\s*-\s*|\s+)?
         (?:
             %
@@ -333,9 +333,7 @@ _D13_QUANT_REGEX = re.compile(
             | x\b
         )
         |
-        \b\d{1,3}(?:,\d{3})+\b
-        |
-        \b\d{3,}\s+[a-z]{3,16}\b
+        (?<![A-Za-z0-9._$-])\d{1,3}(?:,\d{3})+(?!\.\d)(?![A-Za-z0-9_-])
     )
     """
 )
@@ -356,6 +354,9 @@ _D13_STRUCTURAL_ALLOW_PATTERNS: Tuple[re.Pattern[str], ...] = (
 
 _D13_CONTEXT_EXEMPT_RE = re.compile(
     r"(?i)(?:tls\s*1\.[23]|http/[123](?:\.\d)?|rfc\s*\d{3,5}|sha-\d{3}|p-\d{3}|aes-\d{3}|gcm-\d{3}|rsa-\d{3,4}|"
+    r"iso(?:/iec)?\s*\d{4,5}(?:[-:]\d+)?|soc\s*[123](?:\s*type\s*(?:i{1,2}|[12]))?|pci[\s-]dss(?:\s*\d+(?:\.\d+)*)?|"
+    r"nist\s*(?:sp\s*)?\d+[-.\d]*|cwe-\d+|cve-\d{4}-\d+|"
+    r"\b[a-z][a-z0-9]*(?:-[a-z0-9]+)+-\d{2,4}\b|\bv\d+(?:\.\d+)+\b|"
     r"oauth\s*2\.[01]|openid\s*1\.0|21\s*cfr\s*part\s*11|ipv[46]|169\.254\.169\.254|127\.0\.0\.1|"
     r"1600x900|1920x1080|1280x720|2560x1440|slide\s+\d+|step\s+\d+|hop\s+\d+|phase\s+\d+|part\s+\d+|"
     r"layer\s+\d+|section\s+\d+|figure\s+\d+|table\s+\d+|round\s+\d+|d-\d{2})"

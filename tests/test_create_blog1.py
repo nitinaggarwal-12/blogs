@@ -1414,6 +1414,16 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
             bp_d13, "Latency stays under 42 ms with 99.99% SLA and $1,250 monthly budget."
         )
         self.assertTrue(ok_after, unled_after)
+        # Regression: never tokenize hyphenated model IDs, ISO standards, or decimals into bogus D-13 claims
+        bp_clean = {"claimLedger": [{"id": "CLM-01", "value": "99.999%", "provenance": "GCP_DOCUMENTED"}], "slides": []}
+        ok_mod, unled_mod = cb1.check_d13_numeric_claim_coverage(
+            bp_clean,
+            "Migrate from text-embedding-005 retirement to gemini-embedding-001 ahead of ISO 27001 SOC 2 Type II audits with 99.999% regional SLA and v2.4.0.",
+        )
+        self.assertTrue(ok_mod, unled_mod)
+        # Regression: never mangle English 'go/no-go' while still redacting real internal go/ shortlinks
+        self.assertIn("go/no-go", cb1._sanitize_for_public_output("Executive go/no-go readiness gate"))
+        self.assertNotIn("go/internal-secret", cb1._sanitize_for_public_output("See go/internal-secret for details"))
 
         # 2. Grounding redirect resolution + two-condition GCP_DOCUMENTED downgrade
         bp_g = {
