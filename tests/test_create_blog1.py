@@ -1902,6 +1902,26 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertNotEqual(j_rst["manifest"]["title"], "Hardened Zero-Trust MCP Gateway v2")
         self.assertFalse(j_rst["manifest"]["diagrams"]["architecture"]["customEdited"])
 
+        # Verify get_job_status accepts cb-iter-* job IDs (regression guard for UI Iterate polling)
+        with self.assertRaises(cb1.CreateBlog1Error) as ctx_bad_jid:
+            cb1.get_job_status("bad-job-id")
+        self.assertEqual(ctx_bad_jid.exception.status_code, 404)
+        with cb1._JOBS_LOCK:
+            cb1._JOBS["cb-iter-0123456789"] = {"jobId": "cb-iter-0123456789", "status": "COMPLETED", "progress": 100}
+        try:
+            st_ij, _, b_ij = self._req("/api/create-blog/jobs/cb-iter-0123456789")
+            # Server uses srv.create_blog1_mod so populate on mod_ref as well
+            with mod_ref._JOBS_LOCK:
+                mod_ref._JOBS["cb-iter-0123456789"] = {"jobId": "cb-iter-0123456789", "status": "COMPLETED", "progress": 100}
+            st_ij2, _, b_ij2 = self._req("/api/create-blog/jobs/cb-iter-0123456789")
+            self.assertEqual(st_ij2, 200, b_ij2.decode("utf-8"))
+            self.assertEqual(json.loads(b_ij2.decode("utf-8"))["job"]["jobId"], "cb-iter-0123456789")
+        finally:
+            with cb1._JOBS_LOCK:
+                cb1._JOBS.pop("cb-iter-0123456789", None)
+            with mod_ref._JOBS_LOCK:
+                mod_ref._JOBS.pop("cb-iter-0123456789", None)
+
         # 6. Conflict-Safe Google Workspace Drive Sync (409 WORKSPACE_CONFLICT on modifiedTime drift + resolve with overwrite/copy)
         m_ws = json.loads((blog_dir / "manifest.json").read_text(encoding="utf-8"))
         m_ws["workspaceSync"] = {

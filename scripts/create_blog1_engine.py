@@ -5156,7 +5156,7 @@ def start_generation_job(
 
 def get_job_status(job_id: str) -> Dict[str, Any]:
     jid = str(job_id or "").strip()
-    if not re.fullmatch(r"cb1-[a-f0-9]{12}", jid):
+    if not re.fullmatch(r"(?:cb1-[a-f0-9]{12}|cb-iter-[a-f0-9]{10,12})", jid):
         raise CreateBlog1Error(f"Unknown job id '{jid}'.", 404, "JOB_NOT_FOUND")
     with _JOBS_LOCK:
         jr = _JOBS.get(jid)
