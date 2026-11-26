@@ -5159,6 +5159,24 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 else path
             )
 
+            if cb_post_path == "/api/create-blog1/preflight":
+                ok_auth, auth_status, auth_code, auth_msg = self._authorize_blog_diagram_mutation()
+                if not ok_auth:
+                    self._send_json(auth_status, {"ok": False, "code": auth_code, "error": auth_msg})
+                    return
+                _, actor_email, _ = self._detect_iap_actor(body if isinstance(body, dict) else {})
+                transient_api_key = str(self.headers.get("X-Gemini-Api-Key") or "").strip() or None
+                try:
+                    pf_res = create_blog1_mod.preflight_prompt(
+                        body if isinstance(body, dict) else {},
+                        api_key_override=transient_api_key,
+                        actor_email=actor_email or "local-operator",
+                    )
+                    self._send_json(200, pf_res)
+                except create_blog1_mod.CreateBlog1Error as exc:
+                    self._send_json(exc.status_code, {"ok": False, "code": exc.code, "error": exc.message})
+                return
+
             if cb_post_path == "/api/create-blog1/generate":
                 ok_auth, auth_status, auth_code, auth_msg = self._authorize_blog_diagram_mutation()
                 if not ok_auth:

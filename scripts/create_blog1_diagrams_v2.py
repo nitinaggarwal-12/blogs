@@ -1564,20 +1564,48 @@ def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
 # UNIFIED 6-DIAGRAM + NATIVE PPTX SLIDE XML COMPILER ENTRYPOINT
 # ===========================================================================
 
-def compile_all_v2_diagrams(bp: Dict[str, Any], slug: str) -> Dict[str, Dict[str, Any]]:
-    builders = [
-        ("architecture", build_architecture_spec_v3, "Figure 1 — Master Platform Architecture (C4 L2)", "C4 L2", 3),
-        ("cloudarch",    build_cloudarch_spec_v3,    "Figure 2 — Cloud Architecture Center Blueprint", "HUB-SPOKE", 4),
-        ("sequence",     build_sequence_spec_v3,     "Figure 3 — Request Lifecycle Sequence (C4 L3)", "C4 L3", 5),
-        ("security",     build_security_spec_v3,     "Figure 4 — Trust Perimeter & Security Boundary (C4 L1)", "C4 L1", 6),
-        ("wire",         build_wire_spec_v3,         "Figure 5 — Wire-Protocol & Schema Transformation (C4 L4)", "C4 L4", 7),
-        ("async",        build_async_spec_v3,        "Figure 6 — Async State, Export & Lifecycle Loop", "ASYNC", 8),
-    ]
+def compile_all_v2_diagrams(
+    bp: Dict[str, Any],
+    slug: str,
+    enabled_kinds: Optional[List[str]] = None,
+    slide_plan: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Dict[str, Any]]:
+    builders_by_kind = {
+        "architecture": (build_architecture_spec_v3, "Master Platform Architecture (C4 L2)", "C4 L2", 3),
+        "cloudarch":    (build_cloudarch_spec_v3,    "Cloud Architecture Center Blueprint", "HUB-SPOKE", 4),
+        "sequence":     (build_sequence_spec_v3,     "Request Lifecycle Sequence (C4 L3)", "C4 L3", 5),
+        "security":     (build_security_spec_v3,     "Trust Perimeter & Security Boundary (C4 L1)", "C4 L1", 6),
+        "wire":         (build_wire_spec_v3,         "Wire-Protocol & Schema Transformation (C4 L4)", "C4 L4", 7),
+        "async":        (build_async_spec_v3,        "Async State, Export & Lifecycle Loop", "ASYNC", 8),
+    }
+    total_slides = int((slide_plan or {}).get("totalSlides") or 12)
+    ordered_entries: List[Tuple[str, str, int, int]] = []
+    if isinstance(slide_plan, dict) and isinstance(slide_plan.get("enabledDiagrams"), list) and slide_plan["enabledDiagrams"]:
+        for idx, d in enumerate(slide_plan["enabledDiagrams"], 1):
+            dk = str(d.get("kind") or "").strip().lower()
+            if dk in builders_by_kind:
+                default_title = builders_by_kind[dk][1]
+                custom_title = _cc.strip_md(d.get("title") or default_title) or default_title
+                s_num = int(d.get("slideNumber") or (2 + idx))
+                ordered_entries.append((dk, custom_title, idx, s_num))
+    else:
+        kinds = [k for k in (enabled_kinds or list(builders_by_kind.keys())) if k in builders_by_kind]
+        if not kinds:
+            kinds = ["architecture"]
+        for idx, dk in enumerate(kinds, 1):
+            _, default_title, _, default_slide = builders_by_kind[dk]
+            s_num = default_slide if enabled_kinds is None else (2 + idx)
+            ordered_entries.append((dk, default_title, idx, s_num))
+
     out: Dict[str, Dict[str, Any]] = {}
-    for kind, builder, title_str, layer, slide_num in builders:
+    for kind, clean_title, fig_num, slide_num in ordered_entries:
+        builder, default_title, layer, default_slide = builders_by_kind[kind]
+        title_str = f"Figure {fig_num} — {clean_title}"
         spec = builder(bp, slug)
         public_id = _cc.make_diagram_public_id(slug, kind)
         spec["id"] = public_id
+        if slide_num != default_slide or not spec.get("diagramName"):
+            spec["diagramName"] = f"Figure {fig_num} - {clean_title[:48]}"
         xml = _cc.compile_spec_to_drawio_xml(spec)
         svg = _cc.compile_spec_to_svg(spec)
         geom = _cc.validate_spec_geometry(spec)
@@ -1585,7 +1613,7 @@ def compile_all_v2_diagrams(bp: Dict[str, Any], slug: str) -> Dict[str, Dict[str
         icons = geom["iconCount"]
         slide_xml = _cc.compile_spec_to_ooxml_slide(
             spec,
-            f"[Slide {slide_num:02d}/12 • {layer}]",
+            f"[Slide {slide_num:02d}/{total_slides:02d} • {layer}]",
             hlink_rid="rId10",
         )
         ooxml_icon_shapes = slide_xml.count('name="ico_')
@@ -1594,6 +1622,7 @@ def compile_all_v2_diagrams(bp: Dict[str, Any], slug: str) -> Dict[str, Dict[str
             "publicId": public_id,
             "kind": kind,
             "layer": layer,
+            "figureNum": fig_num,
             "slide": slide_num,
             "title": title_str,
             "label": title_str,

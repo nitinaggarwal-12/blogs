@@ -64,8 +64,9 @@ _diag_v2 = _load_sibling_mod("create_blog1_diagrams_v2", "create_blog1_diagrams_
 _pipe_v2 = _load_sibling_mod("create_blog1_pipeline_v2", "create_blog1_pipeline_v2.py")
 _pc_engine = _load_sibling_mod("create_blog1_promptcanvas_engine", "create_blog1_promptcanvas_engine.py")
 _hardening = _load_sibling_mod("create_blog_hardening", "create_blog_hardening.py")
+_cats = _load_sibling_mod("create_blog_categories", "create_blog_categories.py")
 
-# Re-export unified hardening & grounding verification primitives
+# Re-export unified hardening, category planner & grounding verification primitives
 resolve_grounding_redirect_url = _hardening.resolve_grounding_redirect_url
 verify_cloud_google_doc_url = _hardening.verify_cloud_google_doc_url
 check_d13_numeric_claim_coverage = _hardening.check_d13_numeric_claim_coverage
@@ -78,6 +79,15 @@ sanitize_svg_strict = _hardening.sanitize_svg_strict
 enforce_tmp_cache_budget = _hardening.enforce_tmp_cache_budget
 mint_stateless_csrf_token = _hardening.mint_stateless_csrf_token
 verify_stateless_csrf_token = _hardening.verify_stateless_csrf_token
+
+VALID_DIAGRAM_KINDS = _cats.VALID_DIAGRAM_KINDS
+DIAGRAM_KIND_META = _cats.DIAGRAM_KIND_META
+DEFAULT_CATEGORY_ID = _cats.DEFAULT_CATEGORY_ID
+get_category = _cats.get_category
+get_categories_catalog = _cats.get_categories_catalog
+normalize_blog_outline = _cats.normalize_blog_outline
+compute_dynamic_slide_plan = _cats.compute_dynamic_slide_plan
+hydrate_legacy_manifest_plan = _cats.hydrate_legacy_manifest_plan
 
 
 def strip_inline_md(text: str) -> str:
@@ -823,6 +833,9 @@ def get_capabilities() -> Dict[str, Any]:
         "defaultImageModel": DEFAULT_IMAGE_MODEL,
         "voices": list(ALLOWED_VOICES),
         "defaultVoice": "en-US-Chirp3-HD-Charon",
+        "categories": _cats.get_categories_catalog(),
+        "defaultCategory": DEFAULT_CATEGORY_ID,
+        "diagramCatalog": _cats.DIAGRAM_KIND_META,
         "auth": {
             "vertexAiIamReady": has_vertex,
             "serviceAccount": (
@@ -852,6 +865,9 @@ def get_capabilities() -> Dict[str, Any]:
             "promptCanvasModes": ["canonical", "hybrid", "promptcanvas_vision"],
             "promptCanvasImageModel": DEFAULT_IMAGE_MODEL,
             "slidesPerDeck": 12,
+            "dynamicSlideRange": [6, 12],
+            "categoryOutlinePlanner": True,
+            "livePromptPreflight": has_vertex or has_env_key,
             "deterministicGateChecks": 13,
             "hardening": {
                 "d13NumericCoverage": True,
@@ -883,8 +899,9 @@ def get_capabilities() -> Dict[str, Any]:
     }
 
 
-def _check_rate_limit(actor_key: str) -> None:
-    if JOB_RATE_LIMIT_PER_HOUR <= 0:
+def _check_rate_limit(actor_key: str, *, limit_per_hour: Optional[int] = None) -> None:
+    eff_limit = JOB_RATE_LIMIT_PER_HOUR if limit_per_hour is None else limit_per_hour
+    if eff_limit <= 0:
         return
     now = time.time()
     key = actor_key or "anonymous"
@@ -892,13 +909,76 @@ def _check_rate_limit(actor_key: str) -> None:
         q = _RATE_HITS.setdefault(key, deque())
         while q and (now - q[0]) > 3600.0:
             q.popleft()
-        if len(q) >= JOB_RATE_LIMIT_PER_HOUR:
+        if len(q) >= eff_limit:
             raise CreateBlog1Error(
-                f"Hourly generation rate limit ({JOB_RATE_LIMIT_PER_HOUR}/hr) reached for '{key}'. Retry shortly.",
+                f"Hourly rate limit ({eff_limit}/hr) reached for '{key}'. Retry shortly.",
                 status_code=429,
                 code="RATE_LIMITED",
             )
         q.append(now)
+
+
+def preflight_prompt(
+    payload: Dict[str, Any],
+    *,
+    api_key_override: Optional[str] = None,
+    actor_email: str = "local-operator",
+) -> Dict[str, Any]:
+    """
+    Fast (<2s) live Gemini prompt assessment before generation starts.
+    - Runs static public-repo F-13 leak check and trivial/gibberish check first.
+    - Fails CLOSED (503 MODEL_AUTH_UNAVAILABLE) if live Gemini credentials are absent.
+    - Returns READY (0 extra clicks) or 3 tailored, clickable sample options.
+    """
+    prompt = str(payload.get("prompt") or "").strip()
+    if len(prompt) > 4000:
+        raise CreateBlog1Error("Prompt exceeds maximum length (4,000 characters).", 400, "PROMPT_TOO_LONG")
+    cat_id = str(payload.get("category") or DEFAULT_CATEGORY_ID).strip().lower()
+    cat = _cats.get_category(cat_id)
+    domain = str(payload.get("domain") or cat["defaultDomain"]).strip()[:80]
+    audience = str(payload.get("audience") or cat["defaultAudience"]).strip()[:80]
+    outline = _cats.normalize_blog_outline(payload.get("outline"), category_id=cat["id"])
+    enabled_diags = [
+        str(x.get("kind"))
+        for x in outline
+        if x.get("type") == "diagram" and x.get("enabled") and x.get("kind") in VALID_DIAGRAM_KINDS
+    ]
+
+    # Run static hygiene & trivial checks immediately (no network cost needed for obvious leaks/empty input)
+    leaks = scan_for_f13_leaks(prompt)
+    if leaks or _cats._is_gibberish_or_trivial(prompt):
+        return _cats.assess_prompt_preflight(
+            prompt=prompt,
+            category_id=cat["id"],
+            domain=domain,
+            audience=audience,
+            enabled_diagrams=enabled_diags,
+            call_gemini_json_fn=call_gemini_json,
+            f13_scanner=scan_for_f13_leaks,
+            sanitize_fn=_sanitize_for_public_output,
+            api_key_override=api_key_override,
+        )
+
+    has_key = bool((api_key_override or "").strip() or os.environ.get("GEMINI_API_KEY", "").strip())
+    has_vertex = bool(_get_gcp_bearer_token())
+    if not (has_key or has_vertex):
+        raise ModelAuthUnavailableError(
+            "No live Gemini credentials available for prompt preflight (Vertex AI IAM bearer token unavailable and no GEMINI_API_KEY / X-Gemini-Api-Key provided)."
+        )
+
+    _check_rate_limit(f"preflight:{actor_email}", limit_per_hour=60)
+    return _cats.assess_prompt_preflight(
+        prompt=prompt,
+        category_id=cat["id"],
+        domain=domain,
+        audience=audience,
+        enabled_diagrams=enabled_diags,
+        call_gemini_json_fn=call_gemini_json,
+        f13_scanner=scan_for_f13_leaks,
+        sanitize_fn=_sanitize_for_public_output,
+        api_key_override=api_key_override,
+        preflight_model="gemini-2.5-flash",
+    )
 
 
 def _strip_json_fences(raw_text: str) -> str:
@@ -1118,7 +1198,7 @@ def _sanitize_nested_obj(obj: Any) -> Any:
     return obj
 
 
-def _sync_inline_code_with_starter(bp: Dict[str, Any]) -> None:
+def _sync_inline_code_with_starter(bp: Dict[str, Any], slide_plan: Optional[Dict[str, Any]] = None) -> None:
     """Single-Source-of-Truth reconciliation between starter.zip files, inline blog code blocks, and Slide 9."""
     cs = bp.get("codeStarter") if isinstance(bp.get("codeStarter"), dict) else {}
     canon_py = str(cs.get("pythonApp") or "").strip()
@@ -1216,9 +1296,13 @@ def _sync_inline_code_with_starter(bp: Dict[str, Any]) -> None:
                 elif "--allow-unauthenticated" in code:
                     cb["code"] = re.sub(r"--allow-unauthenticated\b", "--no-allow-unauthenticated", code)
 
-    # Sync Slide 9 (or Slide 6 in 9-slide) codeSnippet to canonical starter so Slide 9 never invents PolicyGraph
+    # Sync Code slide codeSnippet to canonical starter so it never invents PolicyGraph
     slides = bp.get("slides") or []
-    code_idx = 8 if len(slides) >= 12 else (5 if len(slides) >= 6 else -1)
+    if isinstance(slide_plan, dict):
+        cs_num = slide_plan.get("codeSlide")
+        code_idx = (int(cs_num) - 1) if isinstance(cs_num, int) and cs_num >= 1 else -1
+    else:
+        code_idx = 8 if len(slides) >= 12 else (5 if len(slides) >= 6 else -1)
     if 0 <= code_idx < len(slides) and isinstance(slides[code_idx], dict):
         sl_code = str(slides[code_idx].get("codeSnippet") or "").strip()
         if canon_sql and (
@@ -1240,7 +1324,17 @@ def _sync_inline_code_with_starter(bp: Dict[str, Any]) -> None:
             sl["calloutValue"] = _strip_provenance_enum_suffix(str(sl["calloutValue"]))
 
 
-def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience: str, *, target_slides: Optional[int] = None) -> Dict[str, Any]:
+def normalize_blueprint(
+    raw: Dict[str, Any],
+    prompt: str,
+    domain: str,
+    audience: str,
+    *,
+    target_slides: Optional[int] = None,
+    slide_plan: Optional[Dict[str, Any]] = None,
+    category_id: Optional[str] = None,
+    outline: Optional[List[Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
     """Enforces clean bounded shapes and strips emojis/inline markdown leaks without silently slicing prose or code."""
     title = strip_inline_md(_sanitize_for_public_output(str(raw.get("title") or "Cloud Architecture Reference Guide")))[:140].strip()
     subtitle = strip_inline_md(_sanitize_for_public_output(str(raw.get("subtitle") or "Grounded Google Cloud reference architecture generated via live Gemini API.")))[:260].strip()
@@ -1382,45 +1476,64 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
         sections.append({"heading": heading, "paragraphs": paras, "bullets": bullets, "codeBlocks": code_blocks, "table": tbl_out})
 
     raw_slides = raw.get("slides") if isinstance(raw.get("slides"), list) else []
-    n_slides = target_slides if target_slides in (9, 12) else (12 if len(raw_slides) >= 10 else 9)
-    if n_slides == 12:
-        default_kickers = (
-            "EXECUTIVE BRIEF", "PROBLEM & TARGETS", "REFERENCE ARCHITECTURE (C4 L2)",
-            "CLOUD ARCHITECTURE (HUB-SPOKE)", "REQUEST LIFECYCLE (C4 L3)", "SECURITY BOUNDARY (C4 L1)",
-            "WIRE PAYLOAD (C4 L4)", "ASYNC LIFECYCLE LOOP", "IMPLEMENTATION & GUARDRAILS",
-            "LIVE PROOF VAULT", "TRADE-OFFS & FINOPS", "PRODUCTION READINESS",
-        )
-        default_titles = (
-            title[:72],
-            "Architectural Challenge & Design Goals",
-            "Master Reference Architecture Topology",
-            "Cloud Architecture Center Hub-and-Spoke Blueprint",
-            "End-to-End Request Lifecycle Sequence",
-            "Trust Perimeter & Fail-Closed Security Boundary",
-            "Wire-Protocol & Schema Transformation",
-            "Async Lifecycle, Export & Erasure Loop",
-            "Implementation Guardrails & Starter Code",
+    if isinstance(slide_plan, dict) and isinstance(slide_plan.get("totalSlides"), int):
+        n_slides = max(6, min(12, int(slide_plan["totalSlides"])))
+        default_kickers_l: List[str] = ["EXECUTIVE BRIEF", "PROBLEM & TARGETS"]
+        default_titles_l: List[str] = [title[:72], "Architectural Challenge & Design Goals"]
+        for ed in (slide_plan.get("enabledDiagrams") or []):
+            default_kickers_l.append(str(ed.get("layer") or "ARCHITECTURE DIAGRAM")[:44].upper())
+            default_titles_l.append(str(ed.get("title") or "Architecture Blueprint")[:72])
+        if slide_plan.get("codeSlide"):
+            default_kickers_l.append("IMPLEMENTATION & GUARDRAILS")
+            default_titles_l.append("Implementation Guardrails & Starter Code")
+        default_kickers_l.extend(["LIVE PROOF VAULT", "TRADE-OFFS & FINOPS", "PRODUCTION READINESS"])
+        default_titles_l.extend([
             "Verified Console & SaaS Proofs (Before / After)",
             "Cost, Latency & Architecture Trade-offs",
             "Production Readiness Checklist & Next Steps",
-        )
+        ])
+        default_kickers = tuple(default_kickers_l[:n_slides])
+        default_titles = tuple(default_titles_l[:n_slides])
     else:
-        default_kickers = (
-            "EXECUTIVE BRIEF", "PROBLEM & TARGETS", "REFERENCE ARCHITECTURE",
-            "DESIGN MATRIX", "REQUEST LIFECYCLE", "IMPLEMENTATION & GUARDRAILS",
-            "LIVE PROOF VAULT", "TRADE-OFFS & COST", "PRODUCTION READINESS",
-        )
-        default_titles = (
-            title[:72],
-            "Architectural Challenge & Design Goals",
-            "End-to-End Reference Topology",
-            "Component & Security Design Matrix",
-            "End-to-End Request Lifecycle",
-            "Implementation Guardrails & Code",
-            "Verified Console & SaaS Proofs (Before / After)",
-            "Cost, Latency & Trade-off Comparison",
-            "Production Readiness Checklist & Next Steps",
-        )
+        n_slides = target_slides if target_slides in (9, 12) else (12 if len(raw_slides) >= 10 else 9)
+        if n_slides == 12:
+            default_kickers = (
+                "EXECUTIVE BRIEF", "PROBLEM & TARGETS", "REFERENCE ARCHITECTURE (C4 L2)",
+                "CLOUD ARCHITECTURE (HUB-SPOKE)", "REQUEST LIFECYCLE (C4 L3)", "SECURITY BOUNDARY (C4 L1)",
+                "WIRE PAYLOAD (C4 L4)", "ASYNC LIFECYCLE LOOP", "IMPLEMENTATION & GUARDRAILS",
+                "LIVE PROOF VAULT", "TRADE-OFFS & FINOPS", "PRODUCTION READINESS",
+            )
+            default_titles = (
+                title[:72],
+                "Architectural Challenge & Design Goals",
+                "Master Reference Architecture Topology",
+                "Cloud Architecture Center Hub-and-Spoke Blueprint",
+                "End-to-End Request Lifecycle Sequence",
+                "Trust Perimeter & Fail-Closed Security Boundary",
+                "Wire-Protocol & Schema Transformation",
+                "Async Lifecycle, Export & Erasure Loop",
+                "Implementation Guardrails & Starter Code",
+                "Verified Console & SaaS Proofs (Before / After)",
+                "Cost, Latency & Architecture Trade-offs",
+                "Production Readiness Checklist & Next Steps",
+            )
+        else:
+            default_kickers = (
+                "EXECUTIVE BRIEF", "PROBLEM & TARGETS", "REFERENCE ARCHITECTURE",
+                "DESIGN MATRIX", "REQUEST LIFECYCLE", "IMPLEMENTATION & GUARDRAILS",
+                "LIVE PROOF VAULT", "TRADE-OFFS & COST", "PRODUCTION READINESS",
+            )
+            default_titles = (
+                title[:72],
+                "Architectural Challenge & Design Goals",
+                "End-to-End Reference Topology",
+                "Component & Security Design Matrix",
+                "End-to-End Request Lifecycle",
+                "Implementation Guardrails & Code",
+                "Verified Console & SaaS Proofs (Before / After)",
+                "Cost, Latency & Trade-off Comparison",
+                "Production Readiness Checklist & Next Steps",
+            )
     slides: List[Dict[str, Any]] = []
     for i in range(n_slides):
         rs = raw_slides[i] if i < len(raw_slides) and isinstance(raw_slides[i], dict) else {}
@@ -1499,18 +1612,23 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
             "note": strip_inline_md(_sanitize_for_public_output(str(rr.get("note") or ""))).strip(),
         })
 
-    rc = raw.get("codeStarter") if isinstance(raw.get("codeStarter"), dict) else {}
-    code_starter = {
-        "readmeSummary": _sanitize_for_public_output(str(rc.get("readmeSummary") or "Review variables and security controls before applying.")),
-        "schemaSql": _sanitize_for_public_output(str(rc.get("schemaSql") or "")),
-        "terraformMain": _sanitize_for_public_output(str(rc.get("terraformMain") or "")),
-        "terraformVars": _sanitize_for_public_output(str(rc.get("terraformVars") or "")),
-        "pythonApp": _sanitize_for_public_output(str(rc.get("pythonApp") or "")),
-        "dockerfile": _sanitize_for_public_output(str(rc.get("dockerfile") or "")),
-        "requirementsTxt": _sanitize_for_public_output(str(rc.get("requirementsTxt") or "")),
-        "deploySh": _sanitize_for_public_output(str(rc.get("deploySh") or "")),
-        "verifySh": _sanitize_for_public_output(str(rc.get("verifySh") or "")),
-    }
+    inc_starter = True if slide_plan is None else bool(slide_plan.get("includeStarterCode", True))
+    rc = raw.get("codeStarter") if (inc_starter and isinstance(raw.get("codeStarter"), dict)) else {}
+    code_starter = (
+        {
+            "readmeSummary": _sanitize_for_public_output(str(rc.get("readmeSummary") or "Review variables and security controls before applying.")),
+            "schemaSql": _sanitize_for_public_output(str(rc.get("schemaSql") or "")),
+            "terraformMain": _sanitize_for_public_output(str(rc.get("terraformMain") or "")),
+            "terraformVars": _sanitize_for_public_output(str(rc.get("terraformVars") or "")),
+            "pythonApp": _sanitize_for_public_output(str(rc.get("pythonApp") or "")),
+            "dockerfile": _sanitize_for_public_output(str(rc.get("dockerfile") or "")),
+            "requirementsTxt": _sanitize_for_public_output(str(rc.get("requirementsTxt") or "")),
+            "deploySh": _sanitize_for_public_output(str(rc.get("deploySh") or "")),
+            "verifySh": _sanitize_for_public_output(str(rc.get("verifySh") or "")),
+        }
+        if inc_starter
+        else {}
+    )
 
     bp_out = {
         "title": title,
@@ -1520,6 +1638,8 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
         "prompt": _sanitize_for_public_output(prompt.strip())[:4000],
         "domain": strip_inline_md(_sanitize_for_public_output(str(raw.get("domain") or domain or "Google Cloud Architecture")))[:80],
         "audience": strip_inline_md(_sanitize_for_public_output(str(raw.get("audience") or audience or "Solutions Architects & Engineers")))[:80],
+        "category": str(category_id or raw.get("category") or DEFAULT_CATEGORY_ID),
+        "includeStarterCode": inc_starter,
         "estimatedReadMinutes": est_min,
         "keyTakeaways": takeaways,
         "platformDiagram": platform_diag,
@@ -1535,7 +1655,16 @@ def normalize_blueprint(raw: Dict[str, Any], prompt: str, domain: str, audience:
         "references": refs,
         "codeStarter": code_starter,
     }
-    _sync_inline_code_with_starter(bp_out)
+    if outline is not None:
+        bp_out["outline"] = outline
+    if slide_plan is not None:
+        bp_out["slidePlan"] = slide_plan
+    if inc_starter:
+        _sync_inline_code_with_starter(bp_out, slide_plan=slide_plan)
+    else:
+        for sl in bp_out.get("slides") or []:
+            if isinstance(sl, dict) and sl.get("calloutValue"):
+                sl["calloutValue"] = _strip_provenance_enum_suffix(str(sl["calloutValue"]))
     return bp_out
 
 
@@ -1600,9 +1729,14 @@ def encode_drawio_studio_hash(xml_str: str) -> str:
     return "R" + base64.b64encode(compressed).decode("ascii")
 
 
-def compile_all_diagrams_v2(bp: Dict[str, Any], slug: str) -> Dict[str, Dict[str, Any]]:
-    """Compiles all 6 WS1-parity 1600x900 Draw.io + SVG + native DrawingML PPTX diagrams."""
-    return _diag_v2.compile_all_v2_diagrams(bp, slug)
+def compile_all_diagrams_v2(
+    bp: Dict[str, Any],
+    slug: str,
+    enabled_kinds: Optional[List[str]] = None,
+    slide_plan: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Dict[str, Any]]:
+    """Compiles enabled WS1-parity 1600x900 Draw.io + SVG + native DrawingML PPTX diagrams."""
+    return _diag_v2.compile_all_v2_diagrams(bp, slug, enabled_kinds=enabled_kinds, slide_plan=slide_plan)
 
 
 def parse_image_header(data: bytes) -> Tuple[str, int, int, str]:
@@ -1694,45 +1828,74 @@ def _render_slide_table_svg(tbl: Dict[str, Any], x: float, y: float, w: float, m
     return "\n".join(out)
 
 
+_DIAGRAM_RAIL_META: Dict[str, Tuple[str, str]] = {
+    "architecture": ("ARCHITECTURE RAIL", "#1A73E8"),
+    "cloudarch": ("HUB-AND-SPOKE STEPS", "#174EA6"),
+    "sequence": ("SEQUENCE CHECKPOINTS", "#137333"),
+    "security": ("PERIMETER CONTROLS", "#991B1B"),
+    "wire": ("WIRE TRANSFORM NOTES", "#5B21B6"),
+    "async": ("ASYNC LOOP & REPLAY", "#8A4600"),
+}
+
+
 def compile_slide_preview_svgs(
     bp: Dict[str, Any],
     slug: str,
-    arch_svg: str,
-    seq_svg: str,
-    proofs: List[Dict[str, Any]],
-    blog_dir: Path,
+    arch_svg: str = "",
+    seq_svg: str = "",
+    proofs: Optional[List[Dict[str, Any]]] = None,
+    blog_dir: Optional[Path] = None,
     extra_svgs: Optional[Dict[str, str]] = None,
+    slide_plan: Optional[Dict[str, Any]] = None,
+    diags_map: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> List[str]:
     out_svgs: List[str] = []
-    slides = bp["slides"]
-    total = 12 if len(slides) >= 12 else len(slides[:9])
+    proofs = proofs or []
+    blog_dir = blog_dir or (get_storage_root() / slug)
+    slides = bp.get("slides") or []
+    plan = slide_plan if isinstance(slide_plan, dict) else (bp.get("slidePlan") if isinstance(bp.get("slidePlan"), dict) else None)
+    if plan and isinstance(plan.get("totalSlides"), int):
+        total = min(len(slides), int(plan["totalSlides"]))
+    else:
+        total = 12 if len(slides) >= 12 else len(slides[:9])
     if total == 0:
         return []
-    is_v2 = total == 12
-    arch_uri = _svg_data_uri(arch_svg.encode("utf-8"), "image/svg+xml")
-    seq_uri = _svg_data_uri(seq_svg.encode("utf-8"), "image/svg+xml")
-    ex = extra_svgs or {}
-    cloud_uri = _svg_data_uri(ex["cloudarch"].encode("utf-8"), "image/svg+xml") if ex.get("cloudarch") else None
-    sec_uri = _svg_data_uri(ex["security"].encode("utf-8"), "image/svg+xml") if ex.get("security") else None
-    wire_uri = _svg_data_uri(ex["wire"].encode("utf-8"), "image/svg+xml") if ex.get("wire") else None
-    async_uri = _svg_data_uri(ex["async"].encode("utf-8"), "image/svg+xml") if ex.get("async") else None
 
-    code_slide_num = 9 if is_v2 else 6
-    proof_slide_num = 10 if is_v2 else 7
-    table_slide_nums = ((11,) if cloud_uri else (4, 11)) if is_v2 else (4, 8)
-    diag_slides: Dict[int, Tuple[Optional[str], str, str]] = {
-        3: (arch_uri, "ARCHITECTURE RAIL", "#1A73E8"),
-        5: (seq_uri, "SEQUENCE CHECKPOINTS", "#137333"),
-    }
-    if is_v2:
-        if cloud_uri:
-            diag_slides[4] = (cloud_uri, "HUB-AND-SPOKE STEPS", "#174EA6")
-        if sec_uri:
-            diag_slides[6] = (sec_uri, "PERIMETER CONTROLS", "#991B1B")
-        if wire_uri:
-            diag_slides[7] = (wire_uri, "WIRE TRANSFORM NOTES", "#5B21B6")
-        if async_uri:
-            diag_slides[8] = (async_uri, "ASYNC LOOP & REPLAY", "#8A4600")
+    svg_by_kind: Dict[str, str] = {}
+    if arch_svg:
+        svg_by_kind["architecture"] = arch_svg
+    if seq_svg:
+        svg_by_kind["sequence"] = seq_svg
+    for k, v in (extra_svgs or {}).items():
+        if v:
+            svg_by_kind[k] = v
+    for k, dv in (diags_map or {}).items():
+        if isinstance(dv, dict) and dv.get("svg"):
+            svg_by_kind[k] = dv["svg"]
+
+    diag_slides: Dict[int, Tuple[Optional[str], str, str]] = {}
+    if plan and isinstance(plan.get("enabledDiagrams"), list):
+        code_slide_num = plan.get("codeSlide")
+        proof_slide_num = int(plan.get("proofSlide") or max(4, total - 2))
+        table_slide_nums: Tuple[int, ...] = (int(plan.get("tableSlide") or max(5, total - 1)),)
+        for d in plan["enabledDiagrams"]:
+            dk = str(d.get("kind") or "")
+            s_num = int(d.get("slideNumber") or 0)
+            if s_num and dk in svg_by_kind:
+                hdr, col = _DIAGRAM_RAIL_META.get(dk, ("ARCHITECTURE NOTES", "#1A73E8"))
+                diag_slides[s_num] = (_svg_data_uri(svg_by_kind[dk].encode("utf-8"), "image/svg+xml"), hdr, col)
+    else:
+        is_v2 = total == 12
+        code_slide_num = 9 if is_v2 else 6
+        proof_slide_num = 10 if is_v2 else 7
+        table_slide_nums = ((11,) if svg_by_kind.get("cloudarch") else (4, 11)) if is_v2 else (4, 8)
+        legacy_map = {3: "architecture", 5: "sequence"}
+        if is_v2:
+            legacy_map.update({4: "cloudarch", 6: "security", 7: "wire", 8: "async"})
+        for s_num, dk in legacy_map.items():
+            if dk in svg_by_kind:
+                hdr, col = _DIAGRAM_RAIL_META.get(dk, ("ARCHITECTURE NOTES", "#1A73E8"))
+                diag_slides[s_num] = (_svg_data_uri(svg_by_kind[dk].encode("utf-8"), "image/svg+xml"), hdr, col)
 
     for i, sl in enumerate(slides[:total]):
         num = i + 1
@@ -2015,38 +2178,61 @@ def _pptx_pic(sid: int, name: str, rel_id: str, x_emu: int, y_emu: int, cx_emu: 
 def compile_pptx_bytes(
     bp: Dict[str, Any],
     slug: str,
-    arch_url: str,
-    seq_url: str,
-    proofs: List[Dict[str, Any]],
-    blog_dir: Path,
+    arch_url: str = "",
+    seq_url: str = "",
+    proofs: Optional[List[Dict[str, Any]]] = None,
+    blog_dir: Optional[Path] = None,
     extra_urls: Optional[Dict[str, str]] = None,
     native_slide_xmls: Optional[Dict[int, Tuple[str, str]]] = None,
+    slide_plan: Optional[Dict[str, Any]] = None,
+    diags_map: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> bytes:
-    """Builds a valid 9- or 12-slide native editable OOXML .pptx ZIP with speaker notes & Draw.io #R hyperlinks."""
+    """Builds a valid dynamic (6..12-slide) native editable OOXML .pptx ZIP with speaker notes & Draw.io #R hyperlinks."""
     buf = io.BytesIO()
+    proofs = proofs or []
+    blog_dir = blog_dir or (get_storage_root() / slug)
     media_entries: Dict[str, bytes] = {}
     has_png = False
     has_jpg = False
     ex_urls = extra_urls or {}
+    plan = slide_plan if isinstance(slide_plan, dict) else (bp.get("slidePlan") if isinstance(bp.get("slidePlan"), dict) else None)
 
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
-        total_slides = 12 if len(bp.get("slides") or []) >= 12 else len((bp.get("slides") or [])[:9])
-        is_v2 = total_slides == 12
-        code_idx = 9 if is_v2 else 6
-        proof_idx = 10 if is_v2 else 7
-        tbl_idxs = (11,) if is_v2 else (4, 8)
-        slides_data = bp["slides"][:total_slides]
+        raw_slides_list = bp.get("slides") or []
+        if plan and isinstance(plan.get("totalSlides"), int):
+            total_slides = min(len(raw_slides_list), int(plan["totalSlides"]))
+            code_idx = plan.get("codeSlide")
+            proof_idx = int(plan.get("proofSlide") or max(4, total_slides - 2))
+            tbl_idxs: Tuple[int, ...] = (int(plan.get("tableSlide") or max(5, total_slides - 1)),)
+            req_diag_map: Dict[int, str] = {
+                int(d["slideNumber"]): str(d["kind"])
+                for d in (plan.get("enabledDiagrams") or [])
+                if d.get("slideNumber") and d.get("kind")
+            }
+        else:
+            total_slides = 12 if len(raw_slides_list) >= 12 else len(raw_slides_list[:9])
+            is_v2 = total_slides == 12
+            code_idx = 9 if is_v2 else 6
+            proof_idx = 10 if is_v2 else 7
+            tbl_idxs = (11,) if is_v2 else (4, 8)
+            req_diag_map = (
+                {3: "architecture", 4: "cloudarch", 5: "sequence", 6: "security", 7: "wire", 8: "async"}
+                if is_v2
+                else {3: "architecture", 5: "sequence"}
+            )
+        slides_data = raw_slides_list[:total_slides]
         slide_rels_extra: Dict[int, List[str]] = {i: [] for i in range(1, total_slides + 1)}
 
         # Always guarantee canonical WS1 DrawingML XML with native multi-color <a:custGeom> icons on diagram slides
         resolved_native: Dict[int, Tuple[str, str]] = dict(native_slide_xmls or {})
-        req_diag_map = (
-            {3: "architecture", 4: "cloudarch", 5: "sequence", 6: "security", 7: "wire", 8: "async"}
-            if is_v2
-            else {3: "architecture", 5: "sequence"}
-        )
+        if diags_map:
+            for s_num, d_key in req_diag_map.items():
+                if s_num not in resolved_native and d_key in diags_map and diags_map[d_key].get("ooxmlSlideXml"):
+                    resolved_native[s_num] = (diags_map[d_key]["ooxmlSlideXml"], diags_map[d_key]["viewerUrl"])
         if any(s_num not in resolved_native for s_num in req_diag_map):
-            _fallback_diags = compile_all_diagrams_v2(bp, slug)
+            _fallback_diags = compile_all_diagrams_v2(
+                bp, slug, enabled_kinds=list(req_diag_map.values()), slide_plan=plan
+            )
             for s_num, d_key in req_diag_map.items():
                 if s_num not in resolved_native and d_key in _fallback_diags and _fallback_diags[d_key].get("ooxmlSlideXml"):
                     resolved_native[s_num] = (_fallback_diags[d_key]["ooxmlSlideXml"], _fallback_diags[d_key]["viewerUrl"])
@@ -2678,19 +2864,40 @@ def _docx_inline_image(rid: str, docpr_id: int, name: str, iw: int, ih: int) -> 
 def compile_docx_bytes(
     bp: Dict[str, Any],
     slug: str,
-    arch_url: str,
-    seq_url: str,
-    proofs: List[Dict[str, Any]],
-    blog_dir: Path,
+    arch_url: str = "",
+    seq_url: str = "",
+    proofs: Optional[List[Dict[str, Any]]] = None,
+    blog_dir: Optional[Path] = None,
     extra_urls: Optional[Dict[str, str]] = None,
     grounding: Optional[Dict[str, Any]] = None,
     diagram_pngs: Optional[Dict[str, Tuple[bytes, int, int]]] = None,
+    slide_plan: Optional[Dict[str, Any]] = None,
+    outline: Optional[List[Dict[str, Any]]] = None,
+    diags_map: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> bytes:
     buf = io.BytesIO()
+    proofs = proofs or []
+    blog_dir = blog_dir or (get_storage_root() / slug)
     ex_u = extra_urls or {}
+    plan = slide_plan if isinstance(slide_plan, dict) else (bp.get("slidePlan") if isinstance(bp.get("slidePlan"), dict) else None)
+    eff_outline = outline if isinstance(outline, list) else (bp.get("outline") if isinstance(bp.get("outline"), list) else None)
+    inc_code = bool(plan.get("includeStarterCode", True)) if plan else bool(bp.get("includeStarterCode", True))
+
+    url_by_kind: Dict[str, str] = {}
+    if arch_url:
+        url_by_kind["architecture"] = arch_url
+    if seq_url:
+        url_by_kind["sequence"] = seq_url
+    for k, u in ex_u.items():
+        if u:
+            url_by_kind[k] = u
+    for k, dv in (diags_map or {}).items():
+        if isinstance(dv, dict) and dv.get("viewerUrl"):
+            url_by_kind[k] = dv["viewerUrl"]
+
     # Auto-discover cached rasterized diagram PNGs in blog_dir/diagrams/ if not explicitly provided
     diag_png_map: Dict[str, Tuple[bytes, int, int]] = dict(diagram_pngs or {})
-    for dk in ("architecture", "cloudarch", "sequence", "security", "wire", "async"):
+    for dk in VALID_DIAGRAM_KINDS:
         if dk not in diag_png_map:
             cand_png = blog_dir / "diagrams" / f"{slug}-{dk}.png"
             if cand_png.is_file():
@@ -2701,18 +2908,27 @@ def compile_docx_bytes(
                 except Exception:
                     pass
 
-    ordered_figs: List[Tuple[str, str, str]] = [
-        ("architecture", "Figure 1 — Master Platform Architecture (C4 L2)", arch_url),
-    ]
-    if ex_u.get("cloudarch"):
-        ordered_figs.append(("cloudarch", "Figure 2 — Cloud Architecture Center Blueprint (Hub-and-Spoke)", ex_u["cloudarch"]))
-    ordered_figs.append(("sequence", f"Figure {len(ordered_figs)+1} — End-to-End Request Lifecycle Sequence (C4 L3)", seq_url))
-    if ex_u.get("security"):
-        ordered_figs.append(("security", f"Figure {len(ordered_figs)+1} — Trust Perimeter & Security Boundary (C4 L1)", ex_u["security"]))
-    if ex_u.get("wire"):
-        ordered_figs.append(("wire", f"Figure {len(ordered_figs)+1} — Wire Payload & Schema Transformation (C4 L4)", ex_u["wire"]))
-    if ex_u.get("async"):
-        ordered_figs.append(("async", f"Figure {len(ordered_figs)+1} — Async Lifecycle, Export & Recovery Loop", ex_u["async"]))
+    ordered_figs: List[Tuple[str, str, str]] = []
+    if plan and isinstance(plan.get("enabledDiagrams"), list) and plan["enabledDiagrams"]:
+        for idx_f, ed in enumerate(plan["enabledDiagrams"], 1):
+            fk = str(ed.get("kind") or "")
+            fu = url_by_kind.get(fk, "")
+            ft = str(ed.get("title") or DIAGRAM_KIND_META.get(fk, {}).get("defaultTitle") or fk.title())
+            if fk:
+                ordered_figs.append((fk, f"Figure {idx_f} — {ft}", fu))
+    else:
+        if url_by_kind.get("architecture"):
+            ordered_figs.append(("architecture", "Figure 1 — Master Platform Architecture (C4 L2)", url_by_kind["architecture"]))
+        if url_by_kind.get("cloudarch"):
+            ordered_figs.append(("cloudarch", f"Figure {len(ordered_figs)+1} — Cloud Architecture Center Blueprint (Hub-and-Spoke)", url_by_kind["cloudarch"]))
+        if url_by_kind.get("sequence"):
+            ordered_figs.append(("sequence", f"Figure {len(ordered_figs)+1} — End-to-End Request Lifecycle Sequence (C4 L3)", url_by_kind["sequence"]))
+        if url_by_kind.get("security"):
+            ordered_figs.append(("security", f"Figure {len(ordered_figs)+1} — Trust Perimeter & Security Boundary (C4 L1)", url_by_kind["security"]))
+        if url_by_kind.get("wire"):
+            ordered_figs.append(("wire", f"Figure {len(ordered_figs)+1} — Wire Payload & Schema Transformation (C4 L4)", url_by_kind["wire"]))
+        if url_by_kind.get("async"):
+            ordered_figs.append(("async", f"Figure {len(ordered_figs)+1} — Async Lifecycle, Export & Recovery Loop", url_by_kind["async"]))
 
     doc_rels: List[str] = []
     media_files: Dict[str, bytes] = {}
@@ -2736,13 +2952,24 @@ def compile_docx_bytes(
         for tk in bp["keyTakeaways"]:
             body.append(_docx_p(f"• {tk}", size_hp=20, sp_before=20, sp_after=40))
 
-    body.append(_docx_p("Architecture Diagrams & Interactive Blueprints", bold=True, size_hp=26, color="1A73E8", sp_before=180, sp_after=60, border_bottom="CBD5E1", rich=False))
-    for fi, (f_key, f_label, f_url) in enumerate(ordered_figs, 1):
-        rid = f"rId{fi}"
-        doc_rels.append(
-            f'<Relationship Id="{rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(f_url)}" TargetMode="External"/>'
-        )
-        body.append(_docx_link_p(f"{f_label}: ", "Open editable diagram in viewer.diagrams.net ->", rid, keep_next=(f_key in diag_png_map)))
+    fig_idx_lookup: Dict[str, Tuple[int, str, str]] = {
+        f_key: (fi, f_label, f_url) for fi, (f_key, f_label, f_url) in enumerate(ordered_figs, 1)
+    }
+
+    def _append_docx_figure(f_key: str) -> None:
+        nonlocal has_png
+        info = fig_idx_lookup.get(f_key)
+        if not info:
+            return
+        fi, f_label, f_url = info
+        if f_url:
+            rid = f"rId{fi}"
+            doc_rels.append(
+                f'<Relationship Id="{rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="{xml_esc(f_url)}" TargetMode="External"/>'
+            )
+            body.append(_docx_link_p(f"{f_label}: ", "Open editable diagram in viewer.diagrams.net ->", rid, keep_next=(f_key in diag_png_map)))
+        else:
+            body.append(_docx_p(f_label, bold=True, size_hp=19, color="1A73E8", sp_before=80, sp_after=30, rich=False))
         if f_key in diag_png_map:
             png_bytes, pw, ph = diag_png_map[f_key]
             img_rid = f"rId{200 + fi}"
@@ -2754,7 +2981,7 @@ def compile_docx_bytes(
             )
             body.append(_docx_inline_image(img_rid, 200 + fi, mname, pw, ph))
 
-    for sec in bp["sections"]:
+    def _append_docx_section(sec: Dict[str, Any]) -> None:
         body.append(_docx_p(sec["heading"], bold=True, size_hp=28, color="0F172A", sp_before=220, sp_after=80, border_bottom="CBD5E1", rich=False))
         for p in sec.get("paragraphs") or []:
             body.append(_docx_p(p, size_hp=20, sp_after=90))
@@ -2770,22 +2997,53 @@ def compile_docx_bytes(
             body.append(_docx_table(sec["table"]["headers"], sec["table"]["rows"]))
             body.append(_docx_p("", sp_after=80, rich=False))
 
+    if eff_outline:
+        secs_list = list(bp.get("sections") or [])
+        sec_cursor = 0
+        placed_figs: set[str] = set()
+        for item in eff_outline:
+            if not isinstance(item, dict) or not item.get("enabled"):
+                continue
+            itype = item.get("type")
+            if itype == "section" and sec_cursor < len(secs_list):
+                _append_docx_section(secs_list[sec_cursor])
+                sec_cursor += 1
+            elif itype == "diagram":
+                dk = str(item.get("kind") or "")
+                if dk in fig_idx_lookup and dk not in placed_figs:
+                    _append_docx_figure(dk)
+                    placed_figs.add(dk)
+        while sec_cursor < len(secs_list):
+            _append_docx_section(secs_list[sec_cursor])
+            sec_cursor += 1
+        for f_key, _, _ in ordered_figs:
+            if f_key not in placed_figs:
+                _append_docx_figure(f_key)
+                placed_figs.add(f_key)
+    else:
+        body.append(_docx_p("Architecture Diagrams & Interactive Blueprints", bold=True, size_hp=26, color="1A73E8", sp_before=180, sp_after=60, border_bottom="CBD5E1", rich=False))
+        for f_key, _, _ in ordered_figs:
+            _append_docx_figure(f_key)
+        for sec in bp["sections"]:
+            _append_docx_section(sec)
+
     cs = bp.get("codeStarter") or {}
-    starter_manifest_rows = [
-        ["main.tf", "Terraform GCP infrastructure & IAM scaffold", "GENERATED_TEMPLATE_UNDEPLOYED"],
-        ["variables.tf", "Parameterized project, region & instance inputs", "GENERATED_TEMPLATE_UNDEPLOYED"],
-        ["app.py", "FastAPI / Python 3.11 reference service (AST-verified)", "GENERATED_TEMPLATE_UNDEPLOYED"],
-        ["Dockerfile", "Hardened non-root Python 3.11 container image", "GENERATED_TEMPLATE_UNDEPLOYED"],
-        ["requirements.txt", "Pinned Python runtime dependencies", "GENERATED_TEMPLATE_UNDEPLOYED"],
-        ["deploy.sh", "Zero-trust build & deployment wrapper script", "GENERATED_TEMPLATE_UNDEPLOYED"],
-        ["verify.sh", "Post-deploy ingress & health verification script", "GENERATED_TEMPLATE_UNDEPLOYED"],
-    ]
-    if str(cs.get("schemaSql") or "").strip():
-        starter_manifest_rows.insert(2, ["schema.sql", "Canonical database DDL, indexes & property graph", "GENERATED_TEMPLATE_UNDEPLOYED"])
-    body.append(_docx_p("Starter Implementation Kit Manifest", bold=True, size_hp=24, color="0F172A", sp_before=180, sp_after=60, border_bottom="EA8600", rich=False))
-    body.append(_docx_p("STATUS: GENERATED_TEMPLATE_UNDEPLOYED — Review, run terraform plan, and security-scan starter.zip before applying to any live Google Cloud project.", bold=True, size_hp=17, color="92400E", shade="FFFBEB", sp_after=80, rich=False))
-    body.append(_docx_table(["Starter File", "Purpose", "Verification Status"], starter_manifest_rows))
-    body.append(_docx_p("", sp_after=80, rich=False))
+    if inc_code:
+        starter_manifest_rows = [
+            ["main.tf", "Terraform GCP infrastructure & IAM scaffold", "GENERATED_TEMPLATE_UNDEPLOYED"],
+            ["variables.tf", "Parameterized project, region & instance inputs", "GENERATED_TEMPLATE_UNDEPLOYED"],
+            ["app.py", "FastAPI / Python 3.11 reference service (AST-verified)", "GENERATED_TEMPLATE_UNDEPLOYED"],
+            ["Dockerfile", "Hardened non-root Python 3.11 container image", "GENERATED_TEMPLATE_UNDEPLOYED"],
+            ["requirements.txt", "Pinned Python runtime dependencies", "GENERATED_TEMPLATE_UNDEPLOYED"],
+            ["deploy.sh", "Zero-trust build & deployment wrapper script", "GENERATED_TEMPLATE_UNDEPLOYED"],
+            ["verify.sh", "Post-deploy ingress & health verification script", "GENERATED_TEMPLATE_UNDEPLOYED"],
+        ]
+        if str(cs.get("schemaSql") or "").strip():
+            starter_manifest_rows.insert(2, ["schema.sql", "Canonical database DDL, indexes & property graph", "GENERATED_TEMPLATE_UNDEPLOYED"])
+        body.append(_docx_p("Starter Implementation Kit Manifest", bold=True, size_hp=24, color="0F172A", sp_before=180, sp_after=60, border_bottom="EA8600", rich=False))
+        body.append(_docx_p("STATUS: GENERATED_TEMPLATE_UNDEPLOYED — Review, run terraform plan, and security-scan starter.zip before applying to any live Google Cloud project.", bold=True, size_hp=17, color="92400E", shade="FFFBEB", sp_after=80, rich=False))
+        body.append(_docx_table(["Starter File", "Purpose", "Verification Status"], starter_manifest_rows))
+        body.append(_docx_p("", sp_after=80, rich=False))
 
     body.append(_docx_p("Authentic Live Proof Screenshots", bold=True, size_hp=26, color="137333", sp_before=220, sp_after=80, border_bottom="137333", rich=False))
     if proofs:
@@ -2894,25 +3152,38 @@ def compile_docx_bytes(
 def compile_blog_markdown(
     bp: Dict[str, Any],
     slug: str,
-    arch_url: str,
-    seq_url: str,
-    proofs: List[Dict[str, Any]],
-    model_used: str,
+    arch_url: str = "",
+    seq_url: str = "",
+    proofs: Optional[List[Dict[str, Any]]] = None,
+    model_used: str = DEFAULT_MODEL,
     extra_urls: Optional[Dict[str, str]] = None,
     grounding: Optional[Dict[str, Any]] = None,
+    slide_plan: Optional[Dict[str, Any]] = None,
+    outline: Optional[List[Dict[str, Any]]] = None,
+    diags_map: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> str:
+    proofs = proofs or []
     ex_u = extra_urls or {}
     g_info = grounding or {}
+    plan = slide_plan if isinstance(slide_plan, dict) else (bp.get("slidePlan") if isinstance(bp.get("slidePlan"), dict) else None)
+    eff_outline = outline if isinstance(outline, list) else (bp.get("outline") if isinstance(bp.get("outline"), list) else None)
+    inc_code = bool(plan.get("includeStarterCode", True)) if plan else bool(bp.get("includeStarterCode", True))
+    cat_obj = get_category(bp.get("category"))
+    starter_line = (
+        "- **Starter Code Status:** `GENERATED_TEMPLATE_UNDEPLOYED` (review & run `terraform plan` before deploying)"
+        if inc_code
+        else f"- **Starter Code Status:** Disabled by category (`{cat_obj['shortName']}`)"
+    )
     lines: List[str] = [
         f"# {bp['title']}",
         "",
         f"> **{bp['subtitle']}**",
         "",
-        f"- **Slug:** `{slug}` | **Domain:** {bp['domain']} | **Audience:** {bp['audience']} | **Estimated Read:** {bp['estimatedReadMinutes']} min",
+        f"- **Slug:** `{slug}` | **Category:** {cat_obj['shortName']} | **Domain:** {bp['domain']} | **Audience:** {bp['audience']} | **Estimated Read:** {bp['estimatedReadMinutes']} min",
         f"- **Authoring Model:** `{model_used}` (Multi-stage live Gemini API; fail-closed provenance policy)",
         f"- **Live Grounding:** `{g_info.get('status', 'NOT_RUN')}` ({len(g_info.get('queries') or [])} live Google Search queries, {len(g_info.get('sources') or [])} web sources)",
-        "- **Verification Status:** 12-check deterministic quality gate (`D-01..D-12`) + grounded orthogonal LLM judge recorded in `quality_report.json`",
-        "- **Starter Code Status:** `GENERATED_TEMPLATE_UNDEPLOYED` (review & run `terraform plan` before deploying)",
+        "- **Verification Status:** 13-check deterministic quality gate (`D-01..D-13`) + grounded orthogonal LLM judge recorded in `quality_report.json`",
+        starter_line,
         "",
         "## Executive Summary (BLUF)",
         "",
@@ -2929,25 +3200,44 @@ def compile_blog_markdown(
     def _sid(k: str) -> str:
         return _diag_v2._cc.make_diagram_public_id(slug, k)
 
+    fig_rows: List[Tuple[str, str, str, int]] = []
+    if plan and isinstance(plan.get("enabledDiagrams"), list) and plan["enabledDiagrams"]:
+        for idx_f, ed in enumerate(plan["enabledDiagrams"], 1):
+            dk = str(ed.get("kind") or "")
+            if dk:
+                meta = DIAGRAM_KIND_META.get(dk, {})
+                ft = str(ed.get("title") or meta.get("defaultTitle") or dk.title())
+                fl = str((diags_map or {}).get(dk, {}).get("layer") or meta.get("shortLabel") or dk.upper())
+                fig_rows.append((dk, ft, fl, idx_f))
+    else:
+        if arch_url or (diags_map and "architecture" in diags_map):
+            fig_rows.append(("architecture", "Master Platform Architecture", "C4 L2", len(fig_rows) + 1))
+        if ex_u.get("cloudarch") or (diags_map and "cloudarch" in diags_map):
+            fig_rows.append(("cloudarch", "Cloud Architecture Center Blueprint", "HUB-SPOKE", len(fig_rows) + 1))
+        if seq_url or (diags_map and "sequence" in diags_map):
+            fig_rows.append(("sequence", "Request Lifecycle Sequence", "C4 L3", len(fig_rows) + 1))
+        if ex_u.get("security") or (diags_map and "security" in diags_map):
+            fig_rows.append(("security", "Trust Perimeter & Security Boundary", "C4 L1", len(fig_rows) + 1))
+        if ex_u.get("wire") or (diags_map and "wire" in diags_map):
+            fig_rows.append(("wire", "Wire Payload & Schema Transformation", "C4 L4", len(fig_rows) + 1))
+        if ex_u.get("async") or (diags_map and "async" in diags_map):
+            fig_rows.append(("async", "Async Lifecycle, Export & Recovery Loop", "ASYNC", len(fig_rows) + 1))
+
     lines.extend([
         "## Figures & Editable C4 Diagrams",
         "",
         "| Figure | C4 Layer | Draw.io File | Local Studio |",
         "| --- | --- | --- | --- |",
-        f"| Figure 1 — Master Platform Architecture | `C4 L2` | `diagrams/{slug}-architecture.drawio` | [Edit in Studio](/drawio-editor?id={_sid('architecture')}) |",
     ])
-    if ex_u.get("cloudarch"):
-        lines.append(f"| Figure 2 — Cloud Architecture Center Blueprint | `HUB-SPOKE` | `diagrams/{slug}-cloudarch.drawio` | [Edit in Studio](/drawio-editor?id={_sid('cloudarch')}) |")
-    lines.append(f"| Figure {'3' if ex_u.get('cloudarch') else '2'} — Request Lifecycle Sequence | `C4 L3` | `diagrams/{slug}-sequence.drawio` | [Edit in Studio](/drawio-editor?id={_sid('sequence')}) |")
-    if ex_u.get("security"):
-        lines.append(f"| Figure {'4' if ex_u.get('cloudarch') else '3'} — Trust Perimeter & Security Boundary | `C4 L1` | `diagrams/{slug}-security.drawio` | [Edit in Studio](/drawio-editor?id={_sid('security')}) |")
-    if ex_u.get("wire"):
-        lines.append(f"| Figure {'5' if ex_u.get('cloudarch') else '4'} — Wire Payload & Schema Transformation | `C4 L4` | `diagrams/{slug}-wire.drawio` | [Edit in Studio](/drawio-editor?id={_sid('wire')}) |")
-    if ex_u.get("async"):
-        lines.append(f"| Figure {'6' if ex_u.get('cloudarch') else '5'} — Async Lifecycle, Export & Recovery Loop | `ASYNC` | `diagrams/{slug}-async.drawio` | [Edit in Studio](/drawio-editor?id={_sid('async')}) |")
+    fig_lookup: Dict[str, Tuple[str, str, int]] = {}
+    for dk, ft, fl, fn in fig_rows:
+        fig_lookup[dk] = (ft, fl, fn)
+        lines.append(
+            f"| Figure {fn} — {ft} | `{fl}` | `diagrams/{slug}-{dk}.drawio` | [Edit in Studio](/drawio-editor?id={_sid(dk)}) |"
+        )
     lines.append("")
 
-    for sec in bp["sections"]:
+    def _emit_md_section(sec: Dict[str, Any]) -> None:
         lines.append(f"## {sec['heading']}")
         lines.append("")
         for p in sec.get("paragraphs") or []:
@@ -2975,6 +3265,29 @@ def compile_blog_markdown(
             for rr in tbl["rows"]:
                 lines.append("| " + " | ".join(str(c).replace("|", "\\|") for c in rr) + " |")
             lines.append("")
+
+    if eff_outline:
+        secs_list = list(bp.get("sections") or [])
+        sec_cursor = 0
+        for item in eff_outline:
+            if not isinstance(item, dict) or not item.get("enabled"):
+                continue
+            itype = item.get("type")
+            if itype == "section" and sec_cursor < len(secs_list):
+                _emit_md_section(secs_list[sec_cursor])
+                sec_cursor += 1
+            elif itype == "diagram":
+                dk = str(item.get("kind") or "")
+                if dk in fig_lookup:
+                    ft, fl, fn = fig_lookup[dk]
+                    lines.append(f"> **Figure {fn} — {ft}** (`{fl}`) · `diagrams/{slug}-{dk}.drawio` · [Edit in Studio](/drawio-editor?id={_sid(dk)})")
+                    lines.append("")
+        while sec_cursor < len(secs_list):
+            _emit_md_section(secs_list[sec_cursor])
+            sec_cursor += 1
+    else:
+        for sec in bp["sections"]:
+            _emit_md_section(sec)
 
     lines.append("## Claim Provenance Ledger")
     lines.append("")
@@ -3026,8 +3339,21 @@ def compile_blog_markdown(
     return "\n".join(lines).strip() + "\n"
 
 
-def compile_starter_zip(bp: Dict[str, Any], slug: str) -> Tuple[bytes, Dict[str, str], bool, str]:
-    cs = bp["codeStarter"]
+def compile_starter_zip(bp: Dict[str, Any], slug: str, *, include_starter_code: Optional[bool] = None) -> Tuple[bytes, Dict[str, str], bool, str]:
+    inc = bool(bp.get("includeStarterCode", True)) if include_starter_code is None else bool(include_starter_code)
+    if not inc:
+        buf = io.BytesIO()
+        cat_name = get_category(bp.get("category"))["name"]
+        readme = (
+            f"# {bp['title']} — Starter Code Disabled\n\n"
+            f"Starter code generation was intentionally disabled for category **{cat_name}** (`includeStarterCode=false`).\n"
+            "Enable `Include Starter Code` in Create Blog to synthesize hardened Terraform v2 + Python 3.11 + Dockerfile templates.\n"
+        )
+        files_na = {"README.md": readme}
+        with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+            zf.writestr(f"{slug}-starter/README.md", readme.encode("utf-8"))
+        return buf.getvalue(), files_na, True, ""
+    cs = bp.get("codeStarter") or {}
     banner_hash = (
         "# STATUS: GENERATED_TEMPLATE_UNDEPLOYED\n"
         f"# Generated for slug '{slug}' at {_now_iso()}.\n"
@@ -3330,10 +3656,10 @@ def run_deterministic_quality_gate(
     *,
     bp: Dict[str, Any],
     md_text: str,
-    arch_drawio: str,
-    arch_svg: str,
-    seq_drawio: str,
-    seq_svg: str,
+    arch_drawio: str = "",
+    arch_svg: str = "",
+    seq_drawio: str = "",
+    seq_svg: str = "",
     pptx_bytes: bytes,
     docx_bytes: bytes,
     py_ast_ok: bool,
@@ -3341,8 +3667,11 @@ def run_deterministic_quality_gate(
     starter_files: Dict[str, str],
     extra_diagrams: Optional[Dict[str, Dict[str, Any]]] = None,
     arch_icon_count: Optional[int] = None,
+    slide_plan: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     checks: List[Dict[str, Any]] = []
+    plan = slide_plan if isinstance(slide_plan, dict) else (bp.get("slidePlan") if isinstance(bp.get("slidePlan"), dict) else None)
+    inc_code = bool(plan.get("includeStarterCode", True)) if plan else bool(bp.get("includeStarterCode", True))
 
     def _add(cid: str, label: str, passed: bool, detail: str) -> None:
         checks.append({"id": cid, "label": label, "status": "PASS" if passed else "FAIL", "detail": detail})
@@ -3350,37 +3679,69 @@ def run_deterministic_quality_gate(
     prose_words = _count_prose_only_words(md_text)
     cb_count = sum(len(s.get("codeBlocks") or []) for s in (bp.get("sections") or []))
     tbl_count = sum(1 for s in (bp.get("sections") or []) if s.get("table"))
+    min_secs = 2 if plan else 3
     _add(
         "D-01",
         "Markdown Structure & Prose-Only Depth",
-        prose_words >= 180 and len(bp.get("sections", [])) >= 3,
+        prose_words >= 180 and len(bp.get("sections", [])) >= min_secs,
         f"{prose_words:,} prose-only words (excl. code/tables/URLs) across {len(bp.get('sections', []))} sections, {tbl_count} section tables, {cb_count} inline code blocks.",
     )
 
-    ic_cnt = arch_icon_count if arch_icon_count is not None else arch_drawio.count("image=data:image/svg+xml,")
-    arch_v = arch_drawio.count('vertex="1"')
-    arch_e = arch_drawio.count('edge="1"')
-    arch_geom = ((extra_diagrams or {}).get("architecture") or {}).get("geometry") or {}
-    geom_errs = arch_geom.get("errors") or []
-    d2_ok, d2_msg = True, f"WS1-canonical 1600x900 C4 L2 ({arch_v}v / {arch_e}e); {ic_cnt} embedded GCP SVG icons; 0 overlaps; 0 flowAnimation=1."
-    low_ad = arch_drawio.lower()
-    if "<!doctype" in low_ad or "<!entity" in low_ad or "flowanimation=1" in low_ad or "edit in draw.io" in low_ad:
-        d2_ok, d2_msg = False, "Disallowed DOCTYPE/ENTITY, flowAnimation=1, or baked footer in architecture .drawio."
+    # Assemble unified enabled diagrams map so any category subset works cleanly without assuming architecture/sequence
+    all_diag_map: Dict[str, Dict[str, Any]] = {}
+    if arch_drawio or arch_svg:
+        all_diag_map["architecture"] = {"xml": arch_drawio, "svg": arch_svg, "iconCount": arch_icon_count}
+    if seq_drawio or seq_svg:
+        all_diag_map["sequence"] = {"xml": seq_drawio, "svg": seq_svg}
+    for k, dv in (extra_diagrams or {}).items():
+        if isinstance(dv, dict) and (dv.get("xml") or dv.get("svg")):
+            merged_d = dict(all_diag_map.get(k) or {})
+            merged_d.update(dv)
+            all_diag_map[k] = merged_d
+
+    if plan and isinstance(plan.get("enabledDiagramKinds"), list) and plan["enabledDiagramKinds"]:
+        enabled_kinds = [k for k in plan["enabledDiagramKinds"] if k in all_diag_map] or list(all_diag_map.keys())
+    else:
+        enabled_kinds = list(all_diag_map.keys())
+    primary_kind = "architecture" if "architecture" in enabled_kinds else (enabled_kinds[0] if enabled_kinds else "architecture")
+    primary_d = all_diag_map.get(primary_kind) or {}
+    primary_xml = str(primary_d.get("xml") or arch_drawio or "")
+
+    ic_cnt = (
+        arch_icon_count
+        if (primary_kind == "architecture" and arch_icon_count is not None)
+        else (
+            int(primary_d["iconCount"])
+            if isinstance(primary_d.get("iconCount"), int)
+            else primary_xml.count("image=data:image/svg+xml,")
+        )
+    )
+    prim_v = primary_xml.count('vertex="1"')
+    prim_e = primary_xml.count('edge="1"')
+    prim_geom = primary_d.get("geometry") or {}
+    geom_errs = prim_geom.get("errors") or []
+    d2_ok, d2_msg = True, f"WS1-canonical 1600x900 {primary_kind} ({prim_v}v / {prim_e}e); {ic_cnt} embedded GCP SVG icons; 0 overlaps; 0 flowAnimation=1."
+    low_ad = primary_xml.lower()
+    if not primary_xml:
+        d2_ok, d2_msg = False, f"Primary diagram '{primary_kind}' XML is empty."
+    elif "<!doctype" in low_ad or "<!entity" in low_ad or "flowanimation=1" in low_ad or "edit in draw.io" in low_ad:
+        d2_ok, d2_msg = False, f"Disallowed DOCTYPE/ENTITY, flowAnimation=1, or baked footer in {primary_kind} .drawio."
     elif geom_errs:
         d2_ok, d2_msg = False, f"Geometry collision/bounds errors: {geom_errs[:3]}"
     else:
         try:
-            ET.fromstring(arch_drawio)
+            ET.fromstring(primary_xml)
         except ET.ParseError as exc:
             d2_ok, d2_msg = False, f"XML parse error: {exc}"
-    _add("D-02", "Architecture .drawio & Geometry Gate", d2_ok and ic_cnt >= 2, d2_msg)
+    _add("D-02", "Primary Diagram .drawio & Geometry Gate", d2_ok and ic_cnt >= 2, d2_msg)
 
     d3_ok, d3_errs = True, []
-    extra_xml_list = [("sequence", seq_drawio)]
-    for k, dv in (extra_diagrams or {}).items():
-        if k in ("cloudarch", "security", "wire", "async") and dv.get("xml"):
-            extra_xml_list.append((k, dv["xml"]))
-    for k, x_txt in extra_xml_list:
+    supporting_list = [
+        (k, str(all_diag_map[k].get("xml") or ""))
+        for k in enabled_kinds
+        if k != primary_kind and all_diag_map[k].get("xml")
+    ]
+    for k, x_txt in supporting_list:
         low_x = x_txt.lower()
         if "<!doctype" in low_x or "<!entity" in low_x or "flowanimation=1" in low_x:
             d3_ok = False
@@ -3391,29 +3752,40 @@ def run_deterministic_quality_gate(
         else:
             try:
                 ET.fromstring(x_txt)
-                g_sub = ((extra_diagrams or {}).get(k) or {}).get("geometry") or {}
+                g_sub = (all_diag_map.get(k) or {}).get("geometry") or {}
                 if g_sub.get("errors"):
                     d3_ok = False
                     d3_errs.append(f"{k}: geom={g_sub['errors'][:2]}")
             except ET.ParseError as exc:
                 d3_ok = False
                 d3_errs.append(f"{k}: {exc}")
+    total_checked_diags = (1 if primary_xml else 0) + len(supporting_list)
     _add(
         "D-03",
         "Supporting C4 .drawio Lifelines & Hygiene",
         d3_ok,
-        f"Validated {1 + len(extra_xml_list)}/{1 + len(extra_xml_list)} Draw.io diagrams (static dashed lifelines, 0 flowAnimation=1)." if d3_ok else "; ".join(d3_errs),
+        f"Validated {total_checked_diags}/{total_checked_diags} enabled Draw.io diagrams (static dashed lifelines, 0 flowAnimation=1)." if d3_ok else "; ".join(d3_errs),
     )
 
-    svg_blobs = [arch_svg, seq_svg] + [
-        dv.get("svg", "") for k, dv in (extra_diagrams or {}).items() if k in ("cloudarch", "security", "wire", "async")
-    ]
+    svg_blobs = [str(all_diag_map[k].get("svg") or "") for k in enabled_kinds if all_diag_map[k].get("svg")]
     svg_combo = "\n".join(svg_blobs).lower()
     # Only flag inline event handlers INSIDE an actual XML/SVG tag attribute (avoid false positives on prose text like `is_tombstoned = TRUE`).
     xss_hit = bool(re.search(r"(<script|<foreignobject|javascript:|<[^>]+\son[a-z]+\s*=)", svg_combo))
     _add("D-04", "SVG XSS / Script Safety", not xss_hit, f"0 unsafe handlers across {len(svg_blobs)} SVG diagrams." if not xss_hit else "Unsafe SVG markup found.")
 
-    expected_slides = 12 if len(bp.get("slides") or []) >= 12 else len((bp.get("slides") or [])[:9]) or 9
+    if plan and isinstance(plan.get("totalSlides"), int):
+        expected_slides = int(plan["totalSlides"])
+        req_links = tuple(int(s) for s in (plan.get("diagramSlides") or []))
+        code_slide_num = plan.get("codeSlide")
+        proof_slide_num = int(plan.get("proofSlide") or max(4, expected_slides - 2))
+        expected_fig_n = len(plan.get("enabledDiagrams") or []) or len(enabled_kinds)
+    else:
+        expected_slides = 12 if len(bp.get("slides") or []) >= 12 else len((bp.get("slides") or [])[:9]) or 9
+        req_links = ((3, 4, 5, 6, 7, 8) if (extra_diagrams and "cloudarch" in extra_diagrams) else (3, 5, 6, 7, 8)) if (expected_slides == 12 and extra_diagrams) else (3, 5)
+        code_slide_num = 9 if expected_slides == 12 else 6
+        proof_slide_num = 10 if expected_slides == 12 else 7
+        expected_fig_n = 6 if (extra_diagrams and "cloudarch" in extra_diagrams) else (len(enabled_kinds) if enabled_kinds else 5)
+
     d5_ok, d5_detail = True, ""
     pptx_all_xml = ""
     try:
@@ -3425,7 +3797,6 @@ def run_deterministic_quality_gate(
             icon_missing_slides: List[int] = []
             text_badge_hits: List[str] = []
             total_ooxml_icons = 0
-            req_links = ((3, 4, 5, 6, 7, 8) if (extra_diagrams and "cloudarch" in extra_diagrams) else (3, 5, 6, 7, 8)) if (expected_slides == 12 and extra_diagrams) else (3, 5)
             slide_xml_chunks: List[str] = []
             for i in range(1, expected_slides + 1):
                 xml_b = zf.read(f"ppt/slides/slide{i}.xml")
@@ -3468,10 +3839,7 @@ def run_deterministic_quality_gate(
             doc_xml = zf.read("word/document.xml")
             root_doc = ET.fromstring(doc_xml)
             docx_xml_str = doc_xml.decode("utf-8")
-            # Check all expected figures present
-            expected_fig_n = 6 if (extra_diagrams and "cloudarch" in extra_diagrams) else 5
             missing_figs = [f"Figure {fi}" for fi in range(1, expected_fig_n + 1) if f"Figure {fi}" not in docx_xml_str]
-            # Check zero literal markdown backticks in prose paragraphs (non-Courier New)
             ns_w = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
             backtick_leaks = 0
             for p_el in root_doc.findall(".//w:p", ns_w):
@@ -3506,32 +3874,32 @@ def run_deterministic_quality_gate(
                 s_txt = zf.read(f"ppt/slides/slide{i}.xml").decode("utf-8")
                 if any(ch in s_txt for ch in _BANNED_STATUS_EMOJIS):
                     emoji_hits += 1
-                if "**" in s_txt and i != (9 if expected_slides == 12 else 6):
+                if "**" in s_txt and i != code_slide_num:
                     raw_md_leaks += 1
                 if any(f"({tag})" in s_txt for tag in ALLOWED_PROVENANCE_TAGS):
                     enum_leaks += 1
-                if expected_slides == 12 and "Slide 7" in s_txt and i == 10:
+                if proof_slide_num != 7 and "Slide 7" in s_txt and i == proof_slide_num:
                     stale_slide7_hits += 1
     except Exception:
         pass
     _add("D-07", "Zero Status Emojis inside Slide XML", emoji_hits == 0, f"0 emoji glyphs detected across slides 1..{expected_slides}." if emoji_hits == 0 else f"{emoji_hits} slides contained disallowed status emojis.")
 
-    scan_blobs = [md_text, arch_drawio, seq_drawio, pptx_all_xml, docx_xml_str] + [
-        dv.get("xml", "") for k, dv in (extra_diagrams or {}).items() if k in ("cloudarch", "security", "wire", "async")
+    scan_blobs = [md_text, pptx_all_xml, docx_xml_str] + [
+        str(all_diag_map[k].get("xml") or "") for k in enabled_kinds
     ] + list((starter_files or {}).values())
     combo_scan = "\n".join(scan_blobs)
     leaks = scan_for_f13_leaks(combo_scan)
     if re.search(r"\b(?:acme_corp|tenant_acme|@acme\.com|acme-corp)\b", combo_scan, re.IGNORECASE):
         leaks.append("fixture_placeholder:acme")
     if stale_slide7_hits > 0:
-        leaks.append("stale_proof_copy:Slide_7_on_12slide_deck")
+        leaks.append("stale_proof_copy:Slide_7_on_dynamic_deck")
     _add("D-08", "Public-Repo F-13 Hygiene, Secret & Fixture Scan", len(leaks) == 0, "0 internal domains, tokens, corporate email leaks, or placeholder fixtures across all artifacts." if not leaks else f"Detected: {', '.join(leaks)}")
 
     ledger = bp.get("claimLedger") or []
     valid_tags = all(c.get("provenance") in ALLOWED_PROVENANCE_TAGS for c in ledger)
     _add("D-09", "Claim Provenance Ledger Tagging", len(ledger) >= 1 and valid_tags, f"{len(ledger)} quantitative claims tagged with canonical provenance categories.")
 
-    # Verify BOTH starter app.py AND every inline Python code block in blog.md parse via ast.parse()
+    # Verify BOTH starter app.py (when enabled) AND every inline Python code block in blog.md parse via ast.parse()
     inline_py_errs: List[str] = []
     for idx_m, m_py in enumerate(re.finditer(r"```(?:python|py)\s*\n([\s\S]*?)```", md_text or "", re.IGNORECASE), 1):
         snippet = m_py.group(1)
@@ -3539,20 +3907,30 @@ def run_deterministic_quality_gate(
             ast.parse(snippet)
         except SyntaxError as exc:
             inline_py_errs.append(f"blog.md block #{idx_m} L{exc.lineno}: {exc.msg}")
-    has_label = all("GENERATED_TEMPLATE_UNDEPLOYED" in starter_files.get(k, "") for k in ("main.tf", "app.py", "README.md", "PROVENANCE.txt"))
-    has_container_files = bool(starter_files.get("Dockerfile")) and bool(starter_files.get("requirements.txt"))
-    d10_ok = py_ast_ok and (not inline_py_errs) and has_label and has_container_files
-    _add(
-        "D-10",
-        "Starter + Inline Python AST, Container & Disclosure",
-        d10_ok,
-        "app.py + all inline Python blocks pass ast.parse(); Dockerfile & requirements.txt present; GENERATED_TEMPLATE_UNDEPLOYED attested."
-        if d10_ok
-        else f"starter_ast={py_ast_ok} ({py_ast_err}), inline_py_errs={inline_py_errs[:2]}, label={has_label}, docker+req={has_container_files}",
-    )
+    if inc_code:
+        has_label = all("GENERATED_TEMPLATE_UNDEPLOYED" in starter_files.get(k, "") for k in ("main.tf", "app.py", "README.md", "PROVENANCE.txt"))
+        has_container_files = bool(starter_files.get("Dockerfile")) and bool(starter_files.get("requirements.txt"))
+        d10_ok = py_ast_ok and (not inline_py_errs) and has_label and has_container_files
+        d10_msg = (
+            "app.py + all inline Python blocks pass ast.parse(); Dockerfile & requirements.txt present; GENERATED_TEMPLATE_UNDEPLOYED attested."
+            if d10_ok
+            else f"starter_ast={py_ast_ok} ({py_ast_err}), inline_py_errs={inline_py_errs[:2]}, label={has_label}, docker+req={has_container_files}"
+        )
+    else:
+        d10_ok = not inline_py_errs
+        d10_msg = (
+            "PASS (N/A — starter code disabled by category; all inline Python blocks valid)."
+            if d10_ok
+            else f"inline_py_errs={inline_py_errs[:2]}"
+        )
+    _add("D-10", "Starter + Inline Python AST, Container & Disclosure", d10_ok, d10_msg)
 
-    tf_findings = _hardening.scan_starter_security_and_destructive_cmds(
-        starter_files, base_tf_scanner=_pipe_v2.scan_terraform_security
+    tf_findings = (
+        _hardening.scan_starter_security_and_destructive_cmds(
+            starter_files, base_tf_scanner=_pipe_v2.scan_terraform_security
+        )
+        if inc_code
+        else []
     )
     # Also scan inline blog.md code blocks for the Cloud Run ingress bug or unauthenticated flags
     for m_code in re.finditer(r"```(?:bash|sh|shell|hcl|tf|yaml)\s*\n([\s\S]*?)```", md_text or "", re.IGNORECASE):
@@ -3565,7 +3943,11 @@ def run_deterministic_quality_gate(
         "D-11",
         "Terraform, Script & Destructive-Command Zero-Trust Hygiene",
         len(tf_findings) == 0,
-        "0 allUsers/allAuthenticatedUsers, 0 deprecated v1 resources, 0 unverified IAP/FGAC/ingress bugs, 0 destructive commands."
+        (
+            "0 allUsers/allAuthenticatedUsers, 0 deprecated v1 resources, 0 unverified IAP/FGAC/ingress bugs, 0 destructive commands."
+            if inc_code
+            else "PASS (N/A — starter code disabled by category; 0 inline script security findings)."
+        )
         if not tf_findings
         else " | ".join(f"[{x['id']}] {x['detail']}" for x in tf_findings[:4]),
     )
@@ -3784,6 +4166,9 @@ def _redact_manifest_for_public_bundle(raw_bytes: bytes) -> bytes:
             for pf in (obj.get("proofs") or []):
                 if isinstance(pf, dict) and pf.get("uploadedBy"):
                     pf["uploadedBy"] = "redacted-public-bundle"
+            for rv in (obj.get("revisions") or []):
+                if isinstance(rv, dict) and rv.get("actor"):
+                    rv["actor"] = "redacted-public-bundle"
             cleaned = _sanitize_for_public_output(json.dumps(obj, indent=2))
             return cleaned.encode("utf-8")
     except Exception:
@@ -3801,6 +4186,8 @@ def _rebuild_bundle_zip(blog_dir: Path, slug: str) -> Path:
             if p.name.endswith("-bundle.zip") or p.name.endswith("-bundle.tmp.zip"):
                 continue
             rel = p.relative_to(blog_dir).as_posix()
+            if rel.startswith("revisions/"):
+                continue
             if rel == "manifest.json":
                 zf.writestr(f"{slug}/{rel}", _redact_manifest_for_public_bundle(p.read_bytes()))
             else:
@@ -3815,6 +4202,9 @@ def _update_index_entry(manifest: Dict[str, Any]) -> bytes:
         "slug": manifest["slug"],
         "title": manifest["title"],
         "subtitle": manifest["subtitle"],
+        "category": manifest.get("category") or DEFAULT_CATEGORY_ID,
+        "revision": int(manifest.get("revision") or 1),
+        "includeStarterCode": bool(manifest.get("includeStarterCode", True)),
         "domain": manifest["domain"],
         "audience": manifest["audience"],
         "createdAt": manifest["createdAt"],
@@ -3866,13 +4256,56 @@ def compile_and_save_blog(
     latency_ms: float = 0.0,
     vision_overrides: Optional[Dict[str, Dict[str, Any]]] = None,
     diagram_engine: str = "canonical",
+    category_id: Optional[str] = None,
+    outline: Optional[List[Dict[str, Any]]] = None,
+    slide_plan: Optional[Dict[str, Any]] = None,
+    include_starter_code: Optional[bool] = None,
 ) -> Dict[str, Any]:
     def _step(pct: int, stage: str, msg: str) -> None:
         if progress_cb:
             progress_cb(pct, stage, msg)
 
+    eff_cat_id = str(category_id or blueprint.get("category") or DEFAULT_CATEGORY_ID)
+    eff_outline = (
+        outline
+        if isinstance(outline, list) and outline
+        else (
+            blueprint.get("outline")
+            if isinstance(blueprint.get("outline"), list) and blueprint.get("outline")
+            else normalize_blog_outline(None, category_id=eff_cat_id)
+        )
+    )
+    eff_inc_code = (
+        bool(include_starter_code)
+        if include_starter_code is not None
+        else bool(
+            (slide_plan or {}).get(
+                "includeStarterCode",
+                blueprint.get("includeStarterCode", True),
+            )
+        )
+    )
+    eff_plan = (
+        slide_plan
+        if isinstance(slide_plan, dict)
+        else (
+            blueprint.get("slidePlan")
+            if isinstance(blueprint.get("slidePlan"), dict)
+            else (
+                None
+                if len(blueprint.get("slides") or []) == 9
+                else compute_dynamic_slide_plan(eff_outline, include_starter_code=eff_inc_code)
+            )
+        )
+    )
+    blueprint["category"] = eff_cat_id
+    blueprint["outline"] = eff_outline
+    if eff_plan is not None:
+        blueprint["slidePlan"] = eff_plan
+    blueprint["includeStarterCode"] = eff_inc_code
+
     blog_dir = get_storage_root() / slug
-    for sub in ("diagrams", "slides", "docs", "audio", "proofs", "video"):
+    for sub in ("diagrams", "slides", "docs", "audio", "proofs", "video", "revisions"):
         (blog_dir / sub).mkdir(parents=True, exist_ok=True)
 
     proofs: List[Dict[str, Any]] = []
@@ -3887,8 +4320,14 @@ def compile_and_save_blog(
         g_info.update({k: v for k, v in bound_g.items() if v or k in ("downgradedClaims", "resolvedChunkCount", "supportSegmentCount")})
 
     def _compile_artifacts(bp_cur: Dict[str, Any]) -> Dict[str, Any]:
-        _sync_inline_code_with_starter(bp_cur)
-        diags = compile_all_diagrams_v2(bp_cur, slug)
+        if eff_inc_code:
+            _sync_inline_code_with_starter(bp_cur, slide_plan=eff_plan)
+        diags = compile_all_diagrams_v2(
+            bp_cur,
+            slug,
+            enabled_kinds=eff_plan["enabledDiagramKinds"] if eff_plan else None,
+            slide_plan=eff_plan,
+        )
         if vision_overrides:
             for vk, vv in vision_overrides.items():
                 if vk in diags and isinstance(vv, dict) and vv.get("xml") and vv.get("svg"):
@@ -3905,52 +4344,64 @@ def compile_and_save_blog(
         for kind, dv in diags.items():
             (blog_dir / "diagrams" / f"{slug}-{kind}.drawio").write_text(dv["xml"], encoding="utf-8")
             (blog_dir / "diagrams" / f"{slug}-{kind}.svg").write_text(dv["svg"], encoding="utf-8")
-        extra_svgs = {k: diags[k]["svg"] for k in ("cloudarch", "security", "wire", "async") if k in diags}
-        extra_urls = {k: diags[k]["viewerUrl"] for k in ("cloudarch", "security", "wire", "async") if k in diags}
+        extra_svgs = {k: dv["svg"] for k, dv in diags.items() if k not in ("architecture", "sequence")}
+        extra_urls = {k: dv["viewerUrl"] for k, dv in diags.items() if k not in ("architecture", "sequence")}
         native_slides: Dict[int, Tuple[str, str]] = {}
-        for d_k, s_num in (("architecture", 3), ("cloudarch", 4), ("sequence", 5), ("security", 6), ("wire", 7), ("async", 8)):
-            dv_d = diags.get(d_k)
-            if dv_d and dv_d.get("ooxmlSlideXml"):
-                native_slides[s_num] = (dv_d["ooxmlSlideXml"], dv_d["viewerUrl"])
-        is_12_slide = len(bp_cur.get("slides") or []) >= 12
-        if not is_12_slide:
-            native_slides = {k: v for k, v in native_slides.items() if k in (3, 5)}
+        if eff_plan:
+            for ed in eff_plan["enabledDiagrams"]:
+                dk = ed["kind"]
+                s_num = int(ed["slideNumber"])
+                dv_d = diags.get(dk)
+                if dv_d and dv_d.get("ooxmlSlideXml"):
+                    native_slides[s_num] = (dv_d["ooxmlSlideXml"], dv_d["viewerUrl"])
+        else:
+            for dk, s_num in (("architecture", 3), ("sequence", 5)):
+                dv_d = diags.get(dk)
+                if dv_d and dv_d.get("ooxmlSlideXml"):
+                    native_slides[s_num] = (dv_d["ooxmlSlideXml"], dv_d["viewerUrl"])
+
+        arch_d = diags.get("architecture") or {}
+        seq_d = diags.get("sequence") or {}
         slide_svgs = compile_slide_preview_svgs(
-            bp_cur, slug, diags["architecture"]["svg"], diags["sequence"]["svg"], proofs, blog_dir, extra_svgs=extra_svgs
+            bp_cur, slug, arch_d.get("svg", ""), seq_d.get("svg", ""), proofs, blog_dir,
+            extra_svgs=extra_svgs, slide_plan=eff_plan, diags_map=diags,
         )
         for i, s_svg in enumerate(slide_svgs, 1):
             (blog_dir / "slides" / f"slide_{i:02d}.svg").write_text(s_svg, encoding="utf-8")
         pptx_b = compile_pptx_bytes(
-            bp_cur, slug, diags["architecture"]["viewerUrl"], diags["sequence"]["viewerUrl"], proofs, blog_dir,
-            extra_urls=extra_urls, native_slide_xmls=native_slides,
+            bp_cur, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""), proofs, blog_dir,
+            extra_urls=extra_urls, native_slide_xmls=native_slides, slide_plan=eff_plan, diags_map=diags,
         )
         (blog_dir / "slides" / f"{slug}-deck.pptx").write_bytes(pptx_b)
         md_t = compile_blog_markdown(
-            bp_cur, slug, diags["architecture"]["viewerUrl"], diags["sequence"]["viewerUrl"],
+            bp_cur, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""),
             proofs, model_used, extra_urls=extra_urls, grounding=g_info,
+            slide_plan=eff_plan, outline=eff_outline if eff_plan else None, diags_map=diags,
         )
         (blog_dir / "blog.md").write_text(md_t, encoding="utf-8")
         docx_b = compile_docx_bytes(
-            bp_cur, slug, diags["architecture"]["viewerUrl"], diags["sequence"]["viewerUrl"],
+            bp_cur, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""),
             proofs, blog_dir, extra_urls=extra_urls, grounding=g_info,
+            slide_plan=eff_plan, outline=eff_outline if eff_plan else None, diags_map=diags,
         )
         (blog_dir / "docs" / f"{slug}-whitepaper.docx").write_bytes(docx_b)
-        sz_b, s_files, ast_ok, ast_err = compile_starter_zip(bp_cur, slug)
+        sz_b, s_files, ast_ok, ast_err = compile_starter_zip(bp_cur, slug, include_starter_code=eff_inc_code)
         (blog_dir / f"{slug}-starter.zip").write_bytes(sz_b)
         det = run_deterministic_quality_gate(
             bp=bp_cur,
             md_text=md_t,
-            arch_drawio=diags["architecture"]["xml"],
-            arch_svg=diags["architecture"]["svg"],
-            seq_drawio=diags["sequence"]["xml"],
-            seq_svg=diags["sequence"]["svg"],
+            arch_drawio=arch_d.get("xml", ""),
+            arch_svg=arch_d.get("svg", ""),
+            seq_drawio=seq_d.get("xml", ""),
+            seq_svg=seq_d.get("svg", ""),
             pptx_bytes=pptx_b,
             docx_bytes=docx_b,
             py_ast_ok=ast_ok,
             py_ast_err=ast_err,
             starter_files=s_files,
             extra_diagrams=diags,
-            arch_icon_count=diags["architecture"]["iconCount"],
+            arch_icon_count=arch_d.get("iconCount"),
+            slide_plan=eff_plan,
         )
         return {
             "diags": diags,
@@ -3964,10 +4415,12 @@ def compile_and_save_blog(
             "det": det,
         }
 
-    _step(48, "COMPILE_DIAGRAMS", "Compiling 6 WS1-parity Draw.io + SVG + DrawingML vector diagrams...")
-    _step(56, "COMPILE_SLIDES", "Building native OOXML .pptx deck & vector slide previews...")
-    _step(62, "COMPILE_DOCS", "Compiling Markdown blog (inline SQL/GQL/formulas) & .docx whitepaper...")
-    _step(66, "COMPILE_STARTER", "Building Terraform + Python starter.zip & running AST + D-11 security scan...")
+    diag_n = len(eff_plan["enabledDiagrams"]) if eff_plan else 6
+    total_s_lbl = eff_plan["totalSlides"] if eff_plan else len(blueprint.get("slides") or [])
+    _step(48, "COMPILE_DIAGRAMS", f"Compiling {diag_n} WS1-parity Draw.io + SVG + DrawingML vector diagram(s)...")
+    _step(56, "COMPILE_SLIDES", f"Building {total_s_lbl}-slide native OOXML .pptx deck & vector previews...")
+    _step(62, "COMPILE_DOCS", "Compiling Markdown blog & .docx whitepaper in outline order...")
+    _step(66, "COMPILE_STARTER", "Packaging starter kit & running AST + D-11 security scan..." if eff_inc_code else "Starter code disabled by category — skipping boilerplate kit...")
     art = _compile_artifacts(blueprint)
     det_report = art["det"]
     # Auto-bind any unledgered quantitative expressions so D-13 discloses every numeric target explicitly
@@ -4135,6 +4588,9 @@ def compile_and_save_blog(
                     "bytes": len(mp3_bytes),
                     "durationSec": dur,
                     "voice": voice_name,
+                    "speakerNotesSha256": hashlib.sha256(
+                        strip_inline_md(sl.get("speakerNotes") or sl.get("title") or "").encode("utf-8")
+                    ).hexdigest(),
                     "provenance": "SYNTHETIC_CLOUD_TTS_CHIRP3_HD",
                 })
             else:
@@ -4179,9 +4635,11 @@ def compile_and_save_blog(
 
     diags = art["diags"]
     diagrams_manifest = {}
-    for k in ("architecture", "cloudarch", "sequence", "security", "wire", "async"):
-        if k not in diags:
-            continue
+    pref_diag_order = eff_plan["enabledDiagramKinds"] if eff_plan else list(VALID_DIAGRAM_KINDS)
+    ordered_diag_keys = [k for k in pref_diag_order if k in diags] + [
+        k for k in VALID_DIAGRAM_KINDS if k in diags and k not in pref_diag_order
+    ]
+    for k in ordered_diag_keys:
         dv = diags[k]
         geom = dv.get("geometry") or {}
         diagrams_manifest[k] = {
@@ -4189,8 +4647,10 @@ def compile_and_save_blog(
             "publicId": dv.get("publicId") or _diag_v2._cc.make_diagram_public_id(slug, k),
             "kind": k,
             "layer": dv["layer"],
+            "figureNum": dv.get("figureNum"),
             "slideNumber": dv["slide"],
             "title": dv.get("label") or dv.get("title") or k.title(),
+            "customEdited": bool(dv.get("customEdited", False)),
             "iconCount": dv.get("iconCount", 0),
             "vertexCount": dv.get("vertexCount", 0),
             "edgeCount": dv.get("edgeCount", 0),
@@ -4209,7 +4669,12 @@ def compile_and_save_blog(
     created_at = _now_iso()
     manifest = {
         "schemaVersion": "3.0",
+        "revision": 1,
         "slug": slug,
+        "category": eff_cat_id,
+        "includeStarterCode": eff_inc_code,
+        "outline": eff_outline,
+        "slidePlan": eff_plan,
         "title": blueprint["title"],
         "subtitle": blueprint["subtitle"],
         "summary": blueprint["summary"],
@@ -4255,17 +4720,47 @@ def compile_and_save_blog(
             "hostMp4Provenance": "SLIDE_CANVAS_CHIRP3_TTS_RENDER" if host_mp4_rel else None,
         },
         "starterMeta": {
-            "status": "GENERATED_TEMPLATE_UNDEPLOYED",
+            "enabled": eff_inc_code,
+            "status": "GENERATED_TEMPLATE_UNDEPLOYED" if eff_inc_code else "DISABLED_BY_CATEGORY",
             "pythonAstValid": art["astOk"],
             "pythonAstError": art["astErr"],
             "tfSecurityFindings": det_report.get("tfFindings") or [],
             "files": art["starterFiles"],
         },
         "proofs": proofs,
+        "revisions": [
+            {
+                "revision": 1,
+                "createdAt": created_at,
+                "actor": actor_email or "local-operator",
+                "summary": "Initial generation",
+                "scope": "initial",
+            }
+        ],
         "workspaceSync": {"status": "NOT_SYNCED"},
         "quality": quality_report,
         "blueprint": blueprint,
     }
+    # Store lightweight initial revision snapshot (blueprint + outline + slidePlan; ~50-80 KB, zero binaries)
+    (blog_dir / "revisions" / "v1.json").write_text(
+        json.dumps(
+            {
+                "revision": 1,
+                "createdAt": created_at,
+                "actor": actor_email or "local-operator",
+                "summary": "Initial generation",
+                "scope": "initial",
+                "category": eff_cat_id,
+                "includeStarterCode": eff_inc_code,
+                "outline": eff_outline,
+                "slidePlan": eff_plan,
+                "blueprint": blueprint,
+                "customDiagramXmls": {},
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
     (blog_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
     _step(95, "BUNDLE_AND_SYNC", "Packaging complete archive bundle & syncing to durable GCS store...")
@@ -4307,8 +4802,19 @@ def start_generation_job(
         raise CreateBlog1Error("Prompt exceeds maximum length (4,000 characters).", 400, "PROMPT_TOO_LONG")
 
     title_hint = str(payload.get("titleHint") or "").strip()[:110]
-    domain = str(payload.get("domain") or "Google Cloud Architecture").strip()[:80]
-    audience = str(payload.get("audience") or "Solutions Architects & Platform Engineers").strip()[:80]
+    category_id = str(payload.get("category") or DEFAULT_CATEGORY_ID).strip().lower()
+    cat_meta = get_category(category_id)
+    category_id = cat_meta["id"]
+    outline = normalize_blog_outline(payload.get("outline"), category_id=category_id)
+    if "includeStarterCode" in payload:
+        include_starter_code = bool(payload.get("includeStarterCode"))
+    else:
+        include_starter_code = bool(cat_meta.get("includeStarterCode", True))
+    slide_plan = compute_dynamic_slide_plan(outline, include_starter_code=include_starter_code)
+    enabled_diag_kinds = list(slide_plan["enabledDiagramKinds"])
+    total_slides_n = int(slide_plan["totalSlides"])
+    domain = str(payload.get("domain") or cat_meta["defaultDomain"]).strip()[:80]
+    audience = str(payload.get("audience") or cat_meta["defaultAudience"]).strip()[:80]
     model = str(payload.get("model") or DEFAULT_MODEL).strip()
     if model not in ALLOWED_MODELS:
         raise CreateBlog1Error(f"Unsupported model '{model}'. Allowed: {', '.join(ALLOWED_MODELS)}.", 400, "INVALID_MODEL")
@@ -4338,13 +4844,16 @@ def start_generation_job(
 
     job_id = f"cb1-{uuid.uuid4().hex[:12]}"
     transient_key = (api_key_override or "").strip() or None
+    diag_n = len(enabled_diag_kinds)
     job_rec = {
         "jobId": job_id,
         "status": "QUEUED",
         "progress": 4,
         "stage": "QUEUED",
-        "message": f"Starting multi-stage live {model} parity pipeline...",
+        "message": f"Starting {cat_meta['shortName']} pipeline ({diag_n} diagrams, {total_slides_n} slides, {model})...",
         "model": model,
+        "category": category_id,
+        "includeStarterCode": include_starter_code,
         "voice": voice,
         "enableTts": enable_tts,
         "enableJudge": enable_judge,
@@ -4357,16 +4866,16 @@ def start_generation_job(
         "updatedAt": _now_iso(),
         "steps": [
             {"id": "GROUNDING_SEARCH", "label": "Live Google Search Grounding", "status": "pending" if enable_grounding else "skipped"},
-            {"id": "LLM_SYNTHESIS", "label": f"Stage 1: Deep Prose, SQL/GQL & Claims ({model})", "status": "pending"},
-            {"id": "TOPOLOGY_AND_DECK", "label": f"Stage 2: 6 WS1-Grade Diagrams ({select_diagram_arch_model(model)}) + Deck & Code", "status": "pending"},
-            {"id": "COMPILE_DIAGRAMS", "label": "Compile 6 WS1-Parity Draw.io + SVG + Vector PPTX", "status": "pending"},
-            {"id": "COMPILE_SLIDES", "label": "Build 12-Slide OOXML .pptx & Previews", "status": "pending"},
-            {"id": "COMPILE_DOCS", "label": "Compile blog.md & .docx Whitepaper", "status": "pending"},
-            {"id": "COMPILE_STARTER", "label": "Package starter.zip + AST & D-11 Check", "status": "pending"},
+            {"id": "LLM_SYNTHESIS", "label": f"Stage 1: Outline Prose & Claims ({model})", "status": "pending"},
+            {"id": "TOPOLOGY_AND_DECK", "label": f"Stage 2: {diag_n} Diagrams ({select_diagram_arch_model(model)}) + {total_slides_n}-Slide Deck", "status": "pending"},
+            {"id": "COMPILE_DIAGRAMS", "label": f"Compile {diag_n} Draw.io + SVG + Vector PPTX", "status": "pending"},
+            {"id": "COMPILE_SLIDES", "label": f"Build {total_slides_n}-Slide OOXML .pptx & Previews", "status": "pending"},
+            {"id": "COMPILE_DOCS", "label": "Compile blog.md & .docx in Outline Order", "status": "pending"},
+            {"id": "COMPILE_STARTER", "label": "Package starter.zip + AST & D-11 Check", "status": "pending" if include_starter_code else "skipped"},
             {"id": "QUALITY_GATE", "label": "13-Check Deterministic Gate (D-01..D-13)", "status": "pending"},
             {"id": "ORTHOGONAL_JUDGE", "label": "Grounded Orthogonal Gemini Critic", "status": "pending" if enable_judge else "skipped"},
             {"id": "AUTO_REVISE", "label": "Auto-Revision Pass (on P0/P1 or D-11)", "status": "pending" if enable_auto_revise else "skipped"},
-            {"id": "SYNTHESIZE_TTS", "label": "Cloud TTS Chirp3-HD Audio (12 Tracks)", "status": "pending" if enable_tts else "skipped"},
+            {"id": "SYNTHESIZE_TTS", "label": f"Cloud TTS Chirp3-HD Audio ({total_slides_n} Tracks)", "status": "pending" if enable_tts else "skipped"},
             {"id": "BUNDLE_AND_SYNC", "label": "Bundle ZIP & Atomic GCS Sync", "status": "pending"},
         ],
     }
@@ -4441,10 +4950,13 @@ def start_generation_job(
                         timeout_s=45.0,
                     )
 
-            _update_step(20, "LLM_SYNTHESIS", f"Stage 1/2: Authoring deep 7-8 section blog, inline DDL/formulas & claims ({model})...")
+            _update_step(20, "LLM_SYNTHESIS", f"Stage 1/2: Authoring {cat_meta['shortName']} outline prose & claims ({model})...")
             prose_raw, meta_p = call_gemini_json(
                 system_prompt=_pipe_v2.prose_stage_system_prompt(),
-                user_prompt=_pipe_v2.prose_stage_user_prompt(prompt, title_hint, domain, audience, grounding),
+                user_prompt=_pipe_v2.prose_stage_user_prompt(
+                    prompt, title_hint, domain, audience, grounding,
+                    category_meta=cat_meta, outline=outline, include_starter_code=include_starter_code,
+                ),
                 model=model,
                 api_key_override=transient_key,
                 max_output_tokens=32768 if is_global_vertex_model(model) else 24576,
@@ -4455,14 +4967,16 @@ def start_generation_job(
             )
 
             arch_model = select_diagram_arch_model(model)
-            _update_step(36, "TOPOLOGY_AND_DECK", f"Stage 2/2: Authoring WS1-parity 6 C4 diagrams ({arch_model}) & 12-slide deck + Terraform starter in parallel...")
+            _update_step(36, "TOPOLOGY_AND_DECK", f"Stage 2/2: Authoring {diag_n} diagram(s) ({arch_model}) & {total_slides_n}-slide deck in parallel...")
             from concurrent.futures import ThreadPoolExecutor as _TPE
 
             def _run_diag_arch():
                 try:
                     return call_gemini_json(
                         system_prompt=_pipe_v2.diagram_architect_system_prompt(),
-                        user_prompt=_pipe_v2.diagram_architect_user_prompt(prose_raw, prompt, grounding),
+                        user_prompt=_pipe_v2.diagram_architect_user_prompt(
+                            prose_raw, prompt, grounding, enabled_kinds=enabled_diag_kinds
+                        ),
                         model=arch_model,
                         api_key_override=transient_key,
                         max_output_tokens=32768 if is_global_vertex_model(arch_model) else 24576,
@@ -4475,7 +4989,9 @@ def start_generation_job(
                     fb_arch = "gemini-2.5-pro" if arch_model != "gemini-2.5-pro" else model
                     return call_gemini_json(
                         system_prompt=_pipe_v2.diagram_architect_system_prompt(),
-                        user_prompt=_pipe_v2.diagram_architect_user_prompt(prose_raw, prompt, grounding),
+                        user_prompt=_pipe_v2.diagram_architect_user_prompt(
+                            prose_raw, prompt, grounding, enabled_kinds=enabled_diag_kinds
+                        ),
                         model=fb_arch,
                         api_key_override=transient_key,
                         max_output_tokens=24576,
@@ -4488,8 +5004,10 @@ def start_generation_job(
             def _run_topo_deck():
                 try:
                     return call_gemini_json(
-                        system_prompt=_pipe_v2.topology_stage_system_prompt(),
-                        user_prompt=_pipe_v2.topology_stage_user_prompt(prose_raw, prompt, grounding),
+                        system_prompt=_pipe_v2.topology_stage_system_prompt(slide_plan=slide_plan),
+                        user_prompt=_pipe_v2.topology_stage_user_prompt(
+                            prose_raw, prompt, grounding, slide_plan=slide_plan
+                        ),
                         model=model,
                         api_key_override=transient_key,
                         max_output_tokens=32768 if is_global_vertex_model(model) else 24576,
@@ -4503,8 +5021,10 @@ def start_generation_job(
                         raise
                     fallback_m = "gemini-3.8-flash" if model.startswith("gemini-4") else ("gemini-2.5-pro" if model == "gemini-2.5-flash" else "gemini-2.5-flash")
                     return call_gemini_json(
-                        system_prompt=_pipe_v2.topology_stage_system_prompt(),
-                        user_prompt=_pipe_v2.topology_stage_user_prompt(prose_raw, prompt, grounding)
+                        system_prompt=_pipe_v2.topology_stage_system_prompt(slide_plan=slide_plan),
+                        user_prompt=_pipe_v2.topology_stage_user_prompt(
+                            prose_raw, prompt, grounding, slide_plan=slide_plan
+                        )
                         + "\nIMPORTANT: Ensure 100% strictly valid RFC 8259 JSON with properly escaped quotes and concise code strings.",
                         model=fallback_m,
                         api_key_override=transient_key,
@@ -4538,14 +5058,22 @@ def start_generation_job(
                 if isinstance(diag_raw.get(dk), dict) and diag_raw[dk]:
                     merged_raw[dk] = diag_raw[dk]
 
-            bp = normalize_blueprint(merged_raw, prompt, domain, audience, target_slides=12)
+            bp = normalize_blueprint(
+                merged_raw, prompt, domain, audience,
+                target_slides=total_slides_n,
+                slide_plan=slide_plan,
+                category_id=category_id,
+                outline=outline,
+            )
             slug = _unique_slug(bp.get("slugHint") or title_hint or bp["title"])
             with _JOBS_LOCK:
                 _JOBS[job_id]["slug"] = slug
 
             vision_overrides: Dict[str, Dict[str, Any]] = {}
             if diagram_engine in ("hybrid", "promptcanvas_vision"):
-                v_kinds = ("architecture", "cloudarch") if diagram_engine == "hybrid" else ("architecture", "cloudarch", "sequence", "security", "wire", "async")
+                v_kinds = tuple(k for k in ("architecture", "cloudarch") if k in enabled_diag_kinds) if diagram_engine == "hybrid" else tuple(enabled_diag_kinds)
+                if not v_kinds:
+                    v_kinds = (enabled_diag_kinds[0],)
                 _update_step(48, "TOPOLOGY_AND_DECK", f"Running PromptCanvas 4-Stage Vision-to-Draw.io engine on {len(v_kinds)} view(s) ({diagram_engine})...")
                 sec_heads = [str(s.get("heading") or "") for s in (bp.get("sections") or [])[:10] if isinstance(s, dict)]
                 g_brief = str((grounding or {}).get("summary") or "").strip()
@@ -4592,6 +5120,10 @@ def start_generation_job(
                 latency_ms=total_llm_ms,
                 vision_overrides=vision_overrides or None,
                 diagram_engine=diagram_engine,
+                category_id=category_id,
+                outline=outline,
+                slide_plan=slide_plan,
+                include_starter_code=include_starter_code,
             )
             with _JOBS_LOCK:
                 jr = _JOBS[job_id]
@@ -4654,6 +5186,9 @@ def get_blog_detail(slug: str) -> Dict[str, Any]:
     if mp is None or not mp.is_file():
         raise CreateBlog1Error(f"Blog '{clean}' not found.", 404, "BLOG_NOT_FOUND")
     data = json.loads(mp.read_text(encoding="utf-8"))
+    hydrate_legacy_manifest_plan(data)
+    data.setdefault("revision", 1)
+    data.setdefault("includeStarterCode", bool((data.get("slidePlan") or {}).get("includeStarterCode", True)))
     md_p = _ensure_rel_hydrated(clean, "blog.md")
     data["markdownText"] = md_p.read_text(encoding="utf-8") if md_p and md_p.is_file() else ""
     arch_p = _ensure_rel_hydrated(clean, f"diagrams/{clean}-architecture.svg")
@@ -4676,61 +5211,73 @@ def get_blog_asset_file(slug: str, rel_path: str) -> Tuple[Path, str]:
 
 
 def _recompile_after_proof_change(slug: str, manifest: Dict[str, Any]) -> Dict[str, Any]:
+    hydrate_legacy_manifest_plan(manifest)
     blog_dir = get_storage_root() / slug
     bp = manifest["blueprint"]
     proofs = manifest.get("proofs") or []
     d_meta = manifest.get("diagrams") or {}
-    arch_url = d_meta["architecture"]["viewerUrl"]
-    seq_url = d_meta["sequence"]["viewerUrl"]
-    arch_svg = (blog_dir / f"diagrams/{slug}-architecture.svg").read_text(encoding="utf-8")
-    seq_svg = (blog_dir / f"diagrams/{slug}-sequence.svg").read_text(encoding="utf-8")
-    arch_drawio = (blog_dir / f"diagrams/{slug}-architecture.drawio").read_text(encoding="utf-8")
-    seq_drawio = (blog_dir / f"diagrams/{slug}-sequence.drawio").read_text(encoding="utf-8")
+    plan = manifest["slidePlan"]
+    outline = manifest["outline"]
 
-    extra_svgs: Dict[str, str] = {}
-    extra_urls: Dict[str, str] = {}
-    extra_diags: Dict[str, Dict[str, Any]] = {}
-    for kind in ("cloudarch", "security", "wire", "async"):
-        if kind in d_meta:
-            sp = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{kind}.svg")
-            xp = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{kind}.drawio")
-            if sp and sp.is_file():
-                extra_svgs[kind] = sp.read_text(encoding="utf-8")
-            extra_urls[kind] = d_meta[kind].get("viewerUrl", "")
-            extra_diags[kind] = {
-                "svg": extra_svgs.get(kind, ""),
-                "xml": xp.read_text(encoding="utf-8") if (xp and xp.is_file()) else "",
-            }
+    diags_map: Dict[str, Dict[str, Any]] = {}
+    for kind in plan["enabledDiagramKinds"]:
+        sp = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{kind}.svg")
+        xp = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{kind}.drawio")
+        diags_map[kind] = {
+            "svg": sp.read_text(encoding="utf-8") if (sp and sp.is_file()) else "",
+            "xml": xp.read_text(encoding="utf-8") if (xp and xp.is_file()) else "",
+            "viewerUrl": (d_meta.get(kind) or {}).get("viewerUrl", ""),
+            "layer": (d_meta.get(kind) or {}).get("layer", ""),
+            "iconCount": (d_meta.get(kind) or {}).get("iconCount"),
+        }
+
+    re_diags = compile_all_diagrams_v2(bp, slug, enabled_kinds=plan["enabledDiagramKinds"], slide_plan=plan)
+    re_native: Dict[int, Tuple[str, str]] = {}
+    for ed in plan["enabledDiagrams"]:
+        dk = ed["kind"]
+        s_num = int(ed["slideNumber"])
+        if dk in re_diags and re_diags[dk].get("ooxmlSlideXml"):
+            # Preserve custom viewerUrl if diagram was manually edited
+            v_url = (d_meta.get(dk) or {}).get("viewerUrl") or re_diags[dk]["viewerUrl"]
+            re_native[s_num] = (re_diags[dk]["ooxmlSlideXml"], v_url)
+            if not diags_map[dk]["svg"]:
+                diags_map[dk]["svg"] = re_diags[dk]["svg"]
+            if not diags_map[dk]["xml"]:
+                diags_map[dk]["xml"] = re_diags[dk]["xml"]
+            if not diags_map[dk]["viewerUrl"]:
+                diags_map[dk]["viewerUrl"] = v_url
+
+    arch_d = diags_map.get("architecture") or {}
+    seq_d = diags_map.get("sequence") or {}
+    extra_svgs = {k: v["svg"] for k, v in diags_map.items() if k not in ("architecture", "sequence")}
+    extra_urls = {k: v["viewerUrl"] for k, v in diags_map.items() if k not in ("architecture", "sequence")}
 
     slide_svgs = compile_slide_preview_svgs(
-        bp, slug, arch_svg, seq_svg, proofs, blog_dir, extra_svgs=extra_svgs or None
+        bp, slug, arch_d.get("svg", ""), seq_d.get("svg", ""), proofs, blog_dir,
+        extra_svgs=extra_svgs or None, slide_plan=plan, diags_map=diags_map,
     )
     for i, s_svg in enumerate(slide_svgs, 1):
         (blog_dir / "slides" / f"slide_{i:02d}.svg").write_text(s_svg, encoding="utf-8")
 
-    re_diags = compile_all_diagrams_v2(bp, slug)
-    re_native = {
-        s_num: (re_diags[dk]["ooxmlSlideXml"], re_diags[dk]["viewerUrl"])
-        for dk, s_num in (("architecture", 3), ("cloudarch", 4), ("sequence", 5), ("security", 6), ("wire", 7), ("async", 8))
-        if dk in re_diags and (dk in d_meta or dk in ("architecture", "sequence"))
-    }
-    if len(bp.get("slides") or []) < 12:
-        re_native = {k: v for k, v in re_native.items() if k in (3, 5)}
     pptx_bytes = compile_pptx_bytes(
-        bp, slug, arch_url, seq_url, proofs, blog_dir, extra_urls=extra_urls or None, native_slide_xmls=re_native
+        bp, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""), proofs, blog_dir,
+        extra_urls=extra_urls or None, native_slide_xmls=re_native, slide_plan=plan, diags_map=diags_map,
     )
     (blog_dir / "slides" / f"{slug}-deck.pptx").write_bytes(pptx_bytes)
 
     grounding_info = (manifest.get("quality") or {}).get("grounding") or {}
     md_text = compile_blog_markdown(
-        bp, slug, arch_url, seq_url, proofs, manifest["generation"]["model"],
+        bp, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""),
+        proofs, manifest["generation"]["model"],
         extra_urls=extra_urls or None, grounding=grounding_info,
+        slide_plan=plan, outline=outline, diags_map=diags_map,
     )
     (blog_dir / "blog.md").write_text(md_text, encoding="utf-8")
 
     docx_bytes = compile_docx_bytes(
-        bp, slug, arch_url, seq_url, proofs, blog_dir,
-        extra_urls=extra_urls or None, grounding=grounding_info,
+        bp, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""),
+        proofs, blog_dir, extra_urls=extra_urls or None, grounding=grounding_info,
+        slide_plan=plan, outline=outline, diags_map=diags_map,
     )
     (blog_dir / "docs" / f"{slug}-whitepaper.docx").write_bytes(docx_bytes)
 
@@ -4738,16 +5285,18 @@ def _recompile_after_proof_change(slug: str, manifest: Dict[str, Any]) -> Dict[s
     det = run_deterministic_quality_gate(
         bp=bp,
         md_text=md_text,
-        arch_drawio=arch_drawio,
-        arch_svg=arch_svg,
-        seq_drawio=seq_drawio,
-        seq_svg=seq_svg,
+        arch_drawio=arch_d.get("xml", ""),
+        arch_svg=arch_d.get("svg", ""),
+        seq_drawio=seq_d.get("xml", ""),
+        seq_svg=seq_d.get("svg", ""),
         pptx_bytes=pptx_bytes,
         docx_bytes=docx_bytes,
         py_ast_ok=bool(starter_meta.get("pythonAstValid", True)),
         py_ast_err=str(starter_meta.get("pythonAstError", "")),
         starter_files=starter_meta.get("files") or {},
-        extra_diagrams=extra_diags or None,
+        extra_diagrams=diags_map,
+        arch_icon_count=arch_d.get("iconCount"),
+        slide_plan=plan,
     )
     manifest["quality"]["deterministic"] = det
     manifest["quality"]["checkedAt"] = _now_iso()

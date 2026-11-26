@@ -712,6 +712,206 @@
     .diag-modal-body { flex: 1; background: #fff; border-radius: 14px; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 14px; box-shadow: 0 24px 60px rgba(0,0,0,.45); }
     .diag-modal-body img { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; }
     .diagram-stage img { cursor: zoom-in; }
+
+    /* Compact live status popover (replaces 10-pill topbar wall) */
+    details.status-popover { position: relative; }
+    details.status-popover > summary {
+      list-style: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--green-border);
+      background: var(--green-soft);
+      color: var(--green);
+      font-size: 11.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      user-select: none;
+    }
+    details.status-popover > summary::-webkit-details-marker { display: none; }
+    details.status-popover.status-warn > summary {
+      border-color: var(--amber-border);
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+    details.status-popover.status-err > summary {
+      border-color: var(--red-border);
+      background: var(--red-soft);
+      color: var(--red);
+    }
+    .status-popover-panel {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      width: min(420px, calc(100vw - 24px));
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+      padding: 12px 14px;
+      z-index: 120;
+    }
+
+    /* Compact Hero Export & Actions dropdown */
+    details.action-menu { position: relative; display: inline-block; }
+    details.action-menu > summary { list-style: none; cursor: pointer; }
+    details.action-menu > summary::-webkit-details-marker { display: none; }
+    .action-menu-panel {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      min-width: 230px;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+      padding: 6px;
+      z-index: 110;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .action-menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      text-align: left;
+      padding: 7px 10px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .action-menu-item:hover:not(:disabled) { background: var(--surface-alt); }
+    .action-menu-item:disabled { opacity: 0.5; cursor: not-allowed; }
+    .action-menu-sep { height: 1px; background: var(--border); margin: 4px 2px; }
+
+    /* Interactive Outline & Diagram Placement Studio */
+    .outline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin: 12px 0;
+    }
+    .outline-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 9px;
+      background: #ffffff;
+      transition: border-color 0.12s ease, opacity 0.12s ease;
+    }
+    .outline-row.is-diagram {
+      background: #f8fafc;
+      border-left: 4px solid var(--blue);
+    }
+    .outline-row.is-disabled {
+      opacity: 0.52;
+      background: #f8fafc;
+    }
+    .outline-row input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--blue);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .outline-title-inp {
+      flex: 1;
+      min-width: 120px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 4px 7px;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+      background: transparent;
+    }
+    .outline-title-inp:hover { border-color: var(--border-strong); background: #ffffff; }
+    .outline-title-inp:focus { outline: none; border-color: var(--blue); background: #ffffff; box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.14); }
+    .outline-move-grp { display: inline-flex; gap: 3px; flex-shrink: 0; }
+    .btn-icon {
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      border-radius: 6px;
+      border: 1px solid var(--border-strong);
+      background: #ffffff;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-icon:hover:not(:disabled) { background: var(--blue-soft); border-color: var(--blue); color: var(--blue); }
+    .btn-icon:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* Preflight 3-Option Chooser */
+    .preflight-card {
+      border: 1px solid var(--amber-border);
+      background: #fffdf5;
+      border-radius: 10px;
+      padding: 12px;
+      margin: 10px 0 12px;
+    }
+    .preflight-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .preflight-opt-btn {
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 9px;
+      border: 1px solid var(--blue-border);
+      background: #ffffff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: border-color 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+    }
+    .preflight-opt-btn:hover {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+      box-shadow: 0 2px 8px rgba(26, 115, 232, 0.12);
+    }
+
+    /* Post-generation Iteration Drawer & Inline Edit surface (Milestone B ready) */
+    .iterate-drawer {
+      margin-top: 12px;
+      padding: 14px;
+      border: 1px solid var(--purple-border);
+      border-radius: 10px;
+      background: #faf5ff;
+    }
+    .edit-card {
+      border: 1px solid var(--blue-border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: #f8fafc;
+    }
+    @media (max-width: 640px) {
+      .outline-row { flex-wrap: wrap; }
+      .action-menu-panel { left: 0; right: auto; }
+    }
   </style>
 </head>
 <body>
@@ -722,23 +922,34 @@
       <div class="topbar-row">
         <div class="brand-group">
           <div class="brand-mark" aria-hidden="true">CB</div>
-          <div>
+          <div style="min-width:0;">
             <div class="brand-title">
               <span>Create Blog</span>
               <span class="pill pill-blue">Live Gemini Studio</span>
-              <span class="pill pill-green">Zero Fake Prose / Zero Mock UI</span>
             </div>
-            <div class="brand-sub">Generate Google Cloud Architecture Center blogs, 6 editable Draw.io diagrams, native Google Slides decks, Google Docs briefs, Chirp3-HD audio &amp; Terraform starters from any prompt.</div>
+            <div class="brand-sub">Category-guided Google Cloud blogs, editable Draw.io diagrams, native Google Slides &amp; Docs, Chirp3-HD audio &amp; hardened starters.</div>
           </div>
         </div>
-        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-          <a class="btn btn-sm" href="/">&larr; Back to Portal</a>
-          <button type="button" class="btn btn-sm" id="btn-toggle-sidebar" title="Toggle prompt composer sidebar for full-width diagrams">Full-Width Canvas</button>
-        <button type="button" class="btn btn-sm" id="btn-refresh-caps">Refresh Live Status</button>
+        <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap;">
+          <details class="status-popover" id="status-popover">
+            <summary id="status-summary-pill" aria-live="polite">
+              <span class="dot" aria-hidden="true"></span>
+              <span>Checking live status...</span>
+            </summary>
+            <div class="status-popover-panel">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px;">
+                <strong style="font-size:12px; color:#0f172a;">Live Runtime &amp; Capabilities</strong>
+                <button type="button" class="btn btn-sm" id="btn-refresh-caps">Refresh</button>
+              </div>
+              <div class="cap-strip" id="capability-strip">
+                <span class="pill">Checking live GCP &amp; Vertex AI IAM capabilities...</span>
+              </div>
+            </div>
+          </details>
+          <button type="button" class="btn btn-sm" id="btn-new-blog-planner" title="Open the interactive Outline & Diagram Planner to start a new blog">+ New Blog</button>
+          <button type="button" class="btn btn-sm" id="btn-toggle-sidebar" title="Toggle prompt composer sidebar for full-width diagrams">Full-Width</button>
+          <a class="btn btn-sm" href="/">&larr; Portal</a>
         </div>
-      </div>
-      <div class="cap-strip" id="capability-strip" aria-live="polite">
-        <span class="pill">Checking live GCP &amp; Vertex AI IAM capabilities...</span>
       </div>
     </div>
   </header>
@@ -756,6 +967,17 @@
 
           <form id="generate-form" autocomplete="off">
             <div class="field">
+              <label for="inp-category">Blog Category <span id="cat-badge-pill" class="pill pill-blue" style="font-size:9.5px; padding:1px 6px;">6d / 12s</span></label>
+              <select id="inp-category">
+                <option value="reference_architecture" selected>Reference Architecture (Full Stack · 6d / 12s)</option>
+                <option value="pattern_tradeoff">Design Pattern &amp; Trade-Off Guide (3d / 8s)</option>
+                <option value="hands_on_runbook">Hands-On Build / Migration Runbook (3d / 9s)</option>
+                <option value="executive_brief">Executive / CISO Architecture Brief (2d / 7s)</option>
+                <option value="security_deep_dive">Security &amp; Incident Deep-Dive (3d / 9s)</option>
+              </select>
+            </div>
+
+            <div class="field">
               <label for="inp-title">Title Hint <span style="font-weight:500; color:#64748b;">(optional)</span></label>
               <input id="inp-title" type="text" maxlength="110" placeholder="e.g., Zero-Trust MCP Gateway on Cloud Run" />
             </div>
@@ -768,26 +990,29 @@
               <textarea id="inp-prompt" maxlength="4000" required placeholder="Describe the Google Cloud architecture, isolation boundary, security controls, SaaS integration, or design pattern you want to publish..."></textarea>
             </div>
 
-            <div class="field">
-              <label for="inp-domain">Domain / Pillar</label>
-              <select id="inp-domain">
-                <option value="Multi-Tenant Agentic AI">Multi-Tenant Agentic AI</option>
-                <option value="Cloud Security & Zero Trust">Cloud Security &amp; Zero Trust</option>
-                <option value="Data & Analytics / RAG">Data &amp; Analytics / RAG</option>
-                <option value="Serverless & Platform Eng">Serverless &amp; Platform Eng</option>
-                <option value="Networking & Hybrid VPC">Networking &amp; Hybrid VPC</option>
-                <option value="AI Governance & Compliance">AI Governance &amp; Compliance</option>
-              </select>
+            <div class="two-col">
+              <div class="field">
+                <label for="inp-domain">Domain / Pillar</label>
+                <select id="inp-domain">
+                  <option value="Multi-Tenant Agentic AI">Multi-Tenant Agentic AI</option>
+                  <option value="Cloud Security & Zero Trust">Cloud Security &amp; Zero Trust</option>
+                  <option value="Data & Analytics / RAG">Data &amp; Analytics / RAG</option>
+                  <option value="Serverless & Platform Eng">Serverless &amp; Platform Eng</option>
+                  <option value="Networking & Hybrid VPC">Networking &amp; Hybrid VPC</option>
+                  <option value="AI Governance & Compliance">AI Governance &amp; Compliance</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="inp-audience">Primary Audience</label>
+                <select id="inp-audience">
+                  <option value="Solutions Architects & Platform Engineers">Solutions Architects &amp; Platform Engineers</option>
+                  <option value="CISOs & Security Architects">CISOs &amp; Security Architects</option>
+                  <option value="Cloud Infrastructure & SRE">Cloud Infrastructure &amp; SRE</option>
+                  <option value="Engineering Executives (VP / CTO)">Engineering Executives (VP / CTO)</option>
+                </select>
+              </div>
             </div>
-            <div class="field">
-              <label for="inp-audience">Primary Audience</label>
-              <select id="inp-audience">
-                <option value="Solutions Architects & Platform Engineers">Solutions Architects &amp; Platform Engineers</option>
-                <option value="CISOs & Security Architects">CISOs &amp; Security Architects</option>
-                <option value="Cloud Infrastructure & SRE">Cloud Infrastructure &amp; SRE</option>
-                <option value="Engineering Executives (VP / CTO)">Engineering Executives (VP / CTO)</option>
-              </select>
-            </div>
+
             <div class="field">
               <label for="inp-model">Gemini Model (Live)</label>
               <select id="inp-model">
@@ -810,46 +1035,56 @@
                 </optgroup>
               </select>
             </div>
-            <div class="field">
-              <label for="inp-voice">Cloud TTS Voice</label>
-              <select id="inp-voice">
-                <option value="en-US-Chirp3-HD-Charon">Chirp3-HD Charon (US English)</option>
-                <option value="en-US-Chirp3-HD-Aoede">Chirp3-HD Aoede (US English)</option>
-                <option value="en-US-Chirp3-HD-Fenrir">Chirp3-HD Fenrir (US English)</option>
-                <option value="en-US-Chirp3-HD-Kore">Chirp3-HD Kore (US English)</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="inp-diagram-engine">PromptCanvas Diagram Engine</label>
-              <select id="inp-diagram-engine">
-                <option value="canonical">Canonical WS1 (6-View Draw.io + Google Slides)</option>
-                <option value="hybrid">Hybrid (Vision Arch + 4 Canonical)</option>
-                <option value="promptcanvas_vision">4-Stage Vision (Image &rarr; Draw.io)</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="inp-image-model">Vision Image Model</label>
-              <select id="inp-image-model">
-                <option value="gemini-3-pro-image" selected>gemini-3-pro-image (Crisp Text)</option>
-                <option value="gemini-3.1-flash-image">gemini-3.1-flash-image (Fast)</option>
-                <option value="gemini-2.5-flash-image">gemini-2.5-flash-image (Regional)</option>
-              </select>
-            </div>
 
-            <label class="check-row">
-              <input type="checkbox" id="chk-tts" checked />
-              <span>Synthesize live Cloud TTS narration (12 Chirp3-HD MP3s + WebVTT)</span>
-            </label>
-            <label class="check-row">
-              <input type="checkbox" id="chk-judge" checked />
-              <span>Run orthogonal Gemini Judge (peer critic, e.g. Neon &harr; Carbon)</span>
-            </label>
-            <label class="check-row">
-              <input type="checkbox" id="chk-ground" checked />
-              <span>Live Google Search grounding + auto-revise P0/P1</span>
+            <details class="key-box" style="margin:6px 0 8px;">
+              <summary>Voice, Diagram Engine &amp; Pipeline Options</summary>
+              <div style="margin-top:8px;">
+                <div class="field">
+                  <label for="inp-voice">Cloud TTS Voice</label>
+                  <select id="inp-voice">
+                    <option value="en-US-Chirp3-HD-Charon">Chirp3-HD Charon (US English)</option>
+                    <option value="en-US-Chirp3-HD-Aoede">Chirp3-HD Aoede (US English)</option>
+                    <option value="en-US-Chirp3-HD-Fenrir">Chirp3-HD Fenrir (US English)</option>
+                    <option value="en-US-Chirp3-HD-Kore">Chirp3-HD Kore (US English)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="inp-diagram-engine">PromptCanvas Diagram Engine</label>
+                  <select id="inp-diagram-engine">
+                    <option value="canonical">Canonical WS1 (Editable Draw.io + Google Slides)</option>
+                    <option value="hybrid">Hybrid (Vision Arch + Canonical)</option>
+                    <option value="promptcanvas_vision">4-Stage Vision (Image &rarr; Draw.io)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="inp-image-model">Vision Image Model</label>
+                  <select id="inp-image-model">
+                    <option value="gemini-3-pro-image" selected>gemini-3-pro-image (Crisp Text)</option>
+                    <option value="gemini-3.1-flash-image">gemini-3.1-flash-image (Fast)</option>
+                    <option value="gemini-2.5-flash-image">gemini-2.5-flash-image (Regional)</option>
+                  </select>
+                </div>
+                <label class="check-row">
+                  <input type="checkbox" id="chk-tts" checked />
+                  <span>Synthesize live Cloud TTS narration (Chirp3-HD + WebVTT)</span>
+                </label>
+                <label class="check-row">
+                  <input type="checkbox" id="chk-judge" checked />
+                  <span>Run orthogonal Gemini Judge (peer critic)</span>
+                </label>
+                <label class="check-row">
+                  <input type="checkbox" id="chk-ground" checked />
+                  <span>Live Google Search grounding + auto-revise P0/P1</span>
+                </label>
+              </div>
+            </details>
+
+            <label class="check-row" style="margin-bottom:8px;">
+              <input type="checkbox" id="chk-starter-code" checked />
+              <span><strong>Include Starter Code</strong> (Terraform v2 + Python + Dockerfile)</span>
             </label>
 
-            <details class="key-box">
+            <details class="key-box" style="margin:6px 0 10px;">
               <summary>Optional API Key Override (transient header only)</summary>
               <div class="field" style="margin-top:8px; margin-bottom:2px;">
                 <label for="inp-apikey">X-Gemini-Api-Key</label>
@@ -858,10 +1093,11 @@
               </div>
             </details>
 
+            <div id="preflight-panel" class="preflight-card hidden" aria-live="polite"></div>
             <div id="composer-msg" class="banner banner-err hidden" role="alert"></div>
 
             <button type="submit" class="btn btn-primary btn-block" id="btn-generate">
-              Generate Complete Blog &amp; Asset Kit
+              Generate Blog
             </button>
           </form>
 
@@ -895,50 +1131,29 @@
 
     <section class="workspace" aria-label="Blog Deliverables Workspace">
       <div id="empty-state" class="card">
-        <div class="card-body" style="padding:26px;">
-          <div class="pill pill-blue" style="margin-bottom:10px;">Fail-Closed Production Generator</div>
-          <h1 style="font-size:24px; font-weight:800; margin-bottom:8px;">Build Any Architecture Blog End-to-End</h1>
-          <p style="font-size:14px; color:var(--muted); max-width:740px;">
-            Every generation invokes a live <strong>Gemini 4 / 3.x / 2.5</strong> model (default <code>gemini-4-neon</code>, orthogonal critic <code>gemini-4-carbon</code>) using Vertex AI IAM (or your optional transient
-            <code>X-Gemini-Api-Key</code> header) and compiles native Google Slides decks, Google Docs briefs, editable Draw.io files,
-            Chirp3-HD narration tracks, and verified quality reports &mdash; with zero mock fallbacks.
-          </p>
-          <div class="welcome-grid">
-            <div class="welcome-tile">
-              <h3>1. Architecture Blog (.md)</h3>
-              <p>Deep Google Cloud Architecture Center prose with Claim Provenance Ledger tagging every number.</p>
+        <div class="card-body" style="padding:22px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:8px;">
+            <div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-bottom:6px;">
+                <span class="pill pill-blue" id="planner-cat-badge">Reference Architecture</span>
+                <span class="pill pill-green" id="planner-plan-summary">6 Sections · 6 Diagrams · 12 Slides · Code ON</span>
+                <span class="pill pill-amber hidden" id="planner-custom-badge">Custom Outline</span>
+              </div>
+              <h1 style="font-size:22px; font-weight:800; margin-bottom:4px;">Interactive Blog Outline &amp; Diagram Placement Planner</h1>
+              <p id="planner-cat-desc" style="font-size:13px; color:var(--muted); max-width:760px;">
+                Select a Blog Category on the left, then toggle sections &amp; diagrams on/off, rename headings, or move any diagram up/down to its exact logical position before clicking <strong>Generate Blog</strong>.
+              </p>
             </div>
-            <div class="welcome-tile">
-              <h3>2. 6 WS1-Parity C4 Diagrams</h3>
-              <p>Official multi-color GCP SVG icons across L1 security, L2 platform, Hub-and-Spoke Cloud Arch, L3 sequence, L4 wire payload &amp; async lifecycle.</p>
-            </div>
-            <div class="welcome-tile">
-              <h3>3. Open in Google Slides</h3>
-              <p>Native editable 12-slide presentation with vector icons, diagrams, speaker notes, and clickable Draw.io links.</p>
-            </div>
-            <div class="welcome-tile">
-              <h3>4. Open in Google Docs</h3>
-              <p>GCP-styled architecture brief with embedded diagrams, formatted code, claim provenance ledger, FAQ, and proof visuals.</p>
-            </div>
-            <div class="welcome-tile">
-              <h3>5. Chirp3-HD Audio + Player</h3>
-              <p>Live Google Cloud TTS MP3 voice tracks + WebVTT captions + browser real-time WebM export.</p>
-            </div>
-            <div class="welcome-tile">
-              <h3>6. Authentic Proof Vault</h3>
-              <p>Zero fabricated screenshots. Upload genuine PNG/JPEG proofs to auto-embed into Slide 10 &amp; Google Docs.</p>
-            </div>
-            <div class="welcome-tile">
-              <h3>7. Starter Code (ZIP)</h3>
-              <p>Terraform, DDL/schema.sql, Python (AST-checked), Dockerfile, requirements.txt, deploy &amp; verify scripts marked <code>GENERATED_TEMPLATE_UNDEPLOYED</code>.</p>
-            </div>
-            <div class="welcome-tile">
-              <h3>8. Dual Quality Gate</h3>
-              <p>13 deterministic checks (incl. Terraform/destructive-cmd D-11, markdown leak D-12 &amp; numeric claim coverage D-13) + EXIF/OCR proof scan + orthogonal Gemini judge.</p>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button type="button" class="btn btn-sm" id="btn-planner-add-sec">+ Add Section</button>
+              <button type="button" class="btn btn-sm" id="btn-planner-reset">Reset Default</button>
             </div>
           </div>
-          <div class="banner banner-warn" style="margin-top:8px; margin-bottom:0;">
-            <strong>Honesty &amp; Grounding Guarantee:</strong> If Vertex AI credentials are offline and no API key header is provided, generation fails closed with <code>HTTP 503 MODEL_AUTH_UNAVAILABLE</code>. No canned template blogs or synthetic console screenshots are ever created.
+
+          <div id="outline-planner-list" class="outline-list" aria-label="Ordered Blog Sections and Diagrams"></div>
+
+          <div class="banner banner-info" style="margin-top:10px; margin-bottom:0; font-size:11.5px;">
+            <strong>Smart Live Preflight + Fail-Closed Grounding:</strong> Clicking <strong>Generate Blog</strong> runs a fast (&lt;2s) Gemini preflight check. Clear prompts launch immediately (0 extra clicks); vague or flawed prompts surface 3 clickable sample options. Every deliverable compiles 100% live via Vertex AI with 13 deterministic checks (D-01..D-13) and zero fake screenshots.
           </div>
         </div>
       </div>
@@ -949,6 +1164,7 @@
           <h1 class="hero-title" id="hero-title"></h1>
           <div class="hero-sub" id="hero-sub"></div>
           <div class="action-bar" id="hero-actions"></div>
+          <div id="iterate-drawer" class="iterate-drawer hidden"></div>
           <div id="workspace-sync-banner" class="banner hidden" style="margin-top:10px; margin-bottom:0;"></div>
         </div>
 
@@ -982,6 +1198,6 @@
     </div>
     <div class="diag-modal-body" id="diag-lightbox-body"></div>
   </div>
-  <script src="/js/create_blog1.js?v=20261125-v108" defer></script>
+  <script src="/js/create_blog1.js?v=20261126-v110" defer></script>
 </body>
 </html>

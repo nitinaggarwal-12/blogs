@@ -306,13 +306,29 @@ def prose_stage_system_prompt() -> str:
     )
 
 
-def prose_stage_user_prompt(prompt: str, title_hint: str, domain: str, audience: str, grounding: Dict[str, Any]) -> str:
+def prose_stage_user_prompt(
+    prompt: str,
+    title_hint: str,
+    domain: str,
+    audience: str,
+    grounding: Dict[str, Any],
+    category_meta: Optional[Dict[str, Any]] = None,
+    outline: Optional[List[Dict[str, Any]]] = None,
+    include_starter_code: bool = True,
+) -> str:
     g_text = (grounding.get("summary") or "").strip()
     g_block = (
         f"LIVE_SEARCH_GROUNDING (status={grounding.get('status')}, verified {grounding.get('checkedAt', '')}):\n{g_text[:4800]}\n\n"
         if g_text
         else "LIVE_SEARCH_GROUNDING: unavailable (be conservative; mark unverified numbers as EXAMPLE_TARGET or DERIVED_MODEL).\n\n"
     )
+    enabled_secs = [
+        str(x.get("title") or "").strip()
+        for x in (outline or [])
+        if isinstance(x, dict) and x.get("type") == "section" and x.get("enabled") and str(x.get("title") or "").strip()
+    ]
+    cat_name = str((category_meta or {}).get("name") or "Reference Architecture (Full Stack)")
+    cat_desc = str((category_meta or {}).get("description") or "")
     schema = {
         "title": "Concise flagship technical title (<= 85 chars, plain text, zero emojis)",
         "subtitle": "One-sentence Google Cloud Architecture Center subtitle (<= 135 chars)",
@@ -320,7 +336,7 @@ def prose_stage_user_prompt(prompt: str, title_hint: str, domain: str, audience:
         "summary": "2-4 sentence executive BLUF stating problem, architecture thesis, core trade-off, and scope",
         "audience": audience,
         "domain": domain,
-        "estimatedReadMinutes": 16,
+        "estimatedReadMinutes": 16 if len(enabled_secs) >= 6 else 10,
         "keyTakeaways": ["4 crisp actionable takeaways (plain text, ZERO **bold** markers or emojis)"],
         "sections": [
             {
@@ -328,7 +344,7 @@ def prose_stage_user_prompt(prompt: str, title_hint: str, domain: str, audience:
                 "paragraphs": ["2-4 detailed, meaty technical paragraphs (~120-180 words each) with concrete mechanisms, edge cases, and design rationale."],
                 "bullets": ["Crisp engineering bullet points (include concrete parameters/flags)"],
                 "codeBlocks": [
-                    {"language": "sql|yaml|bash|formula|python", "caption": "Short descriptive label", "code": "Real runnable/verified DDL, ISO GQL query, YAML policy, FinOps latency/cost formula, or CLI command."}
+                    {"language": "sql|hcl|bash|formula|python", "caption": "Short descriptive label", "code": "Real runnable/verified DDL, ISO GQL query, HCL policy, FinOps latency/cost formula, or CLI command."}
                 ],
                 "table": {"headers": ["Col 1", "Col 2", "Col 3", "Col 4"], "rows": [["v1", "v2", "v3", "v4"]]},
             }
@@ -345,55 +361,90 @@ def prose_stage_user_prompt(prompt: str, title_hint: str, domain: str, audience:
         "faq": [{"question": "Sharp staff-engineer objection or edge-case question", "answer": "Concrete 3-5 sentence answer"}],
         "references": [{"title": "Official Google Cloud doc title", "url": "https://cloud.google.com/...", "note": "What this doc verifies"}],
     }
+    if enabled_secs:
+        sec_lines = "\n".join(f"  {i}. {h}" for i, h in enumerate(enabled_secs, 1))
+        code_req = (
+            "- Include `codeBlocks` on at least 3 sections (realistic SQL/DDL/GQL, formula math, HCL/bash verify)."
+            if include_starter_code
+            else "- Starter code kit is DISABLED for this category; include `formula` math or policy `codeBlocks` only where genuinely helpful (no forced Terraform boilerplate)."
+        )
+        depth_block = (
+            f"BLOG CATEGORY: {cat_name}" + (f" — {cat_desc}" if cat_desc else "") + "\n"
+            f"REQUIRED EXACT ORDERED SECTIONS ({len(enabled_secs)} sections — match the user's outline order 1:1!):\n"
+            f"{sec_lines}\n"
+            f"- Author ALL {len(enabled_secs)} sections in that exact order, totaling ~{max(1800, len(enabled_secs) * 480)} to {max(2800, len(enabled_secs) * 720)} words of authentic technical depth.\n"
+            f"- Include structured `table` on at least {min(4, max(2, len(enabled_secs) - 1))} sections (`<= 6` columns, `4-7` concrete rows each).\n"
+            f"{code_req}\n"
+            "- Include 6 to 12 `claimLedger` entries covering EVERY SLA, latency, quota, or cost target in prose/formulas.\n"
+            "- Include 5 to 7 sharp `faq` items addressing real failure modes, cost surprises, and migration complexity.\n"
+            "- Include 6 to 12 verified public `https://cloud.google.com/` URLs in `references`.\n\n"
+        )
+    else:
+        depth_block = (
+            "TARGET DEPTH REQUIREMENTS (WS1-WS5 PARITY):\n"
+            "- Generate 7 to 8 rich `sections` totaling ~3,200 to 4,800 words of authentic technical depth:\n"
+            "  1. Executive Thesis, Problem Statement & Failure Modes of Naive Approaches\n"
+            "  2. Core Data Model, Storage / Schema & Query Semantics (MUST include a real `sql` or `yaml` `codeBlock`!)\n"
+            "  3. Reference Architecture Planes (Control, Compute, Data) & End-to-End Request Lifecycle\n"
+            "  4. Security Perimeter, Identity, Fine-Grained Access Control & Cryptographic Erasure (include table + threat/fail-closed matrix!)\n"
+            "  5. Comparative Trade-offs vs. Alternative Google Cloud Services (include detailed comparison table!)\n"
+            "  6. Latency Budgeting, FinOps Cost Math & Hard GCP Quotas (MUST include a `formula` `codeBlock` showing explicit math equations!)\n"
+            "  7. Async Lifecycle, Point-in-Time Analytics, DR & Operational Runbooks (include a `bash` / `sql` verification `codeBlock`!)\n"
+            "  8. Deploy & Verify in Your Own GCP Project + Next Steps (clearly marked GENERATED_TEMPLATE_UNDEPLOYED)\n"
+            "- Include structured `table` on at least 4 sections (`<= 6` columns, `4-7` concrete rows each).\n"
+            "- Include `codeBlocks` on at least 4 sections (realistic, syntactically accurate SQL/DDL/GQL, formula math, bash verify, YAML).\n"
+            "- Include 8 to 12 `claimLedger` entries covering EVERY SLA, latency, quota, or cost target in prose/formulas.\n"
+            "- Include 6 to 7 sharp `faq` items addressing real failure modes, cost surprises, and migration complexity.\n"
+            "- Include 8 to 12 verified public `https://cloud.google.com/` URLs in `references`.\n\n"
+        )
     return (
         f"{g_block}"
         f"USER TOPIC / PROMPT:\n{prompt.strip()}\n\n"
         f"TITLE HINT: {title_hint.strip() or '(derive crisp title)'}\n"
         f"DOMAIN / PILLAR: {domain.strip() or 'Enterprise AI Architecture'}\n"
         f"PRIMARY AUDIENCE: {audience.strip() or 'Solutions Architects & Platform Engineers'}\n\n"
-        "TARGET DEPTH REQUIREMENTS (WS1-WS5 PARITY):\n"
-        "- Generate 7 to 8 rich `sections` totaling ~3,200 to 4,800 words of authentic technical depth:\n"
-        "  1. Executive Thesis, Problem Statement & Failure Modes of Naive Approaches\n"
-        "  2. Core Data Model, Storage / Schema & Query Semantics (MUST include a real `sql` or `yaml` `codeBlock`!)\n"
-        "  3. Reference Architecture Planes (Control, Compute, Data) & End-to-End Request Lifecycle\n"
-        "  4. Security Perimeter, Identity, Fine-Grained Access Control & Cryptographic Erasure (include table + threat/fail-closed matrix!)\n"
-        "  5. Comparative Trade-offs vs. Alternative Google Cloud Services (include detailed comparison table!)\n"
-        "  6. Latency Budgeting, FinOps Cost Math & Hard GCP Quotas (MUST include a `formula` `codeBlock` showing explicit math equations!)\n"
-        "  7. Async Lifecycle, Point-in-Time Analytics, DR & Operational Runbooks (include a `bash` / `sql` verification `codeBlock`!)\n"
-        "  8. Deploy & Verify in Your Own GCP Project + Next Steps (clearly marked GENERATED_TEMPLATE_UNDEPLOYED)\n"
-        "- Include structured `table` on at least 4 sections (`<= 6` columns, `4-7` concrete rows each).\n"
-        "- Include `codeBlocks` on at least 4 sections (realistic, syntactically accurate SQL/DDL/GQL, formula math, bash verify, YAML).\n"
-        "- Include 8 to 12 `claimLedger` entries covering EVERY SLA, latency, quota, or cost target in prose/formulas.\n"
-        "- Include 6 to 7 sharp `faq` items addressing real failure modes, cost surprises, and migration complexity.\n"
-        "- Include 8 to 12 verified public `https://cloud.google.com/` URLs in `references`.\n\n"
+        f"{depth_block}"
         "Return ONLY JSON matching:\n" + json.dumps(schema, indent=2)
     )
 
 
-def topology_stage_system_prompt() -> str:
+def topology_stage_system_prompt(slide_plan: Optional[Dict[str, Any]] = None) -> str:
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    total_slides = int((slide_plan or {}).get("totalSlides") or 12)
+    inc_code = bool((slide_plan or {}).get("includeStarterCode", True))
+    code_rule = (
+        "5. Hardened `codeStarter` MUST be 100% consistent with `blog.md` (same graph/table/column/env-var/service names — NEVER use placeholder 'PolicyGraph' or 'acme'!):\n"
+        "   - `terraformMain`: MUST use `google_cloud_run_v2_service` with `ingress = \"INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER\"`, ZERO `allUsers` or `allAuthenticatedUsers`, set EVERY `os.environ[...]` variable read by `pythonApp`, declare any `data` block referenced, and when using Spanner FGAC grant `roles/spanner.fineGrainedAccessUser` + conditional `roles/spanner.databaseRoleUser` (NEVER `roles/spanner.databaseUser`!).\n"
+        "   - `pythonApp`: MUST be complete, syntactically valid Python 3.11 (`ast.parse()` verified), cryptographically verify `X-Goog-IAP-JWT-Assertion` via `google.oauth2.id_token.verify_token(..., certs_url='https://www.gstatic.com/iap/verify/public_key-jwk')`, use `from google import genai` with `location='global'` for Gemini 4 models, pass `database_role=...` for Spanner FGAC, and ONLY reference tables/columns/graphs that exist verbatim in `schemaSql`!\n"
+        "   - `dockerfile` & `requirementsTxt`: MUST be complete and runnable for `gcloud builds submit`.\n"
+        "   - `deploySh`: MUST use `--no-allow-unauthenticated` and pass the exact same env vars & service account as `terraformMain`.\n"
+        "   - `verifySh`: MUST check Cloud Run ingress via top-level `metadata.annotations['run.googleapis.com/ingress']` (NEVER `spec.template.metadata.annotations`), verify zero `allUsers|allAuthenticatedUsers`, and match what the closing slide describes.\n"
+        if inc_code
+        else "5. Starter code kit is DISABLED for this category: set `codeStarter` to `{}` (do NOT generate Terraform, Dockerfile, or Python boilerplate!).\n"
+    )
     return (
         f"Today is {today}. You are a Principal Google Cloud Solutions Architect generating the structured "
-        "12-slide executive deck and hardened Terraform v2 + Python 3.11 + Dockerfile starter kit "
-        "matching a flagship blog article with 100% SINGLE-SOURCE-OF-TRUTH consistency. STRICT RULES:\n"
+        f"{total_slides}-slide executive deck"
+        + (" and hardened Terraform v2 + Python 3.11 + Dockerfile starter kit " if inc_code else " ")
+        + "matching a flagship blog article with 100% SINGLE-SOURCE-OF-TRUTH consistency. STRICT RULES:\n"
         "1. Output ONLY valid JSON (no markdown wrappers outside JSON).\n"
         "2. ZERO emojis and ZERO inline markdown asterisks (**bold** or `backticks`) inside diagram labels, "
         "slide titles, slide bullets, table cells, or speaker notes! Write clean plain English text everywhere.\n"
         "3. NEVER print raw enum names like `(EXAMPLE_TARGET)` or `(DERIVED_MODEL)` on slides; use natural language.\n"
         "4. `iconKey` MUST be selected strictly from this allowed list:\n"
         f"   {ALLOWED_ICON_KEYS_LIST}\n"
-        "5. Hardened `codeStarter` MUST be 100% consistent with `blog.md` (same graph/table/column/env-var/service names — NEVER use placeholder 'PolicyGraph' or 'acme'!):\n"
-        "   - `terraformMain`: MUST use `google_cloud_run_v2_service` with `ingress = \"INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER\"`, ZERO `allUsers` or `allAuthenticatedUsers`, set EVERY `os.environ[...]` variable read by `pythonApp`, declare any `data` block referenced, and when using Spanner FGAC grant `roles/spanner.fineGrainedAccessUser` + conditional `roles/spanner.databaseRoleUser` (NEVER `roles/spanner.databaseUser`!).\n"
-        "   - `pythonApp`: MUST be complete, syntactically valid Python 3.11 (`ast.parse()` verified), cryptographically verify `X-Goog-IAP-JWT-Assertion` via `google.oauth2.id_token.verify_token(..., certs_url='https://www.gstatic.com/iap/verify/public_key-jwk')`, use `from google import genai` with `location='global'` for Gemini 4 models, pass `database_role=...` for Spanner FGAC, and ONLY reference tables/columns/graphs that exist verbatim in `schemaSql`!\n"
-        "   - `dockerfile` & `requirementsTxt`: MUST be complete and runnable for `gcloud builds submit`.\n"
-        "   - `deploySh`: MUST use `--no-allow-unauthenticated` and pass the exact same env vars & service account as `terraformMain`.\n"
-        "   - `verifySh`: MUST check Cloud Run ingress via top-level `metadata.annotations['run.googleapis.com/ingress']` (NEVER `spec.template.metadata.annotations`), verify zero `allUsers|allAuthenticatedUsers`, and match what Slide 12 describes.\n"
-        "6. Speaker notes for ALL 12 slides must be natural, humanized, conversational spoken narration "
-        "(2-4 clear sentences each, ~55-90 words, zero markdown punctuation, never say 'Slide 1' or 'Architecture 1') AND MUST match the EXACT visual content on each slide (Slide 4 = Hub-and-Spoke Architecture Blueprint, Slide 7 = Wire Payload Transformation, Slide 8 = Async Lifecycle & GCS DLQ, Slide 10 = Live Proofs, Slide 11 = Latency & Dollar Cost Math)."
+        f"{code_rule}"
+        f"6. Speaker notes for ALL {total_slides} slides must be natural, humanized, conversational spoken narration "
+        "(2-4 clear sentences each, ~55-90 words, zero markdown punctuation, never say 'Slide 1' or 'Architecture 1') AND MUST match the EXACT visual content on each slide."
     )
 
 
-def topology_stage_user_prompt(prose_bp: Dict[str, Any], prompt: str, grounding: Dict[str, Any]) -> str:
+def topology_stage_user_prompt(
+    prose_bp: Dict[str, Any],
+    prompt: str,
+    grounding: Dict[str, Any],
+    slide_plan: Optional[Dict[str, Any]] = None,
+) -> str:
     sec_brief = [
         {"heading": s.get("heading"), "hasTable": bool(s.get("table")), "hasCode": bool(s.get("codeBlocks"))}
         for s in (prose_bp.get("sections") or [])
@@ -404,7 +455,15 @@ def topology_stage_user_prompt(prose_bp: Dict[str, Any], prompt: str, grounding:
             if isinstance(cb, dict) and cb.get("code"):
                 inline_code_ctx.append({"section": s.get("heading"), "language": cb.get("language"), "caption": cb.get("caption"), "code": str(cb.get("code"))})
     g_snippet = (grounding.get("summary") or "")
-    schema = {
+    total_slides = int((slide_plan or {}).get("totalSlides") or 12)
+    inc_code = bool((slide_plan or {}).get("includeStarterCode", True))
+    code_slide = (slide_plan or {}).get("codeSlide", 9 if inc_code else None)
+    proof_slide = int((slide_plan or {}).get("proofSlide") or (10 if inc_code else 9))
+    table_slide = int((slide_plan or {}).get("tableSlide") or (11 if inc_code else 10))
+    closing_slide = int((slide_plan or {}).get("closingSlide") or total_slides)
+    enabled_diags = list((slide_plan or {}).get("enabledDiagrams") or [])
+
+    schema: Dict[str, Any] = {
         "slides": [
             {
                 "number": 1,
@@ -415,22 +474,60 @@ def topology_stage_user_prompt(prose_bp: Dict[str, Any], prompt: str, grounding:
                 "calloutLabel": "Optional metric label",
                 "calloutValue": "Clean grounded figure ONLY (e.g. '1,200 ms p95 TTFT' — NO raw '(EXAMPLE_TARGET)' enum!)",
                 "table": {"headers": ["Col A", "Col B", "Col C"], "rows": [["v1", "v2", "v3"]]},
-                "codeSnippet": "Short verified snippet from schemaSql (slide 9 ONLY)",
+                "codeSnippet": f"Short verified snippet from schemaSql (slide {code_slide} ONLY)" if code_slide else "",
                 "speakerNotes": "Conversational spoken narration (55-90 words, plain prose, strictly matching this slide's visual).",
             }
         ],
-        "codeStarter": {
+    }
+    if inc_code:
+        schema["codeStarter"] = {
             "readmeSummary": "Review, security-scan, and terraform plan notes listing all included files including schema.sql, Dockerfile, and requirements.txt.",
-            "schemaSql": "-- Complete valid DDL/SQL/ISO GQL matching Section 2 & Section 4 verbatim",
+            "schemaSql": "-- Complete valid DDL/SQL/ISO GQL matching the data/security sections verbatim",
             "terraformMain": "# Complete hardened Terraform using google_cloud_run_v2_service (NO allUsers, NO roles/spanner.databaseUser if FGAC!)",
             "terraformVars": "# Terraform variable declarations matching every var.* in terraformMain",
-            "pythonApp": "# Complete syntactically valid Python 3.11 FastAPI app matching Section 3 verbatim with IAP JWT verify_token + google-genai + exact schemaSql tables/columns",
+            "pythonApp": "# Complete syntactically valid Python 3.11 FastAPI app with IAP JWT verify_token + google-genai + exact schemaSql tables/columns",
             "dockerfile": "FROM python:3.11-slim\n...",
             "requirementsTxt": "fastapi\nuvicorn\n...",
             "deploySh": "#!/usr/bin/env bash\nset -euo pipefail\n...",
             "verifySh": "#!/usr/bin/env bash\nset -euo pipefail\n...",
-        },
-    }
+        }
+    else:
+        schema["codeStarter"] = {}
+
+    diag_lines: List[str] = []
+    if enabled_diags:
+        for d in enabled_diags:
+            diag_lines.append(
+                f"  {d['slideNumber']}=Figure {d['figureNum']} {d['title']} ({d['layer']} — narrate the exact visual diagram faithfully)"
+            )
+    else:
+        diag_lines = [
+            "  3=Figure 1 Master Platform Architecture (C4 L2 — narrate the 3-plane 5-stage platform flow)",
+            "  4=Figure 2 Cloud Architecture Center Hub-and-Spoke Blueprint (narrate the hub-and-spoke VPC-SC perimeter & sync/async spokes)",
+            "  5=Figure 3 End-to-End Request Lifecycle Sequence (C4 L3 — narrate the actual 6 actor-to-actor hops)",
+            "  6=Figure 4 Trust Perimeter & Defense-in-Depth Security Boundary (C4 L1 — narrate the 4 layers, threats & HTTP 401/403/422/429 breakers)",
+            "  7=Figure 5 Wire-Protocol & Payload Transformation (C4 L4 — narrate the 4 wire hops accurately)",
+            "  8=Figure 6 Async State, CDC Export & Recovery Loop (narrate Change Streams -> Dataflow -> BigQuery + GCS Dead-Letter Bucket)",
+        ]
+
+    cadence_lines = [
+        f"EXACT {total_slides}-SLIDE CADENCE REQUIRED (MUST MATCH RENDERED DIAGRAMS 1:1):",
+        f"- `slides`: EXACTLY {total_slides} slides:",
+        "  1=Cover & BLUF (3 concise takeaways <= 145 chars each so nothing ever clips!)",
+        "  2=Challenge & Design Goals (with clean callout metric — zero '(EXAMPLE_TARGET)' enum!)",
+        *diag_lines,
+    ]
+    if code_slide:
+        cadence_lines.append(
+            f"  {code_slide}=Implementation Guardrails & Starter Code (include concise verified `codeSnippet` matching `schemaSql` verbatim — NEVER 'PolicyGraph'!)"
+        )
+    cadence_lines.extend([
+        f"  {proof_slide}=Verified Live Console & SaaS Proofs (specify 2 crisp BEFORE/AFTER capture bullets <= 85 chars each; no fake screenshots)",
+        f"  {table_slide}=Latency Budget, Cost Math & Service Trade-Offs (table MUST include explicit monthly dollar cost estimates + latency column, consistent with prose!)",
+        f"  {closing_slide}=Production Readiness Checklist & Rollout Plan (crisp actionable rollout steps"
+        + (" — Step 4 MUST accurately describe what `verify.sh` actually checks!" if inc_code else "")
+        + ")",
+    ])
     return (
         f"ALIGN WITH BLOG TITLE: {prose_bp.get('title')}\n"
         f"SUBTITLE: {prose_bp.get('subtitle')}\n"
@@ -440,21 +537,8 @@ def topology_stage_user_prompt(prose_bp: Dict[str, Any], prompt: str, grounding:
         f"CLAIMS: {json.dumps(prose_bp.get('claimLedger') or [])}\n"
         f"ORIGINAL PROMPT:\n{prompt.strip()}\n\n"
         + (f"GROUNDING NOTES:\n{g_snippet}\n\n" if g_snippet else "")
-        + "EXACT 12-SLIDE CADENCE REQUIRED (MUST MATCH RENDERED DIAGRAMS 1:1):\n"
-        "- `slides`: EXACTLY 12 slides:\n"
-        "  1=Cover & BLUF (3 concise takeaways <= 145 chars each so nothing ever clips!)\n"
-        "  2=Challenge & Design Goals (with clean callout metric — zero '(EXAMPLE_TARGET)' enum!)\n"
-        "  3=Figure 1 Master Platform Architecture (C4 L2 — narrate the 3-plane 5-stage platform flow)\n"
-        "  4=Figure 2 Cloud Architecture Center Hub-and-Spoke Blueprint (narrate the hub-and-spoke VPC-SC perimeter & sync/async spokes — NEVER call it a 'matrix'!)\n"
-        "  5=Figure 3 End-to-End Request Lifecycle Sequence (C4 L3 — narrate the actual 6 actor-to-actor hops)\n"
-        "  6=Figure 4 Trust Perimeter & Defense-in-Depth Security Boundary (C4 L1 — narrate the 4 layers, threats & HTTP 401/403/422/429 breakers)\n"
-        "  7=Figure 5 Wire-Protocol & Payload Transformation (C4 L4 — narrate the 4 wire hops accurately, including Hop 4 CDC/query)\n"
-        "  8=Figure 6 Async State, CDC Export & Recovery Loop (narrate Change Streams -> Dataflow -> BigQuery + GCS Dead-Letter Bucket — NOT Pub/Sub DLQ unless provisioned!)\n"
-        "  9=Implementation Guardrails & Starter Code (include concise verified `codeSnippet` matching `schemaSql` verbatim — NEVER 'PolicyGraph'!)\n"
-        "  10=Verified Live Console & SaaS Proofs (specify 2 crisp BEFORE/AFTER capture bullets <= 85 chars each; no fake screenshots)\n"
-        "  11=Latency Budget, Cost Math & Service Trade-Offs (table MUST include explicit monthly dollar cost estimates + latency column, consistent with Section 6!)\n"
-        "  12=Production Readiness Checklist & Rollout Plan (Step 4 MUST accurately describe what `verify.sh` actually checks!).\n\n"
-        "Return ONLY JSON matching:\n" + json.dumps(schema, indent=2)
+        + "\n".join(cadence_lines)
+        + "\n\nReturn ONLY JSON matching:\n" + json.dumps(schema, indent=2)
     )
 
 
@@ -847,10 +931,27 @@ def diagram_architect_user_prompt(
     prose_raw: Dict[str, Any],
     topic_prompt: str,
     grounding: Dict[str, Any],
+    enabled_kinds: Optional[List[str]] = None,
 ) -> str:
     sec_headings = [s.get("heading", "") for s in (prose_raw.get("sections") or [])[:10] if isinstance(s, dict)]
     claims = (prose_raw.get("claimLedger") or [])[:8]
     g_sum = str((grounding or {}).get("summary") or "").strip()[:2800]
+    kind_to_bp = {
+        "architecture": "platformDiagram",
+        "cloudarch": "cloudArchDiagram",
+        "sequence": "sequenceDiagram",
+        "security": "securityDiagram",
+        "wire": "wireDiagram",
+        "async": "asyncDiagram",
+    }
+    req_keys = [kind_to_bp[k] for k in (enabled_kinds or list(kind_to_bp.keys())) if k in kind_to_bp]
+    if not req_keys:
+        req_keys = list(kind_to_bp.values())
+    diag_instruction = (
+        "Synthesize the ultra-crisp, domain-specific JSON specification for ALL 6 C4 diagrams now. Output ONLY valid raw JSON."
+        if len(req_keys) == 6
+        else f"Synthesize the ultra-crisp, domain-specific JSON specification for ONLY these {len(req_keys)} enabled diagram keys: {', '.join(req_keys)}. Omit disabled diagram keys. Output ONLY valid raw JSON."
+    )
     return (
         f"TITLE: {prose_raw.get('title', '')}\n"
         f"SUBTITLE: {prose_raw.get('subtitle', '')}\n"
@@ -859,6 +960,6 @@ def diagram_architect_user_prompt(
         f"VERIFIED CLAIMS SAMPLE: {json.dumps(claims)[:1400]}\n\n"
         f"ORIGINAL USER REQUEST:\n{topic_prompt[:2000]}\n\n"
         + (f"LIVE GOOGLE SEARCH GROUNDING DOSSIER:\n{g_sum}\n\n" if g_sum else "")
-        + "Synthesize the ultra-crisp, domain-specific JSON specification for ALL 6 C4 diagrams now. Output ONLY valid raw JSON."
+        + diag_instruction
     )
 

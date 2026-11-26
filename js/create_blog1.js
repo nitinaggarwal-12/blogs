@@ -23,9 +23,51 @@
     },
   ];
 
+  const FALLBACK_CATEGORIES = [
+    {
+      id: 'reference_architecture',
+      name: 'Reference Architecture (Full Stack)',
+      shortName: 'Reference Architecture',
+      description: 'Deep end-to-end Google Cloud Architecture Center guide with all 6 C4 diagrams, 12-slide native deck, and starter Terraform + Python kit.',
+      defaultDomain: 'Multi-Tenant Agentic AI',
+      defaultAudience: 'Solutions Architects & Platform Engineers',
+      includeStarterCode: true,
+      recommendedOutline: [
+        { id: 'sec-1', type: 'section', title: 'Executive Thesis & Architecture Scope', enabled: true },
+        { id: 'diag-architecture', type: 'diagram', kind: 'architecture', title: 'Master Platform Architecture (C4 L2)', enabled: true },
+        { id: 'sec-2', type: 'section', title: 'Cloud Topology & Isolation Boundaries', enabled: true },
+        { id: 'diag-cloudarch', type: 'diagram', kind: 'cloudarch', title: 'Cloud Architecture Center Hub-and-Spoke Blueprint', enabled: true },
+        { id: 'sec-3', type: 'section', title: 'End-to-End Request Lifecycle & Identity Flow', enabled: true },
+        { id: 'diag-sequence', type: 'diagram', kind: 'sequence', title: 'Request Lifecycle Sequence (C4 L3)', enabled: true },
+        { id: 'sec-4', type: 'section', title: 'Security Perimeter & Zero-Trust Controls', enabled: true },
+        { id: 'diag-security', type: 'diagram', kind: 'security', title: 'Trust Perimeter & Security Boundary (C4 L1)', enabled: true },
+        { id: 'sec-5', type: 'section', title: 'Wire Contracts, Payloads & Schema Governance', enabled: true },
+        { id: 'diag-wire', type: 'diagram', kind: 'wire', title: 'Wire-Protocol & Schema Transformation (C4 L4)', enabled: true },
+        { id: 'sec-6', type: 'section', title: 'Async Lifecycle, FinOps Economics & Operations', enabled: true },
+        { id: 'diag-async', type: 'diagram', kind: 'async', title: 'Async Lifecycle, Export & Recovery Loop', enabled: true },
+      ],
+    },
+  ];
+
+  const DIAGRAM_SHORT_LABELS = {
+    architecture: 'Platform L2',
+    cloudarch: 'Cloud Arch Hub-Spoke',
+    sequence: 'Sequence L3',
+    security: 'Trust Perimeter L1',
+    wire: 'Wire Protocol L4',
+    async: 'Async / Recovery Loop',
+  };
+
   const state = {
     csrfToken: (document.querySelector('meta[name="csrf-token"]') || {}).content || '',
     capabilities: null,
+    categories: FALLBACK_CATEGORIES.slice(),
+    categoryId: 'reference_architecture',
+    outline: JSON.parse(JSON.stringify(FALLBACK_CATEGORIES[0].recommendedOutline)),
+    outlineCustomized: false,
+    includeStarterCode: true,
+    preflightResult: null,
+    preflightBusy: false,
     blogs: [],
     activeSlug: null,
     activeBlog: null,
@@ -51,6 +93,7 @@
     workspaceTokenExp: 0,
     workspaceSyncBusy: false,
     gisLoaded: false,
+    iterateDrawerOpen: false,
   };
 
   function makeSvgBadgeIcon(kind) {
@@ -284,50 +327,241 @@
     return el('span', { className: 'pill ' + (cls || '') }, children);
   }
 
+  function getCategoryById(catId) {
+    const id = String(catId || 'reference_architecture');
+    return state.categories.find((c) => c.id === id) || state.categories[0] || FALLBACK_CATEGORIES[0];
+  }
+
+  function computeOutlineStats() {
+    const secs = state.outline.filter((x) => x.type === 'section' && x.enabled).length;
+    const diags = state.outline.filter((x) => x.type === 'diagram' && x.enabled).length;
+    const slides = 2 + Math.max(1, diags) + (state.includeStarterCode ? 1 : 0) + 3;
+    return { secs, diags, slides };
+  }
+
+  function populateCategorySelect() {
+    const sel = document.getElementById('inp-category');
+    if (!sel || !state.categories.length) return;
+    const prev = state.categoryId || sel.value || 'reference_architecture';
+    sel.replaceChildren(...state.categories.map((cat) => {
+      const dc = cat.recommendedDiagramCount || (cat.recommendedOutline || []).filter((x) => x.type === 'diagram' && x.enabled).length;
+      const sc = cat.recommendedSlideCount || (2 + dc + (cat.includeStarterCode ? 1 : 0) + 3);
+      return el('option', { value: cat.id }, cat.name + ' (' + dc + 'd / ' + sc + 's)');
+    }));
+    if (state.categories.some((c) => c.id === prev)) {
+      sel.value = prev;
+    }
+  }
+
+  function applyCategorySelection(catId, syncFilters) {
+    const cat = getCategoryById(catId);
+    state.categoryId = cat.id;
+    state.outline = JSON.parse(JSON.stringify(cat.recommendedOutline || FALLBACK_CATEGORIES[0].recommendedOutline));
+    state.outlineCustomized = false;
+    state.includeStarterCode = Boolean(cat.includeStarterCode !== false);
+    const sel = document.getElementById('inp-category');
+    if (sel) sel.value = cat.id;
+    const chkCode = document.getElementById('chk-starter-code');
+    if (chkCode) chkCode.checked = state.includeStarterCode;
+    if (syncFilters !== false) {
+      const domSel = document.getElementById('inp-domain');
+      if (domSel && cat.defaultDomain && Array.from(domSel.options).some((o) => o.value === cat.defaultDomain)) {
+        domSel.value = cat.defaultDomain;
+      }
+      const audSel = document.getElementById('inp-audience');
+      if (audSel && cat.defaultAudience && Array.from(audSel.options).some((o) => o.value === cat.defaultAudience)) {
+        audSel.value = cat.defaultAudience;
+      }
+    }
+    renderOutlinePlanner();
+  }
+
+  function renderOutlinePlanner() {
+    const listEl = document.getElementById('outline-planner-list');
+    const catBadge = document.getElementById('planner-cat-badge');
+    const sumBadge = document.getElementById('planner-plan-summary');
+    const custBadge = document.getElementById('planner-custom-badge');
+    const descEl = document.getElementById('planner-cat-desc');
+    const smallBadge = document.getElementById('cat-badge-pill');
+    const cat = getCategoryById(state.categoryId);
+    const stats = computeOutlineStats();
+
+    if (catBadge) catBadge.textContent = cat.shortName || cat.name;
+    if (sumBadge) {
+      sumBadge.textContent = stats.secs + ' Sections · ' + stats.diags + ' Diagrams · ' + stats.slides + ' Slides · ' + (state.includeStarterCode ? 'Code ON' : 'Code OFF');
+    }
+    if (smallBadge) smallBadge.textContent = stats.diags + 'd / ' + stats.slides + 's';
+    if (custBadge) custBadge.classList.toggle('hidden', !state.outlineCustomized);
+    if (descEl && cat.description) descEl.textContent = cat.description + ' Toggle items on/off, edit titles, or move any diagram up/down to its exact logical position.';
+    if (!listEl) return;
+
+    const enabledSecCount = stats.secs;
+    const enabledDiagCount = stats.diags;
+    let figCounter = 0;
+
+    const rows = state.outline.map((item, idx) => {
+      const isDiag = item.type === 'diagram';
+      const isEnabled = Boolean(item.enabled);
+      if (isDiag && isEnabled) figCounter += 1;
+      const figTag = isDiag
+        ? (isEnabled ? ('FIG ' + figCounter + ' · ' + (DIAGRAM_SHORT_LABELS[item.kind] || item.kind)) : ('OFF · ' + (DIAGRAM_SHORT_LABELS[item.kind] || item.kind)))
+        : 'SECTION';
+      const disableToggle = isEnabled && ((isDiag && enabledDiagCount <= 1) || (!isDiag && enabledSecCount <= 2));
+
+      const chk = el('input', {
+        type: 'checkbox',
+        'aria-label': 'Toggle ' + item.title,
+        disabled: disableToggle,
+        onChange: (ev) => {
+          item.enabled = Boolean(ev.target.checked);
+          state.outlineCustomized = true;
+          renderOutlinePlanner();
+        },
+      });
+      chk.checked = isEnabled;
+
+      const titleInp = el('input', {
+        type: 'text',
+        className: 'outline-title-inp',
+        value: item.title || '',
+        maxlength: '110',
+        'aria-label': (isDiag ? 'Diagram title' : 'Section heading'),
+        onInput: (ev) => {
+          item.title = ev.target.value;
+          state.outlineCustomized = true;
+          if (custBadge) custBadge.classList.remove('hidden');
+        },
+      });
+
+      const moveUp = el('button', {
+        type: 'button',
+        className: 'btn-icon',
+        title: 'Move up',
+        'aria-label': 'Move up',
+        disabled: idx === 0,
+        onClick: () => {
+          if (idx <= 0) return;
+          const tmp = state.outline[idx - 1];
+          state.outline[idx - 1] = state.outline[idx];
+          state.outline[idx] = tmp;
+          state.outlineCustomized = true;
+          renderOutlinePlanner();
+        },
+      }, '↑');
+
+      const moveDown = el('button', {
+        type: 'button',
+        className: 'btn-icon',
+        title: 'Move down',
+        'aria-label': 'Move down',
+        disabled: idx === state.outline.length - 1,
+        onClick: () => {
+          if (idx >= state.outline.length - 1) return;
+          const tmp = state.outline[idx + 1];
+          state.outline[idx + 1] = state.outline[idx];
+          state.outline[idx] = tmp;
+          state.outlineCustomized = true;
+          renderOutlinePlanner();
+        },
+      }, '↓');
+
+      const moveGrp = el('div', { className: 'outline-move-grp' }, moveUp, moveDown);
+      if (!isDiag && String(item.id || '').startsWith('sec-custom-')) {
+        moveGrp.appendChild(el('button', {
+          type: 'button',
+          className: 'btn-icon',
+          title: 'Remove custom section',
+          'aria-label': 'Remove section',
+          onClick: () => {
+            state.outline.splice(idx, 1);
+            state.outlineCustomized = true;
+            renderOutlinePlanner();
+          },
+        }, '×'));
+      }
+
+      return el('div', {
+        className: 'outline-row' + (isDiag ? ' is-diagram' : '') + (isEnabled ? '' : ' is-disabled'),
+      },
+        chk,
+        makePill(figTag, isDiag ? (isEnabled ? 'pill-blue' : '') : 'pill-purple', false),
+        titleInp,
+        moveGrp
+      );
+    });
+    listEl.replaceChildren(...rows);
+  }
+
+  function openOutlinePlannerView() {
+    stopAudioPlayer();
+    state.activeSlug = null;
+    state.activeBlog = null;
+    const act = document.getElementById('active-blog-view');
+    const emp = document.getElementById('empty-state');
+    if (act) act.classList.add('hidden');
+    if (emp) emp.classList.remove('hidden');
+    renderLibrary();
+    renderOutlinePlanner();
+  }
+
   function renderCapabilities(cap) {
     const strip = document.getElementById('capability-strip');
     const authPill = document.getElementById('composer-auth-pill');
-    if (!strip || !cap) return;
+    const sumPill = document.getElementById('status-summary-pill');
+    const pop = document.getElementById('status-popover');
+    if (!cap) return;
+    if (Array.isArray(cap.categories) && cap.categories.length) {
+      state.categories = cap.categories;
+      populateCategorySelect();
+      if (!state.outlineCustomized) {
+        applyCategorySelection(state.categoryId, false);
+      } else {
+        renderOutlinePlanner();
+      }
+    }
     const auth = cap.auth || {};
     const c = cap.capabilities || {};
-    const items = [];
-    items.push(makePill(
-      auth.vertexAiIamReady ? 'Vertex AI IAM: LIVE (global + ' + cap.vertexLocation + ')' : 'Vertex AI IAM: Offline',
-      auth.vertexAiIamReady ? 'pill-green' : 'pill-amber',
-      true
-    ));
-    if (cap.defaultModel) {
-      items.push(makePill('Default: ' + cap.defaultModel, 'pill-blue', false));
+    const gatesN = Number(c.deterministicGateChecks || 13);
+    if (sumPill) {
+      const modeLbl = auth.llmReady ? 'Live' : 'Key Needed';
+      const modLbl = cap.defaultModel || 'gemini-4-neon';
+      sumPill.replaceChildren(
+        el('span', { className: 'dot', 'aria-hidden': 'true' }),
+        el('span', null, modeLbl + ' · ' + modLbl + ' · ' + gatesN + '/' + gatesN + ' Gates ▾')
+      );
     }
-    items.push(makePill(
-      auth.geminiApiKeyEnvReady ? 'Env API Key: Set' : 'Transient Header Key: Supported',
-      auth.geminiApiKeyEnvReady ? 'pill-green' : 'pill-blue',
-      false
-    ));
-    items.push(makePill(
-      c.cloudTtsChirp3Hd ? 'Cloud TTS Chirp3-HD: LIVE' : 'Cloud TTS: Offline',
-      c.cloudTtsChirp3Hd ? 'pill-green' : 'pill-amber',
-      true
-    ));
-    items.push(makePill(
-      c.gcsDurableStorage ? 'GCS Durable Store: Connected' : 'Storage: Local Runtime',
-      c.gcsDurableStorage ? 'pill-green' : 'pill-amber',
-      true
-    ));
-    if (c.googleSearchGrounding) items.push(makePill('Search Grounding: LIVE', 'pill-green', true));
-    if (c.officialGcpSvgIcons) items.push(makePill(c.officialGcpSvgIcons + ' GCP SVG Icons', 'pill-blue', false));
-    items.push(makePill('6 WS1-Parity Diagrams + Google Slides', 'pill-blue', false));
-    items.push(makePill(
-      c.workspaceOauthSync ? 'Google Slides & Docs: Synced Engine' : 'Google Slides & Docs: 1-Click OAuth',
-      c.workspaceOauthSync ? 'pill-green' : 'pill-blue',
-      Boolean(c.workspaceOauthSync)
-    ));
-    items.push(makePill(
-      c.hostMp4Compiler ? 'Video Export: Server MP4 + Browser WebM' : 'Video Export: Browser WebM (MediaRecorder)',
-      'pill-purple',
-      false
-    ));
-    strip.replaceChildren(...items);
+    if (pop) {
+      pop.classList.remove('status-warn', 'status-err');
+      if (!auth.llmReady) pop.classList.add('status-warn');
+    }
+    if (strip) {
+      const items = [];
+      items.push(makePill(
+        auth.vertexAiIamReady ? 'Vertex AI IAM: LIVE (' + cap.vertexLocation + ')' : 'Vertex AI IAM: Offline',
+        auth.vertexAiIamReady ? 'pill-green' : 'pill-amber',
+        true
+      ));
+      if (cap.defaultModel) items.push(makePill('Default: ' + cap.defaultModel, 'pill-blue', false));
+      items.push(makePill(
+        c.cloudTtsChirp3Hd ? 'Cloud TTS Chirp3-HD: LIVE' : 'Cloud TTS: Offline',
+        c.cloudTtsChirp3Hd ? 'pill-green' : 'pill-amber',
+        true
+      ));
+      items.push(makePill(
+        c.gcsDurableStorage ? 'GCS Store: Connected' : 'Storage: Local Runtime',
+        c.gcsDurableStorage ? 'pill-green' : 'pill-amber',
+        true
+      ));
+      if (c.googleSearchGrounding) items.push(makePill('Search Grounding: LIVE', 'pill-green', true));
+      if (c.officialGcpSvgIcons) items.push(makePill(c.officialGcpSvgIcons + ' GCP SVG Icons', 'pill-blue', false));
+      items.push(makePill(
+        c.workspaceOauthSync ? 'Google Slides & Docs: Synced' : 'Google Slides & Docs: 1-Click OAuth',
+        c.workspaceOauthSync ? 'pill-green' : 'pill-blue',
+        Boolean(c.workspaceOauthSync)
+      ));
+      items.push(makePill('Gates: D-01..D-' + gatesN + ' + Judge', 'pill-purple', false));
+      strip.replaceChildren(...items);
+    }
 
     if (authPill) {
       if (auth.llmReady) {
@@ -518,16 +752,17 @@
       card.appendChild(el('div', { className: 'lib-title' }, b.title || b.slug));
       const diagCnt = Number(b.diagramCount || 0) || (Number(b.slideCount || 9) >= 12 ? 6 : 2);
       const slideCnt = Number(b.slideCount || 9);
-      const verTag = diagCnt >= 6 ? 'v3 · WS1-Parity' : (diagCnt >= 5 ? 'v2' : 'v1');
+      const catInfo = getCategoryById(b.category);
+      const revNum = Number(b.revision || 1);
       card.appendChild(el('div', { className: 'hint', style: { fontFamily: 'var(--mono)', fontSize: '10.5px', margin: '2px 0 5px', wordBreak: 'break-all' } }, b.slug));
       const wsStatus = (b.workspaceSync && b.workspaceSync.status) || '';
       const isWsSynced = Boolean(wsStatus === 'SYNCED' && b.workspaceSync.slidesUrl && b.workspaceSync.docUrl);
       const isWsStale = Boolean(wsStatus === 'STALE');
       const meta = el('div', { className: 'lib-meta' },
-        makePill(verTag + ' (' + diagCnt + 'd/' + slideCnt + 's)', diagCnt >= 6 ? 'pill-green' : (diagCnt >= 5 ? 'pill-purple' : 'pill-amber'), false),
+        makePill((catInfo ? catInfo.shortName : 'Architecture') + ' (' + diagCnt + 'd/' + slideCnt + 's)', 'pill-purple', false),
+        revNum > 1 ? makePill('v' + revNum, 'pill-blue', false) : null,
         makePill(b.modelUsed || 'gemini', 'pill-blue', false),
-        makePill('Gate ' + (b.qualityPassed || 0) + '/' + (b.qualityTotal || 12), (b.qualityPassed === b.qualityTotal ? 'pill-green' : 'pill-amber'), false),
-        makePill('Proofs: ' + (b.proofCount || 0), (b.proofCount > 0 ? 'pill-green' : 'pill-amber'), false),
+        makePill('Gate ' + (b.qualityPassed || 0) + '/' + (b.qualityTotal || 13), (b.qualityPassed === b.qualityTotal ? 'pill-green' : 'pill-amber'), false),
         isWsSynced ? makePill('Slides & Docs', 'pill-green', false) : (isWsStale ? makePill('Sync Stale', 'pill-amber', false) : null)
       );
       card.appendChild(meta);
@@ -628,40 +863,38 @@
     const slug = blog.slug;
     const det = (blog.quality && blog.quality.deterministic) || {};
     const judge = (blog.quality && blog.quality.orthogonalJudge) || {};
+    const catInfo = getCategoryById(blog.category);
+    const revNum = Number(blog.revision || 1);
     const badges = [
-      makePill(blog.domain || 'Architecture', 'pill-blue', false),
-      makePill('Model: ' + (blog.generation ? blog.generation.model : ''), 'pill-purple', false),
-      makePill('Auth: ' + (blog.generation ? blog.generation.authMode : ''), 'pill-green', true),
-      makePill('Gate ' + (det.passed || 0) + '/' + (det.total || 12), det.allPassed ? 'pill-green' : 'pill-amber', false),
+      makePill(catInfo ? catInfo.shortName : (blog.domain || 'Architecture'), 'pill-blue', false),
+      makePill('v' + revNum, 'pill-purple', false),
+      makePill((blog.generation ? blog.generation.model : 'gemini'), 'pill-blue', false),
+      makePill('Gate ' + (det.passed || 0) + '/' + (det.total || 13), det.allPassed ? 'pill-green' : 'pill-amber', false),
     ];
     if (judge && judge.verdict && judge.verdict !== 'SKIPPED') {
       badges.push(makePill(
-        'Judge: ' + judge.verdict + (judge.score !== null && judge.score !== undefined ? ' (' + judge.score + '/100)' : ''),
+        'Judge ' + (judge.score !== null && judge.score !== undefined ? judge.score + '/100' : judge.verdict),
         judge.verdict === 'APPROVED' ? 'pill-green' : 'pill-amber',
         false
       ));
     }
-    const proofCount = (blog.proofs || []).length;
-    badges.push(makePill(
-      proofCount > 0 ? proofCount + ' Verified Proof' + (proofCount === 1 ? '' : 's') : '0 Proofs (Awaiting Live Capture)',
-      proofCount > 0 ? 'pill-green' : 'pill-amber',
-      false
-    ));
     const ws = blog.workspaceSync || {};
     const isSynced = ws.status === 'SYNCED' && isSafeHref(ws.slidesUrl) && isSafeHref(ws.docUrl);
     const isStale = ws.status === 'STALE';
     if (isSynced) {
       const syncedShort = ws.syncedAt ? ' · ' + String(ws.syncedAt).slice(0, 16).replace('T', ' ') + 'Z' : '';
-      badges.push(makePill('Google Slides & Docs Synced' + syncedShort, 'pill-green', true));
+      badges.push(makePill('Drive Synced' + syncedShort, 'pill-green', true));
     } else if (isStale) {
-      badges.push(makePill('Workspace Sync Stale — Re-sync Needed', 'pill-amber', true));
+      badges.push(makePill('Drive Sync Stale', 'pill-amber', true));
+    } else {
+      badges.push(makePill('Drive: Not Synced', '', false));
     }
     document.getElementById('hero-badges').replaceChildren(...badges);
     document.getElementById('hero-title').textContent = blog.title || slug;
     document.getElementById('hero-sub').textContent = blog.subtitle || '';
 
     const a = blog.assets || {};
-    const slideCount = ((blog.blueprint && blog.blueprint.slides) || []).length || 12;
+    const slideCount = getSlideCount(blog);
 
     const openSlidesBtn = isSynced
       ? el('a', {
@@ -671,14 +904,14 @@
           target: '_blank',
           rel: 'noopener noreferrer',
           title: 'Open native editable ' + slideCount + '-slide presentation directly in Google Slides',
-        }, makeSvgBadgeIcon('slides'), 'Open with Google Slides (' + slideCount + ')')
+        }, makeSvgBadgeIcon('slides'), 'Google Slides (' + slideCount + ')')
       : el('button', {
           type: 'button',
           className: 'btn btn-gslides btn-sm',
           id: 'btn-open-gslides',
-          title: 'Sync & open native editable ' + slideCount + '-slide presentation in Google Slides (no .pptx download)',
+          title: 'Sync & open native editable ' + slideCount + '-slide presentation in Google Slides',
           onClick: () => openInGoogleWorkspace(slug, 'slides'),
-        }, makeSvgBadgeIcon('slides'), 'Open with Google Slides (' + slideCount + ')');
+        }, makeSvgBadgeIcon('slides'), 'Google Slides (' + slideCount + ')');
 
     const openDocsBtn = isSynced
       ? el('a', {
@@ -688,47 +921,84 @@
           target: '_blank',
           rel: 'noopener noreferrer',
           title: 'Open native editable architecture brief directly in Google Docs',
-        }, makeSvgBadgeIcon('docs'), 'Open with Google Docs')
+        }, makeSvgBadgeIcon('docs'), 'Google Docs')
       : el('button', {
           type: 'button',
           className: 'btn btn-gdocs btn-sm',
           id: 'btn-open-gdocs',
-          title: 'Sync & open native editable architecture brief in Google Docs (no .docx download)',
+          title: 'Sync & open native editable architecture brief in Google Docs',
           onClick: () => openInGoogleWorkspace(slug, 'docs'),
-        }, makeSvgBadgeIcon('docs'), 'Open with Google Docs');
+        }, makeSvgBadgeIcon('docs'), 'Google Docs');
 
-    const btns = [
-      openSlidesBtn,
-      openDocsBtn,
+    const iterateBtn = el('button', {
+      type: 'button',
+      className: 'btn btn-primary btn-sm',
+      id: 'btn-toggle-iterate',
+      onClick: () => {
+        state.iterateDrawerOpen = !state.iterateDrawerOpen;
+        renderIterateDrawer(blog);
+      },
+    }, state.iterateDrawerOpen ? 'Close Iterate' : 'Iterate / Refine');
+
+    const menuItems = [
       el('button', {
         type: 'button',
-        className: 'btn btn-sm',
-        id: 'btn-view-blogmd',
-        onClick: () => switchTab('reader'),
-      }, 'View blog.md'),
-      el('a', { className: 'btn btn-sm', href: assetUrl(slug, a.starterZip, true) }, 'Starter Code (.zip)'),
-      el('a', { className: 'btn btn-primary btn-sm', href: assetUrl(slug, a.bundleZip, true) }, 'Full Bundle (.zip)'),
-      el('button', {
-        type: 'button',
-        className: 'btn btn-sm',
+        className: 'action-menu-item',
         id: 'btn-sync-workspace',
-        title: isSynced ? 'Update the live Google Slides & Google Docs files in place' : 'Convert and publish to Google Slides & Google Docs',
         onClick: () => triggerWorkspaceSync(slug),
-      }, isSynced ? 'Re-sync Slides & Docs' : 'Sync to Google Workspace'),
+      }, isSynced ? 'Re-sync Google Slides & Docs' : 'Sync to Google Workspace'),
+      el('div', { className: 'action-menu-sep' }),
+      el('a', { className: 'action-menu-item', href: assetUrl(slug, a.bundleZip, true) }, 'Download Full Bundle (.zip)'),
+      (blog.includeStarterCode !== false && a.starterZip)
+        ? el('a', { className: 'action-menu-item', href: assetUrl(slug, a.starterZip, true) }, 'Download Starter Code (.zip)')
+        : null,
+      el('a', { className: 'action-menu-item', href: assetUrl(slug, a.markdown, true) }, 'Download blog.md'),
+      el('a', { className: 'action-menu-item', href: assetUrl(slug, a.pptx, true) }, 'Download .pptx Deck'),
+      el('a', { className: 'action-menu-item', href: assetUrl(slug, a.docx, true) }, 'Download .docx Whitepaper'),
+      el('div', { className: 'action-menu-sep' }),
+      el('button', {
+        type: 'button',
+        className: 'action-menu-item',
+        onClick: () => openOutlinePlannerView(),
+      }, '+ New Blog / Outline Planner'),
     ];
-    document.getElementById('hero-actions').replaceChildren(...btns);
+    const exportMenu = el('details', { className: 'action-menu', id: 'hero-export-menu' },
+      el('summary', { className: 'btn btn-sm' }, 'Export & Actions ▾'),
+      el('div', { className: 'action-menu-panel' }, ...menuItems)
+    );
+
+    document.getElementById('hero-actions').replaceChildren(openSlidesBtn, openDocsBtn, iterateBtn, exportMenu);
+    renderIterateDrawer(blog);
 
     const syncBanner = document.getElementById('workspace-sync-banner');
     if (isStale) {
       syncBanner.className = 'banner banner-warn';
       syncBanner.replaceChildren(
         el('strong', null, 'Workspace Deck & Doc Out of Sync: '),
-        (ws.staleReason || 'Proofs changed after the last Workspace sync.') + ' Click "Re-sync Slides & Docs" above to update Google Slides and Google Docs in place.'
+        (ws.staleReason || 'Artifacts changed after the last Workspace sync.') + ' Open "Export & Actions ▾" and click "Re-sync Google Slides & Docs" to update Drive in place.'
       );
     } else {
       syncBanner.className = 'banner hidden';
       syncBanner.textContent = '';
     }
+  }
+
+  function renderIterateDrawer(blog) {
+    const drawer = document.getElementById('iterate-drawer');
+    if (!drawer) return;
+    if (!state.iterateDrawerOpen) {
+      drawer.classList.add('hidden');
+      drawer.replaceChildren();
+      return;
+    }
+    drawer.classList.remove('hidden');
+    drawer.replaceChildren(
+      el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' } },
+        el('strong', { style: { fontSize: '13px', color: '#5b21b6' } }, 'Iterate & Sync (Revision v' + (blog.revision || 1) + ')'),
+        el('button', { type: 'button', className: 'btn btn-sm', onClick: () => { state.iterateDrawerOpen = false; renderIterateDrawer(blog); } }, 'Close')
+      ),
+      el('div', { className: 'hint' }, 'Post-generation AI iteration, inline tab editors, 2-way Draw.io sync, and version undo are wired cleanly in Milestone B.')
+    );
   }
 
   function updateSidebarWorkspaceSync(slug, wsMeta) {
@@ -859,15 +1129,26 @@
 
   function getDiagramEntries(blog) {
     const dmap = (blog && blog.diagrams) || {};
-    const order = [
-      { key: 'architecture', defLabel: 'Figure 1 — Master Platform Architecture (C4 L2)' },
-      { key: 'cloudarch', defLabel: 'Figure 2 — Cloud Architecture Center Blueprint (Hub-and-Spoke)' },
-      { key: 'sequence', defLabel: 'Figure 3 — Request Lifecycle Sequence (C4 L3)' },
-      { key: 'security', defLabel: 'Figure 4 — Trust Perimeter & Security Boundary (C4 L1)' },
-      { key: 'wire', defLabel: 'Figure 5 — Wire-Protocol & Schema Transformation (C4 L4)' },
-      { key: 'async', defLabel: 'Figure 6 — Async State, Export & Lifecycle Loop' },
-    ];
-    return order.filter((o) => Boolean(dmap[o.key])).map((o) => ({ key: o.key, label: dmap[o.key].title || o.defLabel, diag: dmap[o.key] }));
+    const defLabels = {
+      architecture: 'Master Platform Architecture (C4 L2)',
+      cloudarch: 'Cloud Architecture Center Blueprint (Hub-and-Spoke)',
+      sequence: 'Request Lifecycle Sequence (C4 L3)',
+      security: 'Trust Perimeter & Security Boundary (C4 L1)',
+      wire: 'Wire-Protocol & Schema Transformation (C4 L4)',
+      async: 'Async State, Export & Lifecycle Loop',
+    };
+    const planKinds = (blog && blog.slidePlan && Array.isArray(blog.slidePlan.enabledDiagramKinds))
+      ? blog.slidePlan.enabledDiagramKinds
+      : ['architecture', 'cloudarch', 'sequence', 'security', 'wire', 'async'];
+    const orderedKeys = planKinds.filter((k) => Boolean(dmap[k]));
+    Object.keys(dmap).forEach((k) => {
+      if (!orderedKeys.includes(k)) orderedKeys.push(k);
+    });
+    return orderedKeys.map((k, idx) => ({
+      key: k,
+      label: (dmap[k] && dmap[k].title) || ('Figure ' + (idx + 1) + ' — ' + (defLabels[k] || k)),
+      diag: dmap[k],
+    }));
   }
 
   function renderAllTabs(blog) {
@@ -1299,7 +1580,7 @@
     const slug = blog.slug;
     const proofs = blog.proofs || [];
 
-    const proofSlideNum = getSlideCount(blog) >= 12 ? 10 : 7;
+    const proofSlideNum = (blog.slidePlan && blog.slidePlan.proofSlide) || (getSlideCount(blog) >= 12 ? 10 : 7);
     const warn = el('div', { className: 'banner banner-warn' },
       el('strong', null, 'Zero Fake Screenshots Policy: '),
       'Only genuine PNG or JPEG captures (min 320x180 px, max 6 MiB, magic-byte & F-13 hygiene verified) are accepted. Uploading immediately recompiles blog.md, Slide ' + proofSlideNum + ' preview, Google Slides & Docs artifacts, and bundle.zip (click Re-sync Slides & Docs afterward to push updates to Drive).'
@@ -1463,6 +1744,16 @@
     const meta = blog.starterMeta || {};
     const files = meta.files || {};
     const keys = Object.keys(files);
+    if (blog.includeStarterCode === false || meta.enabled === false) {
+      const catObj = getCategoryById(blog.category);
+      panel.replaceChildren(
+        el('div', { className: 'banner banner-info' },
+          el('strong', null, 'Starter Code Disabled for Category (' + (catObj ? catObj.shortName : 'Brief') + '): '),
+          'This blog was intentionally compiled without Terraform/Dockerfile boilerplate. Gates D-10 & D-11 mark starter checks as N/A while still validating any inline code snippets in the article.'
+        )
+      );
+      return;
+    }
     const curKey = files[state.activeCodeFile] !== undefined ? state.activeCodeFile : (keys[0] || '');
 
     const banner = el('div', { className: 'banner banner-warn' },
@@ -1648,7 +1939,7 @@
         clearInterval(state.pollTimer);
         state.pollTimer = null;
         document.getElementById('btn-generate').disabled = false;
-        document.getElementById('btn-generate').textContent = 'Generate Complete Blog & Asset Kit';
+        document.getElementById('btn-generate').textContent = 'Generate Blog';
         setBanner(document.getElementById('composer-msg'), 'banner-ok', 'Generated "' + (job.title || job.slug) + '". Ready for review & download.');
         await refreshLibrary(false, true);
         if (job.slug) await selectBlog(job.slug);
@@ -1656,7 +1947,7 @@
         clearInterval(state.pollTimer);
         state.pollTimer = null;
         document.getElementById('btn-generate').disabled = false;
-        document.getElementById('btn-generate').textContent = 'Generate Complete Blog & Asset Kit';
+        document.getElementById('btn-generate').textContent = 'Generate Blog';
         setBanner(document.getElementById('composer-msg'), 'banner-err', (job.errorCode ? '[' + job.errorCode + '] ' : '') + (job.error || 'Generation failed.'));
       }
     } catch (err) {
@@ -1668,11 +1959,148 @@
       clearInterval(state.pollTimer);
       state.pollTimer = null;
       document.getElementById('btn-generate').disabled = false;
-      document.getElementById('btn-generate').textContent = 'Generate Complete Blog & Asset Kit';
+      document.getElementById('btn-generate').textContent = 'Generate Blog';
       setBanner(document.getElementById('composer-msg'), 'banner-err', 'Job polling error: ' + err.message);
     } finally {
       state.pollInFlight = false;
     }
+  }
+
+  function hidePreflightPanel() {
+    const pfBox = document.getElementById('preflight-panel');
+    state.preflightResult = null;
+    if (pfBox) {
+      pfBox.classList.add('hidden');
+      pfBox.replaceChildren();
+    }
+  }
+
+  function collectGeneratePayload(promptOverride) {
+    const promptArea = document.getElementById('inp-prompt');
+    return {
+      titleHint: document.getElementById('inp-title').value.trim(),
+      prompt: (promptOverride !== undefined ? promptOverride : promptArea.value).trim(),
+      category: state.categoryId,
+      outline: state.outline,
+      includeStarterCode: state.includeStarterCode,
+      domain: document.getElementById('inp-domain').value,
+      audience: document.getElementById('inp-audience').value,
+      model: document.getElementById('inp-model').value,
+      voice: document.getElementById('inp-voice').value,
+      diagramEngine: (document.getElementById('inp-diagram-engine') ? document.getElementById('inp-diagram-engine').value : 'canonical'),
+      imageModel: (document.getElementById('inp-image-model') ? document.getElementById('inp-image-model').value : 'gemini-3-pro-image'),
+      enableTts: document.getElementById('chk-tts').checked,
+      enableJudge: document.getElementById('chk-judge').checked,
+      enableGrounding: (document.getElementById('chk-ground') ? document.getElementById('chk-ground').checked : true),
+      enableAutoRevise: (document.getElementById('chk-ground') ? document.getElementById('chk-ground').checked : true),
+    };
+  }
+
+  async function launchGenerationWithPayload(payload) {
+    const msgBox = document.getElementById('composer-msg');
+    const genBtn = document.getElementById('btn-generate');
+    setBanner(msgBox, '', '');
+    hidePreflightPanel();
+    const apiKeyVal = (document.getElementById('inp-apikey').value || '').trim();
+    const extraHeaders = apiKeyVal ? { 'X-Gemini-Api-Key': apiKeyVal } : {};
+    genBtn.disabled = true;
+    genBtn.textContent = 'Running Live Pipeline...';
+    try {
+      const res = await apiPost('/api/create-blog/generate', payload, extraHeaders);
+      if (apiKeyVal) document.getElementById('inp-apikey').value = '';
+      const job = res.job || res;
+      state.activeJobId = job.jobId;
+      state.pollErrorCount = 0;
+      state.pollInFlight = false;
+      renderJobProgress(job);
+      if (state.pollTimer) clearInterval(state.pollTimer);
+      state.pollTimer = setInterval(() => pollJob(job.jobId), 1200);
+    } catch (err) {
+      genBtn.disabled = false;
+      genBtn.textContent = 'Generate Blog';
+      const code = err.payload && err.payload.code ? '[' + err.payload.code + '] ' : '';
+      setBanner(msgBox, 'banner-err', code + err.message);
+    }
+  }
+
+  function renderPreflightPanel(pf) {
+    const pfBox = document.getElementById('preflight-panel');
+    if (!pfBox) return;
+    state.preflightResult = pf;
+    const verdict = String(pf.verdict || 'NEEDS_CLARIFICATION');
+    const pillCls = verdict === 'OUT_OF_SCOPE' ? 'pill-red' : 'pill-amber';
+    let applyCatOpt = !state.outlineCustomized;
+    const applyCatRow = state.outlineCustomized
+      ? (() => {
+          const chk = el('input', {
+            type: 'checkbox',
+            onChange: (ev) => { applyCatOpt = Boolean(ev.target.checked); },
+          });
+          chk.checked = false;
+          return el('label', { className: 'check-row', style: { fontSize: '11px', margin: '6px 0' } },
+            chk,
+            el('span', null, 'Also switch to option\'s recommended category & outline (unchecked keeps your custom outline)')
+          );
+        })()
+      : null;
+
+    const optNodes = (pf.options || []).slice(0, 3).map((opt, idx) => {
+      const oc = getCategoryById(opt.category);
+      const diagChips = (opt.recommendedDiagrams || []).map((dk) => makePill(DIAGRAM_SHORT_LABELS[dk] || dk, 'pill-blue', false));
+      return el('button', {
+        type: 'button',
+        className: 'preflight-opt-btn',
+        'data-preflight-option': String(idx),
+        onClick: async () => {
+          const titleInp = document.getElementById('inp-title');
+          const promptArea = document.getElementById('inp-prompt');
+          if (titleInp && opt.title) titleInp.value = opt.title;
+          if (promptArea && opt.prompt) {
+            promptArea.value = opt.prompt;
+            document.getElementById('prompt-char-count').textContent = opt.prompt.length + ' / 4000';
+          }
+          if (applyCatOpt && opt.category) {
+            applyCategorySelection(opt.category, true);
+          }
+          await launchGenerationWithPayload(collectGeneratePayload(opt.prompt));
+        },
+      },
+        el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '6px', width: '100%' } },
+          el('strong', { style: { fontSize: '12px', color: '#0f172a' } }, (idx + 1) + '. ' + (opt.title || 'Option ' + (idx + 1))),
+          makePill(oc ? oc.shortName : (opt.category || 'Architecture'), 'pill-purple', false)
+        ),
+        el('div', { style: { fontSize: '11px', color: '#334155', lineHeight: '1.35' } }, opt.angle || ''),
+        el('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '2px' } }, ...diagChips)
+      );
+    });
+
+    const footerRow = el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginTop: '6px' } },
+      pf.canBypass
+        ? el('button', {
+            type: 'button',
+            className: 'btn btn-sm',
+            id: 'btn-preflight-bypass',
+            onClick: () => launchGenerationWithPayload(collectGeneratePayload()),
+          }, 'Proceed with original prompt anyway')
+        : el('span', { className: 'hint' }, 'Choose a grounded architecture option above or revise your prompt.'),
+      el('button', {
+        type: 'button',
+        className: 'btn btn-sm',
+        onClick: hidePreflightPanel,
+      }, 'Dismiss')
+    );
+
+    pfBox.replaceChildren(
+      el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '6px', marginBottom: '5px' } },
+        el('strong', { style: { fontSize: '12px', color: '#92400e' } }, 'Gemini Prompt Assessment — Pick 1 of 3 Tailored Options'),
+        makePill(verdict + (typeof pf.score === 'number' ? ' · ' + pf.score : ''), pillCls, false)
+      ),
+      el('div', { style: { fontSize: '11.5px', color: '#475569', marginBottom: '6px' } }, pf.reason || ''),
+      applyCatRow,
+      el('div', { className: 'preflight-options' }, ...optNodes),
+      footerRow
+    );
+    pfBox.classList.remove('hidden');
   }
 
   function init() {
@@ -1685,13 +2113,53 @@
         document.getElementById('inp-prompt').value = sp.prompt;
         document.getElementById('inp-domain').value = sp.domain;
         document.getElementById('prompt-char-count').textContent = sp.prompt.length + ' / 4000';
+        hidePreflightPanel();
       },
     }, sp.label)));
 
     const promptArea = document.getElementById('inp-prompt');
     promptArea.addEventListener('input', () => {
       document.getElementById('prompt-char-count').textContent = promptArea.value.length + ' / 4000';
+      if (state.preflightResult) hidePreflightPanel();
     });
+
+    const catSel = document.getElementById('inp-category');
+    if (catSel) {
+      catSel.addEventListener('change', () => {
+        applyCategorySelection(catSel.value, true);
+      });
+    }
+    const chkStarter = document.getElementById('chk-starter-code');
+    if (chkStarter) {
+      chkStarter.addEventListener('change', () => {
+        state.includeStarterCode = Boolean(chkStarter.checked);
+        renderOutlinePlanner();
+      });
+    }
+    const addSecBtn = document.getElementById('btn-planner-add-sec');
+    if (addSecBtn) {
+      addSecBtn.addEventListener('click', () => {
+        const nextN = state.outline.filter((x) => x.type === 'section').length + 1;
+        state.outline.push({
+          id: 'sec-custom-' + Date.now(),
+          type: 'section',
+          title: 'Custom Architecture Section ' + nextN,
+          enabled: true,
+        });
+        state.outlineCustomized = true;
+        renderOutlinePlanner();
+      });
+    }
+    const resetPlannerBtn = document.getElementById('btn-planner-reset');
+    if (resetPlannerBtn) {
+      resetPlannerBtn.addEventListener('click', () => {
+        applyCategorySelection(state.categoryId, false);
+      });
+    }
+    const newBlogBtn = document.getElementById('btn-new-blog-planner');
+    if (newBlogBtn) {
+      newBlogBtn.addEventListener('click', openOutlinePlannerView);
+    }
 
     document.getElementById('btn-refresh-caps').addEventListener('click', refreshCapabilities);
     document.getElementById('btn-refresh-lib').addEventListener('click', () => refreshLibrary(false, true));
@@ -1702,54 +2170,72 @@
 
     document.getElementById('generate-form').addEventListener('submit', async (ev) => {
       ev.preventDefault();
+      if (state.preflightBusy) return;
       const msgBox = document.getElementById('composer-msg');
       const genBtn = document.getElementById('btn-generate');
       setBanner(msgBox, '', '');
       const prompt = promptArea.value.trim();
-      if (prompt.length < 12) {
-        setBanner(msgBox, 'banner-err', 'Please enter at least 12 characters describing the target architecture.');
+      if (!prompt) {
+        setBanner(msgBox, 'banner-err', 'Please enter a topic or architecture prompt first.');
         return;
       }
       const apiKeyVal = (document.getElementById('inp-apikey').value || '').trim();
       const extraHeaders = apiKeyVal ? { 'X-Gemini-Api-Key': apiKeyVal } : {};
+      state.preflightBusy = true;
       genBtn.disabled = true;
-      genBtn.textContent = 'Running Live Pipeline...';
+      genBtn.textContent = 'Assessing Prompt with Gemini...';
       try {
-        const res = await apiPost('/api/create-blog/generate', {
-          titleHint: document.getElementById('inp-title').value.trim(),
+        const pf = await apiPost('/api/create-blog/preflight', {
           prompt,
+          category: state.categoryId,
           domain: document.getElementById('inp-domain').value,
           audience: document.getElementById('inp-audience').value,
-          model: document.getElementById('inp-model').value,
-          voice: document.getElementById('inp-voice').value,
-          diagramEngine: (document.getElementById('inp-diagram-engine') ? document.getElementById('inp-diagram-engine').value : 'canonical'),
-          imageModel: (document.getElementById('inp-image-model') ? document.getElementById('inp-image-model').value : 'gemini-3-pro-image'),
-          enableTts: document.getElementById('chk-tts').checked,
-          enableJudge: document.getElementById('chk-judge').checked,
-          enableGrounding: (document.getElementById('chk-ground') ? document.getElementById('chk-ground').checked : true),
-          enableAutoRevise: (document.getElementById('chk-ground') ? document.getElementById('chk-ground').checked : true),
+          outline: state.outline,
         }, extraHeaders);
-        // Immediately wipe input field after transient header transmission so key does not sit in DOM
-        if (apiKeyVal) document.getElementById('inp-apikey').value = '';
-        const job = res.job || res;
-        state.activeJobId = job.jobId;
-        state.pollErrorCount = 0;
-        state.pollInFlight = false;
-        renderJobProgress(job);
-        if (state.pollTimer) clearInterval(state.pollTimer);
-        state.pollTimer = setInterval(() => pollJob(job.jobId), 1200);
-      } catch (err) {
+        state.preflightBusy = false;
+        if (pf && pf.verdict === 'READY') {
+          await launchGenerationWithPayload(collectGeneratePayload());
+          return;
+        }
         genBtn.disabled = false;
-        genBtn.textContent = 'Generate Complete Blog & Asset Kit';
+        genBtn.textContent = 'Generate Blog';
+        renderPreflightPanel(pf);
+      } catch (err) {
+        state.preflightBusy = false;
+        genBtn.disabled = false;
+        genBtn.textContent = 'Generate Blog';
         const code = err.payload && err.payload.code ? '[' + err.payload.code + '] ' : '';
         setBanner(msgBox, 'banner-err', code + err.message);
+      }
+    });
+
+    const sbBtn = document.getElementById('btn-toggle-sidebar');
+    if (sbBtn) {
+      sbBtn.addEventListener('click', () => {
+        const sh = document.querySelector('main.shell');
+        if (!sh) return;
+        const collapsed = sh.classList.toggle('shell-collapsed');
+        sbBtn.textContent = collapsed ? 'Show Composer' : 'Full-Width';
+      });
+    }
+    const lb = document.getElementById('diag-lightbox');
+    if (lb) {
+      lb.addEventListener('click', (ev) => { if (ev.target === lb) closeDiagramLightbox(); });
+    }
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape') {
+        closeDiagramLightbox();
+        const pop = document.getElementById('status-popover');
+        if (pop) pop.removeAttribute('open');
+        const menu = document.getElementById('hero-export-menu');
+        if (menu) menu.removeAttribute('open');
       }
     });
 
     function syncTopbarHeight() {
       const tb = document.querySelector('header.topbar');
       const qb = document.querySelector('.quad-bar');
-      const h = Math.ceil((tb ? tb.getBoundingClientRect().height : 124) + (qb ? qb.getBoundingClientRect().height : 4));
+      const h = Math.ceil((tb ? tb.getBoundingClientRect().height : 84) + (qb ? qb.getBoundingClientRect().height : 4));
       document.documentElement.style.setProperty('--topbar-h', h + 'px');
     }
     syncTopbarHeight();
@@ -1759,25 +2245,10 @@
       if (tbEl) new ResizeObserver(syncTopbarHeight).observe(tbEl);
     }
 
+    renderOutlinePlanner();
     refreshCapabilities();
     refreshLibrary(true);
   }
 
   document.addEventListener('DOMContentLoaded', init);
-
-    const sbBtn = document.getElementById('btn-toggle-sidebar');
-    if (sbBtn) {
-      sbBtn.addEventListener('click', () => {
-        const sh = document.querySelector('main.shell');
-        if (!sh) return;
-        const collapsed = sh.classList.toggle('shell-collapsed');
-        sbBtn.textContent = collapsed ? 'Show Composer' : 'Full-Width Canvas';
-      });
-    }
-    const lb = document.getElementById('diag-lightbox');
-    if (lb) {
-      lb.addEventListener('click', (ev) => { if (ev.target === lb) closeDiagramLightbox(); });
-    }
-    document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeDiagramLightbox(); });
-
 })();

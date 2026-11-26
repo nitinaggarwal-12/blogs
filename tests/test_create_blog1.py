@@ -1574,6 +1574,174 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertFalse(cb1.verify_stateless_csrf_token(tok, "dev@example.com", secret_bytes=sec, now_ts=1700090000))
         self.assertFalse(cb1.verify_stateless_csrf_token(tok[:-1] + ("0" if tok[-1] != "0" else "1"), "dev@example.com", secret_bytes=sec, now_ts=1700000100))
 
+    def test_18_milestone_a_categories_dynamic_outline_and_preflight(self) -> None:
+        """Verifies 5 blog categories, reordered outlines, dynamic 7/9-slide decks without starter code, and prompt preflight."""
+        st_cap, _, body_cap = self._req("/api/create-blog/capabilities")
+        self.assertEqual(st_cap, 200)
+        cap = json.loads(body_cap.decode("utf-8"))
+        cats = cap.get("categories") or []
+        self.assertEqual(len(cats), 5)
+        cat_map = {c["id"]: c for c in cats}
+        self.assertEqual(cat_map["reference_architecture"]["recommendedSlideCount"], 12)
+        self.assertEqual(cat_map["pattern_tradeoff"]["recommendedSlideCount"], 8)
+        self.assertEqual(cat_map["hands_on_runbook"]["recommendedSlideCount"], 9)
+        self.assertEqual(cat_map["executive_brief"]["recommendedSlideCount"], 7)
+        self.assertEqual(cat_map["security_deep_dive"]["recommendedSlideCount"], 9)
+
+        # 1. Compile executive_brief (2 diagrams: security FIRST then architecture; NO sequence, NO starter code -> 7 slides)
+        custom_outline = [
+            {"id": "sec-1", "type": "section", "title": "Executive Governance Mandate", "enabled": True},
+            {"id": "diag-security", "type": "diagram", "kind": "security", "title": "Custom Defense-in-Depth Perimeter", "enabled": True},
+            {"id": "sec-2", "type": "section", "title": "Target Platform Blueprint", "enabled": True},
+            {"id": "diag-architecture", "type": "diagram", "kind": "architecture", "title": "Executive Target Architecture", "enabled": True},
+            {"id": "sec-3", "type": "section", "title": "90-Day TCO & Rollout Plan", "enabled": True},
+        ]
+        norm_out = cb1.normalize_blog_outline(custom_outline, category_id="executive_brief")
+        plan_exec = cb1.compute_dynamic_slide_plan(norm_out, include_starter_code=False)
+        self.assertEqual(plan_exec["totalSlides"], 7)
+        self.assertIsNone(plan_exec["codeSlide"])
+        self.assertEqual(plan_exec["enabledDiagramKinds"], ["security", "architecture"])
+        self.assertEqual(plan_exec["diagramSlides"], [3, 4])
+        self.assertEqual(plan_exec["proofSlide"], 5)
+
+        raw_exec = _sample_blueprint()
+        raw_exec["slides"] = raw_exec["slides"][:7]
+        bp_exec = cb1.normalize_blueprint(
+            raw_exec, "CISO brief for zero-trust AI governance on Google Cloud",
+            "AI Governance & Compliance", "Engineering Executives (VP / CTO)",
+            slide_plan=plan_exec, category_id="executive_brief", outline=norm_out,
+        )
+        self.assertEqual(len(bp_exec["slides"]), 7)
+        self.assertEqual(bp_exec["codeStarter"], {})
+        man_exec = cb1.compile_and_save_blog(
+            blueprint=bp_exec,
+            slug="exec-brief-custom-order",
+            model_used="gemini-4-neon",
+            auth_mode="vertex_ai_iam",
+            actor_email="test@example.com",
+            enable_tts=False,
+            enable_judge=False,
+            category_id="executive_brief",
+            outline=norm_out,
+            slide_plan=plan_exec,
+            include_starter_code=False,
+        )
+        self.assertTrue(man_exec["quality"]["deterministic"]["allPassed"], man_exec["quality"]["deterministic"])
+        self.assertEqual(man_exec["generation"]["slideCount"], 7)
+        self.assertEqual(list(man_exec["diagrams"].keys()), ["security", "architecture"])
+        self.assertFalse(man_exec["starterMeta"]["enabled"])
+        d10_chk = next(c for c in man_exec["quality"]["deterministic"]["checks"] if c["id"] == "D-10")
+        self.assertIn("N/A", d10_chk["detail"])
+        md_exec = (Path(self._tmpdir.name) / "exec-brief-custom-order" / "blog.md").read_text(encoding="utf-8")
+        self.assertIn("13-check deterministic quality gate", md_exec)
+        self.assertLess(md_exec.index("Custom Defense-in-Depth Perimeter"), md_exec.index("Executive Target Architecture"))
+
+        # 2. Compile security_deep_dive (NO architecture diagram at all: security + sequence + wire -> 9 slides)
+        sec_cat = cb1.get_category("security_deep_dive")
+        plan_sec = cb1.compute_dynamic_slide_plan(sec_cat["recommendedOutline"], include_starter_code=True)
+        self.assertEqual(plan_sec["enabledDiagramKinds"], ["security", "sequence", "wire"])
+        self.assertEqual(plan_sec["totalSlides"], 9)
+        raw_sec = _sample_blueprint()
+        bp_sec = cb1.normalize_blueprint(
+            raw_sec, "Zero-trust threat model and wire envelope enforcement",
+            "Cloud Security & Zero Trust", "CISOs & Security Architects",
+            slide_plan=plan_sec, category_id="security_deep_dive", outline=sec_cat["recommendedOutline"],
+        )
+        man_sec = cb1.compile_and_save_blog(
+            blueprint=bp_sec,
+            slug="sec-deep-dive-no-arch",
+            model_used="gemini-4-neon",
+            auth_mode="vertex_ai_iam",
+            actor_email="test@example.com",
+            enable_tts=False,
+            enable_judge=False,
+            category_id="security_deep_dive",
+            outline=sec_cat["recommendedOutline"],
+            slide_plan=plan_sec,
+            include_starter_code=True,
+        )
+        self.assertTrue(man_sec["quality"]["deterministic"]["allPassed"], man_sec["quality"]["deterministic"])
+        self.assertNotIn("architecture", man_sec["diagrams"])
+
+        # 3. Legacy manifest hydration without slidePlan/outline
+        legacy_m = {"slug": "old-blog", "diagrams": {"architecture": {"title": "Arch"}, "sequence": {"title": "Seq"}}, "blueprint": {"sections": [{"heading": "S1"}, {"heading": "S2"}], "slides": [{}] * 12}, "starterMeta": {"files": {"main.tf": "x"}}}
+        cb1.hydrate_legacy_manifest_plan(legacy_m)
+        self.assertEqual(legacy_m["category"], "reference_architecture")
+        self.assertEqual(legacy_m["slidePlan"]["enabledDiagramKinds"], ["architecture", "sequence"])
+
+        # 4. POST /api/create-blog/preflight CSRF, static F-13 guard, trivial guard & fail-closed 503
+        st_no_csrf, _, _ = self._req("/api/create-blog/preflight", method="POST", body={"prompt": "Write about AI"})
+        self.assertEqual(st_no_csrf, 403)
+        st_f13, _, b_f13 = self._req(
+            "/api/create-blog/preflight",
+            method="POST",
+            body={"prompt": "Architecture guide linking http://b/12345678 and internal.corp.google.com"},
+            headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
+        )
+        self.assertEqual(st_f13, 200)
+        j_f13 = json.loads(b_f13.decode("utf-8"))
+        self.assertEqual(j_f13["verdict"], "OUT_OF_SCOPE")
+        self.assertFalse(j_f13["canBypass"])
+        self.assertEqual(len(j_f13["options"]), 3)
+
+        st_short, _, b_short = self._req(
+            "/api/create-blog/preflight",
+            method="POST",
+            body={"prompt": "AI"},
+            headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
+        )
+        self.assertEqual(st_short, 200)
+        j_short = json.loads(b_short.decode("utf-8"))
+        self.assertEqual(j_short["verdict"], "NEEDS_CLARIFICATION")
+        self.assertEqual(len(j_short["options"]), 3)
+
+        # Normal prompt with credentials disabled -> fail-closed 503 MODEL_AUTH_UNAVAILABLE
+        old_dis = os.environ.get("GEAP_DISABLE_VERTEX_AUTH")
+        old_key = os.environ.pop("GEMINI_API_KEY", None)
+        os.environ["GEAP_DISABLE_VERTEX_AUTH"] = "1"
+        try:
+            st_503, _, b_503 = self._req(
+                "/api/create-blog/preflight",
+                method="POST",
+                body={"prompt": "Design a multi-tenant zero-trust Cloud Run gateway with Cloud Armor and IAP"},
+                headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
+            )
+            self.assertEqual(st_503, 503)
+            self.assertEqual(json.loads(b_503.decode("utf-8"))["code"], "MODEL_AUTH_UNAVAILABLE")
+        finally:
+            if old_dis is None:
+                os.environ.pop("GEAP_DISABLE_VERTEX_AUTH", None)
+            else:
+                os.environ["GEAP_DISABLE_VERTEX_AUTH"] = old_dis
+            if old_key is not None:
+                os.environ["GEMINI_API_KEY"] = old_key
+
+        # Mocked live Gemini response returning NEEDS_CLARIFICATION guarantees 3 structured options
+        pf_mock = cb1._cats.assess_prompt_preflight(
+            prompt="Write a blog about cloud databases",
+            category_id="pattern_tradeoff",
+            domain="Data & Analytics / RAG",
+            audience="Architects",
+            enabled_diagrams=["architecture", "cloudarch"],
+            call_gemini_json_fn=lambda **kw: (
+                {
+                    "verdict": "NEEDS_CLARIFICATION",
+                    "score": 42,
+                    "reason": "Too broad — pick a concrete database trade-off.",
+                    "recommendedCategory": "pattern_tradeoff",
+                    "options": [
+                        {"title": "Spanner vs AlloyDB for Multi-Tenant AI", "category": "pattern_tradeoff", "prompt": "Compare Cloud Spanner Graph and AlloyDB for PostgreSQL for multi-tenant AI agent memory isolation, consistency, and FinOps economics.", "angle": "Consistency vs Postgres RLS trade-offs", "recommendedDiagrams": ["architecture", "cloudarch", "sequence"]},
+                    ],
+                },
+                {"model": "gemini-2.5-flash", "latencyMs": 310.0},
+            ),
+            f13_scanner=cb1.scan_for_f13_leaks,
+            sanitize_fn=cb1._sanitize_for_public_output,
+        )
+        self.assertEqual(pf_mock["verdict"], "NEEDS_CLARIFICATION")
+        self.assertTrue(pf_mock["canBypass"])
+        self.assertEqual(len(pf_mock["options"]), 3)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
