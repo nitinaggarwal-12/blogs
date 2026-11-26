@@ -430,7 +430,7 @@ def auto_bind_unledgered_claims_in_place(bp: Dict[str, Any], unledgered: List[st
     ledger = bp.setdefault("claimLedger", [])
     existing_vals = {str(c.get("value") or "").strip().lower() for c in ledger if isinstance(c, dict)}
     next_idx = len(ledger) + 1
-    for expr in unledgered[:24]:
+    for expr in unledgered[:48]:
         if expr.strip().lower() in existing_vals:
             continue
         ledger.append({

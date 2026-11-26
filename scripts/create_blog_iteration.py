@@ -459,7 +459,7 @@ def build_scoped_iteration_prompt(
         '"textReplacements":[{"old":"...","new":"..."}],'
         '"sectionPatches":[{"index":0,"heading":"...","paragraphs":["..."],"bullets":["..."],"codeBlocks":[...],"table":{...}}],'
         '"addSections":[{"heading":"...","paragraphs":["..."],"bullets":["..."]}],'
-        '"slidePatches":[{"number":1,"title":"...","subtitle":"...","bullets":["..."],"speakerNotes":"...","calloutLabel":"...","calloutValue":"..."}],'
+        '"slidePatches":[{"number":1,"title":"...","subtitle":"...","bullets":["..."],"codeSnippet":"optional code snippet","speakerNotes":"...","calloutLabel":"...","calloutValue":"..."}],'
         '"claimLedger":[...],"faq":[...],"codeStarter":{...},'
         '"platformDiagram":{...},"cloudArchDiagram":{...},"sequenceDiagram":{...},"securityDiagram":{...},"wireDiagram":{...},"asyncDiagram":{...}}'
     )
@@ -468,7 +468,7 @@ def build_scoped_iteration_prompt(
         for i, s in enumerate(bp.get("sections") or [])
     ]
     slide_brief = [
-        {"number": i + 1, "title": s.get("title"), "bullets": (s.get("bullets") or [])[:4], "speakerNotes": str(s.get("speakerNotes") or "")[:200]}
+        {"number": i + 1, "title": s.get("title"), "bullets": (s.get("bullets") or [])[:4], "codeSnippet": str(s.get("codeSnippet") or "")[:600], "speakerNotes": str(s.get("speakerNotes") or "")[:200]}
         for i, s in enumerate(bp.get("slides") or [])
     ]
     user_parts = [
@@ -479,7 +479,7 @@ def build_scoped_iteration_prompt(
         f"CLAIM LEDGER:\n{json.dumps((bp.get('claimLedger') or [])[:12], indent=2)}\n",
     ]
     if clean_scope in ("all", "code") and bp.get("codeStarter"):
-        cs_preview = {k: str(v)[:1400] for k, v in (bp.get("codeStarter") or {}).items() if v}
+        cs_preview = {k: str(v)[:8000] for k, v in (bp.get("codeStarter") or {}).items() if v}
         user_parts.append(f"STARTER CODE PREVIEW:\n{json.dumps(cs_preview, indent=2)}\n")
     user_parts.append("Return ONLY the surgical JSON patch now.")
     return sys_p, "\n".join(user_parts)
@@ -667,6 +667,11 @@ def apply_scoped_iteration_patch(
             if isinstance(sp.get("bullets"), list) and sp["bullets"]:
                 sl["bullets"] = [strip_emoji_fn(sanitize_fn(str(b))).strip() for b in sp["bullets"] if str(b).strip()][:6]
                 s_changed = True
+            if "codeSnippet" in sp and str(sp["codeSnippet"] or "").strip():
+                nc = sanitize_fn(str(sp["codeSnippet"])).strip()[:2000]
+                if nc != sl.get("codeSnippet"):
+                    sl["codeSnippet"] = nc
+                    s_changed = True
             if "speakerNotes" in sp and str(sp["speakerNotes"] or "").strip():
                 nn = strip_emoji_fn(sanitize_fn(str(sp["speakerNotes"]))).strip()
                 if nn != sl.get("speakerNotes"):
