@@ -277,6 +277,16 @@ def main() -> None:
     image_uri = f"{dest_host}/{dest_repo}:latest"
 
     if not verify_only:
+        # Mechanical F-11 pre-flight sweep: remove any untracked __pycache__ / *.pyc artifacts
+        for _root_d, _dirs_d, _files_d in os.walk(BLOGS_ROOT):
+            _dirs_d[:] = [d for d in _dirs_d if d not in (".git", "node_modules")]
+            if "__pycache__" in _dirs_d:
+                import shutil as _shutil
+                _shutil.rmtree(Path(_root_d) / "__pycache__", ignore_errors=True)
+                _dirs_d.remove("__pycache__")
+            for _fn_d in _files_d:
+                if _fn_d.endswith(".pyc"):
+                    (Path(_root_d) / _fn_d).unlink(missing_ok=True)
         print("==> [0/4] Running 13/13 Forensic Audit & 10/10 Unit Tests...")
         subprocess.run(["python3", "-B", "scripts/run_deep_forensic_audit.py"], cwd=BLOGS_ROOT, check=True)
         subprocess.run(
