@@ -433,6 +433,18 @@ def _sanitize_for_public_output(text: str) -> str:
     out = re.sub(r"\bb/\d{6,10}\b", "[issue-ref-removed]", out)
     out = re.sub(r"AIza[0-9A-Za-z_\-]{20,}", "[REDACTED_API_KEY]", out)
     out = re.sub(r"ya29\.[0-9A-Za-z_\-\.]{20,}", "[REDACTED_TOKEN]", out)
+    out = re.sub(r"\btd\.googleapis\.com\b", "agents.global.org-<ORG_ID>.system.id.goog", out)
+    return out
+
+
+def _sanitize_public_starter_code(text: str) -> str:
+    """Ensures customer-downloadable starter templates use public GA Vertex AI model IDs."""
+    out = _sanitize_for_public_output(text)
+    out = re.sub(
+        r"\bgemini-(?:4-(?:neon|carbon|argon|hydrogen)|3\.(?:5|7|8)-(?:flash|pro)|2\.5-pro-dedicated)\b",
+        "gemini-2.5-flash",
+        out,
+    )
     return out
 
 
@@ -1673,15 +1685,15 @@ def normalize_blueprint(
     rc = raw.get("codeStarter") if (inc_starter and isinstance(raw.get("codeStarter"), dict)) else {}
     code_starter = (
         {
-            "readmeSummary": _sanitize_for_public_output(str(rc.get("readmeSummary") or "Review variables and security controls before applying.")),
-            "schemaSql": _sanitize_for_public_output(str(rc.get("schemaSql") or "")),
-            "terraformMain": _sanitize_for_public_output(str(rc.get("terraformMain") or "")),
-            "terraformVars": _sanitize_for_public_output(str(rc.get("terraformVars") or "")),
-            "pythonApp": _sanitize_for_public_output(str(rc.get("pythonApp") or "")),
-            "dockerfile": _sanitize_for_public_output(str(rc.get("dockerfile") or "")),
-            "requirementsTxt": _sanitize_for_public_output(str(rc.get("requirementsTxt") or "")),
-            "deploySh": _sanitize_for_public_output(str(rc.get("deploySh") or "")),
-            "verifySh": _sanitize_for_public_output(str(rc.get("verifySh") or "")),
+            "readmeSummary": _sanitize_public_starter_code(str(rc.get("readmeSummary") or "Review variables and security controls before applying.")),
+            "schemaSql": _sanitize_public_starter_code(str(rc.get("schemaSql") or "")),
+            "terraformMain": _sanitize_public_starter_code(str(rc.get("terraformMain") or "")),
+            "terraformVars": _sanitize_public_starter_code(str(rc.get("terraformVars") or "")),
+            "pythonApp": _sanitize_public_starter_code(str(rc.get("pythonApp") or "")),
+            "dockerfile": _sanitize_public_starter_code(str(rc.get("dockerfile") or "")),
+            "requirementsTxt": _sanitize_public_starter_code(str(rc.get("requirementsTxt") or "")),
+            "deploySh": _sanitize_public_starter_code(str(rc.get("deploySh") or "")),
+            "verifySh": _sanitize_public_starter_code(str(rc.get("verifySh") or "")),
         }
         if inc_starter
         else {}
@@ -6474,6 +6486,16 @@ def _recompile_full_blog_state(
     }
     manifest.setdefault("quality", {})["deterministic"] = det
     manifest["quality"]["checkedAt"] = _now_iso()
+    oj_prev = manifest["quality"].get("orthogonalJudge") or {}
+    has_open_p0_p1 = any(
+        str(f.get("severity") or "").upper() in ("P0", "P1")
+        for f in (oj_prev.get("findings") or [])
+        if isinstance(f, dict)
+    )
+    if det.get("allPassed") and oj_prev.get("verdict") == "APPROVED" and not has_open_p0_p1:
+        manifest["quality"]["overallStatus"] = "APPROVED"
+    else:
+        manifest["quality"]["overallStatus"] = "NEEDS_REVISION"
     ws_prev = manifest.get("workspaceSync")
     if isinstance(ws_prev, dict) and ws_prev.get("status") == "SYNCED":
         ws_prev["status"] = "STALE"

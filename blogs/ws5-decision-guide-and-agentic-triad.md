@@ -74,7 +74,7 @@ Real B2B SaaS platforms rarely deploy one monolithic prompt. Instead, they opera
  - The **Shared Diagnostic Agent** delegates over **Agent-to-Agent (`A2A`)** passing the exact signed STS JWT (never downgrading to a generic service account).
  - The **Private Tenant Agent** loads its tenant-signed playbooks and prompt rubrics dynamically from `gs://<tenant-skills-bucket>/v2/skill.yaml` (verified against a pinned SHA-256 digest and cached under `cache:{tenant}:skill:*`)—enabling **zero-downtime skill updates with `0` container image rebuilds**.
 3. **Prefix Cache Hit, Thinking Clamp & `2LO/3LO` MCP Dispatch (`PRIV → MCP`)**:
- - Inference hits the immutable **`32k` shared prefix cache (`~85%` turn token savings)** while enforcing the tenant's **`8,000`-token thinking clamp**.
+ - Inference hits the immutable **`32k` shared prefix cache (`~85%–89.1%` turn token savings within the 90% cached-token discount envelope)** while enforcing the tenant's **`8,000`-token thinking clamp**.
  - Outbound tool execution calls the **2LO/3LO MCP Hub** (`core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py`) with Hop 4 Cloud SDP redaction and per-user DPoP-bound `3LO` tokens.
 4. **Zero-PII BigQuery FinOps Chargeback (`MCP → OTel`)**: Every delegated sub-agent hop emits a linked **OpenTelemetry (`OTel`)** span containing `tenant_id`, `agent_id`, `skill_sha256`, `cached_input_tokens`, `thinking_tokens`, and `raw_pii_logged = FALSE` into BigQuery for accurate per-customer margin accounting.
 
@@ -86,7 +86,7 @@ Enterprise customers store operational records across both Google Cloud and AWS-
 
 ![Figure 3 (Approved Slide 11/12) — WS5 - PART 5 - Multi-Cloud Federation: Google Cloud Plane ↔ AWS & 10 SaaS](../diagrams/saas10-multicloud-a2a-mcp-bridge.svg)
 
-*Figure 3 (Approved Slide 11/12). Multi-Cloud Federation architecture bridging the Google Cloud 5-Hop Control & Runtime Plane (`cymbal-pooled-saas-prod` / `cymbal-finvault-silo-prod` reference verification sandbox) via keyless OIDC STS federation to AWS Bedrock AgentCore MCP Gateway (`us-east-1`), 10 enterprise SaaS targets, and immutable Amazon S3 audit ledgers.*
+*Figure 3 (Approved Slide 11/12). Multi-Cloud Federation architecture bridging the Google Cloud 5-Hop Control & Runtime Plane (`cymbal-pooled-saas-prod` / `cymbal-finvault-silo-prod`, rendered as live sandbox IDs `cymbal-ge-hub-2026` / `cymbal-ge-silo-2026` in the diagram header) via keyless OIDC STS federation to AWS Bedrock AgentCore MCP Gateway (`us-east-1`), 10 enterprise SaaS targets, and immutable Amazon S3 audit ledgers.*
 
 ### Two-plane multi-cloud architecture breakdown (Figure 3)
 

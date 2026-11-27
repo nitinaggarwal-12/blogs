@@ -94,7 +94,7 @@ function cleanSecondaryContent(txt, isSaas10Drawio = false) {
 function findViewerStaticPath() {
   const candidates = [
     process.env.DRAWIO_VIEWER_JS || '',
-    '/usr/local/google/home/nitinagga/Documents/PromptCanvas/public/viewer-static.min.js',
+    path.join(os.homedir(), 'Documents/PromptCanvas/public/viewer-static.min.js'),
     '/tmp/viewer-static.min.js',
   ].filter(Boolean);
   for (const c of candidates) {
@@ -137,7 +137,7 @@ if (totalErrors > 0) process.exit(1);
     // Run using tsx or node --experimental-strip-types (Node 22+) or PromptCanvas tsx
     const tsxCandidates = [
       path.join(ROOT_DIR, 'node_modules', '.bin', 'tsx'),
-      '/usr/local/google/home/nitinagga/Documents/PromptCanvas/node_modules/.bin/tsx',
+      path.join(os.homedir(), 'Documents/PromptCanvas/node_modules/.bin/tsx'),
     ];
     const tsxBin = tsxCandidates.find((p) => fs.existsSync(p));
     let stdout;

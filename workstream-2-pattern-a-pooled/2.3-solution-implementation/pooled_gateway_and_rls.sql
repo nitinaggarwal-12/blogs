@@ -24,8 +24,27 @@ DROP POLICY IF EXISTS tenant_isolation_rls_policy ON cymbal_incidents;
 CREATE POLICY tenant_isolation_rls_policy ON cymbal_incidents
     AS RESTRICTIVE
     FOR ALL
-    USING (tenant_id = current_setting('app.current_tenant', true))
-    WITH CHECK (tenant_id = current_setting('app.current_tenant', true));
+    USING (tenant_id = NULLIF(current_setting('app.current_tenant', true), ''))
+    WITH CHECK (tenant_id = NULLIF(current_setting('app.current_tenant', true), ''));
+
+-- Episodic vector memory table (pgvector 768d) governed by identical FORCE RLS invariant
+CREATE TABLE IF NOT EXISTS agent_episodic_memory (
+    id VARCHAR(64) PRIMARY KEY,
+    tenant_id VARCHAR(64) NOT NULL,
+    content TEXT NOT NULL,
+    embedding VECTOR(768),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE agent_episodic_memory ENABLE ROW LEVEL SECURITY;
+ALTER TABLE agent_episodic_memory FORCE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS tenant_isolation_policy ON agent_episodic_memory;
+
+CREATE POLICY tenant_isolation_policy ON agent_episodic_memory
+    AS RESTRICTIVE
+    FOR ALL
+    USING (tenant_id = NULLIF(current_setting('app.current_tenant', true), ''))
+    WITH CHECK (tenant_id = NULLIF(current_setting('app.current_tenant', true), ''));
 
 -- Seed canonical FinVault Bank and RetailStream Corp incidents
 INSERT INTO cymbal_incidents (incident_id, tenant_id, service_name, severity, summary)

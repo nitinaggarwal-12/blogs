@@ -1516,7 +1516,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                 return (False, 403, "ADMIN_IAP_REQUIRED", iap_err)
             return (True, 200, "OK", "")
 
-        # TODO(security): Local workstation mode (non-Cloud-Run) authorizes blog diagram mutations
+        # Security invariant: Local workstation mode (non-Cloud-Run) authorizes blog diagram mutations
         # via per-process cryptographic CSRF token + Same-Origin validation; Cloud Run (K_SERVICE)
         # requires verified Admin IAP ES256 JWT above.
         provided_csrf = str(self.headers.get("X-Portal-CSRF") or "").strip()

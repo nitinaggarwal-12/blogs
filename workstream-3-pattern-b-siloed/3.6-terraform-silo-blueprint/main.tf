@@ -9,7 +9,7 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 5.30.0"
+      version = ">= 6.18.0"
     }
   }
 }
@@ -19,7 +19,7 @@ provider "google" {
   region  = var.region
 }
 
-# 1. Dedicated Tenant Cloud KMS Key Ring & CMEK CryptoKey (Customer Kill-Switch)
+# 1. Dedicated Tenant Cloud KMS Key Ring & Cloud HSM FIPS 140-3 Level 3 CMEK CryptoKey (Customer Kill-Switch)
 resource "google_kms_key_ring" "tenant_silo_keyring" {
   name     = "${var.tenant_id}-sovereign-kr"
   location = var.region
@@ -30,6 +30,11 @@ resource "google_kms_crypto_key" "tenant_agent_cmek" {
   key_ring        = google_kms_key_ring.tenant_silo_keyring.id
   rotation_period = "7776000s" # 90 days
   purpose         = "ENCRYPT_DECRYPT"
+
+  version_template {
+    algorithm        = "GOOGLE_SYMMETRIC_ENCRYPTION"
+    protection_level = "HSM"
+  }
 }
 
 # 2. VPC Service Controls (VPC-SC) Service Perimeter for Sovereign Tenant Silo

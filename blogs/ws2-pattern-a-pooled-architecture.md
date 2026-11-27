@@ -94,12 +94,14 @@ ALTER TABLE agent_episodic_memory ENABLE ROW LEVEL SECURITY;
 ALTER TABLE agent_episodic_memory FORCE ROW LEVEL SECURITY;
 
 CREATE POLICY tenant_isolation_policy ON agent_episodic_memory
- USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), ''))
- WITH CHECK (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), ''));
+ AS RESTRICTIVE
+ FOR ALL
+ USING (tenant_id = NULLIF(current_setting('app.current_tenant', true), ''))
+ WITH CHECK (tenant_id = NULLIF(current_setting('app.current_tenant', true), ''));
 
 -- Executed automatically by Hop 5 repository wrapper on every PgBouncer transaction:
 BEGIN;
- SELECT set_config('app.current_tenant_id', $1, true); -- SET LOCAL scoped strictly to this txn
+ SELECT set_config('app.current_tenant', $1, true); -- SET LOCAL scoped strictly to this txn
  SELECT id, content, embedding <=> $2 AS distance
  FROM agent_episodic_memory
  ORDER BY distance ASC
@@ -155,9 +157,9 @@ RelativePooledCOGS(N_tenants) = (FixedControlPlane + SharedClusterBase) / N_tena
 
 The complete Pattern A infrastructure stack is codified in [`workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/main.tf) (paired with [`variables.tf`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/variables.tf), [`terraform.tfvars.example`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/terraform.tfvars.example), [`deploy_1click.sh`](../workstream-2-pattern-a-pooled/2.6-terraform-starter/deploy_1click.sh), and [`2.2 Demo Environment & 3P Auth Sandbox`](../workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md)):
 
-1. **Identity & Ingress Layer**: Configures Google Workspace OIDC (`FinVault`) and Microsoft Entra ID v2.0 (`RetailStream`) in **Google Cloud Identity Platform (Multi-Tenancy) + Workload Identity Federation** behind Cloud Armor WAF header stripping and `Cloud Run Agent Identity` SPIFFE mTLS.
-2. **Compute Layer**: Deploys Cloud Run Gen2 with `containerConcurrency = 1`, `gVisor` execution environment, and Gunicorn `--preload --max-requests=1` (Mode A) plus optional GKE `gVisor` WarmPool `SandboxClaim` controller (Mode B).
-3. **State & Data Layer**: Provisions VPC-private Memorystore for Valkey (`0.4 ms` Lua rate-limiter + sticky leases), AlloyDB for PostgreSQL (`pgvector` + PgBouncer + `FORCE RLS` bootstrap SQL), and BigQuery Zero-PII OTel dataset.
+1. **Identity & Ingress Layer**: Configures Cloud Armor WAF header-spoofing drop rules (`cymbal_pooled_waf`) in `2.6-terraform-starter/main.tf` alongside Google Workspace OIDC (`FinVault`) and Microsoft Entra ID v2.0 (`RetailStream`) in **Google Cloud Identity Platform (Multi-Tenancy) + Workload Identity Federation** (`2.2-demo-env-and-3p-auth-sandbox.md`) and `Cloud Run Agent Identity` SPIFFE mTLS.
+2. **Compute Layer**: Deploys Cloud Run Gen2 (`cymbal_pooled_gateway`) with `containerConcurrency = 1`, `gVisor` execution environment, and Gunicorn `--preload --max-requests=1` (Mode A) plus optional GKE `gVisor` WarmPool `SandboxClaim` controller (Mode B).
+3. **State & Data Layer**: Provisions VPC-private Memorystore (`google_redis_instance.tenant_token_bulkhead` for `0.4 ms` Lua rate-limiter + sticky leases), per-tenant Cloud KMS CMEK (`finvault_memory_cmek`), and BigQuery Zero-PII OTel audit dataset (`cymbal_otel_audit`), paired with the AlloyDB `pgvector` + `FORCE RLS` bootstrap SQL (`2.3-solution-implementation/pooled_gateway_and_rls.sql`) and fast-deploy BigQuery RLS + Firestore runnable starter (`examples/blog-02-pattern-a-pooled/`).
 
 ### Pattern A enforcement across all 10 live multi-cloud SaaS targets
 

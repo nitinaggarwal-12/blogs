@@ -169,7 +169,7 @@ console.log(JSON.stringify(out));
   try {
     const tsxBin = [
       path.join(ROOT_DIR, 'node_modules', '.bin', 'tsx'),
-      '/usr/local/google/home/nitinagga/Documents/PromptCanvas/node_modules/.bin/tsx',
+      path.join(os.homedir(), 'Documents/PromptCanvas/node_modules/.bin/tsx'),
     ].find((p) => fs.existsSync(p));
     const stdout = tsxBin
       ? execFileSync(tsxBin, [probeScript], { encoding: 'utf8' })

@@ -63,33 +63,37 @@ A common misconception is confusing **L1 cache eviction (`<5s`)** with **full en
 
 Codified across [`3.2 Multi-Project Silo & CMEK Setup`](../workstream-3-pattern-b-siloed/3.2-multi-project-silo-and-cmek-setup.md) and [`3.6 Terraform Silo Blueprint`](../workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf), provisioning a new sovereign tenant is 100% declarative:
 
-1. **Stage 1 — Dedicated Project & IAM Principal Access Boundary (`PAB`)**: Creates `cymbal-<tenant>-silo-prod`, binds an org-level `IAM PAB` policy restricting all silo service accounts exclusively to that project number, and enables **Cloud Access Approval (`CAA`)**.
-2. **Stage 2 — Cloud HSM (`FIPS 140-3 L3`) CMEK Key Ring**: Provisions customer-controlled asymmetric & symmetric HSM keys, grants `cryptoKeyEncrypterDecrypter` strictly to the silo's AlloyDB, GKE, BigQuery, and Vertex AI service agents, and wires the Cloud Audit Logs CMEK revocation sink.
-3. **Stage 3 — `VPC Service Controls` Perimeter & Private Google Access**: Wraps the project in a strict VPC-SC perimeter blocking `0.0.0.0/0` egress, permitting only Private Google Access (`restricted.googleapis.com`) and explicit verified egress rules (e.g., AWS Bedrock AgentCore via mTLS SPIFFE).
-4. **Stage 4 — Confidential GKE (`AMD SEV-SNP`) & Air-Gapped Gemma 3 (27B)**: Deploys the single-tenant node pool with `confidentialNodes.confidentialInstanceType: SEV_SNP` and loads verified **Gemma 3 (27B)** weights strictly from the customer's CMEK-encrypted GCS bucket (`0` outbound internet pull).
+1. **Stage 1 — Dedicated Project & Organization-Layer IAM Principal Access Boundary (`PAB`)**: Creates `cymbal-<tenant>-silo-prod` (`3.2-multi-project-silo-and-cmek-setup.md`), binds an org-level `IAM PAB` policy restricting all silo service accounts exclusively to that project number, and enables **Cloud Access Approval (`CAA`)** prior to running `3.6-terraform-silo-blueprint/main.tf`.
+2. **Stage 2 — Cloud HSM (`FIPS 140-3 L3`) CMEK Key Ring**: Provisions customer-controlled HSM keys (`protection_level = "HSM"` in `google_kms_crypto_key.tenant_agent_cmek`), grants `cryptoKeyEncrypterDecrypter` strictly to the silo's AlloyDB, GKE, BigQuery, and Vertex AI service agents, and wires the Cloud Audit Logs CMEK revocation sink.
+3. **Stage 3 — `VPC Service Controls` Perimeter & Private Google Access**: Wraps the project in a strict VPC-SC perimeter (`google_access_context_manager_service_perimeter.tenant_sovereign_perimeter`) blocking `0.0.0.0/0` egress, permitting only Private Google Access (`restricted.googleapis.com`) and explicit verified egress rules (e.g., AWS Bedrock AgentCore via mTLS SPIFFE).
+4. **Stage 4 — Confidential GKE (`AMD SEV-SNP` CPU Agent Pool) & Air-Gapped Gemma 3 (27B `nvidia-l4` GPU Pool)**: Runs CPU ADK orchestrator pods on `AMD SEV-SNP` Confidential Nodes (`n2d`/`c3d`) while scheduling air-gapped **Gemma 3 (27B)** vLLM inference pods onto private `nvidia-l4` GPU nodes mounting CMEK-encrypted PVCs (`finvault-cmek-model-pvc`, `0` outbound internet pull):
 
 ```yaml
 # Excerpt from workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
- name: gemma3-27b-sovereign-enclave
- namespace: finvault-silo
+  name: finvault-airgapped-gemma3-27b
+  namespace: finvault-sovereign-agents
 spec:
- replicas: 1
- template:
- spec:
- nodeSelector:
- cloud.google.com/gke-confidential-nodes-instance-type: "SEV_SNP"
- containers:
- - name: vllm-gemma3-27b
- env:
- - name: KMS_CMEK_KEY_URI
- value: "projects/finvault-kms-prod/locations/us-central1/keyRings/sovereign-hsm/cryptoKeys/tenant-a-silo-cmek"
- - name: KMS_LIVENESS_HEARTBEAT_SEC
- value: "30"
- - name: FAIL_CLOSED_HTTP_STATUS
- value: "423"
+  replicas: 2
+  template:
+    spec:
+      serviceAccountName: finvault-gemma3-workload-sa
+      nodeSelector:
+        cloud.google.com/gke-accelerator: nvidia-l4
+      containers:
+        - name: vllm-gemma3-27b
+          image: us-central1-docker.pkg.dev/cymbal-finvault-silo-prod/sovereign-models/vllm-gemma-3-27b-it:v1.0
+          args: ["--model=/models/gemma-3-27b-it", "--tensor-parallel-size=2", "--max-model-len=32768", "--disable-log-requests"]
+          volumeMounts:
+            - name: cmek-model-weights
+              mountPath: /models
+              readOnly: true
+      volumes:
+        - name: cmek-model-weights
+          persistentVolumeClaim:
+            claimName: finvault-cmek-model-pvc
 ```
 
 ### Automated exfiltration & CMEK revocation verification (`3.5-exfiltration-and-cmek-revocation-tests/`)

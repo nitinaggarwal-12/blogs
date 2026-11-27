@@ -250,6 +250,25 @@ class HallucinationPurgeRegressionTests(unittest.TestCase):
         self.assertIn("background: #ffffff", m_toast.group(1))
         self.assertNotIn("background: #0f172a", m_toast.group(1))
 
+    def test_ch08_zero_imaginary_identities_dead_oauth_or_manifest_drift(self) -> None:
+        self.assertFalse((ROOT_DIR / ".local_backup").exists(), "Legacy .local_backup bloat directory must remain purged")
+        for rel in (
+            "core-cymbal-agent/gcp_live_bridge.py",
+            "docs/cloud_console_verification_receipt.json",
+            "scripts/sync_google_workspace_bridge.py",
+            "slides/cloud_viewer_manifest.json",
+        ):
+            src = (ROOT_DIR / rel).read_text(encoding="utf-8")
+            self.assertNotIn("anonymous-workspace-sync@cloud-architecture-center.internal", src, f"Imaginary email in {rel}")
+            self.assertNotIn("248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o", src, f"Dead OAuth client ID in {rel}")
+
+        ws3_md = (ROOT_DIR / "blogs/ws3-pattern-b-sovereign-silos.md").read_text(encoding="utf-8")
+        self.assertNotIn("gemma3-27b-sovereign-enclave", ws3_md)
+        self.assertIn("finvault-airgapped-gemma3-27b", ws3_md)
+
+        ws3_tf = (ROOT_DIR / "workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint/main.tf").read_text(encoding="utf-8")
+        self.assertIn('protection_level = "HSM"', ws3_tf)
+
 
 if __name__ == "__main__":
     unittest.main()

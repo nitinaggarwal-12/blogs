@@ -39,7 +39,7 @@ DRAFTS_DIR = SLIDES_DIR / "_ba_drafts"
 DONOR_PPTX = DRAFTS_DIR / "live_ba_proof_donors.pptx"
 ATLAS_DRAFT = DRAFTS_DIR / "atlas_16slide_draft.pptx"
 LEAN_BACKUPS_DIR = Path(
-    "/usr/local/google/home/nitinagga/.gemini/jetski/brain/"
+    str(Path.home() / ".gemini/jetski/brain") + "/"
     "2c7fde92-72d4-42ed-90f2-9fb2672c3870/scratch/lean_pre_ba_backups"
 )
 

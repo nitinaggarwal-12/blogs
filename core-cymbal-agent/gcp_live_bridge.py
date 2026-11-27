@@ -715,7 +715,7 @@ def aws_verify_cross_cloud_pattern_execution() -> Dict[str, Any]:
 
 def workspace_verify_live_slides_and_docs() -> Dict[str, Any]:
     """
-    Verifies live Google Slides presentations and Google Docs documents in Google Drive (`anonymous-workspace-sync@cloud-architecture-center.internal`)
+    Verifies live Google Slides presentations and Google Docs documents in Google Drive (`248990048888-compute@developer.gserviceaccount.com`)
     for WS1 (Reference Architecture), WS2 (Pattern A Pooled), WS3 (Pattern B Sovereign Silos),
     WS4 (Pattern C Dynamic Hybrid), WS5 (Executive Decision Guide), and ALL (Master Deck).
     """
@@ -785,7 +785,7 @@ def workspace_verify_live_slides_and_docs() -> Dict[str, Any]:
 
     return {
         "live_workspace_ok": len(verified_slides) == 6 and len(verified_docs) == 6,
-        "account_email": manifest.get("accountEmail", "anonymous-workspace-sync@cloud-architecture-center.internal"),
+        "account_email": manifest.get("accountEmail", "248990048888-compute@developer.gserviceaccount.com"),
         "verified_google_slides_count": len(verified_slides),
         "verified_google_docs_count": len(verified_docs),
         "slides": verified_slides,

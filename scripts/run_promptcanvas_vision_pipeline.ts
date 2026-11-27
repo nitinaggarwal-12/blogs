@@ -13,6 +13,7 @@
 
 import * as fs from 'fs';
 import * as http from 'http';
+import * as os from 'os';
 import * as path from 'path';
 import { createRequire } from 'module';
 
@@ -31,7 +32,7 @@ const FDE_BLOGS_ROOT = path.resolve(__dirname, '..');
 const CENTRAL_DIAGRAMS_DIR = path.join(FDE_BLOGS_ROOT, 'diagrams');
 const VISION_META_DIR = path.join(CENTRAL_DIAGRAMS_DIR, 'vision_metadata');
 const VIEWER_JS_PATH = path.join(FDE_BLOGS_ROOT, 'vendor/drawio/viewer-static.min.js');
-const ARTIFACTS_DIR = path.join(process.env.HOME || '/tmp', '.gemini', 'jetski', 'brain', 'b4ce71b8-a483-45d8-9e81-df976103c1eb');
+const ARTIFACTS_DIR = process.env.ARTIFACTS_DIR || path.join(os.tmpdir(), 'ge-blogs-vision-artifacts');
 
 interface ManifestItem {
   id: string;

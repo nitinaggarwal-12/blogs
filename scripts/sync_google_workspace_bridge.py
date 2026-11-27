@@ -31,8 +31,8 @@ SLIDES_DIR = ROOT_DIR / "slides"
 MANIFEST_FILE = SLIDES_DIR / "cloud_viewer_manifest.json"
 
 QUOTA_PROJECT = "ramp-portal-dev"
-DEFAULT_USER_EMAIL = os.environ.get("WORKSPACE_SYNC_EMAIL", "anonymous-workspace-sync@cloud-architecture-center.internal")
-DEFAULT_OAUTH_CLIENT_ID = "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com"
+DEFAULT_USER_EMAIL = os.environ.get("WORKSPACE_SYNC_EMAIL", "248990048888-compute@developer.gserviceaccount.com")
+DEFAULT_OAUTH_CLIENT_ID = os.environ.get("WORKSPACE_OAUTH_CLIENT_ID", "")
 
 TOKEN_CANDIDATE_PATHS = [
     *([Path(os.environ["GSHEET_OAUTH_TOKEN_FILE"])] if os.environ.get("GSHEET_OAUTH_TOKEN_FILE") else []),

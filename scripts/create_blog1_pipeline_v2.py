@@ -53,10 +53,10 @@ def call_gemini_grounded_search(
         f"for an Architecture Center article titled '{title_hint or topic_prompt[:90]}' (domain: {domain}).\n\n"
         f"Topic request:\n{topic_prompt[:1400]}\n\n"
         "Provide strictly grounded bullet points prioritizing official site:cloud.google.com documentation covering:\n"
-        "1. Exact current GA/Preview Google Cloud product names, model lifecycles & deprecations (e.g., flag legacy names like 'Matching Engine' -> 'Vertex AI Vector Search'; note embedding model retirement dates such as text-embedding-005 -> gemini-embedding-001).\n"
-        "2. Official syntax/DDL/API features relevant to this topic (e.g., Cloud Spanner Graph ISO GQL `CREATE PROPERTY GRAPH` / `GRAPH_TABLE` 2-stage ANN `MATCH (@{FORCE_INDEX=...}) ... NEXT MATCH`, Fine-Grained Access Control vs RLS & 100-role/database limit, Cloud Run v2 Terraform `google_cloud_run_v2_service` & `metadata.annotations['run.googleapis.com/ingress']`).\n"
-        "3. Exact verified SLA (e.g., Enterprise regional 99.99% vs Enterprise Plus multi-region 99.999%), quota, pricing, or limit numbers from official cloud.google.com docs.\n"
-        "4. Canonical https://cloud.google.com/... documentation URLs matching each verified topic (never link KNN docs for ANN vector indexes).\n"
+        "1. Exact current GA/Preview Google Cloud product names, model lifecycles & deprecations relevant to this topic.\n"
+        "2. Official syntax, DDL, IAM roles, CLI flags, or Terraform resource attributes relevant strictly to the services in this topic.\n"
+        "3. Exact verified SLA, quota, pricing, or limit numbers from official cloud.google.com docs.\n"
+        "4. Canonical https://cloud.google.com/... documentation URLs matching each verified topic.\n"
         "Be strictly factual; if uncertain, explicitly state 'unverified'."
     )
     _supported_search_models = (
@@ -172,11 +172,26 @@ def call_gemini_grounded_search(
     queries = [str(q)[:140] for q in (gm.get("webSearchQueries") or [])[:12]]
     sources: List[Dict[str, str]] = []
     seen_titles = set()
+    _low_signal_domains = ("oneuptime.com", "medium.com", "dev.to")
     for ch in (gm.get("groundingChunks") or [])[:15]:
         web = ch.get("web") or {}
         ttl = str(web.get("title") or "").strip()[:120]
         uri = str(web.get("uri") or "").strip()
-        if ttl and uri and (ttl, uri[:60]) not in seen_titles:
+        if not ttl or not uri:
+            continue
+        if any(d in ttl.lower() or d in uri.lower() for d in _low_signal_domains):
+            continue
+        if "vertexaisearch.cloud.google.com/grounding-api-redirect/" in uri:
+            # Resolve short-lived redirect token if reachable; drop unresolvable ephemeral tokens
+            try:
+                from scripts.create_blog_hardening import resolve_grounding_redirect_url
+                resolved = resolve_grounding_redirect_url(uri)
+                if not resolved or "grounding-api-redirect/" in resolved:
+                    continue
+                uri = resolved
+            except Exception:
+                continue
+        if (ttl, uri[:60]) not in seen_titles:
             seen_titles.add((ttl, uri[:60]))
             sources.append({"title": ttl, "uri": uri})
     return {

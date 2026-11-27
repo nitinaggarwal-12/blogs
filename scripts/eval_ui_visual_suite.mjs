@@ -1,3 +1,4 @@
+import os from 'node:os';
 #!/usr/bin/env node
 /**
  * Pillar 7 (`EVAL-P7-VISUAL-UX`) — Background Headless Chrome Cross-Viewport Visual,
@@ -19,8 +20,8 @@ const require = createRequire(import.meta.url);
 function loadPuppeteer() {
   const candidates = [
     path.resolve(process.cwd(), 'node_modules/puppeteer'),
-    '/usr/local/google/home/nitinagga/Documents/blogs/node_modules/puppeteer',
-    '/usr/local/google/home/nitinagga/Documents/Demoes-GE/node_modules/puppeteer',
+    './node_modules/puppeteer',
+    path.join(os.homedir(), 'Documents/Demoes-GE/node_modules/puppeteer'),
     'puppeteer',
   ];
   for (const cand of candidates) {

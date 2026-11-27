@@ -2225,6 +2225,14 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
             cb1._ensure_blog_fresh_from_index(slug)
         self.assertFalse(blog_dir.exists(), "Stale local blog cache directory must be evicted when index.json advances")
 
+    def test_23_starter_public_model_sanitizer_and_spiffe_trust_domain_guard(self) -> None:
+        raw_starter = 'model = "gemini-4-neon"\ntrust_domain = "td.googleapis.com"\n'
+        cleaned = cb1._sanitize_public_starter_code(raw_starter)
+        self.assertNotIn("gemini-4-neon", cleaned)
+        self.assertIn("gemini-2.5-flash", cleaned)
+        self.assertNotIn("td.googleapis.com", cleaned)
+        self.assertIn("agents.global.org-<ORG_ID>.system.id.goog", cleaned)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -43,7 +43,7 @@ def _rasterize_svgs_to_pngs(svg_paths: Dict[str, Path], out_dir: Path) -> Dict[s
         return result
     # Prefer local Puppeteer (100% browser SVG fidelity with embedded data-URI icons & CSS fonts)
     pupp_paths = [
-        Path("/usr/local/google/home/nitinagga/node_modules/puppeteer"),
+        Path.home() / "node_modules/puppeteer",
         ROOT_DIR / "node_modules" / "puppeteer",
     ]
     pupp_dir = next((p for p in pupp_paths if p.exists()), None)
