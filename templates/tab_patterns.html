@@ -28,23 +28,9 @@
               </optgroup>
             </select>
 
-            <div id="hub-doc-switcher" style="display:none !important;" aria-hidden="true"></div>
-
             <input type="search" id="hub-blog-search-input" oninput="applyHubBlogSectionSearch(this.value)" placeholder="Search sections &amp; figures..." aria-label="Search Active Blog Sections and Figures" style="width:225px; flex:0 1 240px; padding:5px 9px; font-size:11.5px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a;" />
             <button type="button" class="sim-btn" id="hub-blog-search-reset-btn" onclick="resetHubBlogSectionSearch()" style="padding:4px 8px; font-size:11px; display:none;">↺ Reset</button>
             <span class="badge badge-blue" id="hub-blog-search-count" style="font-size:10.5px; font-weight:700; display:none;"></span>
-
-            <!-- Hidden Compatibility Stepper Pills (Preserved for Unit/Forensic Tests) -->
-            <div hidden style="display:none !important;" aria-hidden="true">
-              <div class="ws-stepper" role="tablist" aria-label="Select Workstream 1 to 5 or All-in-One Master Deck" style="display:none !important;" aria-hidden="true">
-                <button type="button" class="ws-step-btn active" id="ws-btn-WS1" role="tab" aria-selected="true" onclick="selectGuidedWorkstream('WS1')"><span class="ws-name">1. WS1 Foundation</span></button>
-                <button type="button" class="ws-step-btn" id="ws-btn-WS2" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS2')"><span class="ws-name">2. WS2 Pooled (A)</span></button>
-                <button type="button" class="ws-step-btn" id="ws-btn-WS3" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS3')"><span class="ws-name">3. WS3 Dedicated (B)</span></button>
-                <button type="button" class="ws-step-btn" id="ws-btn-WS4" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS4')"><span class="ws-name">4. WS4 Hybrid (C)</span></button>
-                <button type="button" class="ws-step-btn" id="ws-btn-WS5" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('WS5')"><span class="ws-name">5. WS5 Decision</span></button>
-                <button type="button" class="ws-step-btn" id="ws-btn-ALL" role="tab" aria-selected="false" onclick="selectGuidedWorkstream('ALL')"><span class="ws-name">6. Master Deck</span></button>
-              </div>
-            </div>
           </div>
 
           <!-- Right: Consolidated Cloud Viewer, Tools & Exports Split Menu -->
@@ -59,7 +45,7 @@
                 <a id="hub-exec-deck-link" class="pc-dropdown-item" href="https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit" target="_blank" rel="noopener noreferrer">
                   <span class="pc-gpdf-icon" style="background:#1a73e8;">11</span> <span>WS1 Executive Narrative Deck (11 Slides &nearr;)</span>
                 </a>
-                <a id="hub-exec-pptx-download" class="pc-dropdown-item" href="slides/ws1-executive-architecture-23slide-deck.pptx" download>
+                <a id="hub-exec-pptx-download" class="pc-dropdown-item" href="slides/ws1-executive-architecture-11slide-deck.pptx" download>
                   <span>&#11015;</span> <span>Download 11-Slide Executive .pptx (WS1)</span>
                 </a>
                 <div class="pc-dropdown-divider"></div>
@@ -131,16 +117,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Hidden View Mode Compatibility Bar (Preserved for Unit/Forensic Tests) -->
-        <div class="ws-view-mode-bar" id="hub-view-mode-bar" role="navigation" aria-label="Workstream View Mode Switcher" style="display:none !important;" aria-hidden="true">
-          <button type="button" id="btn-view-mode-guide" class="sim-btn primary" onclick="setHubViewMode('guide')"><span>📖</span> <span>Guide</span></button>
-          <button type="button" id="btn-view-mode-eap" class="sim-btn" onclick="setHubViewMode('eap')"><span>⚙️</span> <span>EAP Gaps</span></button>
-          <button type="button" id="btn-view-mode-proofs" class="sim-btn" onclick="setHubViewMode('proofs')"><span>📸</span> <span>UI Proofs</span></button>
-          <button type="button" id="btn-view-mode-deliverables" class="sim-btn" onclick="setHubViewMode('deliverables')"><span>📦</span> <span>Code &amp; Deliverables</span></button>
-          <button type="button" id="btn-insert-blank-diagram-canvas" class="sim-btn" onclick="insertBlankDiagramCanvasInBlog()"><span>➕</span> <span>Blank Canvas</span></button>
-          <button type="button" id="btn-open-diagrams-atlas" class="sim-btn" onclick="switchTab('diagrams', document.getElementById('tab-btn-diagrams'))"><span>📐</span> <span>67-Diagram Atlas</span></button>
         </div>
 
         <!-- Preserved Hidden Compatibility Elements (Rule 25 & Zero-Regression) -->
@@ -315,15 +291,6 @@
                     <span style="font-size:11px; color:#64748b; font-weight:600;">Slide Split:</span>
                     <input type="range" id="dt-split-range-input" aria-label="Adjust split view ratio" min="0" max="100" value="50" oninput="updateDtSplitPosition(this.value)" style="width:110px; cursor:ew-resize;" />
                   </div>
-                </div>
-
-                <!-- Hidden Compatibility Elements for Legacy Selectors -->
-                <div style="display:none;" aria-hidden="true" id="dt-target-pill-strip"></div>
-                <div style="display:none;" aria-hidden="true">
-                  <button type="button" class="genuine-3p-filter-btn active" id="btn-dt-mode-slider" onclick="setDtSliderViewMode('slider')">Interactive Split Slider</button>
-                  <button type="button" class="genuine-3p-filter-btn" id="btn-dt-mode-side" onclick="setDtSliderViewMode('side-by-side')">Side-by-Side (View 1 &amp; View 2)</button>
-                  <button type="button" class="genuine-3p-filter-btn" id="btn-dt-mode-before" onclick="setDtSliderViewMode('before')">Before Only</button>
-                  <button type="button" class="genuine-3p-filter-btn" id="btn-dt-mode-after" onclick="setDtSliderViewMode('after')">After Only</button>
                 </div>
 
                 <!-- Active Target Metadata Card -->

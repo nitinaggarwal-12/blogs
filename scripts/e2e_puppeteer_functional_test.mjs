@@ -287,8 +287,7 @@ async function run() {
         filterBarRect.height >= 28 &&
         filterBarRect.bottom <= stageRect.top + 12 &&
         stageW >= 900 &&
-        railDisplay === "none" &&
-        railW === 0
+        !railEl
     );
     const ovTbl = ovSec?.querySelector("table.ov-master-table");
     const ovTblOverflow = Boolean(ovTbl && ovTbl.parentElement && ovTbl.offsetWidth > ovTbl.parentElement.clientWidth + 4);

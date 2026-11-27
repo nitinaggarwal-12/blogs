@@ -31,34 +31,6 @@
   ],
   "repeatable_steps": [
     {
-      "step_id": "STEP-01-AWS-EC2-10-3P-STACKS",
-      "description": "Ensure AWS EC2 host (i-04924523ac41ff132, 393036065405, us-east-1) & MFA Console Auditor IAM Role are running and seed pure Cymbal multi-tenant state across all 10 upstream enterprise software containers.",
-      "cloud_provider": "AWS",
-      "script_path": "scripts/provision_aws_ec2_third_party_apps.py",
-      "script_sha256": "7422eba212d6b6fd38f0d0b0dbae878876de8288ea437e6539c3d57d2754bba3",
-      "command": "python3 -B scripts/provision_aws_ec2_third_party_apps.py",
-      "receipt_path": "docs/aws_ec2_3p_apps_live_receipt.json",
-      "receipt_sha256": "01c1192023fb7f0cda5d9d9328bb0eee7e4bb8c7c727eedb3656d1ed3b0ad230",
-      "last_executed_at": "2026-11-16T07:00:56Z",
-      "last_exit_code": 0,
-      "repeat_in_next_run": false,
-      "superseded_by_user": true
-    },
-    {
-      "step_id": "STEP-02-GCP-CLOUDRUN-10-3P-STACKS",
-      "description": "Ensure all 10 official upstream enterprise software containers are mirrored to Artifact Registry, deployed on Google Cloud Run Gen2 (bbar-138hf0, us-west1), OIDC-authenticated via cymbal-gcp-oidc-minter, and seeded.",
-      "cloud_provider": "GCP",
-      "script_path": "scripts/provision_gcp_cloudrun_third_party_apps.py",
-      "script_sha256": "bfcf0299cad7263fdc524c50cb6c09a20e9aa3675cd78e47075a9f719a837ccb",
-      "command": "python3 -B scripts/provision_gcp_cloudrun_third_party_apps.py --reseed-only",
-      "receipt_path": "docs/gcp_cloudrun_3p_apps_live_receipt.json",
-      "receipt_sha256": "b17f10ed32c7d75d8ae1312b26f74d4aec825832891d6921671e1b3500b3f812",
-      "last_executed_at": "2026-11-16T07:00:56Z",
-      "last_exit_code": 0,
-      "repeat_in_next_run": false,
-      "superseded_by_user": true
-    },
-    {
       "step_id": "STEP-03-AWS-AGENTCORE-10-SAAS-MCP-TARGETS",
       "description": "Verify/update AWS Bedrock AgentCore MCP Gateway (cymbal-a2a-mcp-gateway-suyxm3caof) 10 SaaS targets (HXGGFMZBKE..C7EYM614F2), Lambda cymbal-a2a-mcp-remote-peer, and S3 audit ledger.",
       "cloud_provider": "AWS",
@@ -87,34 +59,6 @@
       "superseded_by_user": false
     },
     {
-      "step_id": "STEP-05-GENUINE-23-MULTICLOUD-UI-SCREENSHOTS",
-      "description": "Capture 23 genuine live 2x Retina (2880x1800) UI screenshots (10 GCP Cloud Run UIs + 10 AWS EC2 UIs + 3 live AWS Management Console UIs) in Headless Signed Chrome with zero page.setContent or DOM tampering.",
-      "cloud_provider": "GCP+AWS",
-      "script_path": "scripts/capture_genuine_multicloud_3p_uis.mjs",
-      "script_sha256": "2c2b332a3866d80959b56c3a438777b7ae67e276942bc09b1f3e2fb6446261db",
-      "command": "node scripts/capture_genuine_multicloud_3p_uis.mjs",
-      "receipt_path": "docs/genuine_ui_screenshot_provenance_receipt.json",
-      "receipt_sha256": "7196547b4eba64452791b33c1a81e2169229e29c1faab837209f0e80510c8972",
-      "last_executed_at": "2026-11-16T07:00:56Z",
-      "last_exit_code": 0,
-      "repeat_in_next_run": false,
-      "superseded_by_user": true
-    },
-    {
-      "step_id": "STEP-05B-GENUINE-20-BEFORE-AFTER-3P-UI-SCREENSHOTS",
-      "description": "Capture 20 genuine live Before-vs-After 2x Retina (2880x1800) 3P SaaS UI screenshots across all 10 upstream enterprise software stacks via real HTTP/SQL/REST state transitions with distinct SHA-256 digests.",
-      "cloud_provider": "GCP+AWS",
-      "script_path": "scripts/capture_genuine_3p_before_after_uis.mjs",
-      "script_sha256": "68e3749ee69a5fde00662f3d448518b3583874441c81b116c5f928988093f6e2",
-      "command": "node scripts/capture_genuine_3p_before_after_uis.mjs",
-      "receipt_path": "docs/genuine_3p_before_after_provenance_receipt.json",
-      "receipt_sha256": "853e7438c24a3475e879be48fa14b224441ebec10ea2b2389ac95dc103e42283",
-      "last_executed_at": "2026-11-16T07:00:56Z",
-      "last_exit_code": 0,
-      "repeat_in_next_run": false,
-      "superseded_by_user": true
-    },
-    {
       "step_id": "STEP-05-VERIFIED-CLOUD-AND-COMMERCIAL-SAAS-UIS",
       "description": "Capture & verify live Google Cloud Console, Gemini Enterprise & Marketplace Commercial SaaS 16:9 Retina screenshots via capture_verified_ui.mjs + verify_slide_screenshots.mjs --audience external (zero open-source stand-ins).",
       "cloud_provider": "GCP+SAAS",
@@ -133,7 +77,7 @@
       "description": "Execute Deep Forensic Audit (F-01..F-13) and Provenance Guard verifying 100% receipt SHA-256 parity, zero synthetic screenshots, and 28/28 unique Google Slides + 7/7 Google Docs synchronization.",
       "cloud_provider": "GCP+AWS",
       "script_path": "scripts/run_deep_forensic_audit.py",
-      "script_sha256": "3cd4ab29fe90f10606a4bb15e58430d3158d082be56db4fecade07a45c4b0683",
+      "script_sha256": "b5124d1bf699b9784f2400e093a5880680d55ec617160f0206d9f3c2ba5b78fd",
       "command": "python3 -B scripts/run_deep_forensic_audit.py",
       "receipt_path": "docs/cloud_console_verification_receipt.json",
       "receipt_sha256": "87dd6be88da5ae05f75eb857d91df5596228f309f575c5a570babf3c8a6316b4",

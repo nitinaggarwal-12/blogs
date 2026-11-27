@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Lossless OOXML Assembler for the 5 10-Slide Executive Narrative Decks:
-  - WS1_EXEC (`slides/ws1-executive-architecture-23slide-deck.pptx`): replaces misplaced
+  - WS1_EXEC (`slides/ws1-executive-architecture-11slide-deck.pptx`): replaces misplaced
     ThoughtSpot S09 with native WS1 5-Hop Latency Waterfall + GCP Control Plane Proof,
     fixes `Gemini 2.5 Flash` -> `Gemini 2.5 Flash`, and updates Cover Roadmap stop #5.
   - WS2_EXEC (`slides/ws2-executive-architecture-10slide-deck.pptx`): splices BARE_MIN_12
@@ -353,7 +353,7 @@ def assemble_deck(
 
 def main() -> int:
     # 1. Patch WS1_EXEC: replace misplaced ThoughtSpot S09 with native WS1 5-Hop Latency & GCP Proof
-    ws1_exec = SLIDES_DIR / "ws1-executive-architecture-23slide-deck.pptx"
+    ws1_exec = SLIDES_DIR / "ws1-executive-architecture-11slide-deck.pptx"
     ws1_donor = DRAFTS_DIR / "ws1_exec_slide9_donor.pptx"
     n, sz = assemble_deck(
         base_pptx=ws1_exec,

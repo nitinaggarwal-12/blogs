@@ -326,158 +326,34 @@ class TestPortalSecurityP0(unittest.TestCase):
             self.assertEqual(st, 403, f"Expected 403 blocking sensitive path {blocked}, got {st}")
 
     # -------------------------------------------------------------------------
-    # 4. [FA-11] Zero Cleartext EC2 Fallback & Strict Cloud Run OIDC Proxy
+    # 4. [FA-11] Legacy OSS Proxy & Unreferenced Scripts Purged (Fail-Closed 404)
     # -------------------------------------------------------------------------
-    def test_fa11_saas_live_proxy_and_cli_proxy_handler_fail_closed_and_strip_headers(self) -> None:
+    def test_fa11_legacy_saas_live_proxy_and_unreferenced_scripts_purged_fail_closed(self) -> None:
         ec2_ip = "13.220." + "94.209"
         server_src = (ROOT_DIR / "server.py").read_text(encoding="utf-8")
-        proxy_src = (ROOT_DIR / "scripts/saas_cloudrun_proxy.py").read_text(encoding="utf-8")
         self.assertNotIn(ec2_ip, server_src)
-        self.assertNotIn(ec2_ip, proxy_src)
         self.assertNotIn('"ec2_port"', server_src)
+        self.assertNotIn("SAAS_LIVE_TARGETS", server_src)
+        self.assertNotIn("_handle_saas_live_proxy", server_src)
 
-        orig_urlopen = urllib.request.urlopen
-
-        def _deny_metadata_only(req, timeout=None):
-            url = req.full_url if hasattr(req, "full_url") else str(req)
-            if "metadata.google.internal" in url:
-                raise urllib.error.URLError("metadata unavailable in test")
-            return orig_urlopen(req, timeout=timeout) if timeout is not None else orig_urlopen(req)
-
-        orig_is_file = Path.is_file
-
-        def _hide_oidc_cache(p: Path) -> bool:
-            if str(p) == "/tmp/cymbal_saas_oidc_cache.json":
-                return False
-            return orig_is_file(p)
-
-        with (
-            mock.patch.object(Path, "is_file", _hide_oidc_cache),
-            mock.patch("server.urllib.request.urlopen", side_effect=_deny_metadata_only),
-        ):
-            st, body, _ = self._http_json(
-                "GET",
-                "/api/saas-live/thoughtspot/liveboards",
-                headers={"Cookie": "SACSID=secret-session-cookie; other=1"},
-            )
-        self.assertEqual(st, 503)
-        self.assertEqual(body.get("status"), "OIDC_IDENTITY_REQUIRED")
-        self.assertIn("[FA-11]", body.get("error", ""))
-
-        captured_req = {}
-
-        class _FakeCloudRunResp:
-            status = 200
-            headers = {"Content-Type": "application/json"}
-
-            def read(self) -> bytes:
-                return b'{"proxied": true}'
-
-        class _FakeOpener:
-            def open(self, req, timeout=12):
-                captured_req["url"] = req.full_url
-                captured_req["headers"] = {k.lower(): v for k, v in req.header_items()}
-                return _FakeCloudRunResp()
-
-        def _fake_metadata_token(req, timeout=None):
-            url = req.full_url if hasattr(req, "full_url") else str(req)
-            if "metadata.google.internal" in url:
-                class _MetaResp:
-                    def __enter__(self):
-                        return self
-
-                    def __exit__(self, *args):
-                        return False
-
-                    def read(self) -> bytes:
-                        return b"eyJhbGciOiJSUzI1NiJ9.mock_oidc_payload.sig"
-
-                return _MetaResp()
-            return orig_urlopen(req, timeout=timeout) if timeout is not None else orig_urlopen(req)
-
-        with (
-            mock.patch.object(Path, "is_file", _hide_oidc_cache),
-            mock.patch("server.urllib.request.urlopen", side_effect=_fake_metadata_token),
-            mock.patch("server.urllib.request.build_opener", return_value=_FakeOpener()),
-        ):
-            st_ok, body_ok, _ = self._http_json(
-                "GET",
-                "/api/saas-live/thoughtspot/liveboards",
-                headers={
-                    "Cookie": "SACSID=corp-cookie-do-not-forward",
-                    "Authorization": "Bearer caller-secret",
-                    "X-Goog-Authenticated-User-Email": "accounts.google.com:spoof-admin@google.com",
-                },
-            )
-        self.assertEqual(st_ok, 200)
-        self.assertTrue(body_ok.get("proxied"))
-        self.assertTrue(captured_req["url"].startswith("https://cymbal-saas-thoughtspot-proxy-"))
-        self.assertNotIn("cookie", captured_req["headers"])
-        self.assertNotIn("authorization", captured_req["headers"])
-        self.assertNotIn("x-goog-authenticated-user-email", captured_req["headers"])
-        self.assertEqual(
-            captured_req["headers"].get("x-serverless-authorization"),
-            "Bearer eyJhbGciOiJSUzI1NiJ9.mock_oidc_payload.sig",
+        purged_paths = (
+            "scripts/saas_cloudrun_proxy.py",
+            "scripts/cloudtop_auto_sync_daemon.sh",
+            "scripts/splice_ws1_to_ws5_slides_and_atlas.py",
+            "scripts/seed_saas_demo_tenants.mjs",
+            "scripts/cloudrun_in_vpc_e2e_verifier.py",
+            "scripts/build_all_exec_narrative_decks.mjs",
+            "scripts/build_arch_center_blogs.mjs",
+            "scripts/build_blog_slide_presentations.mjs",
+            "scripts/build_deck_jsons.mjs",
+            "data/cymbal_multi_tenant_patterns_deploy_receipt.json",
         )
+        for rel in purged_paths:
+            self.assertFalse((ROOT_DIR / rel).exists(), f"Purged legacy file returned: {rel}")
 
-        # Live runtime test of scripts/saas_cloudrun_proxy.py CloudRunProxyHandler (guards against NameError/crash)
-        spec_p = importlib.util.spec_from_file_location("saas_cloudrun_proxy", ROOT_DIR / "scripts/saas_cloudrun_proxy.py")
-        assert spec_p and spec_p.loader
-        proxy_mod = importlib.util.module_from_spec(spec_p)
-        spec_p.loader.exec_module(proxy_mod)
-
-        svc_spec = proxy_mod.SERVICES["thoughtspot"]
-        parsed_t = urllib.parse.urlparse(svc_spec["url"])
-
-        class _BoundProxyHandler(proxy_mod.CloudRunProxyHandler):
-            target_url = svc_spec["url"]
-            target_host = parsed_t.netloc
-            target_parsed = parsed_t
-            local_port = 0
-            service_spec = svc_spec
-
-        proxy_srv = server.ThreadingHTTPServer(("127.0.0.1", 0), _BoundProxyHandler)
-        _BoundProxyHandler.local_port = proxy_srv.server_address[1]
-        proxy_t = threading.Thread(target=proxy_srv.serve_forever, daemon=True)
-        proxy_t.start()
-        proxy_url = f"http://127.0.0.1:{proxy_srv.server_address[1]}/question/27"
-        try:
-            # Case A: No OIDC token -> must cleanly return HTTP 503 (never NameError crash)
-            with mock.patch.object(proxy_mod, "get_oidc_token", return_value=""):
-                with self.assertRaises(urllib.error.HTTPError) as ctx503:
-                    urllib.request.urlopen(proxy_url, timeout=5)
-                self.assertEqual(ctx503.exception.code, 503)
-
-            # Case B: Valid OIDC token -> HTTP 200 with header stripping & X-Serverless-Authorization
-            cli_captured = {}
-
-            class _CliOpener:
-                def open(self, req, timeout=12):
-                    cli_captured["url"] = req.full_url
-                    cli_captured["headers"] = {k.lower(): v for k, v in req.header_items()}
-                    return _FakeCloudRunResp()
-
-            with (
-                mock.patch.object(proxy_mod, "get_oidc_token", return_value="eyCliToken.payload.sig"),
-                mock.patch.object(proxy_mod.urllib.request, "build_opener", return_value=_CliOpener()),
-            ):
-                req_cli = urllib.request.Request(
-                    proxy_url,
-                    headers={
-                        "Authorization": "Bearer ambient-secret",
-                        "X-Goog-Authenticated-User-Email": "accounts.google.com:spoof@google.com",
-                    },
-                )
-                with urllib.request.urlopen(req_cli, timeout=5) as r_cli:
-                    self.assertEqual(r_cli.status, 200)
-                    self.assertEqual(r_cli.headers.get("X-Content-Type-Options"), "nosniff")
-                    self.assertTrue(json.loads(r_cli.read().decode("utf-8"))["proxied"])
-            self.assertEqual(cli_captured["headers"].get("x-serverless-authorization"), "Bearer eyCliToken.payload.sig")
-            self.assertNotIn("authorization", cli_captured["headers"])
-            self.assertNotIn("x-goog-authenticated-user-email", cli_captured["headers"])
-        finally:
-            proxy_srv.shutdown()
-            proxy_srv.server_close()
+        for old_route in ("/api/saas-live/thoughtspot/liveboards", "/create-blog1", "/create-blog-2", "/api/google-workspace/oauth-config"):
+            st, _, _ = self._http_json("GET", old_route)
+            self.assertEqual(st, 404, f"Expected fail-closed 404 on purged route {old_route}, got {st}")
 
     # -------------------------------------------------------------------------
     # 5. [FA-14] Zero Public Passwords or Tokens Across Portal & Scripts
@@ -488,7 +364,6 @@ class TestPortalSecurityP0(unittest.TestCase):
         bad_dk = "cymbal-directus-" + "secret"
         targets = [
             ROOT_DIR / "index.html",
-            ROOT_DIR / "scripts/saas_cloudrun_proxy.py",
             ROOT_DIR / "scripts/capture_real_gcp_and_saas_screenshots.mjs",
         ]
         for path in targets:
@@ -504,7 +379,19 @@ class TestPortalSecurityP0(unittest.TestCase):
             html_txt = (ROOT_DIR / "index.html").read_text(encoding="utf-8")
         self.assertNotIn(r"openSaaSConnectModal(\'", html_txt)
         self.assertIn("document.getElementById('saas-modal-live-gateway-link')", html_txt)
-        self.assertIn("/api/saas-live/", html_txt)
+        self.assertNotIn("/api/saas-live/", html_txt)
+        for purged_dom_id in (
+            'id="tab-btn-changelog"',
+            'id="ov-selector-rail"',
+            'id="hub-doc-switcher"',
+            'id="hub-view-mode-bar"',
+            'id="dt-target-pill-strip"',
+            'id="atlas-filter-scope"',
+            'id="atlas-results-count-label"',
+            'id="chg-filter-action"',
+            'id="e2e-codebase-category-bar"',
+        ):
+            self.assertNotIn(purged_dom_id, html_txt, f"Purged hidden DOM control returned: {purged_dom_id}")
 
     def test_portal_viewport_sticky_and_links_hygiene(self):
         """Asserts Law 13 viewport sticky invariants, TOC scroll spy, and anonymous slide links."""

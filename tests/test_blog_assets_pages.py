@@ -809,7 +809,6 @@ class TestBlogAssetsPagesAndCrud(unittest.TestCase):
                 ROOT_DIR / "README.md",
                 ROOT_DIR / "AGENTS.md",
                 ROOT_DIR / "server.py",
-                ROOT_DIR / "scripts" / "saas_cloudrun_proxy.py",
                 ROOT_DIR / "scripts" / "blog_assets_manager.py",
                 ROOT_DIR / "scripts" / "setup_workload_identity_federation.sh",
                 ROOT_DIR / "scripts" / "build_editable_slide_decks.ts",

@@ -104,11 +104,6 @@ ALLOWED_MODELS = (
     "gemini-4-carbon",
     "gemini-4-argon",
     "gemini-4-hydrogen",
-    "gemini-3.8-flash",
-    "gemini-3.7-flash",
-    "gemini-3.5-flash",
-    "gemini-3.1-pro-preview",
-    "gemini-3-flash-preview",
     "gemini-2.5-pro",
     "gemini-2.5-flash",
 )
@@ -125,11 +120,6 @@ MODEL_CATALOG = (
     {"id": "gemini-4-carbon", "family": "Gemini 4", "label": "Gemini 4 Carbon (Deepest Reasoning)", "endpoint": "global", "stage": "GA (Short)", "thinkingMode": "thinkingLevel"},
     {"id": "gemini-4-argon", "family": "Gemini 4", "label": "Gemini 4 Argon (12-Mo Long GA)", "endpoint": "global", "stage": "GA (Long)", "thinkingMode": "thinkingLevel"},
     {"id": "gemini-4-hydrogen", "family": "Gemini 4", "label": "Gemini 4 Hydrogen (Fast High-Volume)", "endpoint": "global", "stage": "GA (Short)", "thinkingMode": "thinkingLevel"},
-    {"id": "gemini-3.8-flash", "family": "Gemini 3.x", "label": "Gemini 3.8 Flash (Fast GA)", "endpoint": "global", "stage": "GA", "thinkingMode": "thinkingLevel"},
-    {"id": "gemini-3.7-flash", "family": "Gemini 3.x", "label": "Gemini 3.7 Flash", "endpoint": "global", "stage": "GA", "thinkingMode": "thinkingLevel"},
-    {"id": "gemini-3.5-flash", "family": "Gemini 3.x", "label": "Gemini 3.5 Flash", "endpoint": "global", "stage": "GA", "thinkingMode": "thinkingLevel"},
-    {"id": "gemini-3.1-pro-preview", "family": "Gemini 3.x", "label": "Gemini 3.1 Pro (Preview)", "endpoint": "global", "stage": "Preview", "thinkingMode": "thinkingLevel"},
-    {"id": "gemini-3-flash-preview", "family": "Gemini 3.x", "label": "Gemini 3 Flash (Preview)", "endpoint": "global", "stage": "Preview", "thinkingMode": "thinkingLevel"},
     {"id": "gemini-2.5-pro", "family": "Gemini 2.5", "label": "Gemini 2.5 Pro (Regional Stable)", "endpoint": "us-central1", "stage": "GA", "thinkingMode": "thinkingBudget"},
     {"id": "gemini-2.5-flash", "family": "Gemini 2.5", "label": "Gemini 2.5 Flash (Regional Fast)", "endpoint": "us-central1", "stage": "GA", "thinkingMode": "thinkingBudget"},
 )
@@ -220,7 +210,6 @@ def select_secondary_code_judge_model(generator_model: str, primary_judge_model:
     prim = str(primary_judge_model or "").strip()
     candidates = [
         "gemini-4-argon",
-        "gemini-3.1-pro-preview",
         "gemini-4-carbon",
         "gemini-2.5-pro",
         "gemini-4-hydrogen",
@@ -242,7 +231,7 @@ def select_diagram_arch_model(generator_model: str) -> str:
 def select_grounding_model(generator_model: str) -> str:
     m = str(generator_model or "").strip()
     if m.startswith(("gemini-4", "gemini-3")):
-        return "gemini-3.8-flash"
+        return "gemini-4-hydrogen"
     return "gemini-2.5-flash"
 ALLOWED_VOICES = (
     "en-US-Chirp3-HD-Charon",
@@ -798,10 +787,6 @@ def _ensure_rel_hydrated(slug: str, rel_path: str) -> Optional[Path]:
     return None
 
 
-DEFAULT_WORKSPACE_OAUTH_CLIENT_ID = os.environ.get(
-    "GOOGLE_WORKSPACE_OAUTH_CLIENT_ID",
-    "",
-).strip()
 DEFAULT_WORKSPACE_SHARED_DRIVE_ID = os.environ.get(
     "GOOGLE_WORKSPACE_SHARED_DRIVE_ID",
     "0AEhajVC2_rtpUk9PVA",
@@ -949,10 +934,8 @@ def get_capabilities() -> Dict[str, Any]:
             "workspaceOauthSync": has_workspace,
             "workspaceServerSideSync": sa_drive_ready or gdrive_cli_ready or _has_workspace_oauth_token(),
             "workspaceSharedDriveId": DEFAULT_WORKSPACE_SHARED_DRIVE_ID if sa_drive_ready else "",
-            "workspaceOauthClientId": DEFAULT_WORKSPACE_OAUTH_CLIENT_ID,
-            "workspaceCliReady": gdrive_cli_ready,
-            "workspaceBrowserOauth": bool(DEFAULT_WORKSPACE_OAUTH_CLIENT_ID),
-            "hostMp4Compiler": has_ffmpeg and has_svg_raster,
+                "workspaceCliReady": gdrive_cli_ready,
+                "hostMp4Compiler": has_ffmpeg and has_svg_raster,
             "browserWebmExporter": True,
             "browserScreenRecorder": True,
             "proofUploadMaxBytes": MAX_PROOF_IMAGE_BYTES,
@@ -4412,7 +4395,7 @@ def run_orthogonal_llm_judge(
             return ({"verdict": "APPROVED", "score": 95, "artifacts": {}, "strengths": [], "findings": []}, {}, code_judge_model)
         # Try code_judge_model first, with automatic fallback to an alternate non-generator model if needed
         fallback_chain = [code_judge_model]
-        for alt_m in ("gemini-3.1-pro-preview", "gemini-2.5-pro", judge_model):
+        for alt_m in ("gemini-4-argon", "gemini-2.5-pro", judge_model):
             if alt_m != generator_model and alt_m not in fallback_chain:
                 fallback_chain.append(alt_m)
         last_exc: Optional[Exception] = None
@@ -5575,7 +5558,7 @@ def start_generation_job(
                 except CreateBlog1Error as exc:
                     if exc.code not in ("MODEL_INVALID_JSON", "MODEL_EMPTY_CANDIDATE", "MODEL_EMPTY_RESPONSE"):
                         raise
-                    fallback_m = "gemini-3.8-flash" if model.startswith("gemini-4") else ("gemini-2.5-pro" if model == "gemini-2.5-flash" else "gemini-2.5-flash")
+                    fallback_m = "gemini-4-hydrogen" if model.startswith("gemini-4") else ("gemini-2.5-pro" if model == "gemini-2.5-flash" else "gemini-2.5-flash")
                     return call_gemini_json(
                         system_prompt=_pipe_v2.topology_stage_system_prompt(slide_plan=slide_plan),
                         user_prompt=_pipe_v2.topology_stage_user_prompt(
@@ -7307,8 +7290,7 @@ def sync_to_google_workspace(
             "ok": False,
             "statusCode": 412,
             "code": "WORKSPACE_OAUTH_REQUIRED",
-            "oauthClientId": DEFAULT_WORKSPACE_OAUTH_CLIENT_ID,
-            "scopes": ["https://www.googleapis.com/auth/drive.file"],
+                "scopes": ["https://www.googleapis.com/auth/drive.file"],
             "error": (
                 "Sign in with Google Workspace (drive.file scope) to convert and open this deck "
                 "directly in Google Slides and Google Docs without downloading .pptx/.docx files."

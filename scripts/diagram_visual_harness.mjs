@@ -227,7 +227,7 @@ DECKS = [
     ("WS3", "slides/ws3-12slide-visual-deck.pptx", 7, [(3, "ws3-pattern-b-silo"), (4, "ws3-c4-l3-cmek-killswitch-swimlane")]),
     ("WS4", "slides/ws4-12slide-visual-deck.pptx", 9, [(3, "ws4-pattern-c-hybrid"), (5, "ws4-c4-l3-live-tier-promotion-swimlane")]),
     ("WS5", "slides/ws5-12slide-visual-deck.pptx", 9, [(3, "ws5-decision-tree-and-triad"), (4, "saas10-multicloud-a2a-mcp-bridge"), (5, "ws5-c4-l3-dynamic-skill-delegation-swimlane")]),
-    ("WS1_EXEC", "slides/ws1-executive-architecture-23slide-deck.pptx", 11, [(5, "ws1-5hop-governance-baseline"), (6, "ws1-c4-l3-process-sequence-swimlane")]),
+    ("WS1_EXEC", "slides/ws1-executive-architecture-11slide-deck.pptx", 11, [(5, "ws1-5hop-governance-baseline"), (6, "ws1-c4-l3-process-sequence-swimlane")]),
     ("WS2_EXEC", "slides/ws2-executive-architecture-10slide-deck.pptx", 10, [(4, "ws2-pattern-a-pooled"), (5, "ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane"), (6, "ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane")]),
     ("WS3_EXEC", "slides/ws3-executive-architecture-10slide-deck.pptx", 10, [(4, "ws3-pattern-b-silo"), (5, "ws3-c4-l3-cmek-killswitch-swimlane")]),
     ("WS4_EXEC", "slides/ws4-executive-architecture-10slide-deck.pptx", 10, [(4, "ws4-pattern-c-hybrid"), (5, "ws4-c4-l3-live-tier-promotion-swimlane")]),

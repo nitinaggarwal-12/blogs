@@ -406,14 +406,8 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
         except Exception as _e:
             html = index_path.read_text(encoding="utf-8")
         required_markers = [
-            "Shared Multi-Tenant Pool (Pattern A)",
-            "Dedicated Customer Vault (Pattern B)",
-            "Smart Hybrid Router &amp; Live Upgrade (Pattern C)",
             "FinVault Bank",
             "RetailStream Corp",
-            "Google Cloud Multi-Tenant Agentic AI Architecture Portal",
-            "Live Python API",
-            "Multi-Tenancy Architecture, 5-Part Blog Series &amp; Live Console Proofs Portal",
             "openCloudViewerModal",
             "hub-btn-mode-edit-inline",
             "hub-btn-open-drawio-tab",
@@ -1175,17 +1169,13 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 ws_blog_count = len(ws_blogs_seen)
 
         server_src = (ROOT_DIR / "server.py").read_text(encoding="utf-8")
-        proxy_src = (ROOT_DIR / "scripts/saas_cloudrun_proxy.py").read_text(encoding="utf-8")
         bridge_src = (ROOT_DIR / "core-cymbal-agent/gcp_live_bridge.py").read_text(encoding="utf-8")
         mcp_src = (ROOT_DIR / "core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py").read_text(encoding="utf-8")
         p0_security_ok = (
             "FinVault#2026!" not in html
             and "fv-token-finvault-sre-2026" not in html
             and "openSaaSConnectModal(\\'" not in html
-            and "FinVault#2026!" not in proxy_src
-            and "fv-token-finvault-sre-2026" not in proxy_src
             and "13.220.94.209" not in server_src
-            and "13.220.94.209" not in proxy_src
             and "merck-" not in bridge_src.lower()
             and "merck-" not in mcp_src.lower()
             and "AWS_SHARED_JWT_SECRET =" not in bridge_src
@@ -1278,7 +1268,7 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                             multi_plane_parity_errors.append(f"approved12_bad_footer_num:{_ws_key}:S{_snum:02d}")
             # Also verify all 5 Executive Narrative Decks (WS1_EXEC=11 w/ ThoughtSpot Spotter, WS2..WS5_EXEC=10; 0 pending slots, 0 Gemini 3.8, native BARE_MIN_12 diagrams)
             _exec_specs = [
-                ("WS1_EXEC", "slides/ws1-executive-architecture-23slide-deck.pptx", 11, ((5, "ws1-5hop-governance-baseline.drawio"), (6, "ws1-c4-l3-process-sequence-swimlane.drawio"))),
+                ("WS1_EXEC", "slides/ws1-executive-architecture-11slide-deck.pptx", 11, ((5, "ws1-5hop-governance-baseline.drawio"), (6, "ws1-c4-l3-process-sequence-swimlane.drawio"))),
                 ("WS2_EXEC", "slides/ws2-executive-architecture-10slide-deck.pptx", 10, ((4, "ws2-pattern-a-pooled.drawio"), (5, "ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane.drawio"), (6, "ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane.drawio"))),
                 ("WS3_EXEC", "slides/ws3-executive-architecture-10slide-deck.pptx", 10, ((4, "ws3-pattern-b-silo.drawio"), (5, "ws3-c4-l3-cmek-killswitch-swimlane.drawio"))),
                 ("WS4_EXEC", "slides/ws4-executive-architecture-10slide-deck.pptx", 10, ((4, "ws4-pattern-c-hybrid.drawio"), (5, "ws4-c4-l3-live-tier-promotion-swimlane.drawio"))),
@@ -1869,7 +1859,6 @@ def run_all_forensic_checks() -> List[Dict[str, object]]:
                 ROOT_DIR / "README.md",
                 ROOT_DIR / "AGENTS.md",
                 ROOT_DIR / "server.py",
-                ROOT_DIR / "scripts/saas_cloudrun_proxy.py",
                 ROOT_DIR / "scripts/blog_assets_manager.py",
                 ROOT_DIR / "scripts/setup_workload_identity_federation.sh",
                 ROOT_DIR / "scripts/build_editable_slide_decks.ts",

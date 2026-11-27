@@ -53,51 +53,8 @@
                 </optgroup>
               </select>
 
-              <!-- Hidden Legacy Facet Selects (Synchronized for Compatibility) -->
-              <select id="atlas-filter-scope" onchange="setAtlasScopeFilter(this.value)" aria-label="Filter by Section or Scope" style="display:none !important;" aria-hidden="true">
-                <option value="COMPENDIUM_54">All 38 Architecture Slides (38)</option>
-                <option value="BARE_MIN_12">Bare-Minimum Core Deck (12)</option>
-                <option value="ARCH_DIAGRAM">Architecture Diagrams (30)</option>
-                <option value="SECTION_FRAMING">Section Framing Slides (8)</option>
-                <option value="OPENING">Sec 0: Opening &amp; Framing (01–07)</option>
-                <option value="WS1">WS1: 5-Hop Control Plane (08–14)</option>
-                <option value="WS2">WS2: Pattern A Pooled (15–20)</option>
-                <option value="WS3">WS3: Pattern B Sovereign Silo (21–26)</option>
-                <option value="WS4">WS4: Pattern C Hybrid PSC (27–30)</option>
-                <option value="WS5">WS5: Decision &amp; Multi-Cloud (31–38)</option>
-                <option value="ALL_82">All 67 (+29 Extended Blueprints)</option>
-              </select>
-              <select id="atlas-filter-topology" onchange="applyAtlasFilters()" aria-label="Filter by Topology Family" style="display:none !important;" aria-hidden="true">
-                <option value="ALL">Topology: All</option>
-                <option value="Official #78 Hub-and-Spoke">Official #78 Hub &amp; Spoke</option>
-                <option value="1:1 Reference Twin">1:1 Reference Twin</option>
-                <option value="C4 L3/L4 Sequence &amp; Wire">C4 Sequence &amp; Wire</option>
-                <option value="Native DrawingML &amp; Guardrails">Native Guardrails</option>
-                <option value="FinOps, Threat &amp; Decision Matrix">FinOps &amp; Decision</option>
-                <option value="Executive Section Framing">Section Framing</option>
-              </select>
-              <select id="atlas-filter-pattern" onchange="applyAtlasFilters()" aria-label="Filter by Isolation Pattern" style="display:none !important;" aria-hidden="true">
-                <option value="ALL">Pattern: All</option>
-                <option value="All Patterns (5-Hop Baseline)">5-Hop Baseline</option>
-                <option value="Pattern A (Pooled)">Pattern A (Pooled)</option>
-                <option value="Pattern B (Sovereign Silo)">Pattern B (Sovereign Silo)</option>
-                <option value="Pattern C (Hybrid PSC)">Pattern C (Hybrid PSC)</option>
-                <option value="Multi-Cloud Federation (GCP + AWS + Azure)">Multi-Cloud Federation</option>
-              </select>
-              <select id="atlas-filter-blocker" onchange="applyAtlasFilters()" aria-label="Filter by Blocker ID" style="display:none !important;" aria-hidden="true">
-                <option value="ALL">Blocker: All (BLK-01..06)</option>
-                <option value="BLK-01">BLK-01 • Identity &amp; STS</option>
-                <option value="BLK-02">BLK-02 • Tool &amp; Storage</option>
-                <option value="BLK-03">BLK-03 • FinOps &amp; Quota</option>
-                <option value="BLK-04">BLK-04 • VPC-SC &amp; CMEK</option>
-                <option value="BLK-05">BLK-05 • Hybrid PSC</option>
-                <option value="BLK-06">BLK-06 • WORM &amp; Audit</option>
-                <option value="ALL-BLK">ALL-BLK • Cross-Blocker</option>
-              </select>
-
               <input type="search" id="atlas-filter-search" oninput="applyAtlasFilters()" placeholder="Search slide #, title, CMEK..." aria-label="Search Slide Diagrams" style="width:190px; flex:0 1 205px; padding:5px 9px; font-size:11.5px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#0f172a;" />
               <button type="button" class="sim-btn" onclick="resetAtlasFilters()" style="padding:4px 8px; font-size:11px; font-weight:700; flex-shrink:0;">↺ Reset</button>
-              <span id="atlas-results-count-label" class="badge badge-blue" style="display:none;">Slide 1 of 38</span>
             </div>
 
             <!-- Right: Format Switcher + Maximize + Consolidated Decks & Links Dropdown -->
@@ -117,7 +74,7 @@
                   <a class="sim-btn" href="https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700; color:#1d4ed8; background:#eff6ff;">⚡ Approved 12-Slide Core Deck (WS1–WS5) ↗</a>
                   <a class="sim-btn" href="https://docs.google.com/presentation/d/111n5JgAss6hr1OjdWNrVSGtflqASC4DecN-M5Bh4OBc/edit#slide=id.p1" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">📊 Master 25-Slide Synthesis Deck (ALL) ↗</a>
                   <a class="sim-btn" href="https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">📸 16-Slide Multi-Cloud Verification Atlas ↗</a>
-                  <a class="sim-btn" href="https://docs.google.com/spreadsheets/d/14me0XW4HD9dyYjnGcYWcNhZZJKgw_aSC3Ek0Yi3Thw0/edit?usp=sharing#gid=0" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">📋 Multi-Tenant Blockers &amp; Solutions Matrix ↗</a>
+                  <a class="sim-btn" href="https://docs.google.com/spreadsheets/d/14me0XW4HD9dyYjnGcYWcNhZZJKgw_aSC3Ek0Yi3Thw0/edit?usp=sharing&resourcekey=0-U2wvCIqV8ZK6Juqjs7exWg#gid=0" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:11.5px; padding:6px 10px; text-align:left; font-weight:700;">📋 Multi-Tenant Blockers &amp; Solutions Matrix ↗</a>
                 </div>
               </details>
             </div>

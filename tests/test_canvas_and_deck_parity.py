@@ -115,7 +115,7 @@ class TestCanvasAndDeckParity(unittest.TestCase):
             ("WS3", "slides/ws3-12slide-visual-deck.pptx", "slides/previews/ws3-12slide-visual-deck", 7),
             ("WS4", "slides/ws4-12slide-visual-deck.pptx", "slides/previews/ws4-12slide-visual-deck", 9),
             ("WS5", "slides/ws5-12slide-visual-deck.pptx", "slides/previews/ws5-12slide-visual-deck", 9),
-            ("WS1_EXEC", "slides/ws1-executive-architecture-23slide-deck.pptx", "slides/previews/ws1-executive-architecture-23slide-deck", 11),
+            ("WS1_EXEC", "slides/ws1-executive-architecture-11slide-deck.pptx", "slides/previews/ws1-executive-architecture-11slide-deck", 11),
             ("WS2_EXEC", "slides/ws2-executive-architecture-10slide-deck.pptx", "slides/previews/ws2-executive-architecture-10slide-deck", 10),
             ("WS3_EXEC", "slides/ws3-executive-architecture-10slide-deck.pptx", "slides/previews/ws3-executive-architecture-10slide-deck", 10),
             ("WS4_EXEC", "slides/ws4-executive-architecture-10slide-deck.pptx", "slides/previews/ws4-executive-architecture-10slide-deck", 10),

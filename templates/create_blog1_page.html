@@ -1032,13 +1032,6 @@
                   <option value="gemini-4-argon">gemini-4-argon (12-Mo Long GA)</option>
                   <option value="gemini-4-hydrogen">gemini-4-hydrogen (Fast High-Volume)</option>
                 </optgroup>
-                <optgroup label="Gemini 3.x Series (Global)">
-                  <option value="gemini-3.8-flash">gemini-3.8-flash (Fast GA)</option>
-                  <option value="gemini-3.7-flash">gemini-3.7-flash (GA)</option>
-                  <option value="gemini-3.5-flash">gemini-3.5-flash (GA)</option>
-                  <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview (Pro Preview)</option>
-                  <option value="gemini-3-flash-preview">gemini-3-flash-preview (Flash Preview)</option>
-                </optgroup>
                 <optgroup label="Gemini 2.5 Stable (Regional)">
                   <option value="gemini-2.5-pro">gemini-2.5-pro (Stable Deep)</option>
                   <option value="gemini-2.5-flash">gemini-2.5-flash (Stable Fast)</option>
@@ -1093,15 +1086,6 @@
               <input type="checkbox" id="chk-starter-code" checked />
               <span><strong>Include Starter Code</strong> (Terraform v2 + Python + Dockerfile)</span>
             </label>
-
-            <details class="key-box" style="margin:6px 0 10px;">
-              <summary>Optional API Key Override (transient header only)</summary>
-              <div class="field" style="margin-top:8px; margin-bottom:2px;">
-                <label for="inp-apikey">X-Gemini-Api-Key</label>
-                <input id="inp-apikey" type="password" autocomplete="off" spellcheck="false" placeholder="Leave blank to use live Vertex AI IAM" />
-                <div class="hint">Sent strictly in one-time HTTPS request header. NEVER persisted to browser storage, disk, git, or server logs.</div>
-              </div>
-            </details>
 
             <div id="preflight-panel" class="preflight-card hidden" aria-live="polite"></div>
             <div id="composer-msg" class="banner banner-err hidden" role="alert"></div>

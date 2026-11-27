@@ -5,6 +5,7 @@
 
 (function () {
   let atlasScopeFilter = 'COMPENDIUM_54';
+  const _atlasFacetState = { topology: 'ALL', pattern: 'ALL', blocker: 'ALL' };
   let atlasGlobalViewMode = 'static'; // 'static' | 'animated' | 'inline-drawio' | 'svg' | 'side-by-side'
   let cardViewModes = {}; // diagramId -> mode
   let activeSlideIndex = 0; // Index within filtered items (One-Slide-at-a-Time view)
@@ -232,18 +233,10 @@
 
   function filterAtlasItemsList() {
     const items = getAtlasItems();
-    const scopeEl = document.getElementById('atlas-filter-scope');
-    if (scopeEl && scopeEl.value) {
-      atlasScopeFilter = scopeEl.value;
-    }
-    const topoEl = document.getElementById('atlas-filter-topology');
-    const patEl = document.getElementById('atlas-filter-pattern');
-    const blkEl = document.getElementById('atlas-filter-blocker');
     const searchEl = document.getElementById('atlas-filter-search');
-
-    const topoVal = topoEl ? topoEl.value : 'ALL';
-    const patVal = patEl ? patEl.value : 'ALL';
-    const blkVal = blkEl ? blkEl.value : 'ALL';
+    const topoVal = _atlasFacetState.topology || 'ALL';
+    const patVal = _atlasFacetState.pattern || 'ALL';
+    const blkVal = _atlasFacetState.blocker || 'ALL';
     const q = searchEl ? searchEl.value.trim().toLowerCase() : '';
 
     return items.filter(item => {
@@ -329,19 +322,10 @@
       return true;
     }
 
-    const scopeEl = document.getElementById('atlas-filter-scope');
-    if (scopeEl) {
-      Array.from(scopeEl.options).forEach(opt => {
-        const base = opt.getAttribute('data-base-label') || opt.textContent.replace(/\s*\(\d+\)$/, '');
-        opt.setAttribute('data-base-label', base);
-        const cnt = items.filter(it => matchesScope(it, opt.value) && matchesSearch(it)).length;
-        opt.textContent = `${base} (${cnt})`;
-      });
-    }
 
     const consEl = document.getElementById('atlas-filter-consolidated');
     if (consEl) {
-      const activeScope = scopeEl ? scopeEl.value : atlasScopeFilter;
+      const activeScope = atlasScopeFilter;
       const scopedItems = items.filter(it => matchesScope(it, activeScope) && matchesSearch(it));
       Array.from(consEl.querySelectorAll('option')).forEach(opt => {
         const base = opt.getAttribute('data-base-label') || opt.textContent.replace(/\s*\(\d+\)$/, '');
@@ -376,26 +360,19 @@
   window.updateAtlasDynamicFilterCounts = updateAtlasDynamicFilterCounts;
 
   window.handleAtlasConsolidatedFacetChange = function handleAtlasConsolidatedFacetChange(val) {
-    const scopeEl = document.getElementById('atlas-filter-scope');
-    const topoEl = document.getElementById('atlas-filter-topology');
-    const patEl = document.getElementById('atlas-filter-pattern');
-    const blkEl = document.getElementById('atlas-filter-blocker');
-    if (topoEl) topoEl.value = 'ALL';
-    if (patEl) patEl.value = 'ALL';
-    if (blkEl) blkEl.value = 'ALL';
+    _atlasFacetState.topology = 'ALL';
+    _atlasFacetState.pattern = 'ALL';
+    _atlasFacetState.blocker = 'ALL';
     if (!val || val === 'ALL') {
       atlasScopeFilter = 'COMPENDIUM_54';
-      if (scopeEl) scopeEl.value = 'COMPENDIUM_54';
     } else if (val.startsWith('SCOPE:')) {
-      const sVal = val.slice(6);
-      atlasScopeFilter = sVal;
-      if (scopeEl) scopeEl.value = sVal;
-    } else if (val.startsWith('TOPO:') && topoEl) {
-      topoEl.value = val.slice(5);
-    } else if (val.startsWith('PAT:') && patEl) {
-      patEl.value = val.slice(4);
-    } else if (val.startsWith('BLK:') && blkEl) {
-      blkEl.value = val.slice(4);
+      atlasScopeFilter = val.slice(6);
+    } else if (val.startsWith('TOPO:')) {
+      _atlasFacetState.topology = val.slice(5);
+    } else if (val.startsWith('PAT:')) {
+      _atlasFacetState.pattern = val.slice(4);
+    } else if (val.startsWith('BLK:')) {
+      _atlasFacetState.blocker = val.slice(4);
     }
     activeSlideIndex = 0;
     renderDiagramsAtlasGrid();
@@ -419,12 +396,6 @@
       activeSlideIndex = 0;
     }
 
-    const countLabel = document.getElementById('atlas-results-count-label');
-    if (countLabel) {
-      countLabel.textContent = filtered.length > 0
-        ? `Slide ${activeSlideIndex + 1} of ${filtered.length}`
-        : `0 Matching Slides`;
-    }
 
     const topSlideSelect = document.getElementById('atlas-slide-select');
     const prevBtn = document.getElementById('atlas-prev-slide-btn');
@@ -549,10 +520,6 @@
 
   window.setAtlasScopeFilter = function setAtlasScopeFilter(scope) {
     atlasScopeFilter = scope;
-    const scopeEl = document.getElementById('atlas-filter-scope');
-    if (scopeEl && scopeEl.value !== scope) {
-      scopeEl.value = scope;
-    }
     activeSlideIndex = 0;
     renderDiagramsAtlasGrid();
   };
@@ -565,17 +532,12 @@
   window.resetAtlasFilters = function resetAtlasFilters() {
     atlasScopeFilter = 'COMPENDIUM_54';
     activeSlideIndex = 0;
-    const scopeEl = document.getElementById('atlas-filter-scope');
+    _atlasFacetState.topology = 'ALL';
+    _atlasFacetState.pattern = 'ALL';
+    _atlasFacetState.blocker = 'ALL';
     const consEl = document.getElementById('atlas-filter-consolidated');
-    const topoEl = document.getElementById('atlas-filter-topology');
-    const patEl = document.getElementById('atlas-filter-pattern');
-    const blkEl = document.getElementById('atlas-filter-blocker');
     const searchEl = document.getElementById('atlas-filter-search');
-    if (scopeEl) scopeEl.value = 'COMPENDIUM_54';
     if (consEl) consEl.value = 'ALL';
-    if (topoEl) topoEl.value = 'ALL';
-    if (patEl) patEl.value = 'ALL';
-    if (blkEl) blkEl.value = 'ALL';
     if (searchEl) searchEl.value = '';
     renderDiagramsAtlasGrid();
   };
@@ -1238,8 +1200,6 @@
       if (matchedItem) {
         if (!matchedItem.inCompendium54 && Number(matchedItem.slideNumber) > 54) {
           atlasScopeFilter = 'ALL_82';
-          const scopeEl = document.getElementById('atlas-filter-scope');
-          if (scopeEl) scopeEl.value = 'ALL_82';
         }
         if (modeParam && ['static', 'animated', 'inline-drawio', 'svg', 'side-by-side'].includes(modeParam)) {
           cardViewModes[matchedItem.diagramId] = modeParam;

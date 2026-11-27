@@ -1122,68 +1122,6 @@ def record_clickstream_event(
 
 
 
-SAAS_LIVE_TARGETS: Dict[str, Dict[str, Any]] = {
-    "thoughtspot": {
-        "saas_id": "SAAS-01",
-        "title": "ThoughtSpot Cloud (Spotter Agentic BI)",
-        "cloud_run": "https://cymbal-saas-thoughtspot-proxy-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/liveboards",
-    },
-    "sigma": {
-        "saas_id": "SAAS-02",
-        "title": "Sigma Computing (Cloud BI Workbooks)",
-        "cloud_run": "https://cymbal-saas-sigma-proxy-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/workbooks",
-    },
-    "servicenow": {
-        "saas_id": "SAAS-03",
-        "title": "ServiceNow ITSM & ITOM",
-        "cloud_run": "https://cymbal-saas-servicenow-proxy-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/nav_to.do",
-    },
-    "veeva": {
-        "saas_id": "SAAS-04",
-        "title": "Veeva Vault RIM (21 CFR Part 11 GxP)",
-        "cloud_run": "https://cymbal-saas-veeva-proxy-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/ui/",
-    },
-    "salesforce-jira": {
-        "saas_id": "SAAS-05",
-        "title": "Atlassian Jira Cloud & Salesforce CRM",
-        "cloud_run": "https://cymbal-saas-jira-sfdc-proxy-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/jira/projects",
-    },
-    "databricks": {
-        "saas_id": "SAAS-06",
-        "title": "Databricks Data Intelligence (Unity Catalog)",
-        "cloud_run": "https://cymbal-saas-databricks-proxy-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/sql/warehouses",
-    },
-    "snowflake": {
-        "saas_id": "SAAS-07",
-        "title": "Snowflake AI Data Cloud (Cortex SQL)",
-        "cloud_run": "https://cymbal-saas-snowflake-proxy-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/snowsight/",
-    },
-    "workday": {
-        "saas_id": "SAAS-08",
-        "title": "Workday Enterprise HCM & RaaS",
-        "cloud_run": "https://cymbal-saas-workday-proxy-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/raas/",
-    },
-    "datadog": {
-        "saas_id": "SAAS-09",
-        "title": "Datadog Cloud Observability & APM",
-        "cloud_run": "https://cymbal-saas-datadog-proxy-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/logs",
-    },
-    "okta-crowdstrike": {
-        "saas_id": "SAAS-10",
-        "title": "Okta Workforce Identity & CrowdStrike XDR",
-        "cloud_run": "https://cymbal-saas-okta-xdr-proxy-fm3mts5x3a-uw.a.run.app",
-        "entry_path": "/admin/dashboard",
-    },
-}
 
 
 
@@ -1638,194 +1576,6 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self._is_head_request = False
             self.wfile = orig_wfile
 
-    def _handle_saas_live_proxy(self, method: str) -> None:
-        parsed = urlparse(self.path)
-        path = parsed.path
-        parts = [p for p in path.split("/") if p]
-        # parts format: ['api', 'saas-live', '<app_key>', ...]
-        if len(parts) < 3:
-            self._send_json(400, {"error": "Missing SaaS key in path. Usage: /api/saas-live/<key>[/<subpath>]", "available": list(SAAS_LIVE_TARGETS.keys())})
-            return
-
-        raw_key = parts[2].lower()
-        saas_live_aliases = {
-            "thoughtspot-spotter": "thoughtspot",
-            "sigma-computing": "sigma",
-            "servicenow-itsm": "servicenow",
-            "muse-poc": "veeva",
-            "salesforce": "salesforce-jira",
-            "databricks-unity": "databricks",
-            "snowflake-cortex": "snowflake",
-            "workday-raas": "workday",
-            "datadog-sre": "datadog",
-            "crowdstrike-okta": "okta-crowdstrike",
-            "crowdstrike": "okta-crowdstrike",
-        }
-        app_key = saas_live_aliases.get(raw_key, raw_key)
-        spec = SAAS_LIVE_TARGETS.get(app_key)
-        if not spec:
-            self._send_json(404, {"error": f"Unknown SaaS key: '{raw_key}'.", "available": list(SAAS_LIVE_TARGETS.keys())})
-            return
-
-        subpath_parts = parts[3:]
-        subpath = "/" + "/".join(subpath_parts) if subpath_parts else ""
-
-        # If accessed root /api/saas-live/<key> without subpath, redirect to entry path
-        if not subpath or subpath == "/":
-            entry = spec.get("entry_path", "/")
-            target_loc = f"/api/saas-live/{app_key}{entry}"
-            self.send_response(302)
-            self.send_header("Location", target_loc)
-            self.send_header("Cache-Control", "no-cache")
-            self._send_security_headers()
-            self.end_headers()
-            return
-
-        # Token resolution: Layer 1 owner-verified local cache, Layer 2 GCP compute metadata
-        token = ""
-        oidc_cache_file = Path("/tmp/cymbal_saas_oidc_cache.json")
-        if not oidc_cache_file.is_symlink() and oidc_cache_file.is_file():
-            try:
-                st = oidc_cache_file.stat()
-                if not hasattr(os, "getuid") or st.st_uid == os.getuid():
-                    cdata = json.loads(oidc_cache_file.read_text(encoding="utf-8"))
-                else:
-                    cdata = {}
-                if float(cdata.get("expires_at", 0)) > time.time():
-                    tokens = cdata.get("tokens", {})
-                    token = tokens.get(spec["cloud_run"].rstrip("/"), "")
-            except Exception:
-                pass
-
-        if not token:
-            try:
-                hdr = {"Metadata-Flavor": "Google"}
-                q = urllib.parse.quote(spec["cloud_run"].rstrip("/"), safe="")
-                meta_url = "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=" + q
-                req = urllib.request.Request(meta_url, headers=hdr)
-                with urllib.request.urlopen(req, timeout=2) as mresp:
-                    token = mresp.read().decode("utf-8").strip()
-            except Exception:
-                token = ""
-
-        target_base = str(spec.get("cloud_run") or "").rstrip("/")
-        target_parsed = urllib.parse.urlparse(target_base)
-        if target_parsed.scheme != "https" or not (target_parsed.hostname or "").endswith(".a.run.app"):
-            self._send_json(500, {"ok": False, "error": f"Invalid Cloud Run TLS upstream config for {app_key}"})
-            return
-
-        # Fail closed when Cloud Run IAM OIDC token is unavailable; zero cleartext HTTP EC2 fallback ([FA-11])
-        if not token:
-            self._send_json(
-                503,
-                {
-                    "ok": False,
-                    "status": "OIDC_IDENTITY_REQUIRED",
-                    "app": app_key,
-                    "cloud_run": target_base,
-                    "error": (
-                        "Cloud Run IAM OIDC token unavailable; cleartext HTTP upstream fallback is disabled "
-                        f"by security policy [FA-11]. Authenticate locally via: python3 scripts/saas_cloudrun_proxy.py {app_key}"
-                    ),
-                },
-            )
-            return
-
-        query_str = f"?{parsed.query}" if parsed.query else ""
-        upstream_url = f"{target_base}{subpath}{query_str}"
-
-        # Strip ambient portal cookies & IAP/auth headers so credentials never leak cross-service ([FA-11])
-        stripped_req_headers = {
-            "host",
-            "connection",
-            "accept-encoding",
-            "content-length",
-            "cookie",
-            "authorization",
-            "proxy-authorization",
-            "x-goog-authenticated-user-email",
-            "x-goog-authenticated-user-id",
-            "x-goog-iap-jwt-assertion",
-            "x-serverless-authorization",
-        }
-        headers: Dict[str, str] = {}
-        for k, v in self.headers.items():
-            if k.lower() in stripped_req_headers:
-                continue
-            headers[k] = v
-
-        headers["Host"] = target_parsed.netloc
-        headers["X-Serverless-Authorization"] = f"Bearer {token}"
-
-        body: bytes | None = None
-        content_length = self.headers.get("Content-Length")
-        if content_length:
-            try:
-                clen = int(content_length)
-                if 0 < clen <= MAX_POST_BODY_BYTES:
-                    body = self.rfile.read(clen)
-            except Exception:
-                body = None
-
-        class _NoRedirect(urllib.request.HTTPRedirectHandler):
-            def http_error_302(self, req, fp, code, msg, headers):
-                return fp
-            http_error_301 = http_error_303 = http_error_307 = http_error_308 = http_error_302
-
-        opener = urllib.request.build_opener(_NoRedirect)
-        req = urllib.request.Request(upstream_url, data=body, method=method, headers=headers)
-        resp = None
-        for proxy_attempt in range(2):
-            try:
-                resp = opener.open(req, timeout=8 if proxy_attempt == 0 else 15)
-                break
-            except urllib.error.HTTPError as he:
-                resp = he
-                break
-            except (TimeoutError, socket.timeout, urllib.error.URLError) as exc:
-                if proxy_attempt == 0:
-                    time.sleep(0.3)
-                    continue
-                self._send_json(
-                    504,
-                    {
-                        "ok": False,
-                        "app": app_key,
-                        "status": "CONTAINER_COLD_START_TIMEOUT",
-                        "error": f"Cloud Run SaaS upstream ({app_key}) timed out during cold-start boot. Please retry in a few seconds.",
-                    },
-                )
-                return
-            except Exception as exc:
-                self._send_json(502, {"ok": False, "app": app_key, "error": f"Failed to reach TLS Cloud Run SaaS upstream: {exc}"})
-                return
-
-        try:
-            status_code = resp.status if hasattr(resp, "status") else resp.code
-            self.send_response(status_code)
-
-            for k, v in resp.headers.items():
-                k_lower = k.lower()
-                if k_lower in ("connection", "transfer-encoding", "content-length", "content-encoding"):
-                    continue
-                if k_lower == "location":
-                    loc_parsed = urllib.parse.urlparse(v)
-                    loc_path = loc_parsed.path
-                    if not loc_path.startswith(f"/api/saas-live/{app_key}"):
-                        loc_path = f"/api/saas-live/{app_key}{loc_path}"
-                    v = f"{loc_path}?{loc_parsed.query}" if loc_parsed.query else loc_path
-                elif k_lower == "set-cookie":
-                    v = re.sub(r"Path=[^;]+", f"Path=/api/saas-live/{app_key}/", v, flags=re.I)
-                self.send_header(k, v)
-
-            resp_body = resp.read()
-            self.send_header("Content-Length", str(len(resp_body)))
-            self._send_security_headers()
-            self.end_headers()
-            self.wfile.write(resp_body)
-        except Exception as exc:
-            self._send_json(502, {"error": f"Failed to stream response: {exc}"})
-
 
     @staticmethod
     def _sanitize_provenance_bytes(file_path: Path) -> bytes:
@@ -1985,14 +1735,6 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self._send_html(200, html_text.encode("utf-8"))
             return
 
-        if path in ("/create-blog1", "/create-blog1/", "/create-blog-2", "/create-blog-2/"):
-            target_loc = "/create-blog" + (f"?{parsed.query}" if parsed.query else "")
-            self.send_response(302)
-            self.send_header("Location", target_loc)
-            self.send_header("Cache-Control", "no-store")
-            self._send_security_headers()
-            self.end_headers()
-            return
 
         if path in ("/create-blog", "/create-blog/"):
             tpl_path = ROOT_DIR / "templates" / "create_blog1_page.html"
@@ -2395,9 +2137,6 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             )
             return
 
-        if path == "/api/saas-live" or path.startswith("/api/saas-live/"):
-            self._handle_saas_live_proxy("GET")
-            return
 
         if path == "/api/durable-state/status":
             self._send_json(200, DurableGcsStore.get_status())
@@ -2609,16 +2348,6 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
             self._send_json(200, bridge_mod.load_cloud_manifest())
             return
 
-        if path == "/api/google-workspace/oauth-config":
-            self._send_json(
-                200,
-                {
-                    "configured": True,
-                    "clientId": bridge_mod.DEFAULT_OAUTH_CLIENT_ID,
-                    "iapEmail": bridge_mod.DEFAULT_USER_EMAIL,
-                },
-            )
-            return
 
         if path == "/api/google-workspace/pdf":
             qs = parse_qs(parsed.query)
@@ -4119,31 +3848,19 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
 
     def do_PUT(self) -> None:
         parsed = urlparse(self.path)
-        if parsed.path.startswith("/api/saas-live/"):
-            self._handle_saas_live_proxy("PUT")
-            return
         self._send_json(405, {"error": "Method Not Allowed"})
 
     def do_DELETE(self) -> None:
         parsed = urlparse(self.path)
-        if parsed.path.startswith("/api/saas-live/"):
-            self._handle_saas_live_proxy("DELETE")
-            return
         self._send_json(405, {"error": "Method Not Allowed"})
 
     def do_PATCH(self) -> None:
         parsed = urlparse(self.path)
-        if parsed.path.startswith("/api/saas-live/"):
-            self._handle_saas_live_proxy("PATCH")
-            return
         self._send_json(405, {"error": "Method Not Allowed"})
 
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
         path = parsed.path
-        if path == "/api/saas-live" or path.startswith("/api/saas-live/"):
-            self._handle_saas_live_proxy("POST")
-            return
         try:
             content_len = int(self.headers.get("Content-Length", "0"))
         except ValueError:

@@ -123,7 +123,7 @@
     pptxPath: 'slides/ws1-12slide-visual-deck.pptx',
     execDeckKey: 'WS1_EXEC',
     execSlideCount: 11,
-    execPptxPath: 'slides/ws1-executive-architecture-23slide-deck.pptx',
+    execPptxPath: 'slides/ws1-executive-architecture-11slide-deck.pptx',
     execSlidesUrl: 'https://docs.google.com/presentation/d/1LCkwWaFLio7kg_qb4_c91s7W4RkUCsLBPnHT2TFJrcg/edit',
     simScenario: 'sim1',
     simLabel: '⚡ Run Hop 1 & 4 Spoof/Redaction Sim',

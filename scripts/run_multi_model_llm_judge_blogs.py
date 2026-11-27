@@ -62,7 +62,7 @@ WORKSTREAM_SPECS: List[Dict[str, Any]] = [
         "blog": "ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
         "diagrams": ["ws1-5hop-governance-baseline", "ws1-c4-l3-process-sequence-swimlane"],
         "lean_pptx": ("slides/ws1-12slide-visual-deck.pptx", 10),
-        "exec_pptx": ("slides/ws1-executive-architecture-23slide-deck.pptx", 11),
+        "exec_pptx": ("slides/ws1-executive-architecture-11slide-deck.pptx", 11),
         "example_dir": "examples/blog-01-5hop-baseline",
         "ws_code_files": [
             "core-cymbal-agent/runtime_pipeline.py",

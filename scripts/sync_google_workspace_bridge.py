@@ -32,7 +32,6 @@ MANIFEST_FILE = SLIDES_DIR / "cloud_viewer_manifest.json"
 
 QUOTA_PROJECT = "ramp-portal-dev"
 DEFAULT_USER_EMAIL = os.environ.get("WORKSPACE_SYNC_EMAIL", "248990048888-compute@developer.gserviceaccount.com")
-DEFAULT_OAUTH_CLIENT_ID = os.environ.get("WORKSPACE_OAUTH_CLIENT_ID", "")
 
 TOKEN_CANDIDATE_PATHS = [
     *([Path(os.environ["GSHEET_OAUTH_TOKEN_FILE"])] if os.environ.get("GSHEET_OAUTH_TOKEN_FILE") else []),
@@ -736,7 +735,7 @@ WORKSTREAM_DECK_SPECS = [
     ("BP-78-C", "BP-78-C — WS4 Pattern C: Dynamic Hybrid Hub-and-Spoke (12-Slide Editable Deck)", "slides/ws4-pattern-c-hybrid-editable-slides.pptx", ""),
     ("BP-78-E", "BP-78-E — WS5 Executive Decision Guide & Agentic Triad (12-Slide Editable Deck)", "slides/ws5-wrap-up-editable-slides.pptx", ""),
     ("WS1_SOLUTION", "WS1 — Executive Solution Architecture Deck (16-Slide Editable Deck)", "slides/ws1-executive-solution-deck.pptx", ""),
-    ("WS1_EXEC", "WS1 Executive Architecture (10-Slide Lean Narrative Deck)", "slides/ws1-executive-architecture-23slide-deck.pptx", ""),
+    ("WS1_EXEC", "WS1 Executive Architecture (10-Slide Lean Narrative Deck)", "slides/ws1-executive-architecture-11slide-deck.pptx", ""),
     ("WS2_EXEC", "WS2 Executive Architecture (10-Slide Lean Narrative Deck)", "slides/ws2-executive-architecture-10slide-deck.pptx", ""),
     ("WS3_EXEC", "WS3 Executive Architecture (10-Slide Lean Narrative Deck)", "slides/ws3-executive-architecture-10slide-deck.pptx", ""),
     ("WS4_EXEC", "WS4 Executive Architecture (10-Slide Lean Narrative Deck)", "slides/ws4-executive-architecture-10slide-deck.pptx", ""),

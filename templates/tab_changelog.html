@@ -1,4 +1,4 @@
-    <section id="tab-changelog" class="tab-pane" data-testid="portal-separate-changelog-page" role="tabpanel" aria-labelledby="tab-btn-changelog">
+    <section id="tab-changelog" class="tab-pane" data-testid="portal-separate-changelog-page" role="tabpanel" aria-label="Change Log">
       <div id="standalone-changelog-banner" style="display:none; margin-bottom:14px; padding:12px 16px; background:linear-gradient(90deg, #eff6ff 0%, #f0fdf4 100%); border:1px solid #bfdbfe; border-radius:12px; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
         <div>
           <span class="badge badge-blue">STANDALONE CHANGE LOG &amp; COLLABORATIVE AUDIT PAGE (/changelog)</span>
@@ -109,32 +109,6 @@
           </div>
           <span class="badge badge-blue" id="chg-filter-count-badge" style="font-size:11px; white-space:nowrap;">All Entries</span>
           <!-- Hidden legacy selects preserved for programmatic compatibility -->
-          <div style="display:none;" aria-hidden="true">
-            <select id="chg-filter-action" aria-label="Filter by Action" onchange="renderChangeLogTable()">
-              <option value="ALL">All Actions</option>
-              <option value="SAVE">💾 Save Content (SAVE)</option>
-              <option value="EDIT">✏️ Inline Edit (EDIT)</option>
-              <option value="ADD">➕ Add Card (ADD)</option>
-              <option value="DELETE">🗑️ Delete Card (DELETE)</option>
-              <option value="HIDE">🙈 Hide / Unhide (HIDE/UNHIDE)</option>
-              <option value="CLONE">📋 Clone Card (CLONE)</option>
-              <option value="DIAGRAM_SAVE">📐 Diagram Save (DIAGRAM_SAVE)</option>
-              <option value="COMMENT">💬 Section Comments (COMMENT_*)</option>
-              <option value="RESTORE">↩️ Restore / Revert (RESTORE)</option>
-            </select>
-            <select id="chg-filter-actor" aria-label="Filter by User" onchange="renderChangeLogTable()">
-              <option value="ALL">All Users / Contributors</option>
-            </select>
-            <select id="chg-filter-ws" aria-label="Filter by Workstream" onchange="renderChangeLogTable()">
-              <option value="ALL">All Workstreams</option>
-              <option value="WS1">WS1 (Reference Arch)</option>
-              <option value="WS2">WS2 (Pattern A Pooled)</option>
-              <option value="WS3">WS3 (Pattern B Siloed)</option>
-              <option value="WS4">WS4 (Pattern C Hybrid)</option>
-              <option value="WS5">WS5 (Decision Guide)</option>
-              <option value="ALL_DECK">ALL (Master Guide)</option>
-            </select>
-          </div>
         </div>
 
         <!-- Empty State (Rule 25K) -->

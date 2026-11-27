@@ -428,7 +428,7 @@
           "Zero-modification practitioner reproducibility via examples/blog-01-5hop-baseline (deploy.sh, verify.sh, 13-resource Terraform stack) backed by 3 live Before/After visual proof pairs (Model Armor, Cloud Armor WAF, and ThoughtSpot Spotter) and a 10-SaaS multi-cloud verification matrix."
         ],
         "remaining_gaps_or_VERIFY_flags": [
-          "Minor asset naming cosmetic drift: slide deck filenames retain legacy slide-count suffixes (ws1-12slide-visual-deck.pptx for the 10-slide lean deck and ws1-executive-architecture-23slide-deck.pptx for the 11-slide executive deck), though blog link labels accurately state 10-Slide and 11-Slide.",
+          "Minor asset naming cosmetic drift: slide deck filenames retain legacy slide-count suffixes (ws1-12slide-visual-deck.pptx for the 10-slide lean deck and ws1-executive-architecture-11slide-deck.pptx for the 11-slide executive deck), though blog link labels accurately state 10-Slide and 11-Slide.",
           "Cloud Armor Priority 1000 CEL rule in examples/blog-01-5hop-baseline/terraform/main.tf blocks x-tenant-id when authorization is absent, whereas Hop 1 application middleware (EdgeIdentityPEP) unconditionally strips/blocks client-supplied x-tenant-id even on authenticated requests; consider aligning the WAF description to clarify unauthenticated edge drop vs. authenticated L7 header stripping."
         ]
       }

@@ -138,7 +138,7 @@
             </button>
             <div class="faq-answer" id="faq-a-3" role="region" aria-labelledby="faq-q-3">
               <p>The production portal is fronted by Google Cloud Load Balancing with <strong>Google Cloud Identity-Aware Proxy (IAP) &amp; Enterprise SSO</strong>.</p>
-              <p>When authenticated enterprise users browse on managed endpoints, corporate SSO transparently authenticates their session without requiring manual CLI tokens or VPNs. The embedded reverse-proxy gateway (<code>/api/saas-live/&lt;app&gt;</code>) in <code>server.py</code> automatically handles downstream token injection, cookie rewriting, and upstream container routing.</p>
+              <p>When authenticated enterprise users browse on managed endpoints, corporate SSO transparently authenticates their session without requiring manual CLI tokens or VPNs. Google Cloud External Application Load Balancing, Identity-Aware Proxy (IAP), and Cloud Run IAM OIDC federation automatically enforce cryptographic session identity across every portal route and commercial SaaS verification proof.</p>
             </div>
           </div>
 

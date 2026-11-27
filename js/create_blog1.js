@@ -2628,8 +2628,7 @@
     genBtn.textContent = 'Running Live Pipeline...';
     try {
       const res = await apiPost('/api/create-blog/generate', payload, extraHeaders);
-      if (apiKeyVal) document.getElementById('inp-apikey').value = '';
-      const job = res.job || res;
+            const job = res.job || res;
       state.activeJobId = job.jobId;
       state.pollErrorCount = 0;
       state.pollInFlight = false;
@@ -2804,8 +2803,7 @@
         setBanner(msgBox, 'banner-err', 'Please enter a topic or architecture prompt first.');
         return;
       }
-      const apiKeyVal = (document.getElementById('inp-apikey').value || '').trim();
-      const extraHeaders = apiKeyVal ? { 'X-Gemini-Api-Key': apiKeyVal } : {};
+      const extraHeaders = {};
       state.preflightBusy = true;
       genBtn.disabled = true;
       genBtn.textContent = 'Assessing Prompt with Gemini...';

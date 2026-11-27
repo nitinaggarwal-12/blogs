@@ -295,19 +295,12 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertIn(srv._PORTAL_CSRF_TOKEN, html_text)
         self.assertNotIn("__CSRF_TOKEN__", html_text)
 
-        # Legacy /create-blog1 and /create-blog-2 routes cleanly 302-redirect to /create-blog preserving query strings
-        class _NoRedirect(urllib.request.HTTPRedirectHandler):
-            def redirect_request(self, req, fp, code, msg, headers, newurl):
-                return None
-
-        opener = urllib.request.build_opener(_NoRedirect())
-        for old_path in ("/create-blog1?slug=demo-x", "/create-blog-2?slug=demo-x"):
-            try:
-                opener.open(urllib.request.Request(self.base + old_path), timeout=10)
-                self.fail(f"Expected 302 redirect on {old_path}")
-            except urllib.error.HTTPError as exc:
-                self.assertEqual(exc.code, 302)
-                self.assertEqual(exc.headers.get("Location"), "/create-blog?slug=demo-x")
+        # Purged legacy /create-blog1, /create-blog-2 & /api/google-workspace/oauth-config routes return 404
+        for old_path in ("/create-blog1?slug=demo-x", "/create-blog-2?slug=demo-x", "/api/google-workspace/oauth-config"):
+            st_old, _, _ = self._req(old_path)
+            self.assertEqual(st_old, 404, f"Purged legacy route {old_path} must return 404")
+        self.assertNotIn("inp-apikey", html_text)
+        self.assertNotIn("Optional API Key Override", html_text)
 
         # Canonical /api/create-blog/capabilities works identically and advertises 13 hardened gates
         st_cap, _, body_cap = self._req("/api/create-blog/capabilities")
@@ -947,14 +940,16 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertIn("gemini-4-carbon", cb1.ALLOWED_MODELS)
         self.assertIn("gemini-4-argon", cb1.ALLOWED_MODELS)
         self.assertIn("gemini-4-hydrogen", cb1.ALLOWED_MODELS)
-        self.assertIn("gemini-3.8-flash", cb1.ALLOWED_MODELS)
+        for purged_m in ("gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.5-flash", "gemini-3.1-pro-preview", "gemini-3-flash-preview"):
+            self.assertNotIn(purged_m, cb1.ALLOWED_MODELS)
+        self.assertEqual(len(cb1.ALLOWED_MODELS), 6)
         self.assertEqual(cb1.DEFAULT_MODEL, "gemini-4-neon")
         self.assertEqual(cb1.DEFAULT_IMAGE_MODEL, "gemini-3-pro-image")
 
         neon_url = cb1.build_vertex_generate_url("gemini-4-neon", "demo-proj", "us-central1")
         self.assertIn("https://aiplatform.googleapis.com/v1/projects/demo-proj/locations/global/publishers/google/models/gemini-4-neon:generateContent", neon_url)
-        g38_url = cb1.build_vertex_generate_url("gemini-3.8-flash", "demo-proj", "us-central1")
-        self.assertIn("/locations/global/", g38_url)
+        ghyd_url = cb1.build_vertex_generate_url("gemini-4-hydrogen", "demo-proj", "us-central1")
+        self.assertIn("/locations/global/", ghyd_url)
         g25_url = cb1.build_vertex_generate_url("gemini-2.5-flash", "demo-proj", "us-central1")
         self.assertIn("https://us-central1-aiplatform.googleapis.com/v1/projects/demo-proj/locations/us-central1/", g25_url)
 
@@ -1072,8 +1067,8 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         cap_st, _, cap_body = self._req("/api/create-blog1/capabilities")
         self.assertEqual(cap_st, 200)
         cap = json.loads(cap_body.decode("utf-8"))
-        self.assertEqual(cap["capabilities"]["workspaceOauthClientId"], "")
-        self.assertFalse(cap["capabilities"]["workspaceBrowserOauth"])
+        self.assertNotIn("workspaceOauthClientId", cap["capabilities"])
+        self.assertNotIn("workspaceBrowserOauth", cap["capabilities"])
 
         # 3. Unmounted server without token returns 412 with oauthClientId + scopes
         bp = _sample_blueprint()
@@ -2168,7 +2163,8 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
     def test_22_cloud_run_sa_shared_drive_sync_and_stale_manifest_eviction(self) -> None:
         """Verifies zero-popup Cloud Run SA Shared Drive sync (no unregistered OAuth Client ID) & stale /tmp manifest eviction."""
         from unittest import mock
-        self.assertEqual(cb1.DEFAULT_WORKSPACE_OAUTH_CLIENT_ID, "")
+        self.assertFalse(hasattr(cb1, "DEFAULT_WORKSPACE_OAUTH_CLIENT_ID"))
+        self.assertNotIn("workspaceOauthClientId", cb1.get_capabilities())
         self.assertTrue(bool(cb1.DEFAULT_WORKSPACE_SHARED_DRIVE_ID))
 
         bp = _sample_blueprint()
