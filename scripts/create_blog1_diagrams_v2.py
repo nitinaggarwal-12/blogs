@@ -627,17 +627,19 @@ def build_cloudarch_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         {"id": "cl_b_rw", "x": 1012, "y": 990, "w": 94, "h": 20, "text": lbl_b, "size": 9.6, "color": "#991B1B", "align": "left", "bold": False},
     ]
     if not spoke_b_sync:
-        labels.append({"id": "cl_cdc", "x": 574, "y": 956, "w": 52, "h": 20, "text": "CDC", "size": 10.8, "color": "#C5221F", "align": "center", "bold": True})
+        cdc_lbl = _cc.fit_single_line_px(str(el_in.get("cdcLabel") or "Async"), 52, 10.2, bold=True)[0]
+        labels.append({"id": "cl_cdc", "x": 574, "y": 956, "w": 52, "h": 20, "text": cdc_lbl, "size": 10.2, "color": "#C5221F", "align": "center", "bold": True})
 
+    ca_title, ca_tfs = _cc.fit_single_line_px(f"Cloud Architecture Hub-and-Spoke: {title}", 1120, 14.8, bold=True)
     return {
         "id": f"{slug}-cloudarch",
         "diagramName": "Figure 2 - Cloud Arch Center",
         "canvasW": 1200,
         "canvasH": 1280,
-        "title": f"Cloud Architecture Center Hub-and-Spoke Blueprint: {title}",
+        "title": ca_title,
         "subtitle": "Numbered request flow (1..7) inside Google Cloud Edge & VPC-SC perimeter with sync and async isolation spokes",
         "titleY": 8,
-        "titleSize": 15.0,
+        "titleSize": ca_tfs,
         "titleColor": "#174EA6",
         "gcpBezel": {"x": 20, "y": 214, "w": 1160, "h": 1046, "label": "Google Cloud"},
         "zones": zones,
@@ -917,14 +919,20 @@ def build_security_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     ]
     while len(threats) < 4:
         threats.append({"id": f"T-0{len(threats)+1}", "vector": "Boundary Violation", "control": "Fail-closed perimeter enforcement"})
-    breakers = sd.get("breakers") or [
-        {"code": "HTTP 401", "trigger": "Missing or expired IAP JWT"},
-        {"code": "HTTP 403", "trigger": "FGAC denial or destroyed KEK"},
-        {"code": "HTTP 422", "trigger": "Invalid temporal/GQL syntax"},
-        {"code": "HTTP 429", "trigger": "Cloud Armor rate cap exceeded"},
+    breakers = list(sd.get("breakers") or sd.get("circuitBreakers") or [
+        {"code": "HTTP 401", "trigger": "Missing or invalid IAP ES256 JWT"},
+        {"code": "HTTP 403", "trigger": "Model Armor / FGAC / IAM scope denied"},
+        {"code": "HTTP 422", "trigger": "Schema or policy constraint violation"},
+        {"code": "HTTP 429", "trigger": "Per-tenant rate quota cap exceeded"},
+    ])
+    fallback_breaker_defs = [
+        {"code": "HTTP 401", "trigger": "Missing or invalid IAP ES256 JWT"},
+        {"code": "HTTP 403", "trigger": "Policy gate or FGAC access denied"},
+        {"code": "HTTP 422", "trigger": "Invalid request or policy violation"},
+        {"code": "HTTP 429", "trigger": "Rate limit or VPC-SC perimeter block"},
     ]
     while len(breakers) < 4:
-        breakers.append({"code": f"HTTP 40{len(breakers)}", "trigger": "Fail-closed block"})
+        breakers.append(fallback_breaker_defs[len(breakers)])
 
     l0, l1, l2, l3 = layers[0], layers[1], layers[2], layers[3]
     t0, t1, t2, t3 = threats[0], threats[1], threats[2], threats[3]
@@ -1078,9 +1086,11 @@ def build_security_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         out_l: List[Dict[str, Any]] = [{"text": hdr, "bold": True, "size": 11.0, "mono": True, "color": hdr_col}]
         for tx in (ta, tb):
             tid = _cc.strip_md(tx.get("id") or "T-0X")
-            tvec = _cc.fit_single_line_px(f"{tid} · {tx.get('vector') or 'Threat'}", 322, 12.6, bold=True)[0]
+            vec_raw = tx.get("vector") or tx.get("name") or tx.get("title") or "Threat"
+            ctrl_raw = tx.get("control") or tx.get("mitigation") or tx.get("detail") or "Blocked at perimeter"
+            tvec = _cc.fit_single_line_px(f"{tid} · {vec_raw}", 322, 12.6, bold=True)[0]
             out_l.append({"text": tvec, "bold": True, "size": 12.6, "color": "#0F172A", "gapTop": 10})
-            for wl in _cc.wrap_px(tx.get("control") or "Blocked at perimeter", 322, 11.4, max_lines=2):
+            for wl in _cc.wrap_px(ctrl_raw, 322, 11.4, max_lines=2):
                 out_l.append({"text": wl, "size": 11.4, "color": "#334155", "gapTop": 3})
         return out_l
 
@@ -1110,11 +1120,15 @@ def build_security_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     edges.append({"id": "sec_p3_e12", "rawPoints": [(1354, 562), (1354, 588)], "stroke": "#94A3B8", "strokeWidth": 1.6, "bidirectional": True})
 
     b_colors = ["#C5221F", "#B91C1C", "#6D28D9", "#B45309"]
+    safe_default_codes = ("401", "403", "422", "429")
     for bi in range(4):
-        br = breakers[bi]
+        br = breakers[bi] if isinstance(breakers[bi], dict) else {}
         by = 620 + bi * 38
-        code_t = _cc.strip_md(br.get("code") or f"HTTP 40{bi}").replace("HTTP ", "")
-        trig_t, t_fs = _cc.fit_single_line_px(br.get("trigger") or "Blocked", 232, 10.6, bold=False)
+        raw_code = str(br.get("code") or br.get("status") or br.get("httpCode") or br.get("httpStatus") or "").strip()
+        m_http = re.search(r"\b(400|401|403|404|409|412|413|422|423|429|500|503)\b", raw_code)
+        code_t = m_http.group(1) if m_http else safe_default_codes[bi]
+        raw_trig = br.get("trigger") or br.get("reason") or br.get("condition") or br.get("detail") or "Fail-closed block"
+        trig_t, t_fs = _cc.fit_single_line_px(raw_trig, 232, 10.6, bold=False)
         cards.append({
             "id": f"brk_code_{bi}", "x": 1192, "y": by, "w": 72, "h": 30,
             "fill": b_colors[bi], "stroke": "none", "rx": 7, "align": "center", "allowOverlap": True,
@@ -1152,12 +1166,36 @@ def build_security_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
 def build_wire_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     title = _cc.strip_md(bp.get("title") or "Wire Payload Transform")
     wd = bp.get("wireDiagram") or {}
-    hops = wd.get("hops") or [
+    raw_hops = wd.get("hops") or [
         {"hop": "HOP 1 · CLIENT INGRESS", "name": "Signed HTTP Request", "transport": "HTTPS / TLS 1.3", "iconKey": "saas_globe", "added": ["+ Authorization: Bearer <OIDC>", "+ X-Request-ID / traceparent"], "stripped": ["- Untrusted client X-Tenant-ID", "- Raw client forward headers"], "payload": "POST /v1/memory/query HTTP/2\n{\"query\": \"Q3 vendor terms\",\n \"as_of\": \"2025-10-15T12:00Z\"}"},
         {"hop": "HOP 2 · IAP AUTHZ", "name": "Verified Edge Assertion", "transport": "mTLS / HTTPS", "iconKey": "iap", "added": ["+ X-Goog-IAP-JWT-Assertion", "+ Verified @tenant_id claim"], "stripped": ["- Raw IAP OIDC JWT token"], "payload": "sub: svc-agent@example.com\nverified_tenant: fin_842"},
         {"hop": "HOP 3 · RUNTIME API", "name": "Embed & Parameterize", "transport": "gRPC / Private Google", "iconKey": "vertex_ai", "added": ["+ 768-dim embedding vector", "+ Valid-time / assert-time params"], "stripped": ["- Direct SQL string interpolation"], "payload": "model: gemini-embedding-001\noutput_dimensionality: 768"},
         {"hop": "HOP 4 · DATA QUERY", "name": "Scoped Graph/SQL Query", "transport": "gRPC / PSC + FGAC", "iconKey": "spanner", "added": ["+ FGAC database role binding", "+ KMS DEK audit & citations"], "stripped": ["- Raw wrapped_dek ciphertext"], "payload": "GRAPH AgentMemoryGraph\nMATCH (e:Entity)-[r:ASSERTED]->(f:Fact)\nWHERE r.tenant_id = @tenant_id"},
     ]
+    hops: List[Dict[str, Any]] = []
+    for hi, rh_item in enumerate(raw_hops):
+        if not isinstance(rh_item, dict):
+            continue
+        nm = str(rh_item.get("name") or rh_item.get("title") or f"Hop {hi + 1}").strip()
+        nm = re.sub(r"^Hop\s*\d+\s*[:·-]\s*", "", nm, flags=re.I)
+        tr = str(rh_item.get("transport") or rh_item.get("protocol") or "HTTPS / gRPC mTLS").strip()
+        pl_s = str(rh_item.get("payload") or rh_item.get("payloadSnippet") or rh_item.get("sample") or "").strip()
+        # Dedup accidental double GRAPH prefix (`GRAPH Foo\nGRAPH Foo MATCH ...`)
+        pl_s = re.sub(r"^(GRAPH\s+[A-Za-z0-9_]+)\s+\1\b", r"\1", pl_s)
+        added_l = list(rh_item.get("added") or rh_item.get("boundFields") or [])
+        v_rule = str(rh_item.get("validationRule") or "").strip()
+        if not added_l and v_rule:
+            added_l = [seg.strip() for seg in re.split(r"[;.]", v_rule) if seg.strip()][:2]
+        stripped_l = list(rh_item.get("stripped") or rh_item.get("strippedFields") or [])
+        hops.append({
+            "hop": str(rh_item.get("hop") or f"HOP {hi + 1}"),
+            "name": nm,
+            "transport": tr,
+            "iconKey": str(rh_item.get("iconKey") or rh_item.get("to") or nm),
+            "added": added_l,
+            "stripped": stripped_l,
+            "payload": pl_s,
+        })
     while len(hops) < 4:
         hops.append(hops[-1])
 
@@ -1521,10 +1559,30 @@ def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         "title": "Crypto-Erasure & Pipeline Freshness Reconciliation",
         "titleColor": "#065F46", "titleSize": 12.0,
     })
-    gov_cards = [
-        ("cloud_kms", "GDPR Art. 17 Crypto-Erasure Audit", "Verifies KMS KEK version destruction invalidates all tenant rows across Spanner & BigQuery WORM.", "#FFFBEB", "#FCD34D", "#92400E"),
-        ("cloud_monitoring", "End-to-End Lag & Row Parity SLO", "Tracks Change Streams -> Dataflow -> BigQuery lag (< 5s p95) and reconciles replayed DLQ counts.", "#ECFDF5", "#6EE7B7", "#065F46"),
-    ]
+    s0_svc = _cc.strip_md(stages[0].get("service") or "Event Source")
+    s1_svc = _cc.strip_md(stages[1].get("service") or "Stream Worker")
+    s2_svc = _cc.strip_md(stages[2].get("service") or "Target Store")
+    custom_gov = ad.get("governanceCards") if isinstance(ad.get("governanceCards"), list) else []
+    if len(custom_gov) >= 2:
+        gov_cards = [
+            (
+                infer_gcp_icon_key(str(custom_gov[0].get("icon") or ""), str(custom_gov[0].get("title") or ""), "cloud_kms"),
+                _cc.strip_md(custom_gov[0].get("title") or "CMEK & Encryption Integrity"),
+                _cc.strip_md(custom_gov[0].get("detail") or f"Enforces regional Cloud KMS CMEK across {s0_svc} and {s2_svc}."),
+                "#FFFBEB", "#FCD34D", "#92400E",
+            ),
+            (
+                infer_gcp_icon_key(str(custom_gov[1].get("icon") or ""), str(custom_gov[1].get("title") or ""), "cloud_monitoring"),
+                _cc.strip_md(custom_gov[1].get("title") or "Freshness Lag & Parity SLO"),
+                _cc.strip_md(custom_gov[1].get("detail") or f"Monitors {s0_svc} -> {s1_svc} -> {s2_svc} lag and reconciles DLQ replay."),
+                "#ECFDF5", "#6EE7B7", "#065F46",
+            ),
+        ]
+    else:
+        gov_cards = [
+            ("cloud_kms", "Cloud KMS CMEK & Isolation Guard", f"Enforces customer-managed encryption keys and tenant boundary parity across {s0_svc} & {s2_svc}.", "#FFFBEB", "#FCD34D", "#92400E"),
+            ("cloud_monitoring", "End-to-End Lag & Parity SLO", f"Tracks {s0_svc} -> {s1_svc} -> {s2_svc} freshness lag and reconciles replayed DLQ events.", "#ECFDF5", "#6EE7B7", "#065F46"),
+        ]
     for gi, (gic, gt, gd, gbg, gbd, gfg) in enumerate(gov_cards):
         gy = 528 + gi * 138
         glines = _cc.wrap_px(gd, 428, 11.2, max_lines=3, ellipsis_last=False)
@@ -1544,10 +1602,11 @@ def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         {"id": "as_fb", "rawPoints": [(54 + 3 * (sw + gap) + sw / 2.0, 408), (54 + 3 * (sw + gap) + sw / 2.0, 484)], "stroke": "#137333", "strokeWidth": 2.0, "dashed": True, "label": _cc.fit_single_line_px(fb_lbl, 180, 9.4, bold=True)[0], "labelY": 448},
     ])
 
+    as_title, _ = _cc.fit_single_line_px(f"Async Pipeline & Recovery Architecture — {title}", 1260, 15.0, bold=True)
     return {
         "id": f"{slug}-async",
         "diagramName": "Figure 6 - Async Lifecycle Loop",
-        "title": f"Async CDC Pipeline, Cold Audit & Recovery Architecture — {title}",
+        "title": as_title,
         "titleY": 14,
         "dividerY": 54,
         "zones": zones,
@@ -1555,7 +1614,7 @@ def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         "pills": pills,
         "edges": edges,
         "planeLegend": [
-            {"id": "al_1", "plane": "DATA", "x": 34, "y": 838, "w": 1532, "h": 24, "text": "All Change Streams CDC, Dataflow transforms, BigQuery WORM loads, DLQ replay & KMS erasure audits run strictly off the synchronous read path."},
+            {"id": "al_1", "plane": "DATA", "x": 34, "y": 838, "w": 1532, "h": 24, "text": _cc.fit_single_line_px(_cc.strip_md(ad.get("legend") or f"Asynchronous {s0_svc} -> {s1_svc} -> {s2_svc} pipeline, DLQ replay & CMEK checks run off the synchronous serving path."), 1490, 10.2)[0]},
         ],
     }
 
@@ -1649,11 +1708,17 @@ def build_concept_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         ("#F5F3FF", "#7C3AED", "#6D28D9"),
     ]
 
+    canvas_sub_txt, _ = _cc.fit_single_line_px(
+        _cc.strip_md(cd.get("canvasSub") or "CORE ARCHITECTURAL INPUTS, DETERMINISTIC GATE & VERIFIED OUTCOMES").upper(),
+        1460,
+        11.5,
+        bold=True,
+    )
     zones: List[Dict[str, Any]] = [
         {
             "id": "cp_canvas_z", "x": 34, "y": 78, "w": 1532, "h": 718, "rx": 16,
             "fill": "#F8FAFC", "stroke": "#CBD5E1", "strokeWidth": 1.3,
-            "title": "SEPARATING TRUST, EXECUTION, CREDENTIALS & POLICY OUTSIDE THE MODEL",
+            "title": canvas_sub_txt,
             "titleColor": "#334155", "titleSize": 11.5,
         }
     ]
@@ -1689,7 +1754,8 @@ def build_concept_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         })
 
     # Center Non-Negotiable Invariant Gate card (x=612..988, y=224..666)
-    gate_sub_lines = _cc.wrap_px("Verified deterministically before any tool, memory, or data call:", 320, 10.6, max_lines=2)
+    gate_sub_raw = _cc.strip_md(gate_cfg.get("sub") or "Evaluated deterministically across every request & workload:")
+    gate_sub_lines = _cc.wrap_px(gate_sub_raw, 320, 10.6, max_lines=2)
     g_bullet_lines = _norm_bullets(gate_bullets, max_items=4, max_width_px=316, fs=11.0, max_total_lines=9)
     cards.append({
         "id": "cp_center_gate", "x": 612, "y": 224, "w": 376, "h": 442,

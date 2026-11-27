@@ -1088,3 +1088,419 @@ def verify_stateless_csrf_token(
     if portal_csrf_fallback and secrets.compare_digest(tok, portal_csrf_fallback):
         return True
     return False
+
+
+# ---------------------------------------------------------------------------
+# 8. Multi-Artifact HCL AST, Reference Reachability & Compiled XML Digests
+# ---------------------------------------------------------------------------
+def _strip_hcl_comments_and_strings(hcl_text: str) -> Tuple[str, List[str]]:
+    """Strips comments, quoted literals, and heredocs while checking delimiter balance."""
+    src = str(hcl_text or "").replace("\r\n", "\n")
+    out_chars: List[str] = []
+    errors: List[str] = []
+    i = 0
+    n = len(src)
+    while i < n:
+        ch = src[i]
+        # Line comments (# or //)
+        if ch == "#" or (ch == "/" and i + 1 < n and src[i + 1] == "/"):
+            nl = src.find("\n", i)
+            if nl == -1:
+                break
+            out_chars.append("\n")
+            i = nl + 1
+            continue
+        # Block comments /* ... */
+        if ch == "/" and i + 1 < n and src[i + 1] == "*":
+            end_c = src.find("*/", i + 2)
+            if end_c == -1:
+                errors.append("Unclosed /* block comment")
+                break
+            out_chars.append(" ")
+            i = end_c + 2
+            continue
+        # Heredoc <<EOF or <<-EOF
+        if ch == "<" and i + 1 < n and src[i + 1] == "<":
+            m_hd = re.match(r"<<-?([A-Za-z_][A-Za-z0-9_]*)\s*\n", src[i:])
+            if m_hd:
+                marker = m_hd.group(1)
+                body_start = i + m_hd.end()
+                m_end = re.search(rf"(?m)^\s*{re.escape(marker)}\s*$", src[body_start:])
+                if not m_end:
+                    errors.append(f"Unclosed heredoc <<{marker}")
+                    break
+                out_chars.append(' ""\n')
+                i = body_start + m_end.end()
+                continue
+        # Double-quoted string (with ${...} interpolation balance)
+        if ch == '"':
+            i += 1
+            interp_depth = 0
+            closed = False
+            while i < n:
+                c2 = src[i]
+                if c2 == "\\" and interp_depth == 0:
+                    i += 2
+                    continue
+                if c2 == "$" and i + 1 < n and src[i + 1] == "{" and interp_depth == 0:
+                    interp_depth = 1
+                    out_chars.append(" ")
+                    i += 2
+                    continue
+                if interp_depth > 0:
+                    if c2 == "{":
+                        interp_depth += 1
+                    elif c2 == "}":
+                        interp_depth -= 1
+                    out_chars.append(c2 if interp_depth > 0 else " ")
+                    i += 1
+                    continue
+                if c2 == '"':
+                    closed = True
+                    i += 1
+                    break
+                i += 1
+            if not closed:
+                errors.append("Unclosed double-quoted HCL string")
+            out_chars.append('""')
+            continue
+        out_chars.append(ch)
+        i += 1
+    return ("".join(out_chars), errors)
+
+
+def validate_hcl_syntax_and_variables(starter_files: Dict[str, str]) -> Dict[str, Any]:
+    """Deterministic HCL block/delimiter validator and var.<name> declaration cross-checker."""
+    tf_map = {
+        fn: str(content or "")
+        for fn, content in (starter_files or {}).items()
+        if fn.endswith(".tf") and str(content or "").strip()
+    }
+    if not tf_map:
+        return {
+            "applicable": False,
+            "valid": True,
+            "resourceCount": 0,
+            "declaredVariables": [],
+            "referencedVariables": [],
+            "undeclaredVariables": [],
+            "errors": [],
+        }
+
+    errors: List[str] = []
+    declared_vars: Set[str] = set()
+    referenced_vars: Set[str] = set()
+    resources: List[str] = []
+
+    pairs = {"{": "}", "[": "]", "(": ")"}
+    closers = {"}": "{", "]": "[", ")": "("}
+
+    for fn, raw in tf_map.items():
+        for m_v in re.finditer(r'(?m)^\s*variable\s+"([A-Za-z0-9_-]+)"\s*\{', raw):
+            declared_vars.add(m_v.group(1))
+        for m_r in re.finditer(r'(?m)^\s*resource\s+"([A-Za-z0-9_-]+)"\s+"([A-Za-z0-9_-]+)"\s*\{', raw):
+            resources.append(f"{m_r.group(1)}.{m_r.group(2)}")
+        for m_ref in re.finditer(r"\bvar\.([A-Za-z0-9_-]+)\b", raw):
+            referenced_vars.add(m_ref.group(1))
+
+        skeleton, lex_errs = _strip_hcl_comments_and_strings(raw)
+        for le in lex_errs:
+            errors.append(f"{fn}: {le}")
+        stack: List[str] = []
+        for ch in skeleton:
+            if ch in pairs:
+                stack.append(ch)
+            elif ch in closers:
+                if not stack or stack[-1] != closers[ch]:
+                    errors.append(f"{fn}: mismatched closing '{ch}'")
+                    break
+                stack.pop()
+        if stack:
+            errors.append(f"{fn}: unclosed delimiter(s) {''.join(stack)}")
+
+    undeclared = sorted(referenced_vars - declared_vars)
+    if undeclared:
+        errors.append(f"Undeclared Terraform variable(s): {', '.join(undeclared)}")
+
+    has_tf_root = any(bool(re.search(r"(?m)^\s*(?:terraform|provider|module|locals)\b", r)) for r in tf_map.values())
+    return {
+        "applicable": True,
+        "valid": len(errors) == 0 and (len(resources) >= 1 or has_tf_root),
+        "resourceCount": len(resources),
+        "resources": resources[:24],
+        "declaredVariables": sorted(declared_vars),
+        "referencedVariables": sorted(referenced_vars),
+        "undeclaredVariables": undeclared,
+        "errors": errors,
+    }
+
+
+def _probe_public_https_url(url: str, timeout_s: float = 5.0) -> Tuple[bool, int, str]:
+    """SSRF-safe HTTPS HEAD/Range-GET reachability check for public documentation URLs."""
+    fn = _TEST_URL_HEAD_FN
+    if fn is not None:
+        ok = bool(fn(url))
+        return (ok, 200 if ok else 404, url)
+    cur = str(url or "").strip()
+    ctx = ssl.create_default_context()
+    for _ in range(4):
+        parsed = urllib.parse.urlparse(cur)
+        host = (parsed.hostname or "").lower()
+        if parsed.scheme != "https" or not host or host.endswith((".corp.google.com", ".internal", ".local")):
+            return (False, 0, cur)
+        if not _is_public_global_ip(host):
+            return (False, 0, cur)
+        path_q = (parsed.path or "/") + (f"?{parsed.query}" if parsed.query else "")
+        status = 0
+        loc = ""
+        for method, extra_hdrs in (
+            ("HEAD", {}),
+            ("GET", {"Range": "bytes=0-511"}),
+        ):
+            conn = http.client.HTTPSConnection(host, 443, timeout=timeout_s, context=ctx)
+            try:
+                hdrs = {"Host": host, "User-Agent": "GEAP-Reference-Verifier/1.0"}
+                hdrs.update(extra_hdrs)
+                conn.request(method, path_q, headers=hdrs)
+                resp = conn.getresponse()
+                status = resp.status
+                loc = str(resp.getheader("Location") or "").strip()
+                resp.read(512)
+            except Exception:
+                status = 0
+            finally:
+                try:
+                    conn.close()
+                except Exception:
+                    pass
+            if status in (200, 206, 301, 302, 303, 307, 308):
+                break
+            if method == "HEAD" and status in (403, 405):
+                continue
+            break
+        if status in (200, 206):
+            return (True, status, cur)
+        if status in (301, 302, 303, 307, 308) and loc:
+            cur = f"https://{host}{loc}" if loc.startswith("/") else loc
+            continue
+        return (False, status, cur)
+    return (False, 0, cur)
+
+
+def verify_reference_links(
+    references: List[Dict[str, Any]],
+    *,
+    check_http: bool = False,
+) -> Dict[str, Any]:
+    """Deterministic structural + optional live HTTPS reachability check on bp['references']."""
+    import concurrent.futures
+
+    refs = [r for r in (references or []) if isinstance(r, dict)]
+    errors: List[str] = []
+    items: List[Dict[str, Any]] = []
+    seen: Set[str] = set()
+
+    if not refs:
+        return {
+            "valid": False,
+            "total": 0,
+            "reachableCount": 0,
+            "items": [],
+            "errors": ["No references provided"],
+        }
+
+    for idx, r in enumerate(refs, 1):
+        title = str(r.get("title") or "").strip()
+        url = str(r.get("url") or "").strip()
+        note = str(r.get("note") or "").strip()
+        parsed = urllib.parse.urlparse(url)
+        host = (parsed.hostname or "").lower()
+        row_err = ""
+        if not title:
+            row_err = f"Ref #{idx} missing title"
+        elif parsed.scheme != "https" or not host:
+            row_err = f"Ref #{idx} invalid non-HTTPS URL: {url}"
+        elif host.endswith((".corp.google.com", ".c.googlers.com", ".internal")) or host in ("localhost", "127.0.0.1", "example.com"):
+            row_err = f"Ref #{idx} disallowed internal/placeholder host: {host}"
+        elif url in seen:
+            row_err = f"Ref #{idx} duplicate URL: {url}"
+        seen.add(url)
+        if row_err:
+            errors.append(row_err)
+        items.append({
+            "index": idx,
+            "title": title,
+            "url": url,
+            "host": host,
+            "note": note,
+            "structurallyValid": not bool(row_err),
+            "reachable": None,
+            "httpStatus": None,
+            "resolvedUrl": url,
+        })
+
+    reachable_cnt = 0
+    if check_http and items:
+        def _check_one(item: Dict[str, Any]) -> Dict[str, Any]:
+            if not item["structurallyValid"]:
+                item["reachable"] = False
+                item["httpStatus"] = 0
+                return item
+            ok, st, final_u = _probe_public_https_url(item["url"])
+            item["reachable"] = ok
+            item["httpStatus"] = st
+            item["resolvedUrl"] = final_u
+            return item
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=min(6, len(items))) as pool:
+            items = list(pool.map(_check_one, items))
+        for item in items:
+            if item.get("reachable"):
+                reachable_cnt += 1
+            elif item.get("httpStatus") in (404, 410):
+                errors.append(f"Ref #{item['index']} returned HTTP {item['httpStatus']}: {item['url']}")
+    else:
+        reachable_cnt = sum(1 for it in items if it["structurallyValid"])
+
+    return {
+        "valid": len(errors) == 0 and len(items) >= 2,
+        "total": len(items),
+        "reachableCount": reachable_cnt,
+        "items": items,
+        "errors": errors,
+    }
+
+
+def _clean_drawio_cell_label(raw_val: str) -> str:
+    txt = re.sub(r"<br\s*/?>", " | ", str(raw_val or ""), flags=re.I)
+    txt = re.sub(r"<[^>]+>", " ", txt)
+    txt = (
+        txt.replace("&amp;", "&")
+        .replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&quot;", '"')
+        .replace("&#39;", "'")
+        .replace("&nbsp;", " ")
+    )
+    return re.sub(r"\s+", " ", txt).strip()
+
+
+def extract_compiled_drawio_digest(
+    all_diag_map: Dict[str, Dict[str, Any]],
+    enabled_kinds: List[str],
+) -> Dict[str, Any]:
+    """Extracts actual compiled .drawio mxGraphModel vertices, edges, icons, and geometry checks for LLM judging."""
+    out: Dict[str, Any] = {}
+    for kind in enabled_kinds:
+        entry = all_diag_map.get(kind) or {}
+        xml_str = str(entry.get("xml") or "")
+        svg_str = str(entry.get("svg") or "")
+        geom = entry.get("geometry") or {}
+        if not xml_str:
+            out[kind] = {"compiled": False, "error": "Missing .drawio XML"}
+            continue
+        try:
+            root = ET.fromstring(xml_str)
+            vertices: List[Dict[str, Any]] = []
+            edges: List[Dict[str, Any]] = []
+            id_to_label: Dict[str, str] = {}
+            icon_cells = 0
+            ortho_edges = 0
+            for cell in root.findall(".//mxCell"):
+                cid = cell.attrib.get("id", "")
+                style = cell.attrib.get("style", "")
+                lbl = _clean_drawio_cell_label(cell.attrib.get("value", ""))
+                if cell.attrib.get("vertex") == "1":
+                    if "image=data:image/svg+xml," in style:
+                        icon_cells += 1
+                    if lbl:
+                        id_to_label[cid] = lbl[:90]
+                        g_el = cell.find("mxGeometry")
+                        gx = float(g_el.attrib.get("x", 0)) if g_el is not None and g_el.attrib.get("x") else 0
+                        gy = float(g_el.attrib.get("y", 0)) if g_el is not None and g_el.attrib.get("y") else 0
+                        gw = float(g_el.attrib.get("width", 0)) if g_el is not None and g_el.attrib.get("width") else 0
+                        gh = float(g_el.attrib.get("height", 0)) if g_el is not None and g_el.attrib.get("height") else 0
+                        vertices.append({
+                            "id": cid,
+                            "label": lbl[:110],
+                            "bounds": [int(gx), int(gy), int(gw), int(gh)],
+                        })
+                elif cell.attrib.get("edge") == "1":
+                    has_waypoints = cell.find(".//Array[@as='points']") is not None or cell.find(".//mxPoint[@as='sourcePoint']") is not None
+                    is_ortho = "orthogonalEdgeStyle" in style or "edgeStyle=orthogonal" in style or has_waypoints
+                    if is_ortho:
+                        ortho_edges += 1
+                    edges.append({
+                        "id": cid,
+                        "source": cell.attrib.get("source", ""),
+                        "target": cell.attrib.get("target", ""),
+                        "label": lbl[:80],
+                        "orthogonal": is_ortho,
+                    })
+            resolved_edges = [
+                {
+                    "from": id_to_label.get(e["source"], e["source"] or "coord"),
+                    "to": id_to_label.get(e["target"], e["target"] or "coord"),
+                    "label": e["label"],
+                    "orthogonal": e["orthogonal"],
+                }
+                for e in edges[:28]
+            ]
+            out[kind] = {
+                "compiled": True,
+                "xmlBytes": len(xml_str.encode("utf-8")),
+                "svgBytes": len(svg_str.encode("utf-8")),
+                "labeledVertexCount": len(vertices),
+                "edgeCount": len(edges),
+                "orthogonalEdgeCount": ortho_edges,
+                "embeddedGcpSvgIcons": icon_cells,
+                "geometryErrors": geom.get("errors") or [],
+                "geometryWarnings": (geom.get("warnings") or [])[:4],
+                "vertices": vertices[:26],
+                "edges": resolved_edges,
+            }
+        except Exception as exc:
+            out[kind] = {"compiled": False, "error": str(exc)[:160]}
+    return out
+
+
+def extract_compiled_pptx_digest(pptx_bytes: bytes, expected_slides: int) -> Dict[str, Any]:
+    """Extracts compiled .pptx OOXML slide text, vector icon counts, #R links, and speaker notes."""
+    if not pptx_bytes:
+        return {"compiled": False, "slideCount": 0, "slides": []}
+    slides_out: List[Dict[str, Any]] = []
+    try:
+        ns = {"a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
+        with zipfile.ZipFile(io.BytesIO(pptx_bytes), "r") as zf:
+            names = set(zf.namelist())
+            for i in range(1, expected_slides + 1):
+                sp = f"ppt/slides/slide{i}.xml"
+                np = f"ppt/notesSlides/notesSlide{i}.xml"
+                rp = f"ppt/slides/_rels/slide{i}.xml.rels"
+                if sp not in names:
+                    continue
+                s_raw = zf.read(sp).decode("utf-8", errors="ignore")
+                s_root = ET.fromstring(s_raw)
+                texts = [
+                    (t.text or "").strip()
+                    for t in s_root.findall(".//a:t", ns)
+                    if (t.text or "").strip()
+                ]
+                joined_t = " | ".join(texts)[:280]
+                ico_cnt = s_raw.count('name="ico_')
+                has_drawio_rel = rp in names and "viewer.diagrams.net" in zf.read(rp).decode("utf-8", errors="ignore")
+                notes_len = 0
+                if np in names:
+                    n_root = ET.fromstring(zf.read(np))
+                    notes_len = sum(len((t.text or "").strip()) for t in n_root.findall(".//a:t", ns))
+                slides_out.append({
+                    "slide": i,
+                    "vectorIcons": ico_cnt,
+                    "hasDrawioLink": has_drawio_rel,
+                    "speakerNotesChars": notes_len,
+                    "compiledTextExcerpt": joined_t,
+                })
+        return {"compiled": True, "slideCount": len(slides_out), "slides": slides_out}
+    except Exception as exc:
+        return {"compiled": False, "error": str(exc)[:160], "slides": slides_out}
+

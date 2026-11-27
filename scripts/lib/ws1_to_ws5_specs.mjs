@@ -202,7 +202,7 @@ export function buildWs1Spec() {
         icon: 'cloud_iam', iconPos: 'top', iconSize: 24,
         lines: [
           { text: 'Hop 1A · Identity', bold: true, size: 11.5, color: '#202124' },
-          { text: '& Workforce WIF', bold: true, size: 11.5, color: '#202124' },
+          { text: '& Workload WIF', bold: true, size: 11.5, color: '#202124' },
           { text: '• Short-lived OIDC', size: 10, color: '#5F6368', gapTop: 6 },
           { text: '• Verified tenant_id', size: 10, color: '#5F6368', gapTop: 3 },
           { text: '• OIDC / SAML Fed.', size: 10, color: '#5F6368', gapTop: 3 },

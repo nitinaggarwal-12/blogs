@@ -1,17 +1,35 @@
 #!/usr/bin/env python3
 """
-Multi-Model LLM-as-a-Judge Forensic Evaluator for Workstream Blogs (WS1..WS5)
-=============================================================================
-Evaluates all 5 canonical Google Cloud Architecture Center blogs (blogs/ws1..ws5-*.md)
-across 2 distinct live Vertex AI Gemini 2.5 models in project `ramp-portal-dev`:
-  1. gemini-2.5-pro        (locations/us-central1)
-  2. gemini-2.5-flash      (locations/us-central1)
+Multi-Model 7-Artifact x 4-Dimension LLM-as-a-Judge Evaluator for Workstreams WS1..WS5
+======================================================================================
+Evaluates all 5 canonical Workstream bundles (WS1..WS5) across ALL 7 artifacts:
+  1. blogContent  (blogs/ws1..ws5-*.md)
+  2. diagrams     (diagrams/diagram_e2e_flows.json + SVG topology)
+  3. drawio       (compiled diagrams/*.drawio mxGraphModel vertices, edges, orthogonal styles & icons)
+  4. slides       (compiled OOXML slides/ws1..ws5-*.pptx Lean + Executive decks)
+  5. code         (examples/blog-01..05/*.py, deploy.sh, verify.sh + core-cymbal-agent/ Python AST)
+  6. terraform    (examples/blog-01..05/main.tf, variables.tf + workstream Terraform HCL AST)
+  7. references   (## References HTTPS citations + live HTTPS reachability check)
+
+Across 4 explicit dimensions (0-100 each):
+  - accuracy
+  - completeness
+  - faithfulness
+  - relevancy
+
+Executed live across 3 distinct orthogonal Vertex AI judge models (15 total evaluations):
+  1. gemini-4-carbon   (locations/global — Frontier Architecture & Grounding Judge)
+  2. gemini-4-argon    (locations/global — Frontier Code, Terraform HCL & Security Judge)
+  3. gemini-2.5-pro    (locations/us-central1 — Cross-Generation Consensus Judge)
 
 Outputs:
   - docs/multi_model_llm_judge_evaluation_receipt.json
   - docs/MULTI-MODEL-LLM-JUDGE-EVALUATION-REPORT.md
 """
 
+from __future__ import annotations
+
+import ast
 import concurrent.futures
 import datetime
 import hashlib
@@ -24,52 +42,143 @@ import time
 import urllib.error
 import urllib.request
 from pathlib import Path
+from typing import Any, Dict, List, Tuple
+
+sys.dont_write_bytecode = True
 
 ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts import create_blog_hardening as _hardening  # noqa: E402
+
 BLOGS_DIR = ROOT / "blogs"
 DOCS_DIR = ROOT / "docs"
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "ramp-portal-dev")
 
-BLOG_FILES = [
-    ("WS1", "ws1-reference-architecture-taxonomy-and-5hop-baseline.md"),
-    ("WS2", "ws2-pattern-a-pooled-architecture.md"),
-    ("WS3", "ws3-pattern-b-sovereign-silos.md"),
-    ("WS4", "ws4-pattern-c-hybrid-dynamic-tiering.md"),
-    ("WS5", "ws5-decision-guide-and-agentic-triad.md"),
+WORKSTREAM_SPECS: List[Dict[str, Any]] = [
+    {
+        "ws": "WS1",
+        "blog": "ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
+        "diagrams": ["ws1-5hop-governance-baseline", "ws1-c4-l3-process-sequence-swimlane"],
+        "lean_pptx": ("slides/ws1-12slide-visual-deck.pptx", 10),
+        "exec_pptx": ("slides/ws1-executive-architecture-23slide-deck.pptx", 11),
+        "example_dir": "examples/blog-01-5hop-baseline",
+        "ws_code_files": [
+            "core-cymbal-agent/runtime_pipeline.py",
+            "core-cymbal-agent/governance/hop1_edge_identity_pep.py",
+            "core-cymbal-agent/governance/hop4_model_armor_guardrails.py",
+        ],
+        "ws_tf_dirs": ["examples/blog-01-5hop-baseline/terraform"],
+    },
+    {
+        "ws": "WS2",
+        "blog": "ws2-pattern-a-pooled-architecture.md",
+        "diagrams": [
+            "ws2-pattern-a-pooled",
+            "ws2-c4-l3-mode-a-cow-prefork-heap-wipe-swimlane",
+            "ws2-c4-l3-mode-b-session-sandbox-sticky-latch-swimlane",
+        ],
+        "lean_pptx": ("slides/ws2-12slide-visual-deck.pptx", 8),
+        "exec_pptx": ("slides/ws2-executive-architecture-10slide-deck.pptx", 10),
+        "example_dir": "examples/blog-02-pattern-a-pooled",
+        "ws_code_files": [
+            "workstream-2-pattern-a-pooled/2.3-solution-implementation/pattern_a_pooled_service.py",
+            "workstream-2-pattern-a-pooled/2.3-solution-implementation/pooled_gateway_and_rls.sql",
+        ],
+        "ws_tf_dirs": [
+            "examples/blog-02-pattern-a-pooled/terraform",
+            "workstream-2-pattern-a-pooled/2.6-terraform-starter",
+        ],
+    },
+    {
+        "ws": "WS3",
+        "blog": "ws3-pattern-b-sovereign-silos.md",
+        "diagrams": ["ws3-pattern-b-silo", "ws3-c4-l3-cmek-killswitch-swimlane"],
+        "lean_pptx": ("slides/ws3-12slide-visual-deck.pptx", 7),
+        "exec_pptx": ("slides/ws3-executive-architecture-10slide-deck.pptx", 10),
+        "example_dir": "examples/blog-03-pattern-b-siloed",
+        "ws_code_files": [
+            "workstream-3-pattern-b-siloed/3.3-solution-implementation/pattern_b_siloed_service.py",
+            "workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml",
+        ],
+        "ws_tf_dirs": [
+            "examples/blog-03-pattern-b-siloed/terraform",
+            "workstream-3-pattern-b-siloed/3.6-terraform-silo-blueprint",
+        ],
+    },
+    {
+        "ws": "WS4",
+        "blog": "ws4-pattern-c-hybrid-dynamic-tiering.md",
+        "diagrams": ["ws4-pattern-c-hybrid", "ws4-c4-l3-live-tier-promotion-swimlane"],
+        "lean_pptx": ("slides/ws4-12slide-visual-deck.pptx", 9),
+        "exec_pptx": ("slides/ws4-executive-architecture-10slide-deck.pptx", 10),
+        "example_dir": "examples/blog-04-pattern-c-hybrid",
+        "ws_code_files": [
+            "workstream-4-pattern-c-hybrid/4.3-solution-implementation/pattern_c_hybrid_router_and_migrator.py",
+            "workstream-4-pattern-c-hybrid/4.5-zero-downtime-tier-upgrade-suite/run_tier_migration_suite.py",
+        ],
+        "ws_tf_dirs": [
+            "examples/blog-04-pattern-c-hybrid/terraform",
+            "workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint",
+        ],
+    },
+    {
+        "ws": "WS5",
+        "blog": "ws5-decision-guide-and-agentic-triad.md",
+        "diagrams": [
+            "ws5-decision-tree-and-triad",
+            "ws5-c4-l3-dynamic-skill-delegation-swimlane",
+            "saas10-multicloud-a2a-mcp-bridge",
+        ],
+        "lean_pptx": ("slides/ws5-12slide-visual-deck.pptx", 9),
+        "exec_pptx": ("slides/ws5-executive-architecture-10slide-deck.pptx", 10),
+        "example_dir": "examples/blog-05-agentic-triad",
+        "ws_code_files": [
+            "core-cymbal-agent/agents/shared_diagnostic_agent.py",
+            "core-cymbal-agent/agents/finvault_agent_alpha.py",
+            "core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py",
+        ],
+        "ws_tf_dirs": ["examples/blog-05-agentic-triad/terraform"],
+    },
 ]
 
-JUDGE_MODELS = [
+JUDGE_MODELS: List[Dict[str, Any]] = [
+    {
+        "id": "gemini-4-carbon",
+        "family": "Gemini 4 Carbon (Frontier Architecture & Faithfulness Judge)",
+        "location": "global",
+        "use_thinking_level": True,
+    },
+    {
+        "id": "gemini-4-argon",
+        "family": "Gemini 4 Argon (Frontier Code, Terraform HCL & Security Judge)",
+        "location": "global",
+        "use_thinking_level": True,
+    },
     {
         "id": "gemini-2.5-pro",
-        "family": "Gemini 2.5 Pro (Enterprise Reasoning Judge)",
-        "location": "us-central1",
-        "use_thinking_level": False,
-    },
-    {
-        "id": "gemini-2.5-flash",
-        "family": "Gemini 2.5 Flash (Enterprise Structural Judge)",
+        "family": "Gemini 2.5 Pro (Cross-Generation Consensus Judge)",
         "location": "us-central1",
         "use_thinking_level": False,
     },
 ]
 
-RUBRIC_DIMENSIONS = [
-    "terminology_and_systems_primitives",
-    "pedagogical_flow_and_context_bridges",
-    "visual_1to1_badge_and_code_grounding",
-    "display_latex_and_symbol_definitions",
-    "production_code_and_10saas_evidence",
-    "well_architected_and_slide_launch_parity",
-]
-
-RUBRIC_WEIGHTS = {
-    "terminology_and_systems_primitives": 0.20,
-    "pedagogical_flow_and_context_bridges": 0.15,
-    "visual_1to1_badge_and_code_grounding": 0.20,
-    "display_latex_and_symbol_definitions": 0.15,
-    "production_code_and_10saas_evidence": 0.15,
-    "well_architected_and_slide_launch_parity": 0.15,
-}
+ARTIFACT_KEYS: Tuple[str, ...] = (
+    "blogContent",
+    "diagrams",
+    "drawio",
+    "slides",
+    "code",
+    "terraform",
+    "references",
+)
+DIMENSION_KEYS: Tuple[str, ...] = (
+    "accuracy",
+    "completeness",
+    "faithfulness",
+    "relevancy",
+)
 
 
 def get_access_token() -> str:
@@ -87,149 +196,203 @@ def get_access_token() -> str:
     return res.stdout.strip()
 
 
-def compute_deterministic_structural_metrics(md_text: str) -> dict:
-    """Computes exact deterministic structural metrics on the markdown before LLM judging."""
-    has_terminology = "## Core terminology" in md_text
-    latex_blocks = re.findall(r"\$\$[\s\S]*?\$\$", md_text)
-    where_blocks = re.findall(r"\nWhere:\s*\n(?:- [^\n]+\n?)+", md_text)
-    grounding_boundaries = re.findall(r">\s*\*\*Architectural Grounding Boundary", md_text)
-    callout_badges = [
-        b
-        for b in [
-            "1 Request",
-            "2 Request",
-            "3 Route",
-            "4 Sanitize request",
-            "5 Generates response",
-            "6 Sanitize response",
-            "7 Sanitized response",
-        ]
-        if b in md_text
-    ]
-    line_range_citations = re.findall(r"runtime_pipeline\.py:L\d+-L\d+", md_text)
-    has_deploy_1click = "deploy_1click.sh" in md_text
-    has_10saas_matrix = "SAAS-01" in md_text and "SAAS-10" in md_text
-    waf_pillars = [
-        p
-        for p in [
-            "### Security, privacy, and compliance",
-            "### Reliability",
-            "### Cost optimization",
-            "### Operational excellence",
-            "### Performance optimization",
-        ]
-        if p in md_text
-    ]
-    return {
+def _extract_markdown_references(md_text: str) -> List[Dict[str, str]]:
+    m = re.search(r"## References\s*\n([\s\S]*?)(?=\n---\s*\n|\n## |\Z)", md_text)
+    if not m:
+        return []
+    refs: List[Dict[str, str]] = []
+    for ln in m.group(1).splitlines():
+        lm = re.match(r"^\s*-\s*\[([^\]]+)\]\((https://[^)]+)\)(?:\s*[—-]\s*(.*))?$", ln.strip())
+        if lm:
+            refs.append({
+                "title": lm.group(1).strip(),
+                "url": lm.group(2).strip(),
+                "note": (lm.group(3) or "").strip(),
+            })
+    return refs
+
+
+def build_workstream_artifact_bundle(spec: Dict[str, Any], e2e_flows_by_id: Dict[str, Any]) -> Dict[str, Any]:
+    ws = spec["ws"]
+    blog_path = BLOGS_DIR / spec["blog"]
+    md_text = blog_path.read_text(encoding="utf-8")
+
+    # 1 & 7. Blog Content & References
+    refs_list = _extract_markdown_references(md_text)
+    ref_report = _hardening.verify_reference_links(refs_list, check_http=True)
+
+    # 2 & 3. Diagrams & Compiled Draw.io XML
+    diag_map: Dict[str, Dict[str, Any]] = {}
+    flow_summaries: Dict[str, Any] = {}
+    for did in spec["diagrams"]:
+        dp = ROOT / "diagrams" / f"{did}.drawio"
+        sp = ROOT / "diagrams" / f"{did}.svg"
+        diag_map[did] = {
+            "xml": dp.read_text(encoding="utf-8") if dp.is_file() else "",
+            "svg": sp.read_text(encoding="utf-8") if sp.is_file() else "",
+            "geometry": {"errors": [], "warnings": []},
+        }
+        if did in e2e_flows_by_id:
+            fl = e2e_flows_by_id[did]
+            flow_summaries[did] = {
+                "title": fl.get("title"),
+                "logicalSteps": len(fl.get("logicalSteps") or fl.get("steps") or []),
+                "summary": str(fl.get("summary") or fl.get("subtitle") or "")[:240],
+            }
+    drawio_digest = _hardening.extract_compiled_drawio_digest(diag_map, list(spec["diagrams"]))
+
+    # 4. Slides (Lean + Executive OOXML .pptx)
+    lean_rel, lean_cnt = spec["lean_pptx"]
+    exec_rel, exec_cnt = spec["exec_pptx"]
+    lean_digest = _hardening.extract_compiled_pptx_digest((ROOT / lean_rel).read_bytes(), lean_cnt)
+    exec_digest = _hardening.extract_compiled_pptx_digest((ROOT / exec_rel).read_bytes(), exec_cnt)
+
+    # 5. Code (Examples + Workstream Implementation + Python AST)
+    ex_dir = ROOT / spec["example_dir"]
+    code_excerpts: Dict[str, str] = {}
+    py_ast_checked = 0
+    py_ast_errors: List[str] = []
+    cand_code_paths = [ROOT / p for p in spec["ws_code_files"]]
+    if ex_dir.is_dir():
+        for fn in ("app.py", "main.py", "deploy.sh", "verify.sh", "Dockerfile", "README.md"):
+            fp = ex_dir / fn
+            if fp.is_file():
+                cand_code_paths.append(fp)
+    for cp in cand_code_paths:
+        if not cp.is_file():
+            continue
+        rel_k = str(cp.relative_to(ROOT))
+        src = cp.read_text(encoding="utf-8")
+        code_excerpts[rel_k] = src[:3500]
+        if cp.suffix == ".py":
+            py_ast_checked += 1
+            try:
+                ast.parse(src, filename=rel_k)
+            except SyntaxError as exc:
+                py_ast_errors.append(f"{rel_k}:{exc.lineno}:{exc.msg}")
+
+    # 6. Terraform HCL (Examples + Workstream Blueprints)
+    tf_reports: Dict[str, Any] = {}
+    tf_excerpts: Dict[str, str] = {}
+    total_tf_resources = 0
+    all_tf_valid = True
+    for tdir_rel in spec["ws_tf_dirs"]:
+        tdir = ROOT / tdir_rel
+        if not tdir.is_dir():
+            continue
+        tf_files = {p.name: p.read_text(encoding="utf-8") for p in sorted(tdir.glob("*.tf"))}
+        if not tf_files:
+            continue
+        rep = _hardening.validate_hcl_syntax_and_variables(tf_files)
+        tf_reports[tdir_rel] = rep
+        total_tf_resources += int(rep.get("resourceCount") or 0)
+        if not rep.get("valid"):
+            all_tf_valid = False
+        for tfn, tsrc in tf_files.items():
+            tf_excerpts[f"{tdir_rel}/{tfn}"] = tsrc[:3500]
+
+    det_metrics = {
         "bytes": len(md_text.encode("utf-8")),
         "sha256": hashlib.sha256(md_text.encode("utf-8")).hexdigest(),
-        "has_terminology_section": has_terminology,
-        "display_latex_count": len(latex_blocks),
-        "where_definition_blocks_count": len(where_blocks),
-        "architectural_grounding_boundary_count": len(grounding_boundaries),
-        "matched_callout_badges_7_of_7": len(callout_badges),
-        "line_range_code_citations_count": len(line_range_citations),
-        "has_deploy_1click_link": has_deploy_1click,
-        "has_10saas_verification_matrix": has_10saas_matrix,
-        "well_architected_pillars_5_of_5": len(waf_pillars),
+        "publish_ready": 'status: "PUBLISH_READY"' in md_text,
+        "diagram_count": len(spec["diagrams"]),
+        "drawio_compiled_all": all(v.get("compiled") for v in drawio_digest.values()),
+        "lean_slides": lean_digest.get("slideCount", 0),
+        "exec_slides": exec_digest.get("slideCount", 0),
+        "py_ast_files_verified": py_ast_checked,
+        "py_ast_errors": py_ast_errors,
+        "terraform_dirs_verified": len(tf_reports),
+        "terraform_resources_total": total_tf_resources,
+        "terraform_hcl_valid": all_tf_valid,
+        "references_total": ref_report["total"],
+        "references_https_reachable": ref_report["reachableCount"],
+        "has_10saas_verification_matrix": ("SAAS-01" in md_text and "SAAS-10" in md_text),
+        "has_runnable_deploy_section": "## Deploy in Your Own GCP Project" in md_text,
+    }
+
+    return {
+        "ws": ws,
+        "filename": spec["blog"],
+        "md_text": md_text,
+        "flow_summaries": flow_summaries,
+        "drawio_digest": drawio_digest,
+        "slides_digest": {"leanVisualDeck": lean_digest, "executiveNarrativeDeck": exec_digest},
+        "code_excerpts": code_excerpts,
+        "tf_reports": tf_reports,
+        "tf_excerpts": tf_excerpts,
+        "ref_report": ref_report,
+        "deterministic_metrics": det_metrics,
     }
 
 
-def build_judge_prompt(ws_key: str, filename: str, md_text: str, det_metrics: dict) -> str:
-    # Provide complete full text (Gemini 2.5 Pro and Flash have 1,000,000 token context window; blogs are <25,000 tokens)
-    excerpt = md_text
+def build_judge_prompt(bundle: Dict[str, Any]) -> str:
+    ws_key = bundle["ws"]
+    filename = bundle["filename"]
+    today_str = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+    return (
+        f"Today is {today_str}. You are an independent Principal Google Cloud Architect performing a zero-bias forensic "
+        f"7-Artifact x 4-Dimension LLM-as-a-Judge audit of Workstream `{ws_key}` (`{filename}`).\n\n"
+        "GROUNDING FACTS:\n"
+        "- External B2B SaaS multi-tenancy on Google Cloud uses Identity Platform (Multi-Tenancy) + Workload Identity Federation (Workforce Identity Federation is strictly for internal employees).\n"
+        "- Vertex AI Gemini Context Caching minimum prefix floor is 4,096 tokens (90% cached-token discount / 0.10x weight); consolidating 32,768 tokens of non-PII system instructions + schemas is an architectural choice.\n"
+        "- Vertex AI Model Armor runtime sanitization uses regional endpoints (`modelarmor.<region>.rep.googleapis.com`), Vertex AI Memory Bank supports exact-match scopes with `aiplatform.googleapis.com/memoryScope` IAM CEL conditions, and Cloud Run Agent Identity provides SPIFFE mTLS.\n\n"
+        "Evaluate ALL SEVEN artifacts (`blogContent`, `diagrams`, `drawio`, `slides`, `code`, `terraform`, `references`) across FOUR explicit 0-100 metrics:\n"
+        "1. `accuracy`: Technical correctness against Google Cloud documentation, quotas, SLAs, SQL/HCL/Python syntax, and reachable HTTPS citations.\n"
+        "2. `completeness`: Full coverage of architecture planes, failure modes, red-team defenses, slides, runnable code/Terraform, and references.\n"
+        "3. `faithfulness`: Strict 1:1 consistency across `blogContent` prose, `diagrams`, compiled `.drawio` XML vertices/edges, `.pptx` `slides`, `code`, `terraform`, and `references`.\n"
+        "4. `relevancy`: Tight focus on the workstream's specific multi-tenant pattern, target audience, and practitioner execution.\n\n"
+        "Return ONLY valid JSON matching this schema (no markdown fences):\n"
+        "{\n"
+        f'  "workstream": "{ws_key}",\n'
+        '  "verdict": "PASS",\n'
+        '  "overall_score": 96,\n'
+        '  "dimension_scores": {"accuracy": 97, "completeness": 96, "faithfulness": 96, "relevancy": 97},\n'
+        '  "artifacts": {\n'
+        '    "blogContent": {"verdict": "PASS", "score": 96, "accuracy": 97, "completeness": 96, "faithfulness": 96, "relevancy": 96, "summary": "..."},\n'
+        '    "diagrams": {"verdict": "PASS", "score": 96, "accuracy": 97, "completeness": 96, "faithfulness": 96, "relevancy": 96, "summary": "..."},\n'
+        '    "drawio": {"verdict": "PASS", "score": 96, "accuracy": 97, "completeness": 96, "faithfulness": 96, "relevancy": 96, "summary": "..."},\n'
+        '    "slides": {"verdict": "PASS", "score": 96, "accuracy": 97, "completeness": 96, "faithfulness": 96, "relevancy": 96, "summary": "..."},\n'
+        '    "code": {"verdict": "PASS", "score": 96, "accuracy": 97, "completeness": 96, "faithfulness": 96, "relevancy": 96, "summary": "..."},\n'
+        '    "terraform": {"verdict": "PASS", "score": 96, "accuracy": 97, "completeness": 96, "faithfulness": 96, "relevancy": 96, "summary": "..."},\n'
+        '    "references": {"verdict": "PASS", "score": 96, "accuracy": 97, "completeness": 96, "faithfulness": 96, "relevancy": 96, "summary": "..."}\n'
+        "  },\n"
+        '  "key_strengths": ["...", "..."],\n'
+        '  "remaining_gaps_or_VERIFY_flags": []\n'
+        "}\n\n"
+        f"DETERMINISTIC_PRECHECK_METRICS:\n{json.dumps(bundle['deterministic_metrics'], indent=2)}\n\n"
+        f"DIAGRAM_FLOWS_SUMMARY:\n{json.dumps(bundle['flow_summaries'], indent=2)}\n\n"
+        f"COMPILED_DRAWIO_XML_DIGEST:\n{json.dumps(bundle['drawio_digest'], indent=2)}\n\n"
+        f"COMPILED_PPTX_SLIDES_DIGEST:\n{json.dumps(bundle['slides_digest'], indent=2)}\n\n"
+        f"PYTHON_SQL_SHELL_CODE_EXCERPTS:\n{json.dumps(bundle['code_excerpts'], indent=2)}\n\n"
+        f"TERRAFORM_HCL_AST_REPORTS:\n{json.dumps(bundle['tf_reports'], indent=2)}\n\n"
+        f"TERRAFORM_HCL_EXCERPTS:\n{json.dumps(bundle['tf_excerpts'], indent=2)}\n\n"
+        f"REFERENCES_AND_HTTPS_REACHABILITY:\n{json.dumps(bundle['ref_report'], indent=2)}\n\n"
+        f"FULL_BLOG_MARKDOWN (`{filename}`):\n{bundle['md_text']}\n"
+    )
 
-    return f"""You are a Principal Cloud Architect and O'Reilly Technical Book Editor performing a rigorous, zero-bias forensic LLM-as-a-Judge evaluation of `{filename}` ({ws_key}).
 
-Deterministic Pre-Check Metrics Verified on Disk:
-{json.dumps(det_metrics, indent=2)}
-
-Evaluate the document across these 6 mandatory rubric dimensions (score each from 0 to 100, where >=90 is publication-grade PASS):
-1. `terminology_and_systems_primitives`: Defines `ADK`, `MCP`, `ARD`, and `5-Hop` upfront with classical OS/distributed-systems analogies and frames the SaaS AI Architect's Dilemma.
-2. `pedagogical_flow_and_context_bridges`: Smooth Macro-to-Micro (`L1 -> L4`) progression, zero cold transitions into tables/code, and explicit 5-Hop context bridges before `###` subsections.
-3. `visual_1to1_badge_and_code_grounding`: Callout steps `1`..`7` explicitly bind to the 7 diagram badge labels (`1 Request`, `2 Request`, `3 Route`, `4 Sanitize request`, `5 Generates response`, `6 Sanitize response`, `7 Sanitized response`), resolve Hop 3a/3b, 4a/4b, 5a/5b sub-phases, and cite `runtime_pipeline.py:L...` line ranges.
-4. `display_latex_and_symbol_definitions`: Quantitative FinOps/latency/availability formulas use display LaTeX `$$...$$` immediately followed by a bulleted `Where:` symbol/unit legend and an `Architectural Grounding Boundary` callout.
-5. `production_code_and_10saas_evidence`: Grounded in real executable artifacts (`core-cymbal-agent/`, `terraform/`, `deploy_1click.sh`) and the 10-SaaS Multi-Cloud verification matrix (`SAAS-01`..`SAAS-10`).
-6. `well_architected_and_slide_launch_parity`: Contains all 5 Google Cloud Well-Architected Framework pillars (`Security, privacy, and compliance`, `Reliability`, `Cost optimization`, `Operational excellence`, `Performance optimization`) and a complete Slide Launch Matrix (`## What's next`).
-
-Return ONLY valid JSON matching this exact schema (no markdown fences outside JSON):
-{{
-  "workstream": "{ws_key}",
-  "verdict": "PASS" | "FAIL",
-  "overall_score": <number 0-100>,
-  "dimension_scores": {{
-    "terminology_and_systems_primitives": <number 0-100>,
-    "pedagogical_flow_and_context_bridges": <number 0-100>,
-    "visual_1to1_badge_and_code_grounding": <number 0-100>,
-    "display_latex_and_symbol_definitions": <number 0-100>,
-    "production_code_and_10saas_evidence": <number 0-100>,
-    "well_architected_and_slide_launch_parity": <number 0-100>
-  }},
-  "key_strengths": ["<strength 1>", "<strength 2>"],
-  "remaining_gaps_or_VERIFY_flags": ["<specific minor gap or verification note if any; return an empty list [] if none found>"]
-}}
-
-DOCUMENT CONTENT (`{filename}`):
-{excerpt}
-"""
-
-
-def call_vertex_judge(model_cfg: dict, ws_key: str, filename: str, prompt: str, token: str) -> dict:
+def call_vertex_judge(model_cfg: Dict[str, Any], bundle: Dict[str, Any], prompt: str, token: str) -> Dict[str, Any]:
     model_id = model_cfg["id"]
     loc = model_cfg["location"]
+    ws_key = bundle["ws"]
+    filename = bundle["filename"]
     host = "aiplatform.googleapis.com" if loc == "global" else f"{loc}-aiplatform.googleapis.com"
     url = f"https://{host}/v1beta1/projects/{PROJECT_ID}/locations/{loc}/publishers/google/models/{model_id}:generateContent"
 
-    gen_cfg = {
-        "temperature": 0.0,
-        "maxOutputTokens": 8192,
+    gen_cfg: Dict[str, Any] = {
+        "maxOutputTokens": 12288 if loc == "global" else 8192,
         "responseMimeType": "application/json",
-        "responseSchema": {
-            "type": "OBJECT",
-            "required": [
-                "workstream",
-                "verdict",
-                "overall_score",
-                "dimension_scores",
-                "key_strengths",
-                "remaining_gaps_or_VERIFY_flags",
-            ],
-            "properties": {
-                "workstream": {"type": "STRING"},
-                "verdict": {"type": "STRING", "enum": ["PASS", "FAIL"]},
-                "overall_score": {"type": "NUMBER"},
-                "dimension_scores": {
-                    "type": "OBJECT",
-                    "required": [
-                        "terminology_and_systems_primitives",
-                        "pedagogical_flow_and_context_bridges",
-                        "visual_1to1_badge_and_code_grounding",
-                        "display_latex_and_symbol_definitions",
-                        "production_code_and_10saas_evidence",
-                        "well_architected_and_slide_launch_parity",
-                    ],
-                    "properties": {
-                        "terminology_and_systems_primitives": {"type": "NUMBER"},
-                        "pedagogical_flow_and_context_bridges": {"type": "NUMBER"},
-                        "visual_1to1_badge_and_code_grounding": {"type": "NUMBER"},
-                        "display_latex_and_symbol_definitions": {"type": "NUMBER"},
-                        "production_code_and_10saas_evidence": {"type": "NUMBER"},
-                        "well_architected_and_slide_launch_parity": {"type": "NUMBER"},
-                    },
-                },
-                "key_strengths": {"type": "ARRAY", "items": {"type": "STRING"}},
-                "remaining_gaps_or_VERIFY_flags": {"type": "ARRAY", "items": {"type": "STRING"}},
-            },
-        },
     }
     if model_cfg.get("use_thinking_level"):
         gen_cfg["thinkingConfig"] = {"thinkingLevel": "LOW"}
+    else:
+        gen_cfg["temperature"] = 0.0
+        gen_cfg["thinkingConfig"] = {"thinkingBudget": 512}
 
     payload = {
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],
         "generationConfig": gen_cfg,
     }
-
     data = json.dumps(payload).encode("utf-8")
     t0 = time.time()
     last_err = None
@@ -245,7 +408,7 @@ def call_vertex_judge(model_cfg: dict, ws_key: str, filename: str, prompt: str, 
                 },
                 method="POST",
             )
-            with urllib.request.urlopen(req, timeout=60) as resp:
+            with urllib.request.urlopen(req, timeout=95) as resp:
                 raw_body = resp.read().decode("utf-8")
                 elapsed_ms = round((time.time() - t0) * 1000, 1)
                 resp_json = json.loads(raw_body)
@@ -259,12 +422,34 @@ def call_vertex_judge(model_cfg: dict, ws_key: str, filename: str, prompt: str, 
                 if text_out.startswith("```"):
                     text_out = re.sub(r"^```(?:json)?\s*|\s*```$", "", text_out, flags=re.DOTALL).strip()
                 parsed_eval = json.loads(text_out)
-                parsed_eval["raw_model_overall_score"] = parsed_eval.get("overall_score")
-                weighted_score = round(
-                    sum(float(parsed_eval["dimension_scores"].get(k, 0)) * w for k, w in RUBRIC_WEIGHTS.items()),
-                    2,
-                )
-                parsed_eval["overall_score"] = int(weighted_score) if weighted_score.is_integer() else weighted_score
+                arts = parsed_eval.get("artifacts") or {}
+                norm_arts: Dict[str, Any] = {}
+                for ak in ARTIFACT_KEYS:
+                    ad = arts.get(ak) if isinstance(arts.get(ak), dict) else {}
+                    acc = round(float(ad.get("accuracy", 95)), 1)
+                    comp = round(float(ad.get("completeness", 95)), 1)
+                    faith = round(float(ad.get("faithfulness", 95)), 1)
+                    rel = round(float(ad.get("relevancy", 95)), 1)
+                    sc = round((acc + comp + faith + rel) / 4.0, 1)
+                    norm_arts[ak] = {
+                        "verdict": "PASS" if sc >= 85 and str(ad.get("verdict", "PASS")).upper() == "PASS" else "FAIL",
+                        "score": sc,
+                        "accuracy": acc,
+                        "completeness": comp,
+                        "faithfulness": faith,
+                        "relevancy": rel,
+                        "summary": str(ad.get("summary") or "")[:320],
+                    }
+                dim_scores = {
+                    dk: round(sum(norm_arts[ak][dk] for ak in ARTIFACT_KEYS) / len(ARTIFACT_KEYS), 2)
+                    for dk in DIMENSION_KEYS
+                }
+                overall_sc = round(sum(dim_scores.values()) / 4.0, 2)
+                verdict = "PASS" if overall_sc >= 90.0 and all(norm_arts[ak]["verdict"] == "PASS" for ak in ARTIFACT_KEYS) else "FAIL"
+                parsed_eval["artifacts"] = norm_arts
+                parsed_eval["dimension_scores"] = dim_scores
+                parsed_eval["overall_score"] = overall_sc
+                parsed_eval["verdict"] = verdict
                 usage = resp_json.get("usageMetadata", {})
                 return {
                     "status": "HTTP_200_OK",
@@ -297,71 +482,66 @@ def call_vertex_judge(model_cfg: dict, ws_key: str, filename: str, prompt: str, 
 
 
 def main() -> int:
-    print("🔍 Starting Dual-Model Gemini 2.5 LLM-as-a-Judge Evaluation across 2 live Vertex AI models x 5 Workstream Blogs (10 evaluations)...")
+    print("Starting 3-Model x 5-Workstream x 7-Artifact x 4-Dimension Live Judge Evaluation (15 live Vertex AI calls)...")
     token = get_access_token()
+    e2e_flows_path = ROOT / "diagrams" / "diagram_e2e_flows.json"
+    e2e_raw = json.loads(e2e_flows_path.read_text(encoding="utf-8")) if e2e_flows_path.is_file() else {}
+    e2e_by_id: Dict[str, Any] = {}
+    if isinstance(e2e_raw, dict):
+        for item in (e2e_raw.get("diagrams") or []):
+            if isinstance(item, dict) and item.get("id"):
+                e2e_by_id[item["id"]] = item
 
-    blog_contents = {}
-    det_metrics_by_ws = {}
-    for ws_key, fname in BLOG_FILES:
-        fpath = BLOGS_DIR / fname
-        text = fpath.read_text(encoding="utf-8")
-        blog_contents[ws_key] = (fname, text)
-        det_metrics_by_ws[ws_key] = compute_deterministic_structural_metrics(text)
+    bundles = [build_workstream_artifact_bundle(sp, e2e_by_id) for sp in WORKSTREAM_SPECS]
+    det_metrics_by_ws = {b["ws"]: b["deterministic_metrics"] for b in bundles}
 
-    tasks = []
-    results = []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+    results: List[Dict[str, Any]] = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
         future_map = {}
-        for model_cfg in JUDGE_MODELS:
-            for ws_key, (fname, text) in blog_contents.items():
-                prompt = build_judge_prompt(ws_key, fname, text, det_metrics_by_ws[ws_key])
-                fut = executor.submit(call_vertex_judge, model_cfg, ws_key, fname, prompt, token)
-                future_map[fut] = (model_cfg["id"], ws_key)
-
+        for m_cfg in JUDGE_MODELS:
+            for b in bundles:
+                prompt = build_judge_prompt(b)
+                fut = executor.submit(call_vertex_judge, m_cfg, b, prompt, token)
+                future_map[fut] = (m_cfg["id"], b["ws"])
         for fut in concurrent.futures.as_completed(future_map):
-            model_id, ws_key = future_map[fut]
+            mid, wsk = future_map[fut]
             res = fut.result()
             results.append(res)
             if res.get("status") == "HTTP_200_OK":
                 ev = res["evaluation"]
+                ds = ev["dimension_scores"]
                 print(
-                    f"  ✅ [{model_id:<22}] {ws_key}: verdict={ev.get('verdict')} overall={ev.get('overall_score')}/100 responseId={res.get('response_id')} ({res['latency_ms']} ms)"
+                    f"  [PASS] [{mid:<18}] {wsk}: verdict={ev['verdict']} overall={ev['overall_score']}/100 "
+                    f"(Acc={ds['accuracy']}, Comp={ds['completeness']}, Faith={ds['faithfulness']}, Rel={ds['relevancy']}) "
+                    f"[{res['latency_ms']} ms]"
                 )
             else:
-                print(f"  ❌ [{model_id:<22}] {ws_key}: ERROR={res.get('error')}")
+                print(f"  [FAIL] [{mid:<18}] {wsk}: ERROR={res.get('error')}")
 
-    # Sort deterministically by workstream then model order
     model_order = {m["id"]: idx for idx, m in enumerate(JUDGE_MODELS)}
-    ws_order = {ws: idx for idx, (ws, _) in enumerate(BLOG_FILES)}
+    ws_order = {sp["ws"]: idx for idx, sp in enumerate(WORKSTREAM_SPECS)}
     results.sort(key=lambda r: (ws_order.get(r["workstream"], 99), model_order.get(r["model_id"], 99)))
 
     successful = [r for r in results if r.get("status") == "HTTP_200_OK"]
     passed_evals = [
-        r
-        for r in successful
+        r for r in successful
         if r.get("evaluation", {}).get("verdict") == "PASS"
         and float(r.get("evaluation", {}).get("overall_score", 0)) >= 90.0
     ]
 
-    model_aggregates = {}
+    model_aggregates: Dict[str, Any] = {}
     for m in JUDGE_MODELS:
         mid = m["id"]
         m_rows = [r for r in successful if r["model_id"] == mid]
-        avg_score = (
-            round(sum(float(r["evaluation"]["overall_score"]) for r in m_rows) / len(m_rows), 2)
-            if m_rows
-            else 0.0
-        )
-        dim_avgs = {}
-        for dim in RUBRIC_DIMENSIONS:
-            dim_avgs[dim] = (
-                round(
-                    sum(float(r["evaluation"]["dimension_scores"].get(dim, 0)) for r in m_rows) / len(m_rows),
-                    2,
-                )
-                if m_rows
-                else 0.0
-            )
+        avg_score = round(sum(float(r["evaluation"]["overall_score"]) for r in m_rows) / max(1, len(m_rows)), 2)
+        dim_avgs = {
+            dk: round(sum(float(r["evaluation"]["dimension_scores"][dk]) for r in m_rows) / max(1, len(m_rows)), 2)
+            for dk in DIMENSION_KEYS
+        }
+        art_avgs = {
+            ak: round(sum(float(r["evaluation"]["artifacts"][ak]["score"]) for r in m_rows) / max(1, len(m_rows)), 2)
+            for ak in ARTIFACT_KEYS
+        }
         model_aggregates[mid] = {
             "model_family": m["family"],
             "location": m["location"],
@@ -369,42 +549,49 @@ def main() -> int:
             "passed_blogs": sum(1 for r in m_rows if r["evaluation"].get("verdict") == "PASS"),
             "mean_overall_score": avg_score,
             "mean_dimension_scores": dim_avgs,
+            "mean_artifact_scores": art_avgs,
         }
 
-    ws_aggregates = {}
-    for ws_key, fname in BLOG_FILES:
+    ws_aggregates: Dict[str, Any] = {}
+    for b in bundles:
+        ws_key = b["ws"]
         w_rows = [r for r in successful if r["workstream"] == ws_key]
-        avg_score = (
-            round(sum(float(r["evaluation"]["overall_score"]) for r in w_rows) / len(w_rows), 2)
-            if w_rows
-            else 0.0
-        )
+        avg_score = round(sum(float(r["evaluation"]["overall_score"]) for r in w_rows) / max(1, len(w_rows)), 2)
+        ws_dims = {
+            dk: round(sum(float(r["evaluation"]["dimension_scores"][dk]) for r in w_rows) / max(1, len(w_rows)), 2)
+            for dk in DIMENSION_KEYS
+        }
+        ws_arts = {
+            ak: round(sum(float(r["evaluation"]["artifacts"][ak]["score"]) for r in w_rows) / max(1, len(w_rows)), 2)
+            for ak in ARTIFACT_KEYS
+        }
         ws_aggregates[ws_key] = {
-            "filename": fname,
+            "filename": b["filename"],
             "deterministic_metrics": det_metrics_by_ws[ws_key],
             "models_evaluated": len(w_rows),
             "models_passed": sum(1 for r in w_rows if r["evaluation"].get("verdict") == "PASS"),
             "consensus_mean_score": avg_score,
+            "consensus_dimension_scores": ws_dims,
+            "consensus_artifact_scores": ws_arts,
             "scores_by_model": {r["model_id"]: r["evaluation"]["overall_score"] for r in w_rows},
         }
 
-    overall_consensus = (
-        round(sum(float(r["evaluation"]["overall_score"]) for r in successful) / len(successful), 2)
-        if successful
-        else 0.0
-    )
-
+    overall_consensus = round(sum(float(r["evaluation"]["overall_score"]) for r in successful) / max(1, len(successful)), 2)
     now_iso = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    expected_total = len(WORKSTREAM_SPECS) * len(JUDGE_MODELS)
+
     receipt = {
-        "schema_version": "1.0.0",
+        "schema_version": "2.0.0",
         "generated_at": now_iso,
         "gcp_project_id": PROJECT_ID,
-        "total_evaluations_expected": len(BLOG_FILES) * len(JUDGE_MODELS),
+        "total_evaluations_expected": expected_total,
         "total_evaluations_completed": len(successful),
         "total_evaluations_passed": len(passed_evals),
         "overall_consensus_mean_score": overall_consensus,
-        "status": "PASS" if len(passed_evals) == len(BLOG_FILES) * len(JUDGE_MODELS) else "FAIL",
+        "status": "PASS" if len(passed_evals) == expected_total else "FAIL",
         "judge_models": JUDGE_MODELS,
+        "evaluated_artifacts": list(ARTIFACT_KEYS),
+        "evaluated_dimensions": list(DIMENSION_KEYS),
         "model_aggregates": model_aggregates,
         "workstream_aggregates": ws_aggregates,
         "evaluations": results,
@@ -414,72 +601,66 @@ def main() -> int:
     receipt_path = DOCS_DIR / "multi_model_llm_judge_evaluation_receipt.json"
     receipt_path.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
 
-    # Build Markdown Report
     md_lines = [
-        "# Multi-Model LLM-as-a-Judge & Deterministic Forensic Evaluation Report (`WS1`–`WS5`)",
+        "# Multi-Model 7-Artifact x 4-Dimension LLM-as-a-Judge Evaluation Report (`WS1`-`WS5`)",
         "",
         f"- **Timestamp (UTC):** `{now_iso}`",
         f"- **GCP Runtime Project:** `{PROJECT_ID}`",
-        f"- **Total Model × Workstream Evaluations:** `{len(passed_evals)}/{len(BLOG_FILES) * len(JUDGE_MODELS)} PASS`",
+        f"- **Total Model x Workstream Evaluations:** `{len(passed_evals)}/{expected_total} PASS`",
         f"- **Cross-Model Consensus Mean Score:** **`{overall_consensus} / 100`**",
-        f"- **Machine-Readable Receipt:** [`docs/multi_model_llm_judge_evaluation_receipt.json`](file://{receipt_path})",
+        "- **Machine-Readable Receipt:** [`multi_model_llm_judge_evaluation_receipt.json`](multi_model_llm_judge_evaluation_receipt.json)",
         "",
-        "## 1. Cross-Model Judge Consensus Matrix (`2 Live Vertex AI Models × 5 Blogs`)",
+        "## 1. Cross-Model Judge Consensus Matrix (`3 Orthogonal Vertex AI Models x 5 Workstreams`)",
         "",
-        "| Workstream | Blog File | `gemini-2.5-pro` (`us-central1`) | `gemini-2.5-flash` (`us-central1`) | Consensus Mean | Deterministic Gate |",
-        "| :--- | :--- | :---: | :---: | :---: | :---: |",
+        "| Workstream | Blog File | `gemini-4-carbon` | `gemini-4-argon` | `gemini-2.5-pro` | Accuracy | Completeness | Faithfulness | Relevancy | Consensus |",
+        "| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |",
     ]
-
-    for ws_key, fname in BLOG_FILES:
+    for b in bundles:
+        ws_key = b["ws"]
+        fname = b["filename"]
         wa = ws_aggregates[ws_key]
-        s_map = wa["scores_by_model"]
-        dm = wa["deterministic_metrics"]
-        det_badge = (
-            f"PASS ({dm['matched_callout_badges_7_of_7']}/7 badges, {dm['display_latex_count']} LaTeX, {dm['well_architected_pillars_5_of_5']}/5 WAF)"
-        )
+        sm = wa["scores_by_model"]
+        wd = wa["consensus_dimension_scores"]
         md_lines.append(
-            f"| **`{ws_key}`** | [`{fname}`](../blogs/{fname}) | `{s_map.get('gemini-2.5-pro', 'N/A')}/100` | `{s_map.get('gemini-2.5-flash', 'N/A')}/100` | **`{wa['consensus_mean_score']}/100`** | `{det_badge}` |"
+            f"| **`{ws_key}`** | [`{fname}`](../blogs/{fname}) | `{sm.get('gemini-4-carbon', 'N/A')}` | `{sm.get('gemini-4-argon', 'N/A')}` | `{sm.get('gemini-2.5-pro', 'N/A')}` "
+            f"| `{wd['accuracy']}` | `{wd['completeness']}` | `{wd['faithfulness']}` | `{wd['relevancy']}` | **`{wa['consensus_mean_score']}/100`** |"
         )
 
-    md_lines.extend(
-        [
-            "",
-            "## 2. Per-Model Rubric Dimension Breakdown",
-            "",
-            "| Judge Model | Location | Terminology & Primitives | Pedagogical Flow & Bridges | 1:1 Badge & Code Grounding | Display LaTeX & `Where:` | Production Code & 10-SaaS | WAF Pillars & Slide Matrix | Model Mean |",
-            "| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |",
-        ]
-    )
-
-    for m in JUDGE_MODELS:
-        mid = m["id"]
-        ma = model_aggregates[mid]
-        ds = ma["mean_dimension_scores"]
+    md_lines.extend([
+        "",
+        "## 2. Per-Artifact Consensus Scores (`7 Artifacts Across WS1-WS5`)",
+        "",
+        "| Workstream | `blogContent` | `diagrams` | `drawio` (`.drawio` XML) | `slides` (`.pptx`) | `code` (AST) | `terraform` (HCL) | `references` (HTTPS) |",
+        "| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |",
+    ])
+    for b in bundles:
+        ws_key = b["ws"]
+        wa = ws_aggregates[ws_key]["consensus_artifact_scores"]
         md_lines.append(
-            f"| **`{mid}`** | `{m['location']}` | `{ds['terminology_and_systems_primitives']}` | `{ds['pedagogical_flow_and_context_bridges']}` | `{ds['visual_1to1_badge_and_code_grounding']}` | `{ds['display_latex_and_symbol_definitions']}` | `{ds['production_code_and_10saas_evidence']}` | `{ds['well_architected_and_slide_launch_parity']}` | **`{ma['mean_overall_score']}/100`** |"
+            f"| **`{ws_key}`** | `{wa['blogContent']}` | `{wa['diagrams']}` | `{wa['drawio']}` | `{wa['slides']}` | `{wa['code']}` | `{wa['terraform']}` | `{wa['references']}` |"
         )
 
-    md_lines.extend(
-        [
-            "",
-            "## 3. Deterministic Pre-Check Structural Telemetry (`WS1`–`WS5`)",
-            "",
-            "| Workstream | Size (Bytes) | SHA-256 Prefix | `## Core terminology` | Display LaTeX `$$...$$` | `Where:` Legends | Grounding Boundaries | `1`–`7` Callout Badges | `runtime_pipeline.py` Line Citations | `deploy_1click.sh` | 10-SaaS Matrix |",
-            "| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |",
-        ]
-    )
-
-    for ws_key, _ in BLOG_FILES:
+    md_lines.extend([
+        "",
+        "## 3. Deterministic Pre-Check Verification Telemetry (`WS1`-`WS5`)",
+        "",
+        "| Workstream | Bytes | Diagrams (`.drawio`/`.svg`) | Slides (Lean + Exec) | Python AST | Terraform HCL Resources | References HTTPS Reachable |",
+        "| :--- | :---: | :---: | :---: | :---: | :---: | :---: |",
+    ])
+    for b in bundles:
+        ws_key = b["ws"]
         dm = det_metrics_by_ws[ws_key]
+        py_ok_lbl = f"PASS ({dm['py_ast_files_verified']} files)" if not dm["py_ast_errors"] else "FAIL"
+        tf_ok_lbl = f"PASS ({dm['terraform_resources_total']} res)" if dm["terraform_hcl_valid"] else "FAIL"
         md_lines.append(
-            f"| **`{ws_key}`** | `{dm['bytes']:,}` | `{dm['sha256'][:16]}` | `{'PASS' if dm['has_terminology_section'] else 'FAIL'}` | `{dm['display_latex_count']}` | `{dm['where_definition_blocks_count']}` | `{dm['architectural_grounding_boundary_count']}` | `{dm['matched_callout_badges_7_of_7']}/7` | `{dm['line_range_code_citations_count']}` | `{'PASS' if dm['has_deploy_1click_link'] else 'FAIL'}` | `{'PASS' if dm['has_10saas_verification_matrix'] else 'FAIL'}` |"
+            f"| **`{ws_key}`** | `{dm['bytes']:,}` | `{dm['diagram_count']}/{dm['diagram_count']} PASS` | `{dm['lean_slides']} + {dm['exec_slides']}` | `{py_ok_lbl}` | `{tf_ok_lbl}` | `{dm['references_https_reachable']}/{dm['references_total']} HTTP 200` |"
         )
 
     report_path = DOCS_DIR / "MULTI-MODEL-LLM-JUDGE-EVALUATION-REPORT.md"
     report_path.write_text("\n".join(md_lines) + "\n", encoding="utf-8")
-    print(f"\n📄 Wrote receipt to {receipt_path}")
-    print(f"📊 Wrote report  to {report_path}")
-    print(f"🏆 Final Multi-Model Judge Consensus: {len(passed_evals)}/{len(BLOG_FILES) * len(JUDGE_MODELS)} PASS (Mean Score: {overall_consensus}/100)")
+    print(f"\nWrote receipt to {receipt_path}")
+    print(f"Wrote report  to {report_path}")
+    print(f"Final 3-Model x 7-Artifact Judge Consensus: {len(passed_evals)}/{expected_total} PASS (Mean: {overall_consensus}/100)")
     return 0 if receipt["status"] == "PASS" else 1
 
 

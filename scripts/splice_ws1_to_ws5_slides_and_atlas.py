@@ -84,6 +84,7 @@ TEXT_CLEANUPS: List[Tuple[re.Pattern, str]] = [
     (re.compile(r"❖"), "GW"),
     (re.compile(r"\uFE0F"), ""),
     (re.compile(r"Gemini\s+3\.8", re.I), "Gemini 2.5"),
+    (re.compile(r"Workforce\s+WIF"), "Workload WIF"),
 ]
 
 # Exact verified downstream splice table across decks #2-#12:

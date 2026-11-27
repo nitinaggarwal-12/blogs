@@ -2377,7 +2377,7 @@
     }
     const jInfo = el('div', { style: { flex: '1', minWidth: '220px' } },
       el('div', { style: { display: 'flex', gap: '7px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '4px' } },
-        el('h3', { style: { fontSize: '15px', fontWeight: '800' } }, '2. Orthogonal Gemini Judge Critic'),
+        el('h3', { style: { fontSize: '15px', fontWeight: '800' } }, '2. Orthogonal Multi-Model LLM Judge Panel'),
         makePill(judge.verdict || 'UNRUN', judge.verdict === 'APPROVED' ? 'pill-green' : 'pill-amber', false),
         judge.orthogonalPair ? makePill(judge.orthogonalPair, 'pill-purple', false) : null,
         judge.searchGrounded ? makePill('Search-Grounded (' + (judge.searchQueries || []).length + ' queries)', 'pill-green', true) : null
@@ -2386,6 +2386,64 @@
     );
     topFlex.appendChild(jInfo);
     judgeCard.appendChild(topFlex);
+
+    const dimScores = judge.dimensionScores || null;
+    if (dimScores && typeof dimScores.accuracy === 'number') {
+      const dimStrip = el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '8px', marginTop: '12px' } },
+        [
+          ['Accuracy', dimScores.accuracy, 'Technical & Google Cloud Docs truth'],
+          ['Completeness', dimScores.completeness, 'Category blueprint & artifact depth'],
+          ['Faithfulness', dimScores.faithfulness, 'Cross-artifact & Claim Ledger parity'],
+          ['Relevancy', dimScores.relevancy, 'Prompt, audience & citation alignment'],
+        ].map(([lbl, val, sub]) => el('div', { style: { background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '8px 10px' } },
+          el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' } },
+            el('strong', { style: { fontSize: '12px', color: '#0f172a' } }, lbl),
+            makePill(String(val) + '/100', Number(val) >= 85 ? 'pill-green' : 'pill-amber', false)
+          ),
+          el('div', { style: { fontSize: '11px', color: '#64748b', marginTop: '3px' } }, sub)
+        ))
+      );
+      judgeCard.appendChild(dimStrip);
+    }
+
+    const artEvals = judge.artifactEvaluations || null;
+    if (artEvals && Object.keys(artEvals).length) {
+      judgeCard.appendChild(el('div', { style: { fontSize: '12px', fontWeight: '800', marginTop: '14px', color: '#0f172a' } }, 'Per-Artifact LLM Judge & Deterministic Verification Matrix'));
+      const orderKeys = ['blogContent', 'diagrams', 'drawio', 'slides', 'code', 'terraform', 'references'];
+      const rows = orderKeys.filter((k) => artEvals[k]).map((k) => {
+        const a = artEvals[k];
+        const na = a.applicable === false;
+        const fmt = (v) => (na || v === null || v === undefined) ? 'N/A' : String(v);
+        const vCls = na ? 'pill-blue' : (a.verdict === 'APPROVED' ? 'pill-green' : 'pill-amber');
+        return el('tr', null,
+          el('td', { style: { fontWeight: '700', whiteSpace: 'nowrap' } }, a.label || k),
+          el('td', null, makePill(a.judgeModel || judge.judgeModel || 'gemini', 'pill-purple', false)),
+          el('td', { style: { fontSize: '11.5px', color: '#334155' } }, a.deterministicStatus || 'PASS'),
+          el('td', { style: { fontFamily: 'var(--mono)', fontWeight: '700' } }, fmt(a.accuracy)),
+          el('td', { style: { fontFamily: 'var(--mono)', fontWeight: '700' } }, fmt(a.completeness)),
+          el('td', { style: { fontFamily: 'var(--mono)', fontWeight: '700' } }, fmt(a.faithfulness)),
+          el('td', { style: { fontFamily: 'var(--mono)', fontWeight: '700' } }, fmt(a.relevancy)),
+          el('td', null, makePill(na ? 'N/A' : (fmt(a.score) + '/100 · ' + (a.verdict || '')), vCls, false)),
+          el('td', { style: { fontSize: '12px' } }, a.summary || '')
+        );
+      });
+      judgeCard.appendChild(el('div', { className: 'data-table-wrap', style: { marginTop: '6px' } },
+        el('table', { className: 'data-table' },
+          el('thead', null, el('tr', null, [
+            el('th', null, 'Artifact'),
+            el('th', null, 'Judge Model'),
+            el('th', null, 'Deterministic Check'),
+            el('th', null, 'Acc'),
+            el('th', null, 'Comp'),
+            el('th', null, 'Faith'),
+            el('th', null, 'Rel'),
+            el('th', null, 'Verdict'),
+            el('th', null, 'Notes'),
+          ])),
+          el('tbody', null, rows)
+        )
+      ));
+    }
 
     if (judge.strengths && judge.strengths.length) {
       judgeCard.appendChild(el('div', { style: { fontSize: '12px', fontWeight: '800', marginTop: '12px', color: '#0d652d' } }, 'Strengths'));

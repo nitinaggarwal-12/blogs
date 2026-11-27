@@ -1266,6 +1266,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         for rel_py in (
             "server.py",
             "scripts/create_blog_categories.py",
+            "scripts/create_blog_hardening.py",
             "scripts/create_blog_iteration.py",
             "scripts/create_blog1_canonical_compiler.py",
             "scripts/create_blog1_diagrams_v2.py",
@@ -2084,6 +2085,82 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         st_c, _, body_c = self._req(f"/api/drawio/item/{concept_pid}")
         self.assertEqual(st_c, 200)
         self.assertIn("Disaggregated Brain", json.loads(body_c.decode("utf-8"))["xml"])
+
+    def test_21_multi_artifact_4dim_judge_hcl_ast_and_ref_integrity(self) -> None:
+        from unittest import mock
+
+        # 1. HCL AST & variable cross-reference validator catches unbalanced braces and undeclared var.*
+        good_hcl = cb1._hardening.validate_hcl_syntax_and_variables({
+            "main.tf": 'resource "google_cloud_run_v2_service" "gw" {\n  name = var.service_name\n  location = var.region\n}\n',
+            "variables.tf": 'variable "service_name" { type = string }\nvariable "region" { type = string }\n',
+        })
+        self.assertTrue(good_hcl["valid"], good_hcl)
+        self.assertEqual(good_hcl["resourceCount"], 1)
+
+        bad_hcl = cb1._hardening.validate_hcl_syntax_and_variables({
+            "main.tf": 'resource "google_cloud_run_v2_service" "gw" {\n  name = var.undeclared_var\n',
+            "variables.tf": "",
+        })
+        self.assertFalse(bad_hcl["valid"])
+        self.assertIn("undeclared_var", ",".join(bad_hcl["undeclaredVariables"]))
+
+        # 2. Reference integrity catches non-HTTPS and corp URLs
+        bad_refs = cb1._hardening.verify_reference_links([
+            {"title": "Internal", "url": "https://moma.corp.google.com/search"},
+            {"title": "HTTP", "url": "http://cloud.google.com/run"},
+        ], check_http=False)
+        self.assertFalse(bad_refs["valid"])
+        self.assertEqual(len(bad_refs["errors"]), 2)
+
+        # 3. Dual-model 7-artifact x 4-dimension orthogonal judge
+        self.assertEqual(cb1.select_secondary_code_judge_model("gemini-4-neon", "gemini-4-carbon"), "gemini-4-argon")
+        bp = _sample_blueprint()
+        diags = cb1._diag_v2.compile_all_v2_diagrams(bp, "judge-7art", enabled_kinds=("concept", "architecture", "sequence"))
+        drawio_dig = cb1._hardening.extract_compiled_drawio_digest(diags, ["concept", "architecture", "sequence"])
+        self.assertTrue(drawio_dig["concept"]["compiled"])
+        self.assertGreaterEqual(drawio_dig["concept"]["embeddedGcpSvgIcons"], 6)
+
+        def _fake_gemini_call(*, system_prompt, user_prompt, model, **kwargs):
+            if "Panel A" in system_prompt:
+                return ({
+                    "verdict": "APPROVED",
+                    "score": 95,
+                    "summary": "Editorial, diagrams, Draw.io, slides, and references verified.",
+                    "artifacts": {
+                        k: {"verdict": "APPROVED", "score": 95, "accuracy": 96, "completeness": 94, "faithfulness": 95, "relevancy": 95, "summary": f"{k} verified"}
+                        for k in ("blogContent", "diagrams", "drawio", "slides", "references")
+                    },
+                    "strengths": ["Strong 5-artifact parity"],
+                    "findings": [],
+                }, {"webSearchQueries": ["cloud run iap"], "latencyMs": 120.0})
+            return ({
+                "verdict": "APPROVED",
+                "score": 93,
+                "summary": "Python AST and Terraform HCL verified.",
+                "artifacts": {
+                    "code": {"applicable": True, "verdict": "APPROVED", "score": 94, "accuracy": 95, "completeness": 92, "faithfulness": 94, "relevancy": 95, "summary": "Code verified"},
+                    "terraform": {"applicable": True, "verdict": "APPROVED", "score": 92, "accuracy": 94, "completeness": 90, "faithfulness": 92, "relevancy": 92, "summary": "Terraform verified"},
+                },
+                "strengths": ["Least-privilege HCL"],
+                "findings": [],
+            }, {"latencyMs": 95.0})
+
+        with mock.patch.object(cb1, "call_gemini_json", side_effect=_fake_gemini_call), \
+             mock.patch.object(cb1._hardening, "_TEST_URL_HEAD_FN", side_effect=lambda u: True):
+            j_res = cb1.run_orthogonal_llm_judge(
+                bp=bp,
+                md_text="# Zero-Trust MCP\n\n```python\nx = 1\n```\n",
+                generator_model="gemini-4-neon",
+                diags_map=diags,
+            )
+        self.assertEqual(j_res["verdict"], "APPROVED")
+        self.assertEqual(j_res["judgeModels"]["editorialDiagramsDrawioSlidesRefs"], "gemini-4-carbon")
+        self.assertEqual(j_res["judgeModels"]["codeTerraformSecurity"], "gemini-4-argon")
+        self.assertEqual(set(j_res["dimensionScores"].keys()), {"accuracy", "completeness", "faithfulness", "relevancy"})
+        self.assertEqual(
+            set(j_res["artifactEvaluations"].keys()),
+            {"blogContent", "diagrams", "drawio", "slides", "code", "terraform", "references"},
+        )
 
 
 if __name__ == "__main__":

@@ -15,7 +15,7 @@ status: "PUBLISH_READY"
 
 This document is **Part 5 (Capstone)** of the Multi-Tenant Agentic AI series on Google Cloud. It brings together **Patterns A, B, and C** into a deterministic **3-Gate Architecture Pattern Selector**, demonstrates how **Shared Diagnostic Agents** securely delegate over **A2A** to **Tenant-Private Agents** with hot-swapped **Dynamic GCS Skills** (`0` container image rebuilds) and **Zero-PII BigQuery FinOps OTel** attribution, and details the live **Multi-Cloud Federation Plane** linking Google Cloud (`cymbal-pooled-saas-prod` / `cymbal-finvault-silo-prod` reference verification sandbox) to **AWS Bedrock AgentCore MCP Gateway** and **10 commercial enterprise SaaS stacks**.
 
-> **Approved 3-Diagram WS5 Baseline & Live 2-Way Draw.io Sync:** All three diagrams in this capstone are synchronized 2-way with the **[WS5 Executive Architecture (10-Slide Lean Narrative Deck) ↗](https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit)** and the **[Approved 12-Slide Architecture Deck (WS5 = Slides 10–12) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p10)**, backed by live `.drawio` XML + crisp vector `.svg` files. Download the [WS5 10-Slide Executive Deck (`.pptx`)](../slides/ws5-executive-architecture-10slide-deck.pptx) or **[WS5 9-Slide Lean Visual Deck in Google Slides ↗](https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/edit)** ([`.pptx`](../slides/ws5-12slide-visual-deck.pptx)), or review the [WS5 Google Docs Spec ↗](https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/edit?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ), [`5.1 Pattern Comparison & Decision Guide`](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md), [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md), or the [Multi-Cloud Console & Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
+> **Companion Architecture Assets:** [WS5 10-Slide Executive Deck in Google Slides ↗](https://docs.google.com/presentation/d/19kKSq2SBo6-RqF-lkOnqdRnuJjUWYaXMBf_3Eg5GkCA/edit) ([`.pptx`](../slides/ws5-executive-architecture-10slide-deck.pptx)) · [WS5 9-Slide Lean Visual Deck in Google Slides ↗](https://docs.google.com/presentation/d/1zg6g3ZuASSc68bw04ec9UOPFCBuRkpGq9l6x3A7gy8A/edit) ([`.pptx`](../slides/ws5-12slide-visual-deck.pptx)) · [Approved 12-Slide Series Deck (Slides 10–12) ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p10) · [WS5 Google Doc ↗](https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/edit?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ) · [`5.1 Pattern Comparison & Decision Guide`](../workstream-5-wrap-up-and-backlog/5.1-pattern-comparison-and-decision-guide.md) · [`5.2 Capstone Backlog & GA Roadmap`](../workstream-5-wrap-up-and-backlog/5.2-capstone-backlog-and-ga-roadmap.md) · [Live SaaS Verification Atlas](saas-10-visual-verification-and-redteam-atlas.md).
 
 ---
 
@@ -42,9 +42,9 @@ TargetPattern(q_spoke, q_silo) =
 
 Regardless of which gate a tenant clears, **three non-negotiable architectural invariants** never change:
 
-1. **Invariant 1 — Dual Agent Gateways & Non-Spoofable Identity**: Every tenant traverses explicit **Client-to-Agent** and **Agent-to-Target** gateways with Cloud Armor header stripping, `RFC 8693 OBO` + `RFC 9449 DPoP` proof validation, and 5-minute Cloud KMS `ECDSA P-256` STS JWTs (`<0.15 ms` JWKS verify).
-2. **Invariant 2 — `80%` Reusable ADK Core Package (`TENANT_ISOLATION_MODE`)**: One single Python ADK codebase (`core-cymbal-agent/`) runs across Pool, Hybrid, and Silo—eliminating multi-branch security drift. Only declarative configuration (`TENANT_ISOLATION_MODE = POOLED | HYBRID_PSC | SOVEREIGN_SILO`) and Terraform perimeter modules change.
-3. **Invariant 3 — Deterministic Security & FinOps Guardrails**: Every tier enforces ARD `-94%` schema pruning, inline `<8 ms` Model Armor screening, Cloud SDP egress redaction, Valkey `120/600 RPM` fairness + thinking-token clamps (`4k`/`8k`), and Zero-PII SHA-256 BigQuery OTel attribution.
+1. **Invariant 1 — Dual Agent Gateways & Non-Spoofable Identity**: Every tenant traverses explicit **Client-to-Agent** and **Agent-to-Target** gateways (`Cloud Run Agent Identity` SPIFFE mTLS) backed by **Google Cloud Identity Platform (Multi-Tenancy) + Workload Identity Federation**, Cloud Armor header stripping, `RFC 8693 OBO` + `RFC 9449 DPoP` proof validation, and 5-minute Cloud KMS `ECDSA P-256` STS JWTs (`<0.15 ms` JWKS verify).
+2. **Invariant 2 — `80%` Reusable ADK Core Package (`TENANT_ISOLATION_MODE`)**: One single Python ADK codebase (`core-cymbal-agent/`) disaggregates the **Brain** (Gemini reasoning), **Hands** (`gVisor` / GKE `agent-sandbox`), and **Out-of-Process Token Vault** across Pool, Hybrid, and Silo—eliminating multi-branch security drift. Only declarative configuration (`TENANT_ISOLATION_MODE = POOLED | HYBRID_PSC | SOVEREIGN_SILO`) and Terraform perimeter modules change.
+3. **Invariant 3 — Deterministic Security & FinOps Guardrails**: Every tier enforces ARD `-94%` schema pruning, exact-match **Vertex AI Memory Bank (`aiplatform.googleapis.com/memoryScope` IAM CEL)** scoping, inline `<8 ms` regional Model Armor (`modelarmor.<region>.rep.googleapis.com`) screening, Cloud SDP egress redaction, Valkey `120/600 RPM` fairness + thinking-token clamps (`4k`/`8k`), and Zero-PII SHA-256 BigQuery OTel attribution.
 
 ### Master executive comparison matrix (Patterns A vs. C vs. B)
 
@@ -179,6 +179,16 @@ cd ge-blogs/examples/blog-05-agentic-triad
 
 ![WS5 Runnable Deployment Proof: Live BigQuery Zero-PII FinOps ledger table cymbal_triad_finops_2590db.otel_finops_chargeback showing prompt_sha256, token counters, estimated_usd, and http_status schema.](../screenshots/verified-cloud-console/exec_blog05_bigquery_finops_ledger.png)
 *Live Google Cloud Console BigQuery execution proof after running `examples/blog-05-agentic-triad` (`./deploy.sh && ./verify.sh`): Zero-PII `cymbal_triad_finops_2590db.otel_finops_chargeback` table capturing SHA-256 prompt hashes, cached vs. dynamic token counts, USD spend, and MCP OBO outcomes.*
+
+---
+
+## References
+
+- [Google Cloud Architecture Center — Multi-tenant agentic AI system](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) — Capstone decision criteria across Pooled, Hybrid, and Sovereign Silo agent topologies.
+- [Vertex AI Agent Engine Overview](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview) — Managed ADK orchestration, Memory Bank scopes (`aiplatform.googleapis.com/memoryScope`), and A2A delegation.
+- [Workload Identity Federation with AWS & Multi-Cloud](https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds) — Keyless OIDC STS token exchange between Google Cloud and AWS without static IAM keys.
+- [Cloud Sensitive Data Protection (DLP) Overview](https://docs.cloud.google.com/sensitive-data-protection/docs/sensitive-data-protection-overview) — Inline PII/IBAN/SSN de-identification prior to third-party MCP egress and OTel logging.
+- [BigQuery OpenTelemetry & FinOps Attribution](https://cloud.google.com/stackdriver/docs/instrumentation/overview) — Zero-PII token and sub-agent cost attribution across multi-tenant fleets.
 
 ---
 

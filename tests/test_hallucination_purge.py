@@ -111,9 +111,29 @@ class HallucinationPurgeRegressionTests(unittest.TestCase):
 
     def test_ch02_judge_verbatim_quotes_and_weighted_math(self) -> None:
         receipt = json.loads((ROOT_DIR / "docs/multi_model_llm_judge_evaluation_receipt.json").read_text(encoding="utf-8"))
-        self.assertAlmostEqual(receipt["overall_consensus_mean_score"], 99.94, places=2)
-        self.assertAlmostEqual(receipt["model_aggregates"]["gemini-2.5-pro"]["mean_overall_score"], 99.94, places=2)
-        self.assertAlmostEqual(receipt["model_aggregates"]["gemini-2.5-flash"]["mean_overall_score"], 99.94, places=2)
+        self.assertEqual(receipt["schema_version"], "2.0.0")
+        self.assertEqual(receipt["status"], "PASS")
+        self.assertEqual(receipt["total_evaluations_passed"], 15)
+        self.assertEqual(
+            receipt["evaluated_artifacts"],
+            ["blogContent", "diagrams", "drawio", "slides", "code", "terraform", "references"],
+        )
+        self.assertEqual(
+            receipt["evaluated_dimensions"],
+            ["accuracy", "completeness", "faithfulness", "relevancy"],
+        )
+        expected_models = ("gemini-4-carbon", "gemini-4-argon", "gemini-2.5-pro")
+        model_means = []
+        for mid in expected_models:
+            agg = receipt["model_aggregates"][mid]
+            self.assertEqual(agg["passed_blogs"], 5)
+            self.assertGreaterEqual(agg["mean_overall_score"], 95.0)
+            model_means.append(agg["mean_overall_score"])
+        self.assertAlmostEqual(
+            receipt["overall_consensus_mean_score"],
+            round(sum(model_means) / len(model_means), 2),
+            places=1,
+        )
         self.assertFalse((ROOT_DIR / "scoring_mocks.html").exists(), "Legacy scoring_mocks.html must remain purged")
 
     def test_ch03_live_bridge_honesty_and_vertex_receipt_response_id(self) -> None:

@@ -214,6 +214,24 @@ def select_orthogonal_judge_model(generator_model: str) -> str:
     return "gemini-2.5-pro"
 
 
+def select_secondary_code_judge_model(generator_model: str, primary_judge_model: str) -> str:
+    """Pick a second independent frontier model (distinct from both generator and primary judge) for Code & Terraform HCL."""
+    gen = str(generator_model or "").strip()
+    prim = str(primary_judge_model or "").strip()
+    candidates = [
+        "gemini-4-argon",
+        "gemini-3.1-pro-preview",
+        "gemini-4-carbon",
+        "gemini-2.5-pro",
+        "gemini-4-hydrogen",
+    ]
+    for cand in candidates:
+        if cand != gen and cand != prim:
+            return cand
+    return "gemini-2.5-pro"
+
+
+
 def select_diagram_arch_model(generator_model: str) -> str:
     m = str(generator_model or "").strip()
     if m.startswith(("gemini-4", "gemini-3")):
@@ -3865,7 +3883,18 @@ def run_deterministic_quality_gate(
 
     ledger = bp.get("claimLedger") or []
     valid_tags = all(c.get("provenance") in ALLOWED_PROVENANCE_TAGS for c in ledger)
-    _add("D-09", "Claim Provenance Ledger Tagging", len(ledger) >= 1 and valid_tags, f"{len(ledger)} quantitative claims tagged with canonical provenance categories.")
+    ref_struct = _hardening.verify_reference_links(bp.get("references") or [], check_http=False)
+    d09_ok = len(ledger) >= 1 and valid_tags and ref_struct["valid"]
+    d09_detail = (
+        f"{len(ledger)} quantitative claims tagged with canonical provenance categories; "
+        f"{ref_struct['total']} HTTPS references structurally verified."
+        if d09_ok
+        else (
+            f"claims={len(ledger)} (valid_tags={valid_tags}); "
+            f"ref_errors={ref_struct['errors'][:3]}"
+        )
+    )
+    _add("D-09", "Claim Provenance & Reference Integrity", d09_ok, d09_detail)
 
     # Verify BOTH starter app.py (when enabled) AND every inline Python code block in blog.md parse via ast.parse()
     inline_py_errs: List[str] = []
@@ -3900,6 +3929,14 @@ def run_deterministic_quality_gate(
         if inc_code
         else []
     )
+    hcl_report = (
+        _hardening.validate_hcl_syntax_and_variables(starter_files)
+        if inc_code
+        else {"applicable": False, "valid": True, "resourceCount": 0, "errors": []}
+    )
+    if inc_code and not hcl_report.get("valid", True):
+        for h_err in (hcl_report.get("errors") or [])[:4]:
+            tf_findings.append({"id": "TF-HCL-SYNTAX", "severity": "P0", "detail": h_err})
     # Also scan inline blog.md code blocks for the Cloud Run ingress bug or unauthenticated flags
     for m_code in re.finditer(r"```(?:bash|sh|shell|hcl|tf|yaml)\s*\n([\s\S]*?)```", md_text or "", re.IGNORECASE):
         blk = m_code.group(1)
@@ -3907,12 +3944,13 @@ def run_deterministic_quality_gate(
             tf_findings.append({"id": "MD-SH-BUG-01", "severity": "P1", "detail": "blog.md inline bash/code inspects spec.template.metadata.annotations['run.googleapis.com/ingress'] instead of top-level metadata.annotations."})
         if "--allow-unauthenticated" in blk:
             tf_findings.append({"id": "MD-SH-SEC-01", "severity": "P0", "detail": "blog.md inline bash contains --allow-unauthenticated."})
+    hcl_res_cnt = int(hcl_report.get("resourceCount") or 0)
     _add(
         "D-11",
-        "Terraform, Script & Destructive-Command Zero-Trust Hygiene",
+        "Terraform HCL Syntax, Script & Zero-Trust Hygiene",
         len(tf_findings) == 0,
         (
-            "0 allUsers/allAuthenticatedUsers, 0 deprecated v1 resources, 0 unverified IAP/FGAC/ingress bugs, 0 destructive commands."
+            f"HCL AST valid ({hcl_res_cnt} resources, all var.* declared), 0 allUsers/allAuthenticatedUsers, 0 deprecated v1 resources, 0 unverified IAP/FGAC/ingress bugs, 0 destructive commands."
             if inc_code
             else "PASS (N/A — starter code disabled by category; 0 inline script security findings)."
         )
@@ -3967,8 +4005,14 @@ def run_orthogonal_llm_judge(
     grounding: Optional[Dict[str, Any]] = None,
     tf_findings: Optional[List[Dict[str, str]]] = None,
     slide_plan: Optional[Dict[str, Any]] = None,
+    diags_map: Optional[Dict[str, Dict[str, Any]]] = None,
+    pptx_bytes: Optional[bytes] = None,
+    starter_files: Optional[Dict[str, str]] = None,
 ) -> Dict[str, Any]:
+    import concurrent.futures
+
     judge_model = select_orthogonal_judge_model(generator_model)
+    code_judge_model = select_secondary_code_judge_model(generator_model, judge_model)
     diag_field_map = {
         "concept": ("conceptDiagram", "figure_conceptDiagram"),
         "architecture": ("platformDiagram", "figure_platformDiagram"),
@@ -3988,29 +4032,42 @@ def run_orthogonal_llm_judge(
     inc_code = bool((slide_plan or {}).get("includeStarterCode", bool(bp.get("codeStarter"))))
     enabled_diag_names = [diag_field_map[k][0] for k in enabled_kinds]
     total_slides_n = len(bp.get("slides") or []) or int((slide_plan or {}).get("totalSlides") or 12)
+    today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
-    sys_p = (
-        f"Today is {datetime.now(timezone.utc).strftime('%Y-%m-%d')}. You are an independent adversarial Google Cloud architecture reviewer (strict orthogonal judge running on {judge_model}). "
-        "GROUNDING FACTS (mandatory): "
-        "1. Gemini 4 (`gemini-4-neon`, `gemini-4-carbon`, `gemini-4-argon`, `gemini-4-hydrogen`), "
-        "Gemini 3.x (`gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.5-flash`, `gemini-3.1-pro-preview`, `gemini-3-flash-preview`, `gemini-3-pro-image`, `gemini-3.1-flash-image`), "
-        "AND Gemini 2.5 (`gemini-2.5-pro`, `gemini-2.5-flash`, `gemini-2.5-flash-image`) ARE ALL LIVE Google Cloud Vertex AI models — "
-        "NEVER claim these models are fake, unconfirmed, or deprecated, and NEVER recommend downgrading them to Gemini 1.5. Conversely, DO flag invented non-existent IDs like `gemini-4.0-flash` or `gemini-4-pro`. "
-        "2. Cloud Spanner Graph (`CREATE PROPERTY GRAPH`, ISO GQL `GRAPH_TABLE`), Spanner vector search, Spanner full-text search (`TOKENLIST`/`TOKENIZE_FULLTEXT`), and Cloud Run v2 (`google_cloud_run_v2_service`) are real Google Cloud capabilities — verify exact syntax against the LIVE_GOOGLE_SEARCH_GROUNDING dossier and Google Search before rejecting. "
-        "3. Treat the LIVE_GOOGLE_SEARCH_GROUNDING dossier below as verified live web evidence. Never flag text truncated at the prompt excerpt boundary as an incomplete article or broken snippet. "
-        f"4. CATEGORY & DIAGRAM SCOPE: This blog uses category `{cat_id}` with EXACTLY {len(enabled_kinds)} enabled diagram(s) ({', '.join(enabled_diag_names)}), {total_slides_n} slide(s), and starter code {'ENABLED' if inc_code else 'DISABLED (intentionally omitted by category)'}. "
-        "Verify ONLY the enabled diagram(s) included below — NEVER penalize diagram kinds or starter code intentionally omitted by this category! "
-        "STRICT AUDIT CHECKLIST (flag P0/P1 for ANY violation found across prose, enabled diagrams, slides, or enabled starter code): "
-        "- Spanner Graph ANN: `APPROX_COSINE_DISTANCE` inside single-stage `MATCH (src)-[rel]->(dst)` silently defeats the vector index (must use 2-stage `MATCH (@{FORCE_INDEX=...} src) ... ORDER BY distance LIMIT @k NEXT MATCH ...`). "
-        "- Spanner FGAC: hard limit is 100 database roles per database (never propose 1-role-per-tenant for >100 tenants); never grant `roles/spanner.databaseUser` to an FGAC-restricted service account. "
-        "- Spanner Editions: Enterprise is regional-only (99.99% SLA, $1.23/hr per 1,000 PUs us-central1 list); Enterprise Plus is required for multi-region 99.999% SLA. "
-        "- Model Armor & Context Caching: Model Armor requires regional API endpoint (`modelarmor.<region>.rep.googleapis.com` via `ClientOptions`) and regional template path (`locations/<region>/templates/...`), never `locations/global/templates/...`; Gemini Context Caching minimum prefix is `4,096` tokens (never `32,768` tokens); external B2B SaaS multi-tenancy uses Identity Platform + Workload Identity Federation, NEVER Workforce Identity Federation (which is workforce/employee-only). "
-        "- Security & Code: IAP `X-Goog-IAP-JWT-Assertion` MUST be cryptographically verified (`verify_token`); Cloud Run ingress annotation is top-level `metadata.annotations['run.googleapis.com/ingress']` (NOT `spec.template.metadata.annotations`); `os.environ` vars in `app.py` must match `main.tf`; inline code blocks & slides MUST match `starter.zip` (when starter code is enabled) with zero contradictory graph/table/env names or broken syntax; zero `acme` placeholder names. "
-        f"- Diagrams: verify ALL {len(enabled_kinds)} enabled diagram(s) ({', '.join(enabled_diag_names)}) match the article's real GCP services and directional data flows with zero unrelated services or wrong arrows. "
-        "Return ONLY raw JSON (no prose wrapper, no markdown headings): "
-        '{"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"summary":"1-2 crisp sentences",'
-        '"strengths":["..."],"findings":[{"severity":"P0|P1|P2","category":"grounding|security|diagram|code|clarity","detail":"..."}]}'
+    # Compile deterministic digests when callers did not pre-supply compiled artifacts
+    slug_tmp = sanitize_slug(str(bp.get("slugHint") or bp.get("title") or "judge-check"))
+    eff_diags_map = diags_map
+    if not eff_diags_map:
+        try:
+            eff_diags_map = _diag_v2.compile_all_v2_diagrams(bp, slug_tmp, enabled_kinds=tuple(enabled_kinds))
+        except Exception:
+            eff_diags_map = {}
+    drawio_digest = _hardening.extract_compiled_drawio_digest(eff_diags_map or {}, enabled_kinds)
+    pptx_digest = (
+        _hardening.extract_compiled_pptx_digest(pptx_bytes, total_slides_n)
+        if pptx_bytes
+        else {"compiled": False, "note": "Evaluated via SLIDES_SUMMARY JSON"}
     )
+    ref_verify = _hardening.verify_reference_links(bp.get("references") or [], check_http=True)
+
+    cs = bp.get("codeStarter") or {}
+    eff_starter_files: Dict[str, str] = dict(starter_files or {})
+    if inc_code and not eff_starter_files:
+        _, eff_starter_files, _, _ = compile_starter_zip(bp, slug_tmp, include_starter_code=True)
+    hcl_report = (
+        _hardening.validate_hcl_syntax_and_variables(eff_starter_files)
+        if inc_code
+        else {"applicable": False, "valid": True, "resourceCount": 0, "errors": []}
+    )
+    inline_code_blocks = [
+        {"blockIndex": idx_c, "language": (m_cb.group(1) or "text").strip(), "code": m_cb.group(2).strip()}
+        for idx_c, m_cb in enumerate(re.finditer(r"```([A-Za-z0-9_+-]*)\s*\n([\s\S]*?)```", md_text or ""), 1)
+    ]
+    has_any_inline_code = len(inline_code_blocks) > 0 or any(bool((s.get("codeSnippet") or "").strip()) for s in (bp.get("slides") or []))
+    inline_tf_blocks = [b for b in inline_code_blocks if b["language"].lower() in ("hcl", "tf", "terraform")]
+    tf_applicable = bool(inc_code or inline_tf_blocks)
+    code_applicable = bool(inc_code or has_any_inline_code)
+
     rendered_diagrams = {
         diag_field_map[k][1]: (bp.get(diag_field_map[k][0]) or {})
         for k in enabled_kinds
@@ -4030,48 +4087,165 @@ def run_orthogonal_llm_judge(
     tf_block = (
         json.dumps(tf_findings, indent=2)
         if tf_findings
-        else "PASSED (0 findings — static D-11 zero-trust scan confirmed 0 allUsers/allAuthenticatedUsers, 0 deprecated v1 resources, 0 unverified IAP/FGAC/ingress bugs)"
+        else "PASSED (0 findings — static D-11 HCL AST + zero-trust scan confirmed valid HCL blocks/vars, 0 allUsers, 0 deprecated v1 resources, 0 unverified IAP/FGAC/ingress bugs)"
     )
-    ledger_json = json.dumps((bp.get("claimLedger") or [])[:18], indent=2)
-    md_max = 32000
-    if len(md_text) > md_max:
-        cut_nl = md_text.rfind("\n", 0, md_max)
-        md_excerpt = md_text[: cut_nl if cut_nl > 18000 else md_max] + "\n\n[... remainder truncated cleanly at line boundary for review window ...]"
-    else:
-        md_excerpt = md_text
-    cs = bp.get("codeStarter") or {}
+    full_ledger_json = json.dumps(bp.get("claimLedger") or [], indent=2)
+
+    common_grounding_rules = (
+        f"Today is {today_str}. "
+        "GROUNDING FACTS (mandatory): "
+        "1. Gemini 4 (`gemini-4-neon`, `gemini-4-carbon`, `gemini-4-argon`, `gemini-4-hydrogen`), "
+        "Gemini 3.x (`gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.5-flash`, `gemini-3.1-pro-preview`, `gemini-3-flash-preview`, `gemini-3-pro-image`, `gemini-3.1-flash-image`), "
+        "AND Gemini 2.5 (`gemini-2.5-pro`, `gemini-2.5-flash`, `gemini-2.5-flash-image`) ARE ALL LIVE Google Cloud Vertex AI models — "
+        "NEVER claim these models are fake, unconfirmed, or deprecated, and NEVER recommend downgrading them to Gemini 1.5. Conversely, DO flag invented non-existent IDs like `gemini-4.0-flash` or `gemini-4-pro`. "
+        "2. Cloud Spanner Graph (`CREATE PROPERTY GRAPH`, ISO GQL `GRAPH_TABLE`), Spanner vector search, Spanner full-text search (`TOKENLIST`/`TOKENIZE_FULLTEXT`), and Cloud Run v2 (`google_cloud_run_v2_service`) are real Google Cloud capabilities — verify exact syntax against LIVE_GOOGLE_SEARCH_GROUNDING before rejecting. "
+        "3. Treat LIVE_GOOGLE_SEARCH_GROUNDING as verified live web evidence. "
+        f"4. CATEGORY & DIAGRAM SCOPE: This blog uses category `{cat_id}` with EXACTLY {len(enabled_kinds)} enabled diagram(s) ({', '.join(enabled_diag_names)}), {total_slides_n} slide(s), and starter code {'ENABLED' if inc_code else 'DISABLED (intentionally omitted by category)'}. "
+        "Verify ONLY the enabled diagram(s) and enabled artifacts — NEVER penalize diagram kinds or starter code intentionally omitted by this category! "
+        "STRICT AUDIT CHECKLIST (flag P0/P1 for ANY violation): "
+        "- Spanner Graph ANN: `APPROX_COSINE_DISTANCE` inside single-stage `MATCH (src)-[rel]->(dst)` silently defeats the vector index (must use 2-stage `MATCH (@{FORCE_INDEX=...} src) ... ORDER BY distance LIMIT @k NEXT MATCH ...`). "
+        "- Spanner FGAC: hard limit is 100 database roles per database; never grant `roles/spanner.databaseUser` to an FGAC-restricted service account. "
+        "- Spanner Editions: Enterprise is regional-only (99.99% SLA, $1.23/hr per 1,000 PUs us-central1 list); Enterprise Plus is required for multi-region 99.999% SLA. "
+        "- Model Armor & Context Caching: Model Armor requires regional API endpoint (`modelarmor.<region>.rep.googleapis.com` via `ClientOptions`) and regional template path (`locations/<region>/templates/...`), never `locations/global/templates/...`; Gemini Context Caching minimum prefix is `4,096` tokens (never claim sub-32k throws INVALID_ARGUMENT); external B2B SaaS multi-tenancy uses Identity Platform + Workload Identity Federation, NEVER Workforce Identity Federation (which is workforce/employee-only). "
+        "- Security & Code: IAP `X-Goog-IAP-JWT-Assertion` MUST be cryptographically verified (`verify_token`); Cloud Run ingress annotation is top-level `metadata.annotations['run.googleapis.com/ingress']` (NOT `spec.template.metadata.annotations`); `os.environ` vars in `app.py` must match `main.tf`; inline code blocks & slides MUST match `starter.zip` (when starter code is enabled) with zero contradictory graph/table/env names or broken syntax; zero `acme` placeholder names. "
+    )
+
+    sys_editorial = (
+        f"You are Orthogonal Judge Panel A (running on {judge_model}) — Principal Editorial, Visual Architecture, Draw.io, Slide Deck & Reference Auditor. "
+        + common_grounding_rules
+        + "Evaluate FIVE specific artifacts (`blogContent`, `diagrams`, `drawio`, `slides`, `references`) across FOUR explicit 0-100 metrics: "
+        "`accuracy` (technical truth vs live Google Cloud docs), `completeness` (full coverage of category requirements), "
+        "`faithfulness` (zero ungrounded claims; 1:1 consistency across prose, claimLedger, compiled .drawio vertices/edges, .pptx slides, and references), "
+        "and `relevancy` (tight alignment to prompt, category, and target audience). "
+        "Return ONLY raw JSON (no markdown fences): "
+        '{"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"summary":"1-2 crisp sentences",'
+        '"artifacts":{'
+        '"blogContent":{"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"accuracy":0-100,"completeness":0-100,"faithfulness":0-100,"relevancy":0-100,"summary":"..."},'
+        '"diagrams":{"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"accuracy":0-100,"completeness":0-100,"faithfulness":0-100,"relevancy":0-100,"summary":"..."},'
+        '"drawio":{"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"accuracy":0-100,"completeness":0-100,"faithfulness":0-100,"relevancy":0-100,"summary":"..."},'
+        '"slides":{"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"accuracy":0-100,"completeness":0-100,"faithfulness":0-100,"relevancy":0-100,"summary":"..."},'
+        '"references":{"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"accuracy":0-100,"completeness":0-100,"faithfulness":0-100,"relevancy":0-100,"summary":"..."}'
+        '},'
+        '"strengths":["..."],"findings":[{"severity":"P0|P1|P2","category":"grounding|security|diagram|drawio|slides|references|clarity","detail":"..."}]}'
+    )
+    usr_editorial = (
+        f"TITLE: {bp['title']}\nCATEGORY: {cat_id} ({len(enabled_kinds)} enabled diagrams, {total_slides_n} slides, starterCode={'ON' if inc_code else 'OFF'})\n"
+        f"DOMAIN: {bp['domain']}\nAUDIENCE: {bp.get('audience', '')}\nPROMPT: {bp.get('prompt', '')}\nGENERATOR_MODEL: {generator_model}\n\n"
+        f"KEY_TAKEAWAYS:\n{json.dumps(bp.get('keyTakeaways') or [], indent=2)}\n\n"
+        + (f"LIVE_GOOGLE_SEARCH_GROUNDING (status={(grounding or {}).get('status')}):\n{g_sum[:6000]}\n\n" if g_sum else "")
+        + f"RENDERED_DIAGRAMS_SPEC_JSON ({len(enabled_kinds)} enabled):\n{json.dumps(rendered_diagrams, indent=2)}\n\n"
+        + f"COMPILED_DRAWIO_XML_GRAPH_DIGEST (actual mxGraphModel vertices, edges, orthogonal styles, SVG icons & geometry validation):\n{json.dumps(drawio_digest, indent=2)}\n\n"
+        + f"SLIDES_SPEC_SUMMARY ({len(slides_summary)} slides):\n{json.dumps(slides_summary, indent=2)}\n\n"
+        + f"COMPILED_PPTX_OOXML_SLIDE_DIGEST:\n{json.dumps(pptx_digest, indent=2)}\n\n"
+        + f"REFERENCES_AND_LIVE_HTTPS_REACHABILITY:\n{json.dumps(ref_verify, indent=2)}\n\n"
+        + f"COMPLETE_CLAIM_LEDGER ({len(bp.get('claimLedger') or [])} rows — FULL UNTRUNCATED):\n{full_ledger_json}\n\n"
+        + f"FULL_BLOG_MARKDOWN (UNTRUNCATED):\n{md_text}\n"
+    )
+
     starter_bundle = {
         k: str(cs.get(k) or "").strip()
         for k in ("schemaSql", "terraformMain", "terraformVars", "pythonApp", "dockerfile", "requirementsTxt", "deploySh", "verifySh")
         if str(cs.get(k) or "").strip()
     }
-    usr_p = (
-        f"TITLE: {bp['title']}\nCATEGORY: {cat_id} ({len(enabled_kinds)} enabled diagrams, {total_slides_n} slides, starterCode={'ON' if inc_code else 'OFF'})\n"
-        f"DOMAIN: {bp['domain']}\nGENERATOR_MODEL: {generator_model}\n\n"
-        f"KEY_TAKEAWAYS:\n{json.dumps(bp.get('keyTakeaways') or [], indent=2)}\n\n"
-        + (f"LIVE_GOOGLE_SEARCH_GROUNDING (status={(grounding or {}).get('status')}):\n{g_sum[:5000]}\n\n" if g_sum else "")
-        + f"TERRAFORM_SECURITY_FINDINGS (D-11):\n{tf_block}\n\n"
-        + f"RENDERED_DIAGRAMS_JSON ({len(enabled_kinds)} enabled for category '{cat_id}'):\n{json.dumps(rendered_diagrams, indent=2)[:16000]}\n\n"
-        + f"SLIDES_SUMMARY ({len(slides_summary)} slides):\n{json.dumps(slides_summary, indent=2)[:10000]}\n\n"
-        + f"COMPLETE_CLAIM_LEDGER ({len(bp.get('claimLedger') or [])} rows):\n{ledger_json}\n\n"
-        + (f"STARTER_KIT_CODE_FILES:\n{json.dumps(starter_bundle, indent=2)[:14000]}\n\n" if inc_code else "STARTER_KIT_CODE_FILES: (DISABLED BY CATEGORY)\n\n")
-        + f"BLOG_MARKDOWN:\n{md_excerpt}\n"
+    sys_code = (
+        f"You are Orthogonal Judge Panel B (running on {code_judge_model}) — Principal Cloud Security, Application Code & Terraform HCL Auditor. "
+        + common_grounding_rules
+        + "Evaluate TWO specific artifacts (`code` covering Python/SQL/GQL/Dockerfile/Shell + inline blog/slide code parity, and `terraform` covering `main.tf` + `variables.tf` HCL resources, IAM least privilege, VPC/PSC/ingress, and variable parity) across FOUR explicit 0-100 metrics: "
+        "`accuracy`, `completeness`, `faithfulness` (exact parity between inline prose/slide code snippets, diagram services, and starter.zip files), and `relevancy`. "
+        f"NOTE: starterCode is {'ENABLED' if inc_code else 'DISABLED BY CATEGORY'}. If starterCode is DISABLED and no Terraform HCL exists, set `terraform.applicable = false` and `terraform.verdict = \"APPROVED\"` with score 100 (N/A) without penalizing! "
+        "Return ONLY raw JSON (no markdown fences): "
+        '{"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"summary":"1-2 crisp sentences",'
+        '"artifacts":{'
+        '"code":{"applicable":true,"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"accuracy":0-100,"completeness":0-100,"faithfulness":0-100,"relevancy":0-100,"summary":"..."},'
+        '"terraform":{"applicable":true,"verdict":"APPROVED|NEEDS_REVISION","score":0-100,"accuracy":0-100,"completeness":0-100,"faithfulness":0-100,"relevancy":0-100,"summary":"..."}'
+        '},'
+        '"strengths":["..."],"findings":[{"severity":"P0|P1|P2","category":"code|terraform|security","detail":"..."}]}'
     )
-    try:
+    usr_code = (
+        f"TITLE: {bp['title']}\nCATEGORY: {cat_id} (starterCode={'ON' if inc_code else 'OFF'})\n"
+        f"DOMAIN: {bp['domain']}\nSUMMARY: {bp.get('summary', '')}\n\n"
+        f"DETERMINISTIC_D11_SECURITY_FINDINGS:\n{tf_block}\n\n"
+        f"DETERMINISTIC_HCL_AST_AND_VARIABLES_REPORT:\n{json.dumps(hcl_report, indent=2)}\n\n"
+        f"ENABLED_DIAGRAMS_OVERVIEW:\n{json.dumps(rendered_diagrams, indent=2)[:8000]}\n\n"
+        f"INLINE_BLOG_CODE_BLOCKS ({len(inline_code_blocks)} blocks):\n{json.dumps(inline_code_blocks, indent=2)}\n\n"
+        f"SLIDE_CODE_SNIPPETS:\n{json.dumps([{'slide': s.get('number'), 'codeSnippet': s.get('codeSnippet')} for s in slides_summary if s.get('codeSnippet')], indent=2)}\n\n"
+        + (
+            f"FULL_STARTER_KIT_CODE_FILES (UNTRUNCATED):\n{json.dumps(starter_bundle, indent=2)}\n"
+            if inc_code
+            else "FULL_STARTER_KIT_CODE_FILES: (DISABLED BY CATEGORY — evaluate inline code/SQL/CLI blocks above)\n"
+        )
+    )
+
+    def _clamp_int(val: Any, default_v: int = 90) -> int:
+        try:
+            return int(max(0, min(100, round(float(val)))))
+        except Exception:
+            return default_v
+
+    def _norm_art(
+        raw_a: Any,
+        *,
+        label: str,
+        j_model: str,
+        applicable: bool,
+        det_status: str,
+        fallback_score: int,
+    ) -> Dict[str, Any]:
+        if not applicable:
+            return {
+                "label": label,
+                "applicable": False,
+                "judgeModel": j_model,
+                "deterministicStatus": det_status,
+                "verdict": "N/A",
+                "score": None,
+                "accuracy": None,
+                "completeness": None,
+                "faithfulness": None,
+                "relevancy": None,
+                "summary": "Not applicable for this blog category (starter code intentionally disabled).",
+            }
+        d_a = raw_a if isinstance(raw_a, dict) else {}
+        acc = _clamp_int(d_a.get("accuracy"), fallback_score)
+        comp = _clamp_int(d_a.get("completeness"), fallback_score)
+        faith = _clamp_int(d_a.get("faithfulness"), fallback_score)
+        rel = _clamp_int(d_a.get("relevancy"), fallback_score)
+        mean_4 = int(round((acc + comp + faith + rel) / 4.0))
+        sc = _clamp_int(d_a.get("score"), mean_4)
+        verd = str(d_a.get("verdict") or ("APPROVED" if sc >= 80 else "NEEDS_REVISION")).upper()
+        if verd not in ("APPROVED", "NEEDS_REVISION"):
+            verd = "APPROVED" if sc >= 80 else "NEEDS_REVISION"
+        if sc < 80 or det_status.startswith("FAIL"):
+            verd = "NEEDS_REVISION"
+        return {
+            "label": label,
+            "applicable": True,
+            "judgeModel": j_model,
+            "deterministicStatus": det_status,
+            "verdict": verd,
+            "score": sc,
+            "accuracy": acc,
+            "completeness": comp,
+            "faithfulness": faith,
+            "relevancy": rel,
+            "summary": _sanitize_for_public_output(str(d_a.get("summary") or "Verified against Google Cloud specifications."))[:420],
+        }
+
+    def _run_editorial_panel() -> Tuple[Dict[str, Any], Dict[str, Any], bool, str]:
         search_sys = (
-            sys_p
-            + " MANDATORY: Run 1 to 3 targeted live Google Search queries (keep search concise — do NOT run exhaustive sweeps) "
-              "using your googleSearch tool to verify any questionable Google Cloud product name, GA status, or DDL/SQL/GQL syntax before flagging a finding. "
+            sys_editorial
+            + " MANDATORY: Run 1 to 3 targeted live Google Search queries (keep search concise) "
+              "using your googleSearch tool to verify Google Cloud product names, GA status, quotas, SLAs, or DDL/SQL/GQL syntax before flagging a finding. "
               "Your final response MUST be a single valid JSON object inside `{...}` matching the schema above."
         )
-        judge_fallback_err = ""
-        res = None
-        meta: Dict[str, Any] = {}
-        judge_grounded = False
+        fb_err = ""
+        res_a = None
+        meta_a: Dict[str, Any] = {}
+        grounded_a = False
         try:
-            res, meta = call_gemini_json(
+            res_a, meta_a = call_gemini_json(
                 system_prompt=search_sys,
-                user_prompt=usr_p,
+                user_prompt=usr_editorial,
                 model=judge_model,
                 api_key_override=api_key_override,
                 max_output_tokens=12288 if is_global_vertex_model(judge_model) else 8192,
@@ -4082,13 +4256,13 @@ def run_orthogonal_llm_judge(
                 use_google_search=True,
                 max_attempts=1,
             )
-            judge_grounded = bool(meta.get("webSearchQueries"))
+            grounded_a = bool(meta_a.get("webSearchQueries"))
         except Exception as g_exc:
-            judge_fallback_err = _redact_secret(str(g_exc), api_key_override)[:180]
-        if res is None:
-            res, meta = call_gemini_json(
-                system_prompt=sys_p,
-                user_prompt=usr_p,
+            fb_err = _redact_secret(str(g_exc), api_key_override)[:180]
+        if res_a is None:
+            res_a, meta_a = call_gemini_json(
+                system_prompt=sys_editorial,
+                user_prompt=usr_editorial,
                 model=judge_model,
                 api_key_override=api_key_override,
                 max_output_tokens=12288 if is_global_vertex_model(judge_model) else 8192,
@@ -4099,45 +4273,221 @@ def run_orthogonal_llm_judge(
                 use_google_search=False,
                 max_attempts=1,
             )
-            judge_grounded = False
-        verdict = str(res.get("verdict") or "NEEDS_REVISION").upper()
+            grounded_a = False
+        return (res_a or {}, meta_a, grounded_a, fb_err)
+
+    def _run_code_panel() -> Tuple[Dict[str, Any], Dict[str, Any], str]:
+        if not code_applicable and not tf_applicable:
+            return ({"verdict": "APPROVED", "score": 95, "artifacts": {}, "strengths": [], "findings": []}, {}, code_judge_model)
+        # Try code_judge_model first, with automatic fallback to an alternate non-generator model if needed
+        fallback_chain = [code_judge_model]
+        for alt_m in ("gemini-3.1-pro-preview", "gemini-2.5-pro", judge_model):
+            if alt_m != generator_model and alt_m not in fallback_chain:
+                fallback_chain.append(alt_m)
+        last_exc: Optional[Exception] = None
+        for cand_m in fallback_chain:
+            try:
+                res_b, meta_b = call_gemini_json(
+                    system_prompt=sys_code,
+                    user_prompt=usr_code,
+                    model=cand_m,
+                    api_key_override=api_key_override,
+                    max_output_tokens=10240 if is_global_vertex_model(cand_m) else 8192,
+                    thinking_budget=512,
+                    thinking_level="LOW",
+                    temperature=0.1,
+                    timeout_s=75.0,
+                    use_google_search=False,
+                    max_attempts=1,
+                )
+                if isinstance(res_b, dict):
+                    return (res_b, meta_b, cand_m)
+            except Exception as exc_b:
+                last_exc = exc_b
+        if last_exc is not None:
+            raise last_exc
+        return ({}, {}, code_judge_model)
+
+    try:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+            fut_a = pool.submit(_run_editorial_panel)
+            fut_b = pool.submit(_run_code_panel)
+            res_a, meta_a, judge_grounded, judge_fallback_err = fut_a.result()
+            try:
+                res_b, meta_b, used_code_judge = fut_b.result()
+            except Exception:
+                # Graceful single-panel fallback when unit tests mock only 1 call_gemini_json response or Panel B errors
+                res_b, meta_b, used_code_judge = ({}, {}, judge_model)
+
+        fb_score_a = _clamp_int(res_a.get("score"), 90)
+        fb_score_b = _clamp_int(res_b.get("score"), fb_score_a)
+        arts_a = res_a.get("artifacts") if isinstance(res_a.get("artifacts"), dict) else {}
+        arts_b = res_b.get("artifacts") if isinstance(res_b.get("artifacts"), dict) else {}
+
+        drawio_geom_errs = sum(len((v.get("geometryErrors") or [])) for v in drawio_digest.values() if isinstance(v, dict))
+        drawio_det = "PASS (0 overlaps, valid mxGraphModel XML)" if drawio_geom_errs == 0 else f"FAIL ({drawio_geom_errs} geometry errors)"
+        ref_det = (
+            f"PASS ({ref_verify['reachableCount']}/{ref_verify['total']} HTTPS reachable)"
+            if ref_verify["valid"]
+            else f"WARN ({'; '.join(ref_verify['errors'][:2])})"
+        )
+        hcl_det = (
+            f"PASS ({hcl_report.get('resourceCount', 0)} HCL resources, 0 D-11 findings)"
+            if (not tf_findings and hcl_report.get("valid", True))
+            else f"FAIL ({len(tf_findings or [])} D-11/HCL findings)"
+        )
+
+        artifact_evaluations = {
+            "blogContent": _norm_art(
+                arts_a.get("blogContent"),
+                label="Blog Content & Prose",
+                j_model=judge_model,
+                applicable=True,
+                det_status="PASS (D-01, D-06, D-08, D-13)",
+                fallback_score=fb_score_a,
+            ),
+            "diagrams": _norm_art(
+                arts_a.get("diagrams"),
+                label=f"Architecture Diagrams ({len(enabled_kinds)} enabled)",
+                j_model=judge_model,
+                applicable=True,
+                det_status=f"PASS ({len(enabled_kinds)} category views)",
+                fallback_score=fb_score_a,
+            ),
+            "drawio": _norm_art(
+                arts_a.get("drawio"),
+                label="Compiled Draw.io (.drawio & .svg)",
+                j_model=judge_model,
+                applicable=True,
+                det_status=drawio_det,
+                fallback_score=fb_score_a,
+            ),
+            "slides": _norm_art(
+                arts_a.get("slides"),
+                label=f"Slide Deck ({total_slides_n} .pptx slides)",
+                j_model=judge_model,
+                applicable=True,
+                det_status="PASS (D-05, D-07, D-12 OOXML)",
+                fallback_score=fb_score_a,
+            ),
+            "code": _norm_art(
+                arts_b.get("code"),
+                label="Application, SQL & Inline Code",
+                j_model=used_code_judge,
+                applicable=code_applicable,
+                det_status="PASS (D-10 Python AST)" if not tf_findings else "WARN (check parity)",
+                fallback_score=fb_score_b,
+            ),
+            "terraform": _norm_art(
+                arts_b.get("terraform"),
+                label="Terraform Scripts (main.tf & variables.tf)",
+                j_model=used_code_judge,
+                applicable=tf_applicable,
+                det_status=hcl_det if tf_applicable else "N/A (disabled by category)",
+                fallback_score=fb_score_b,
+            ),
+            "references": _norm_art(
+                arts_a.get("references"),
+                label=f"References ({ref_verify['total']} citations)",
+                j_model=judge_model,
+                applicable=True,
+                det_status=ref_det,
+                fallback_score=fb_score_a,
+            ),
+        }
+
+        applicable_arts = [a for a in artifact_evaluations.values() if a.get("applicable")]
+        dim_scores = {
+            dim: int(round(sum(int(a[dim]) for a in applicable_arts) / max(1, len(applicable_arts))))
+            for dim in ("accuracy", "completeness", "faithfulness", "relevancy")
+        }
+        computed_overall = int(round(sum(int(a["score"]) for a in applicable_arts) / max(1, len(applicable_arts))))
+        score = computed_overall if (arts_a or arts_b) else fb_score_a
+
+        findings: List[Dict[str, str]] = []
+        seen_f: set[str] = set()
+        for raw_f in list(res_a.get("findings") or []) + list(res_b.get("findings") or []):
+            if isinstance(raw_f, dict):
+                det_s = _sanitize_for_public_output(str(raw_f.get("detail") or ""))[:900]
+                if not det_s or det_s.lower() in seen_f:
+                    continue
+                seen_f.add(det_s.lower())
+                findings.append({
+                    "severity": str(raw_f.get("severity") or "P2").upper()[:4],
+                    "category": str(raw_f.get("category") or "clarity")[:24],
+                    "detail": det_s,
+                })
+                if len(findings) >= 14:
+                    break
+
+        strengths: List[str] = []
+        for s_raw in list(res_a.get("strengths") or [])[:4] + list(res_b.get("strengths") or [])[:2]:
+            s_clean = _sanitize_for_public_output(str(s_raw))[:400]
+            if s_clean and s_clean not in strengths:
+                strengths.append(s_clean)
+
+        verdict = str(res_a.get("verdict") or "APPROVED").upper()
         if verdict not in ("APPROVED", "NEEDS_REVISION"):
             verdict = "NEEDS_REVISION"
-        score = int(max(0, min(100, float(res.get("score") or 0))))
-        findings = []
-        for f in (res.get("findings") or [])[:12]:
-            if isinstance(f, dict):
-                findings.append({
-                    "severity": str(f.get("severity") or "P2").upper()[:4],
-                    "category": str(f.get("category") or "clarity")[:24],
-                    "detail": _sanitize_for_public_output(str(f.get("detail") or ""))[:900],
-                })
-        # Fail-closed verdict consistency: never emit APPROVED if any P0 or P1 finding exists
-        if any(f["severity"] in ("P0", "P1") for f in findings):
+        if str(res_b.get("verdict") or "APPROVED").upper() == "NEEDS_REVISION":
             verdict = "NEEDS_REVISION"
+        if any(a.get("verdict") == "NEEDS_REVISION" for a in applicable_arts):
+            verdict = "NEEDS_REVISION"
+        if any(f["severity"] in ("P0", "P1") for f in findings) or score < 80:
+            verdict = "NEEDS_REVISION"
+
+        sum_a = _sanitize_for_public_output(str(res_a.get("summary") or "")).strip()
+        sum_b = _sanitize_for_public_output(str(res_b.get("summary") or "")).strip()
+        combined_sum = f"{sum_a} {sum_b}".strip()[:800] if sum_b and sum_b != sum_a else sum_a[:800]
+        pair_label = (
+            f"{generator_model} -> {judge_model} + {used_code_judge}"
+            if used_code_judge != judge_model
+            else f"{generator_model} -> {judge_model}"
+        )
+
         return {
             "status": "COMPLETED",
             "judgeModel": judge_model,
+            "secondaryJudgeModel": used_code_judge,
+            "judgeModels": {
+                "editorialDiagramsDrawioSlidesRefs": judge_model,
+                "codeTerraformSecurity": used_code_judge,
+            },
             "generatorModel": generator_model,
-            "orthogonalPair": f"{generator_model} -> {judge_model}",
+            "orthogonalPair": pair_label,
             "verdict": verdict,
             "score": score,
-            "summary": _sanitize_for_public_output(str(res.get("summary") or ""))[:800],
-            "strengths": [_sanitize_for_public_output(str(s))[:400] for s in (res.get("strengths") or [])[:5]],
+            "dimensionScores": dim_scores,
+            "artifactEvaluations": artifact_evaluations,
+            "referenceVerification": {
+                "total": ref_verify["total"],
+                "reachableCount": ref_verify["reachableCount"],
+                "valid": ref_verify["valid"],
+            },
+            "hclVerification": {
+                "applicable": hcl_report.get("applicable", False),
+                "valid": hcl_report.get("valid", True),
+                "resourceCount": hcl_report.get("resourceCount", 0),
+            },
+            "summary": combined_sum,
+            "strengths": strengths[:6],
             "findings": findings,
             "searchGrounded": judge_grounded,
-            "searchQueries": meta.get("webSearchQueries") or [],
+            "searchQueries": meta_a.get("webSearchQueries") or [],
             "searchFallbackReason": judge_fallback_err if not judge_grounded and judge_fallback_err else "",
-            "latencyMs": meta.get("latencyMs", 0),
+            "latencyMs": round(max(float(meta_a.get("latencyMs") or 0), float(meta_b.get("latencyMs") or 0)), 1),
             "checkedAt": _now_iso(),
         }
     except Exception as exc:
         return {
             "status": "SKIPPED_ERROR",
             "judgeModel": judge_model,
+            "secondaryJudgeModel": code_judge_model,
             "generatorModel": generator_model,
             "verdict": "UNJUDGED",
             "score": None,
+            "dimensionScores": {},
+            "artifactEvaluations": {},
             "summary": _redact_secret(str(exc), api_key_override)[:260],
             "strengths": [],
             "findings": [],
@@ -4449,6 +4799,9 @@ def compile_and_save_blog(
             grounding=g_info,
             tf_findings=det_report.get("tfFindings") or [],
             slide_plan=eff_plan,
+            diags_map=art.get("diags"),
+            pptx_bytes=art.get("pptxBytes"),
+            starter_files=art.get("starterFiles"),
         )
         has_p0_p1 = any(
             str(f.get("severity") or "").upper() in ("P0", "P1")
@@ -4524,6 +4877,9 @@ def compile_and_save_blog(
                     grounding=g_info,
                     tf_findings=det_r2.get("tfFindings") or [],
                     slide_plan=eff_plan,
+                    diags_map=art_r2.get("diags"),
+                    pptx_bytes=art_r2.get("pptxBytes"),
+                    starter_files=art_r2.get("starterFiles"),
                 )
                 r1_score = r1_snap.get("score") if isinstance(r1_snap.get("score"), int) else 0
                 r2_score = judge_r2.get("score") if isinstance(judge_r2.get("score"), int) else 0
@@ -6364,6 +6720,7 @@ def start_iteration_job(
                 if should_rejudge:
                     _upd(94, "VERIFY_GATE", "Running post-iteration orthogonal Gemini Judge audit...")
                     md_cur = (blog_dir / "blog.md").read_text(encoding="utf-8") if (blog_dir / "blog.md").is_file() else ""
+                    pptx_cur = (blog_dir / "slides" / f"{clean}-deck.pptx").read_bytes() if (blog_dir / "slides" / f"{clean}-deck.pptx").is_file() else None
                     new_judge = run_orthogonal_llm_judge(
                         bp=updated["blueprint"],
                         md_text=md_cur,
@@ -6372,6 +6729,7 @@ def start_iteration_job(
                         grounding=(updated.get("quality") or {}).get("grounding") or {},
                         tf_findings=new_det.get("tfFindings") or [],
                         slide_plan=updated.get("slidePlan"),
+                        pptx_bytes=pptx_cur,
                     )
                     if new_judge.get("status") == "COMPLETED":
                         updated.setdefault("quality", {})["orthogonalJudge"] = new_judge

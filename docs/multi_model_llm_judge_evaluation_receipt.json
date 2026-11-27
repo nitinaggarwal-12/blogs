@@ -1,55 +1,112 @@
 {
-  "schema_version": "1.0.0",
-  "generated_at": "2026-11-01T11:31:22Z",
+  "schema_version": "2.0.0",
+  "generated_at": "2026-11-27T00:28:40Z",
   "gcp_project_id": "ramp-portal-dev",
-  "total_evaluations_expected": 10,
-  "total_evaluations_completed": 10,
-  "total_evaluations_passed": 10,
-  "overall_consensus_mean_score": 99.94,
+  "total_evaluations_expected": 15,
+  "total_evaluations_completed": 15,
+  "total_evaluations_passed": 15,
+  "overall_consensus_mean_score": 97.49,
   "status": "PASS",
   "judge_models": [
     {
-      "id": "gemini-2.5-pro",
-      "family": "Gemini 2.5 Pro (Enterprise Reasoning Judge)",
-      "location": "us-central1",
-      "use_thinking_level": false
+      "id": "gemini-4-carbon",
+      "family": "Gemini 4 Carbon (Frontier Architecture & Faithfulness Judge)",
+      "location": "global",
+      "use_thinking_level": true
     },
     {
-      "id": "gemini-2.5-flash",
-      "family": "Gemini 2.5 Flash (Enterprise Structural Judge)",
+      "id": "gemini-4-argon",
+      "family": "Gemini 4 Argon (Frontier Code, Terraform HCL & Security Judge)",
+      "location": "global",
+      "use_thinking_level": true
+    },
+    {
+      "id": "gemini-2.5-pro",
+      "family": "Gemini 2.5 Pro (Cross-Generation Consensus Judge)",
       "location": "us-central1",
       "use_thinking_level": false
     }
   ],
+  "evaluated_artifacts": [
+    "blogContent",
+    "diagrams",
+    "drawio",
+    "slides",
+    "code",
+    "terraform",
+    "references"
+  ],
+  "evaluated_dimensions": [
+    "accuracy",
+    "completeness",
+    "faithfulness",
+    "relevancy"
+  ],
   "model_aggregates": {
-    "gemini-2.5-pro": {
-      "model_family": "Gemini 2.5 Pro (Enterprise Reasoning Judge)",
-      "location": "us-central1",
+    "gemini-4-carbon": {
+      "model_family": "Gemini 4 Carbon (Frontier Architecture & Faithfulness Judge)",
+      "location": "global",
       "evaluated_blogs": 5,
       "passed_blogs": 5,
-      "mean_overall_score": 99.94,
+      "mean_overall_score": 96.18,
       "mean_dimension_scores": {
-        "terminology_and_systems_primitives": 100.0,
-        "pedagogical_flow_and_context_bridges": 100.0,
-        "visual_1to1_badge_and_code_grounding": 100.0,
-        "display_latex_and_symbol_definitions": 99.6,
-        "production_code_and_10saas_evidence": 100.0,
-        "well_architected_and_slide_launch_parity": 100.0
+        "accuracy": 96.94,
+        "completeness": 95.77,
+        "faithfulness": 95.06,
+        "relevancy": 96.94
+      },
+      "mean_artifact_scores": {
+        "blogContent": 96.72,
+        "diagrams": 96.56,
+        "drawio": 96.06,
+        "slides": 95.94,
+        "code": 95.22,
+        "terraform": 95.24,
+        "references": 97.36
       }
     },
-    "gemini-2.5-flash": {
-      "model_family": "Gemini 2.5 Flash (Enterprise Structural Judge)",
+    "gemini-4-argon": {
+      "model_family": "Gemini 4 Argon (Frontier Code, Terraform HCL & Security Judge)",
+      "location": "global",
+      "evaluated_blogs": 5,
+      "passed_blogs": 5,
+      "mean_overall_score": 97.64,
+      "mean_dimension_scores": {
+        "accuracy": 98.14,
+        "completeness": 97.17,
+        "faithfulness": 97.26,
+        "relevancy": 98.0
+      },
+      "mean_artifact_scores": {
+        "blogContent": 98.16,
+        "diagrams": 97.52,
+        "drawio": 97.1,
+        "slides": 97.28,
+        "code": 97.04,
+        "terraform": 97.78,
+        "references": 98.6
+      }
+    },
+    "gemini-2.5-pro": {
+      "model_family": "Gemini 2.5 Pro (Cross-Generation Consensus Judge)",
       "location": "us-central1",
       "evaluated_blogs": 5,
       "passed_blogs": 5,
-      "mean_overall_score": 99.94,
+      "mean_overall_score": 98.66,
       "mean_dimension_scores": {
-        "terminology_and_systems_primitives": 100.0,
-        "pedagogical_flow_and_context_bridges": 99.6,
-        "visual_1to1_badge_and_code_grounding": 100.0,
-        "display_latex_and_symbol_definitions": 100.0,
-        "production_code_and_10saas_evidence": 100.0,
-        "well_architected_and_slide_launch_parity": 100.0
+        "accuracy": 99.0,
+        "completeness": 98.11,
+        "faithfulness": 98.83,
+        "relevancy": 98.71
+      },
+      "mean_artifact_scores": {
+        "blogContent": 98.5,
+        "diagrams": 98.64,
+        "drawio": 98.58,
+        "slides": 98.34,
+        "code": 98.64,
+        "terraform": 98.84,
+        "references": 99.04
       }
     }
   },
@@ -57,116 +114,221 @@
     "WS1": {
       "filename": "ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
       "deterministic_metrics": {
-        "bytes": 83124,
-        "sha256": "20366e9d0d5ca471385541298497bae0064110dd92fd5f4c657e1ac262ab99fc",
-        "has_terminology_section": true,
-        "display_latex_count": 3,
-        "where_definition_blocks_count": 2,
-        "architectural_grounding_boundary_count": 3,
-        "matched_callout_badges_7_of_7": 7,
-        "line_range_code_citations_count": 16,
-        "has_deploy_1click_link": true,
+        "bytes": 50489,
+        "sha256": "1774b7c6c22b660bfda799aeef1c813df2b6040e472a639e53899d3cb4b171f4",
+        "publish_ready": true,
+        "diagram_count": 2,
+        "drawio_compiled_all": true,
+        "lean_slides": 10,
+        "exec_slides": 11,
+        "py_ast_files_verified": 3,
+        "py_ast_errors": [],
+        "terraform_dirs_verified": 1,
+        "terraform_resources_total": 13,
+        "terraform_hcl_valid": true,
+        "references_total": 6,
+        "references_https_reachable": 6,
         "has_10saas_verification_matrix": true,
-        "well_architected_pillars_5_of_5": 5
+        "has_runnable_deploy_section": true
       },
-      "models_evaluated": 2,
-      "models_passed": 2,
-      "consensus_mean_score": 99.85,
+      "models_evaluated": 3,
+      "models_passed": 3,
+      "consensus_mean_score": 97.94,
+      "consensus_dimension_scores": {
+        "accuracy": 98.38,
+        "completeness": 97.47,
+        "faithfulness": 97.86,
+        "relevancy": 98.05
+      },
+      "consensus_artifact_scores": {
+        "blogContent": 98.43,
+        "diagrams": 97.9,
+        "drawio": 97.7,
+        "slides": 97.4,
+        "code": 97.57,
+        "terraform": 97.67,
+        "references": 98.9
+      },
       "scores_by_model": {
-        "gemini-2.5-pro": 99.7,
-        "gemini-2.5-flash": 100
+        "gemini-4-carbon": 97.07,
+        "gemini-4-argon": 98.1,
+        "gemini-2.5-pro": 98.64
       }
     },
     "WS2": {
       "filename": "ws2-pattern-a-pooled-architecture.md",
       "deterministic_metrics": {
-        "bytes": 88348,
-        "sha256": "20aa4cf49d2ce2e7ee63ed33173e788dc8b1fde3b4581c7ebbd60062f3fe0cf2",
-        "has_terminology_section": true,
-        "display_latex_count": 2,
-        "where_definition_blocks_count": 2,
-        "architectural_grounding_boundary_count": 3,
-        "matched_callout_badges_7_of_7": 7,
-        "line_range_code_citations_count": 8,
-        "has_deploy_1click_link": true,
+        "bytes": 35051,
+        "sha256": "5ef6a30ceac543cadfb3b2e1f1ec9c289446779235969d75bfc8f0f407670f21",
+        "publish_ready": true,
+        "diagram_count": 3,
+        "drawio_compiled_all": true,
+        "lean_slides": 8,
+        "exec_slides": 10,
+        "py_ast_files_verified": 1,
+        "py_ast_errors": [],
+        "terraform_dirs_verified": 2,
+        "terraform_resources_total": 18,
+        "terraform_hcl_valid": true,
+        "references_total": 5,
+        "references_https_reachable": 5,
         "has_10saas_verification_matrix": true,
-        "well_architected_pillars_5_of_5": 5
+        "has_runnable_deploy_section": true
       },
-      "models_evaluated": 2,
-      "models_passed": 2,
-      "consensus_mean_score": 100.0,
+      "models_evaluated": 3,
+      "models_passed": 3,
+      "consensus_mean_score": 97.74,
+      "consensus_dimension_scores": {
+        "accuracy": 98.19,
+        "completeness": 97.29,
+        "faithfulness": 97.38,
+        "relevancy": 98.1
+      },
+      "consensus_artifact_scores": {
+        "blogContent": 97.9,
+        "diagrams": 97.9,
+        "drawio": 97.73,
+        "slides": 97.57,
+        "code": 97.13,
+        "terraform": 97.0,
+        "references": 98.83
+      },
       "scores_by_model": {
-        "gemini-2.5-pro": 100,
-        "gemini-2.5-flash": 100
+        "gemini-4-carbon": 96.4,
+        "gemini-4-argon": 97.97,
+        "gemini-2.5-pro": 98.86
       }
     },
     "WS3": {
       "filename": "ws3-pattern-b-sovereign-silos.md",
       "deterministic_metrics": {
-        "bytes": 77367,
-        "sha256": "ad4af5c6e512da90c08ef8eb9e44decc3c08eaed7afe99a87faee89be03d9ea1",
-        "has_terminology_section": true,
-        "display_latex_count": 2,
-        "where_definition_blocks_count": 2,
-        "architectural_grounding_boundary_count": 3,
-        "matched_callout_badges_7_of_7": 7,
-        "line_range_code_citations_count": 7,
-        "has_deploy_1click_link": true,
+        "bytes": 27361,
+        "sha256": "0fe2263bd03b8c8f3d8bc27b3546fcdd7aae286efa9b78f6b89ecf46153d0cd6",
+        "publish_ready": true,
+        "diagram_count": 2,
+        "drawio_compiled_all": true,
+        "lean_slides": 7,
+        "exec_slides": 10,
+        "py_ast_files_verified": 1,
+        "py_ast_errors": [],
+        "terraform_dirs_verified": 2,
+        "terraform_resources_total": 25,
+        "terraform_hcl_valid": true,
+        "references_total": 5,
+        "references_https_reachable": 5,
         "has_10saas_verification_matrix": true,
-        "well_architected_pillars_5_of_5": 5
+        "has_runnable_deploy_section": true
       },
-      "models_evaluated": 2,
-      "models_passed": 2,
-      "consensus_mean_score": 100.0,
+      "models_evaluated": 3,
+      "models_passed": 3,
+      "consensus_mean_score": 96.95,
+      "consensus_dimension_scores": {
+        "accuracy": 97.57,
+        "completeness": 96.62,
+        "faithfulness": 96.0,
+        "relevancy": 97.62
+      },
+      "consensus_artifact_scores": {
+        "blogContent": 96.9,
+        "diagrams": 97.47,
+        "drawio": 96.8,
+        "slides": 96.97,
+        "code": 95.63,
+        "terraform": 96.17,
+        "references": 98.57
+      },
       "scores_by_model": {
-        "gemini-2.5-pro": 100,
-        "gemini-2.5-flash": 100
+        "gemini-4-carbon": 94.57,
+        "gemini-4-argon": 97.5,
+        "gemini-2.5-pro": 98.78
       }
     },
     "WS4": {
       "filename": "ws4-pattern-c-hybrid-dynamic-tiering.md",
       "deterministic_metrics": {
-        "bytes": 84181,
-        "sha256": "e860fa4dd0ce042b7afa5756bb3b4feaebf3a8de897d91076d0ca37c474e5740",
-        "has_terminology_section": true,
-        "display_latex_count": 2,
-        "where_definition_blocks_count": 2,
-        "architectural_grounding_boundary_count": 3,
-        "matched_callout_badges_7_of_7": 7,
-        "line_range_code_citations_count": 7,
-        "has_deploy_1click_link": true,
+        "bytes": 28055,
+        "sha256": "b03fc2eae9b4ba2d829fc3080030903d736ea7a4a2ce2256338bee347b99a371",
+        "publish_ready": true,
+        "diagram_count": 2,
+        "drawio_compiled_all": true,
+        "lean_slides": 9,
+        "exec_slides": 10,
+        "py_ast_files_verified": 2,
+        "py_ast_errors": [],
+        "terraform_dirs_verified": 2,
+        "terraform_resources_total": 35,
+        "terraform_hcl_valid": true,
+        "references_total": 5,
+        "references_https_reachable": 5,
         "has_10saas_verification_matrix": true,
-        "well_architected_pillars_5_of_5": 5
+        "has_runnable_deploy_section": true
       },
-      "models_evaluated": 2,
-      "models_passed": 2,
-      "consensus_mean_score": 100.0,
+      "models_evaluated": 3,
+      "models_passed": 3,
+      "consensus_mean_score": 97.41,
+      "consensus_dimension_scores": {
+        "accuracy": 97.95,
+        "completeness": 96.85,
+        "faithfulness": 97.14,
+        "relevancy": 97.72
+      },
+      "consensus_artifact_scores": {
+        "blogContent": 97.83,
+        "diagrams": 97.3,
+        "drawio": 97.17,
+        "slides": 96.83,
+        "code": 97.4,
+        "terraform": 97.83,
+        "references": 97.47
+      },
       "scores_by_model": {
-        "gemini-2.5-pro": 100,
-        "gemini-2.5-flash": 100
+        "gemini-4-carbon": 96.36,
+        "gemini-4-argon": 97.35,
+        "gemini-2.5-pro": 98.53
       }
     },
     "WS5": {
       "filename": "ws5-decision-guide-and-agentic-triad.md",
       "deterministic_metrics": {
-        "bytes": 73942,
-        "sha256": "494a8ae483ae6bb3b8a526aeff26a62d02a395edf101dbc869d3d0d46394ba63",
-        "has_terminology_section": true,
-        "display_latex_count": 4,
-        "where_definition_blocks_count": 2,
-        "architectural_grounding_boundary_count": 3,
-        "matched_callout_badges_7_of_7": 7,
-        "line_range_code_citations_count": 7,
-        "has_deploy_1click_link": true,
+        "bytes": 28506,
+        "sha256": "9628b8c7665e72ae04e13113277cf34d517fba92a2b6a6160aee0663865ade22",
+        "publish_ready": true,
+        "diagram_count": 3,
+        "drawio_compiled_all": true,
+        "lean_slides": 9,
+        "exec_slides": 10,
+        "py_ast_files_verified": 3,
+        "py_ast_errors": [],
+        "terraform_dirs_verified": 1,
+        "terraform_resources_total": 14,
+        "terraform_hcl_valid": true,
+        "references_total": 5,
+        "references_https_reachable": 5,
         "has_10saas_verification_matrix": true,
-        "well_architected_pillars_5_of_5": 5
+        "has_runnable_deploy_section": true
       },
-      "models_evaluated": 2,
-      "models_passed": 2,
-      "consensus_mean_score": 99.85,
+      "models_evaluated": 3,
+      "models_passed": 3,
+      "consensus_mean_score": 97.43,
+      "consensus_dimension_scores": {
+        "accuracy": 98.05,
+        "completeness": 96.86,
+        "faithfulness": 96.86,
+        "relevancy": 97.95
+      },
+      "consensus_artifact_scores": {
+        "blogContent": 97.9,
+        "diagrams": 97.3,
+        "drawio": 96.83,
+        "slides": 97.17,
+        "code": 97.1,
+        "terraform": 97.77,
+        "references": 97.9
+      },
       "scores_by_model": {
-        "gemini-2.5-pro": 100,
-        "gemini-2.5-flash": 99.7
+        "gemini-4-carbon": 96.5,
+        "gemini-4-argon": 97.28,
+        "gemini-2.5-pro": 98.5
       }
     }
   },
@@ -174,381 +336,1474 @@
     {
       "status": "HTTP_200_OK",
       "http_status": 200,
-      "response_id": "3SLnarOOKoe_48APwaziyAs",
+      "response_id": "mc4Ia8qcH8H6idMPs9u8qA4",
       "is_live_llm_call": true,
-      "model_id": "gemini-2.5-pro",
-      "model_family": "Gemini 2.5 Pro (Enterprise Reasoning Judge)",
-      "location": "us-central1",
+      "model_id": "gemini-4-carbon",
+      "model_family": "Gemini 4 Carbon (Frontier Architecture & Faithfulness Judge)",
+      "location": "global",
       "workstream": "WS1",
       "filename": "ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
-      "latency_ms": 44914.4,
-      "prompt_token_count": 26675,
-      "candidates_token_count": 403,
+      "latency_ms": 128331.3,
+      "prompt_token_count": 36183,
+      "candidates_token_count": 1801,
       "evaluation": {
         "workstream": "WS1",
         "verdict": "PASS",
-        "overall_score": 99.7,
+        "overall_score": 97.07,
         "dimension_scores": {
-          "terminology_and_systems_primitives": 100,
-          "pedagogical_flow_and_context_bridges": 100,
-          "visual_1to1_badge_and_code_grounding": 100,
-          "display_latex_and_symbol_definitions": 98,
-          "production_code_and_10saas_evidence": 100,
-          "well_architected_and_slide_launch_parity": 100
+          "accuracy": 97.43,
+          "completeness": 96.71,
+          "faithfulness": 96.43,
+          "relevancy": 97.71
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 98.0,
+            "accuracy": 98.0,
+            "completeness": 98.0,
+            "faithfulness": 97.0,
+            "relevancy": 99.0,
+            "summary": "Exemplary technical rigor across all grounding facts: accurately enforces Identity Platform Multi-Tenancy + Workload Identity Federation (explicitly disallowing Workforce WIF for external B2B SaaS), distinguishes the 4,096-token Vertex AI Context Caching API floor (0.10x weight / 90% discount) from the 32,768-token arc"
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 97.2,
+            "accuracy": 97.0,
+            "completeness": 97.0,
+            "faithfulness": 97.0,
+            "relevancy": 98.0,
+            "summary": "Both architectural views\u2014the 80/20 Shared 5-Hop Governance Baseline & Pattern A/B/C Matrix (Figure 1) and the 5-Actor UML Process Sequence Swimlane (Figure 2)\u2014cleanly separate caller tiers, control plane, compute plane, and data plane while capturing exact latency budgets (<42 ms p95 total, <0.15 ms JWKS, <8 ms Model A"
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 96.8,
+            "accuracy": 97.0,
+            "completeness": 97.0,
+            "faithfulness": 96.0,
+            "relevancy": 97.0,
+            "summary": "Both .drawio XML artifacts compile cleanly with zero geometry errors or warnings. ws1-5hop-governance-baseline contains 56 labeled vertices, 23 orthogonal edges, and 18 embedded GCP SVG icons; ws1-c4-l3-process-sequence-swimlane contains 45 labeled vertices and 12 sequence edges mirroring the 6-step cryptographic excha"
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 96.5,
+            "accuracy": 97.0,
+            "completeness": 97.0,
+            "faithfulness": 95.0,
+            "relevancy": 97.0,
+            "summary": "Both compiled native DrawingML .pptx decks (10-slide Lean Visual Deck and 11-slide Executive Narrative Deck) render cleanly with embedded vector icons, draw.io source links on architecture slides, rich speaker notes (259\u20131,537 chars), live Before/After Cloud Console and ThoughtSpot proofs, and quantified FinOps/TCO met"
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 96.2,
+            "accuracy": 96.0,
+            "completeness": 96.0,
+            "faithfulness": 96.0,
+            "relevancy": 97.0,
+            "summary": "All verified Python modules pass AST validation with zero syntax errors. CymbalMultiTenantRuntime, EdgeIdentityPEP, and ModelArmorGuardrails cleanly implement instance-scoped tenant isolation, header stripping, OBO/DPoP binding, real perf_counter timing with explicit backend disclosure, NLC/SDP regex guardrails, and ze"
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 96.5,
+            "accuracy": 98.0,
+            "completeness": 95.0,
+            "faithfulness": 96.0,
+            "relevancy": 97.0,
+            "summary": "Valid HCL provisioning 13 resources with zero undeclared variables or AST errors using hashicorp/google >= 6.0.0: least-privilege Service Account, Cloud KMS asymmetric EC_SIGN_P256_SHA256 signing key, BEFORE/AFTER Cloud Armor security policies (Priority 1000 CEL header-spoof rule), BEFORE/AFTER google_model_armor_templ"
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 98.2,
+            "accuracy": 99.0,
+            "completeness": 97.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "All 6 canonical citations (Google Cloud Architecture Center Multi-Tenant Agentic AI System, Identity Platform Multi-Tenancy, Vertex AI Model Armor, Vertex AI Context Caching, IETF RFC 8693 OBO, and IETF RFC 9449 DPoP) are structurally valid, directly relevant, and verified HTTP 200 reachable."
+          }
         },
         "key_strengths": [
-          "Exceptional grounding of architectural concepts in specific code files (e.g., `runtime_pipeline.py`), line-number citations, and executable Terraform artifacts.",
-          "Rigorous pedagogical structure using a Macro-to-Micro (L1-L4) decomposition and classical OS/distributed-systems analogies to clarify complex agentic AI primitives.",
-          "Unprecedented level of verifiable evidence through the 10-SaaS multi-cloud verification matrix, complete with links to live AWS S3 audit ledgers and genuine before-and-after UI screenshots.",
-          "Comprehensive integration of the Google Cloud Well-Architected Framework and a 'Slide Launch Matrix' that ensures perfect parity across the entire suite of assets (slides, documents, code)."
+          "Complete technical alignment with Google Cloud B2B SaaS multi-tenancy standards: Identity Platform Multi-Tenancy + Workload Identity Federation, Cloud Run Agent Identity (SPIFFE mTLS), regional Model Armor endpoints, Memory Bank IAM CEL scoping, and 4,096-token floor / 0.10x cached prefix economics.",
+          "Clear 80/20 architectural separation (shared 5-Hop control/compute core at <42 ms p95 overhead vs. 20% declarative Hop 5 Pool, /28 PSC Hybrid, and Sovereign Silo data/perimeter deltas) reinforced identically across prose, SVG/Draw.io diagrams, PPTX decks, Python ADK middleware, and Terraform.",
+          "Exemplary engineering transparency via an explicit Architectural Grounding Boundary callout distinguishing live Google Cloud + AWS Bedrock AgentCore MCP execution from in-memory Python policy state machines, plus an EAP Gap Tracker (GAP-01..GAP-05) with GA feature-flag sunset targets.",
+          "Zero-modification practitioner reproducibility via examples/blog-01-5hop-baseline (deploy.sh, verify.sh, 13-resource Terraform stack) backed by 3 live Before/After visual proof pairs (Model Armor, Cloud Armor WAF, and ThoughtSpot Spotter) and a 10-SaaS multi-cloud verification matrix."
         ],
         "remaining_gaps_or_VERIFY_flags": [
-          "A minor deviation in the 'Performance optimization' section: the 'Architectural Grounding Boundary' callout is placed after the subsequent table, not immediately following the LaTeX formula's 'Where:' block as per the strictest interpretation of the rubric."
-        ],
-        "raw_model_overall_score": 99.7
+          "Minor asset naming cosmetic drift: slide deck filenames retain legacy slide-count suffixes (ws1-12slide-visual-deck.pptx for the 10-slide lean deck and ws1-executive-architecture-23slide-deck.pptx for the 11-slide executive deck), though blog link labels accurately state 10-Slide and 11-Slide.",
+          "Cloud Armor Priority 1000 CEL rule in examples/blog-01-5hop-baseline/terraform/main.tf blocks x-tenant-id when authorization is absent, whereas Hop 1 application middleware (EdgeIdentityPEP) unconditionally strips/blocks client-supplied x-tenant-id even on authenticated requests; consider aligning the WAF description to clarify unauthenticated edge drop vs. authenticated L7 header stripping."
+        ]
       }
     },
     {
       "status": "HTTP_200_OK",
       "http_status": 200,
-      "response_id": "5SLnauDhM_mJ48APpu3lgA0",
+      "response_id": "OM4Ia9zzNM36idMP3JTe6Q8",
       "is_live_llm_call": true,
-      "model_id": "gemini-2.5-flash",
-      "model_family": "Gemini 2.5 Flash (Enterprise Structural Judge)",
-      "location": "us-central1",
+      "model_id": "gemini-4-argon",
+      "model_family": "Gemini 4 Argon (Frontier Code, Terraform HCL & Security Judge)",
+      "location": "global",
       "workstream": "WS1",
       "filename": "ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
-      "latency_ms": 21455.4,
-      "prompt_token_count": 26675,
-      "candidates_token_count": 403,
+      "latency_ms": 22950.4,
+      "prompt_token_count": 36183,
+      "candidates_token_count": 1346,
       "evaluation": {
         "workstream": "WS1",
         "verdict": "PASS",
-        "overall_score": 100,
+        "overall_score": 98.1,
         "dimension_scores": {
-          "terminology_and_systems_primitives": 100,
-          "pedagogical_flow_and_context_bridges": 100,
-          "visual_1to1_badge_and_code_grounding": 100,
-          "display_latex_and_symbol_definitions": 100,
-          "production_code_and_10saas_evidence": 100,
-          "well_architected_and_slide_launch_parity": 100
+          "accuracy": 98.57,
+          "completeness": 97.71,
+          "faithfulness": 98.0,
+          "relevancy": 98.14
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 98.8,
+            "accuracy": 99.0,
+            "completeness": 99.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "Exceptional technical depth and precision. Accurately distinguishes external B2B SaaS Identity Platform Multi-Tenancy + Workload Identity Federation from Workforce Identity Federation, properly documents the 4,096-token Vertex AI Context Caching minimum floor vs. the 32,768-token architectural choice (0.10x cached weig"
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 98.0,
+            "accuracy": 98.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 98.0,
+            "summary": "Both SVG architecture diagrams (Figure 1 5-Hop Governance Baseline & Pattern A/B/C Matrix, Figure 2 5-Actor UML Sequence Swimlane) clearly separate Control, Compute, and Data planes and match the latency budgets, HTTP circuit breakers, and cryptographic token flows in the prose."
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 97.8,
+            "accuracy": 98.0,
+            "completeness": 97.0,
+            "faithfulness": 98.0,
+            "relevancy": 98.0,
+            "summary": "Both Draw.io sources compile cleanly with zero geometry errors or warnings (56 vertices/23 orthogonal edges in Figure 1; 45 vertices/12 edges in Figure 2) and maintain 1:1 label parity with the blog text and slides."
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 97.2,
+            "accuracy": 98.0,
+            "completeness": 97.0,
+            "faithfulness": 97.0,
+            "relevancy": 97.0,
+            "summary": "Both the 10-slide Lean Visual Deck and 11-slide Executive Narrative Deck compile cleanly with native DrawingML, embedded Draw.io links, rich speaker notes, and side-by-side live Cloud Console and ThoughtSpot Spotter proofs."
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 98.0,
+            "accuracy": 98.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 98.0,
+            "summary": "Python ADK reference orchestrator (runtime_pipeline.py, hop1..hop5 governance modules) and zero-modification deploy.sh/verify.sh scripts pass AST verification, transparently disclose live GCP vs. in-memory simulation modes, and verify end-to-end 400/403/200 enforcement."
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 98.0,
+            "accuracy": 99.0,
+            "completeness": 97.0,
+            "faithfulness": 98.0,
+            "relevancy": 98.0,
+            "summary": "All 13 Terraform resources in examples/blog-01-5hop-baseline/terraform validate cleanly with zero undeclared variables, provisioning real Cloud Armor WAF policies, Cloud KMS EC_SIGN_P256_SHA256 signing keys, Vertex AI Model Armor BEFORE/AFTER templates, and an authenticated Cloud Run v2 gateway."
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 99.0,
+            "accuracy": 100.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 99.0,
+            "summary": "All 6 authoritative citations (Google Cloud Architecture Center, Identity Platform Multi-Tenancy, Vertex AI Model Armor, Vertex AI Context Caching, RFC 8693, and RFC 9449) are structurally valid and return HTTP 200."
+          }
         },
         "key_strengths": [
-          "Exceptional clarity and rigor in defining core terminology with classical systems analogies, making complex concepts immediately accessible.",
-          "Flawless pedagogical flow, guiding the reader from high-level logical views (L1) to wire-level protocol details (L4) with zero cold transitions.",
-          "Meticulous visual grounding of architectural diagrams, with every numbered callout explicitly bound to diagram labels, sub-phases, and precise code line ranges.",
-          "Perfect adherence to display LaTeX standards for quantitative formulas, complete with immediate bulleted symbol definitions and 'Architectural Grounding Boundary' callouts.",
-          "Strong evidence of production-grade executable artifacts (code, Terraform, deploy scripts) and a comprehensive, live 10-SaaS multi-cloud verification matrix.",
-          "Full alignment with all five Google Cloud Well-Architected Framework pillars and a detailed slide launch parity matrix, demonstrating thorough planning and execution."
+          "Rigorous adherence to Google Cloud grounding facts: explicitly pairs Identity Platform (Multi-Tenancy) with Workload Identity Federation for external B2B SaaS (noting Workforce WIF is workforce-only), cites the 4,096-token Context Caching API minimum floor alongside the 32,768-token non-PII prefix design, and uses regional Model Armor endpoints plus aiplatform.googleapis.com/memoryScope IAM CEL conditions.",
+          "Complete 1:1 numerical and architectural alignment across prose, Draw.io XML vertices, PPTX decks, BigQuery FinOps SQL, Python 5-Hop middleware, and Terraform HCL (<42 ms p95 budget, <0.15 ms cached JWKS verify, 89.1% net input token savings, 120/600 RPM bulkheads, and 41.2s verified HSM CMEK halt).",
+          "Empirically grounded with 3 pairs of live Before/After Cloud Console & ThoughtSpot Spotter screenshots, a 10-SaaS AWS Bedrock AgentCore MCP verification matrix, and a self-contained 1-command runnable Terraform + Cloud Run example."
         ],
-        "remaining_gaps_or_VERIFY_flags": [
-          "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ],
-        "raw_model_overall_score": 100
+        "remaining_gaps_or_VERIFY_flags": []
       }
     },
     {
       "status": "HTTP_200_OK",
       "http_status": 200,
-      "response_id": "3SLnarfsKfmJ48APpu3lgA0",
+      "response_id": "W84Ia7zhOcuamecPmYGb8QI",
       "is_live_llm_call": true,
       "model_id": "gemini-2.5-pro",
-      "model_family": "Gemini 2.5 Pro (Enterprise Reasoning Judge)",
+      "model_family": "Gemini 2.5 Pro (Cross-Generation Consensus Judge)",
       "location": "us-central1",
+      "workstream": "WS1",
+      "filename": "ws1-reference-architecture-taxonomy-and-5hop-baseline.md",
+      "latency_ms": 18652.9,
+      "prompt_token_count": 36944,
+      "candidates_token_count": 1305,
+      "evaluation": {
+        "workstream": "WS1",
+        "verdict": "PASS",
+        "overall_score": 98.64,
+        "dimension_scores": {
+          "accuracy": 99.14,
+          "completeness": 98.0,
+          "faithfulness": 99.14,
+          "relevancy": 98.29
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 98.0,
+            "summary": "The blog content is exceptionally detailed, accurate, and well-structured. It correctly identifies and applies complex Google Cloud concepts like Identity Platform for multi-tenancy, Workload Identity Federation, and the nuances of Vertex AI services. The 5-Hop cryptographic governance model is a robust and relevant fr"
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 98.0,
+            "summary": "The two SVG diagrams are dense with accurate information, clearly illustrating the 5-Hop control plane and the end-to-end request flow. They correctly depict the roles of services like Model Armor, Cloud Run, and AlloyDB RLS. The visual language is consistent with the blog text and the underlying Draw.io XML, providing"
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 98.0,
+            "summary": "The compiled Draw.io XML is clean, well-structured, and free of errors. The vertex and edge counts are substantial, reflecting the complexity of the architecture. The labels and relationships in the XML perfectly match the rendered SVG diagrams and the descriptions in the blog and slides, demonstrating high faithfulnes"
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 98.0,
+            "summary": "Both the lean visual deck and the executive narrative deck are of high quality. They faithfully represent the core concepts from the blog and diagrams in a digestible format for different audiences. The inclusion of live console screenshots and a verification matrix adds significant credibility and completeness. Speake"
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 98.0,
+            "summary": "The Python and shell script artifacts are exemplary. The Python code provides a clear, modular implementation of the 5-Hop pipeline, correctly simulating services like Model Armor and KMS signing. The `deploy.sh` and `verify.sh` scripts are runnable, robust, and provide tangible proof of the architecture's claims. The "
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 98.0,
+            "summary": "The Terraform code is valid, well-organized, and directly implements the core security components of the architecture (KMS, Model Armor, Cloud Armor, Cloud Run). It correctly provisions resources with least-privilege IAM, demonstrating best practices. The 13 resources are directly relevant to the blog's runnable exampl"
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 99.5,
+            "accuracy": 100.0,
+            "completeness": 98.0,
+            "faithfulness": 100.0,
+            "relevancy": 100.0,
+            "summary": "All six references are highly relevant, accurate, and reachable. They correctly cite canonical Google Cloud documentation and IETF RFCs that form the technical foundation of the architecture. The chosen references perfectly ground the claims made about Identity Platform, Model Armor, Context Caching, and token exchange"
+          }
+        },
+        "key_strengths": [
+          "Exceptional Faithfulness: All seven artifacts are tightly integrated and consistent, creating a cohesive and trustworthy architectural package. The diagrams match the code, the code matches the Terraform, and the prose accurately describes them all.",
+          "Technical Depth & Accuracy: The workstream demonstrates a principal-level understanding of advanced Google Cloud security and AI primitives, correctly applying concepts like Identity Platform multi-tenancy, Workload Identity Federation, Model Armor, and KMS-based cryptographic identity.",
+          "Practitioner-Focused Execution: The inclusion of fully runnable, zero-modification `deploy.sh` and `verify.sh` scripts, alongside valid Terraform, elevates this from a theoretical paper to a practical, verifiable blueprint that practitioners can immediately use and trust."
+        ],
+        "remaining_gaps_or_VERIFY_flags": []
+      }
+    },
+    {
+      "status": "HTTP_200_OK",
+      "http_status": 200,
+      "response_id": "OM4Ia4yhNe3ys_IPyuKv-Ag",
+      "is_live_llm_call": true,
+      "model_id": "gemini-4-carbon",
+      "model_family": "Gemini 4 Carbon (Frontier Architecture & Faithfulness Judge)",
+      "location": "global",
       "workstream": "WS2",
       "filename": "ws2-pattern-a-pooled-architecture.md",
-      "latency_ms": 31193.1,
-      "prompt_token_count": 28362,
-      "candidates_token_count": 457,
+      "latency_ms": 35192.3,
+      "prompt_token_count": 31551,
+      "candidates_token_count": 1625,
       "evaluation": {
         "workstream": "WS2",
         "verdict": "PASS",
-        "overall_score": 100,
+        "overall_score": 96.4,
         "dimension_scores": {
-          "terminology_and_systems_primitives": 100,
-          "pedagogical_flow_and_context_bridges": 100,
-          "visual_1to1_badge_and_code_grounding": 100,
-          "display_latex_and_symbol_definitions": 100,
-          "production_code_and_10saas_evidence": 100,
-          "well_architected_and_slide_launch_parity": 100
+          "accuracy": 97.14,
+          "completeness": 95.86,
+          "faithfulness": 95.29,
+          "relevancy": 97.29
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 97.0,
+            "accuracy": 98.0,
+            "completeness": 97.0,
+            "faithfulness": 95.0,
+            "relevancy": 98.0,
+            "summary": "Technically rigorous Pattern A pooled blueprint accurately grounding Identity Platform Multi-Tenancy + WIF (explicitly distinguishing external B2B SaaS from internal Workforce Identity Federation), Vertex AI Gemini Context Caching (4,096-token floor, 0.10x discount, 32k generic non-PII prefix), regional Model Armor end"
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 97.2,
+            "accuracy": 97.0,
+            "completeness": 97.0,
+            "faithfulness": 97.0,
+            "relevancy": 98.0,
+            "summary": "All three SVG architecture and C4 L3 swimlane diagrams cleanly decompose Control, Compute, and Data planes alongside 5-actor temporal sequences for Mode A (stateless CoW pre-fork + 1-shot gVisor) and Mode B (stateful WarmPool + HTTP 403 sticky latch)."
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 96.5,
+            "accuracy": 97.0,
+            "completeness": 96.0,
+            "faithfulness": 96.0,
+            "relevancy": 97.0,
+            "summary": "All three .drawio XML artifacts compile cleanly with zero geometry errors or warnings, embedding 18 native GCP SVG icons and 23 orthogonal edges on the main topology alongside complete vertex/edge definitions on both temporal swimlanes."
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 96.5,
+            "accuracy": 97.0,
+            "completeness": 96.0,
+            "faithfulness": 96.0,
+            "relevancy": 97.0,
+            "summary": "Both the 8-slide Lean Visual Deck and 10-slide Executive Narrative Deck compile cleanly with native DrawingML vector shapes, embedded .drawio links on architecture slides, comprehensive speaker notes, and live BigQuery Console proof captures."
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 95.2,
+            "accuracy": 96.0,
+            "completeness": 95.0,
+            "faithfulness": 93.0,
+            "relevancy": 97.0,
+            "summary": "Python service wrapper passes AST checks, PostgreSQL FORCE RLS DDL is syntactically sound, and the zero-modification deploy.sh/verify.sh suite executes deterministic BEFORE/AFTER BigQuery RLS and HTTP 429 bulkhead tests. Minor naming drift exists between the blog prose SQL snippet (agent_episodic_memory / app.current_t"
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 94.2,
+            "accuracy": 96.0,
+            "completeness": 93.0,
+            "faithfulness": 92.0,
+            "relevancy": 96.0,
+            "summary": "All 18 resources across both Terraform directories pass HCL validation with zero undeclared variables. The runnable example cleanly provisions Cloud Run v2 Gen2, BigQuery Row Access Policies, and a named Firestore rate-limiter DB, while the 2.6 starter provisions Cloud Armor WAF, KMS, Cloud Run Gen2, BigQuery OTel, and"
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 98.0,
+            "accuracy": 99.0,
+            "completeness": 97.0,
+            "faithfulness": 98.0,
+            "relevancy": 98.0,
+            "summary": "All 5 canonical Google Cloud documentation URLs resolve with HTTP 200 status and directly substantiate multi-tenant agentic architecture, AlloyDB vector search/RLS, Cloud Run Gen2 gVisor execution environments, Identity Platform Multi-Tenancy, and Vertex AI Context Caching."
+          }
         },
         "key_strengths": [
-          "Extreme Verifiability: Every architectural claim is rigorously grounded in specific code files with line numbers, executable scripts (`run_breach_simulations.py`), 1-click Terraform modules, and a live 10-SaaS multi-cloud verification matrix with links to S3 audit ledgers.",
-          "Pedagogical Rigor & Depth: The document masterfully uses the C4 model for a macro-to-micro deep dive, explains complex primitives with classical CS/OS analogies, and provides explicit context bridges, making a dense topic accessible without sacrificing technical precision.",
-          "Deterministic Security Narrative: The 10-point red-team breach simulation suite is a powerful narrative device, with each attack vector (V1-V10) deterministically mapped to a specific defense mechanism in the 5-Hop chain, providing exceptional CISO-level assurance.",
-          "Comprehensive Asset Parity: The 'What's next' section provides a complete slide launch matrix, creating perfect 1:1 parity between the 34-slide presentation deck, the document's sections, and the runnable codebase modules, ensuring a cohesive and integrated set of engineering assets."
+          "Zero-ambiguity grounding of external B2B SaaS identity (Identity Platform Multi-Tenancy + WIF vs. Workforce Identity Federation), Vertex AI Context Caching floors (4,096 min vs. 32k architectural choice at 0.10x weight), regional Model Armor endpoints, and Cloud Run Agent Identity SPIFFE mTLS.",
+          "Crisp architectural separation between Mode A (stateless Cloud Run Gen2 concurrency=1 with Gunicorn --preload --max-requests=1 CoW heap wipe) and Mode B (stateful GKE gVisor WarmPool SandboxClaim with irreversible HTTP 403 session latching and one-way Reaper deletion).",
+          "Comprehensive 10-vector red-team matrix (V1-V10), 10-target multi-cloud MCP audit receipts, and cryptographically attested live Google Cloud Console BigQuery Studio BEFORE/AFTER proofs.",
+          "Self-contained, zero-modification Cloud Shell runnable example (deploy.sh, verify.sh, Terraform) that empirically proves row-level tenant isolation and per-tenant HTTP 429 noisy-neighbor bulkheads."
         ],
         "remaining_gaps_or_VERIFY_flags": [
-          "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ],
-        "raw_model_overall_score": 100
+          "Minor SQL identifier alignment: Blog prose snippet references table `agent_episodic_memory` and session GUC `app.current_tenant_id`, whereas `pooled_gateway_and_rls.sql` defines `cymbal_incidents` and `app.current_tenant` (and omits the `NULLIF(..., '')` wrapper).",
+          "Minor Terraform starter alignment: Blog prose states `2.6-terraform-starter/main.tf` provisions Memorystore for Valkey, AlloyDB (`pgvector`), and Identity Platform, whereas `2.6-terraform-starter/main.tf` provisions `google_redis_instance` (`REDIS_7_0`) and omits AlloyDB/Identity Platform resources (while the runnable `examples/blog-02-pattern-a-pooled` intentionally substitutes BigQuery RLS + Firestore for fast 3-minute deployment).",
+          "Filename label nuance: `slides/ws2-12slide-visual-deck.pptx` contains 8 compiled slides (accurately labeled in prose as the '8-Slide Lean Visual Deck', though the filename retains `12slide`)."
+        ]
       }
     },
     {
       "status": "HTTP_200_OK",
       "http_status": 200,
-      "response_id": "3SLnavbfKfmJ48APpu3lgA0",
+      "response_id": "T84Ia_KZBO3ys_IPyuKv-Ag",
       "is_live_llm_call": true,
-      "model_id": "gemini-2.5-flash",
-      "model_family": "Gemini 2.5 Flash (Enterprise Structural Judge)",
-      "location": "us-central1",
+      "model_id": "gemini-4-argon",
+      "model_family": "Gemini 4 Argon (Frontier Code, Terraform HCL & Security Judge)",
+      "location": "global",
       "workstream": "WS2",
       "filename": "ws2-pattern-a-pooled-architecture.md",
-      "latency_ms": 8794.6,
-      "prompt_token_count": 28362,
-      "candidates_token_count": 334,
+      "latency_ms": 27515.6,
+      "prompt_token_count": 31551,
+      "candidates_token_count": 1618,
       "evaluation": {
         "workstream": "WS2",
         "verdict": "PASS",
-        "overall_score": 100,
+        "overall_score": 97.97,
         "dimension_scores": {
-          "terminology_and_systems_primitives": 100,
-          "pedagogical_flow_and_context_bridges": 100,
-          "visual_1to1_badge_and_code_grounding": 100,
-          "display_latex_and_symbol_definitions": 100,
-          "production_code_and_10saas_evidence": 100,
-          "well_architected_and_slide_launch_parity": 100
+          "accuracy": 98.43,
+          "completeness": 97.57,
+          "faithfulness": 97.57,
+          "relevancy": 98.29
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 98.2,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 97.0,
+            "relevancy": 99.0,
+            "summary": "Technically rigorous, deeply grounded blueprint for Pattern A High-Density Pooled Architecture. Accurately distinguishes Identity Platform + WIF for external B2B SaaS vs. Workforce Identity Federation, specifies the 4,096-token Vertex AI Context Caching API floor (with 32,768 tokens as an architectural choice at 0.10x "
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 98.0,
+            "accuracy": 98.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 98.0,
+            "summary": "All three architectural diagrams (Pattern A Pooled System Topology, Mode A Stateless CoW Pre-Fork Swimlane, and Mode B Stateful WarmPool 403 Latch Swimlane) are present, logically structured across 8 steps each, and map directly to the control, compute, and data plane boundaries described in the prose."
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 97.5,
+            "accuracy": 98.0,
+            "completeness": 97.0,
+            "faithfulness": 98.0,
+            "relevancy": 97.0,
+            "summary": "All three .drawio XML artifacts compile cleanly without geometry errors or warnings. Vertex labels, bounds, embedded GCP SVG icons (18 in main architecture), and actor lifelines match the exact metrics (120/600 RPM, ~3.2ms CoW fork, --max-requests=1, <100ms WarmPool claim, HTTP 403 latch) in the blog narrative."
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 98.0,
+            "accuracy": 98.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 98.0,
+            "summary": "Both the 8-slide Lean Visual Deck and the 10-slide Executive Narrative Deck compile cleanly with comprehensive speaker notes, embedded native vector icons, and draw.io links. Slide text and flow mirror the 10-vector threat matrix, Mode A/B compute mechanics, Hop 5 RLS, live BigQuery Console proofs, and FinOps COGS equa"
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 97.2,
+            "accuracy": 98.0,
+            "completeness": 97.0,
+            "faithfulness": 96.0,
+            "relevancy": 98.0,
+            "summary": "Python service wrapper (`pattern_a_pooled_service.py`) passes AST validation cleanly, `pooled_gateway_and_rls.sql` implements valid PostgreSQL `ENABLE/FORCE ROW LEVEL SECURITY` with `RESTRICTIVE` policy predicates, and the zero-modification `deploy.sh`/`verify.sh` scripts provide automated end-to-end verification of Bi"
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 97.8,
+            "accuracy": 98.0,
+            "completeness": 97.0,
+            "faithfulness": 97.0,
+            "relevancy": 99.0,
+            "summary": "Both Terraform directories (`examples/blog-02-pattern-a-pooled/terraform` with 12 resources and `workstream-2-pattern-a-pooled/2.6-terraform-starter` with 6 resources, 18 total) pass HCL validation with zero undeclared variables. Properly provisions Cloud Armor WAF, Memorystore for Redis, Cloud KMS CMEK, Cloud Run v2 G"
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 99.0,
+            "accuracy": 100.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 99.0,
+            "summary": "All 5 official Google Cloud documentation references are structurally valid, return HTTP 200 OK, and directly substantiate the core architectural claims (Multi-tenant agentic AI system, AlloyDB pgvector/RLS, Cloud Run Gen2 execution environments, Identity Platform multi-tenancy, and Vertex AI Context Caching)."
+          }
         },
         "key_strengths": [
-          "Comprehensive and rigorous treatment of multi-tenancy, security, and FinOps for AI systems.",
-          "Exceptional grounding in both theoretical computer science primitives and practical production code/infrastructure.",
-          "Detailed 1:1 visual-to-code grounding with line citations and sub-hop resolution.",
-          "Strong pedagogical flow, clear terminology, and explicit context bridges.",
-          "Robust verification with 10-SaaS multi-cloud matrix and red-team breach simulations.",
-          "Full compliance with Google Cloud Well-Architected Framework and clear slide launch parity."
+          "Exemplary differentiation of compute isolation models for pooled agentic systems: Mode A stateless Copy-on-Write (`Gunicorn --preload --max-requests=1` with `~3.2 ms` fork and `sys.exit(0)` dirty-page reclamation) versus Mode B stateful session pods (`GKE WarmPool SandboxClaim` with irreversible in-process ASGI `HTTP 403` tenant latching and one-way Reaper deletion).",
+          "Strict adherence to Google Cloud product boundaries and quotas, explicitly pairing Identity Platform (Multi-Tenancy) with Workload Identity Federation for external B2B SaaS tenants and accurately citing the 4,096-token minimum floor for Vertex AI Context Caching.",
+          "Defense-in-depth data plane isolation combining PgBouncer transaction pooling (`DISCARD ALL`) with PostgreSQL `FORCE ROW LEVEL SECURITY` and `SET LOCAL` session variables, backed by a 10-vector automated red-team simulation matrix (`V1-V10`) and 10 live multi-cloud SaaS target proofs.",
+          "Self-contained, zero-modification runnable example (`examples/blog-02-pattern-a-pooled`) with automated `deploy.sh` and `verify.sh` scripts that prove live BEFORE/AFTER BigQuery Row-Level Security and per-tenant HTTP 429 RPM bulkheads."
         ],
         "remaining_gaps_or_VERIFY_flags": [
-          "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ],
-        "raw_model_overall_score": 100
+          "Minor naming consistency note (non-blocking): The inline blog SQL snippet uses table `agent_episodic_memory` and session variable `app.current_tenant_id`, whereas `pooled_gateway_and_rls.sql` uses table `cymbal_incidents` and session variable `app.current_tenant`. Both are syntactically valid PostgreSQL `FORCE ROW LEVEL SECURITY` implementations."
+        ]
       }
     },
     {
       "status": "HTTP_200_OK",
       "http_status": 200,
-      "response_id": "3SLnavXjKfmJ48APpu3lgA0",
+      "response_id": "aM4Ia53xGvT-ld8P3Irr8QI",
       "is_live_llm_call": true,
       "model_id": "gemini-2.5-pro",
-      "model_family": "Gemini 2.5 Pro (Enterprise Reasoning Judge)",
+      "model_family": "Gemini 2.5 Pro (Cross-Generation Consensus Judge)",
       "location": "us-central1",
+      "workstream": "WS2",
+      "filename": "ws2-pattern-a-pooled-architecture.md",
+      "latency_ms": 19660.8,
+      "prompt_token_count": 32094,
+      "candidates_token_count": 1502,
+      "evaluation": {
+        "workstream": "WS2",
+        "verdict": "PASS",
+        "overall_score": 98.86,
+        "dimension_scores": {
+          "accuracy": 99.0,
+          "completeness": 98.43,
+          "faithfulness": 99.29,
+          "relevancy": 98.71
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 98.0,
+            "summary": "The blog content is exceptionally detailed, technically accurate, and well-structured. It correctly identifies the use of Identity Platform for external B2B SaaS, the mechanics of Vertex AI Context Caching (including the 4,096-token floor and 32k token consolidation choice), and the roles of Model Armor and AlloyDB RLS"
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 98.0,
+            "summary": "The three diagrams are clear, dense with accurate information, and visually consistent with the blog's narrative. The main architecture diagram correctly places services like Identity Platform, Model Armor, and AlloyDB. The two swimlane diagrams for Mode A (CoW heap wipe) and Mode B (WarmPool latch) are excellent at il"
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 99.2,
+            "accuracy": 99.0,
+            "completeness": 99.0,
+            "faithfulness": 100.0,
+            "relevancy": 99.0,
+            "summary": "The compiled Draw.io XML files are clean, well-labeled, and perfectly match the rendered SVG diagrams embedded in the blog. The vertex and edge counts are consistent with the visual complexity. The use of embedded GCP icons and orthogonal connectors in the main diagram enhances readability. There are no geometry errors"
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 98.2,
+            "accuracy": 98.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 98.0,
+            "summary": "Both the lean visual deck and the executive narrative deck are high-quality and faithful to the core architecture. They correctly repurpose the diagrams and provide speaker notes that align with the blog's content. The executive deck does an excellent job of building a business and technical case, while the lean deck s"
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 99.0,
+            "accuracy": 99.0,
+            "completeness": 99.0,
+            "faithfulness": 99.0,
+            "relevancy": 99.0,
+            "summary": "The provided code artifacts are exemplary. The Python service correctly implements the pattern, the SQL script accurately defines the AlloyDB FORCE RLS policy using `current_setting`, and the `deploy.sh` and `verify.sh` scripts provide a robust, runnable demonstration of the architecture's key security guarantees (RLS "
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 99.0,
+            "accuracy": 99.0,
+            "completeness": 99.0,
+            "faithfulness": 99.0,
+            "relevancy": 99.0,
+            "summary": "Both Terraform configurations (`examples` and `starter`) are valid, well-structured, and accurately provision the resources described. The runnable example correctly sets up BigQuery with a `google_bigquery_row_access_policy` and a named Firestore database for rate limiting, directly proving the blog's claims. The star"
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 99.5,
+            "accuracy": 100.0,
+            "completeness": 98.0,
+            "faithfulness": 100.0,
+            "relevancy": 100.0,
+            "summary": "All five references are highly accurate, relevant, and reachable. They directly support the core technical claims of the architecture, including multi-tenancy with Identity Platform, AlloyDB RLS, Cloud Run gVisor sandboxing, and Vertex AI Context Caching. The citations are up-to-date and point to official Google Cloud "
+          }
+        },
+        "key_strengths": [
+          "The dual-mode compute isolation strategy (Stateless CoW heap-wipe vs. Stateful WarmPool latch) is a sophisticated and practical solution for the distinct needs of single-turn and multi-turn agentic workloads, demonstrating deep engineering expertise.",
+          "Exceptional end-to-end consistency across all seven artifacts. The blog's claims are directly implemented and proven in the runnable code, Terraform, and verification scripts, particularly the AlloyDB/BigQuery RLS and Valkey/Firestore rate-limiting bulkheads.",
+          "Technical accuracy is outstanding, correctly applying nuanced Google Cloud services like Identity Platform for B2B multi-tenancy, Cloud Run Gen2 gVisor sandboxing, and the specific mechanics of Vertex AI Context Caching and Model Armor.",
+          "The inclusion of a 10-point automated red-team breach simulation matrix provides a robust, evidence-based defense against common multi-tenant attack vectors, elevating the workstream from a conceptual architecture to a security-hardened blueprint."
+        ],
+        "remaining_gaps_or_VERIFY_flags": []
+      }
+    },
+    {
+      "status": "HTTP_200_OK",
+      "http_status": 200,
+      "response_id": "OM4Ia66WNc36idMP3JTe6Q8",
+      "is_live_llm_call": true,
+      "model_id": "gemini-4-carbon",
+      "model_family": "Gemini 4 Carbon (Frontier Architecture & Faithfulness Judge)",
+      "location": "global",
       "workstream": "WS3",
       "filename": "ws3-pattern-b-sovereign-silos.md",
-      "latency_ms": 31456.5,
-      "prompt_token_count": 25730,
-      "candidates_token_count": 451,
+      "latency_ms": 22466.3,
+      "prompt_token_count": 27823,
+      "candidates_token_count": 1763,
       "evaluation": {
         "workstream": "WS3",
         "verdict": "PASS",
-        "overall_score": 100,
+        "overall_score": 94.57,
         "dimension_scores": {
-          "terminology_and_systems_primitives": 100,
-          "pedagogical_flow_and_context_bridges": 100,
-          "visual_1to1_badge_and_code_grounding": 100,
-          "display_latex_and_symbol_definitions": 100,
-          "production_code_and_10saas_evidence": 100,
-          "well_architected_and_slide_launch_parity": 100
+          "accuracy": 95.71,
+          "completeness": 94.71,
+          "faithfulness": 92.0,
+          "relevancy": 95.86
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 94.2,
+            "accuracy": 96.0,
+            "completeness": 96.0,
+            "faithfulness": 88.0,
+            "relevancy": 97.0,
+            "summary": "Technically rigorous coverage of Pattern B Sovereign Silos, correctly adhering to all Google Cloud grounding facts (Identity Platform + WIF, regional Model Armor endpoints via PSC, FIPS 140-3 Level 3 Cloud HSM, AMD SEV-SNP Confidential GKE, and VPC-SC/PAB). Minor deduction in faithfulness because the inline YAML snippe"
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 96.0,
+            "accuracy": 96.0,
+            "completeness": 96.0,
+            "faithfulness": 95.0,
+            "relevancy": 97.0,
+            "summary": "Both logical architecture (Figure 1) and 5-actor UML sequence swimlane (Figure 2) clearly separate Control, Compute, and Data planes inside the sovereign VPC-SC + IAM PAB enclave and accurately trace the 41.2s CMEK revocation kill-switch."
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 95.2,
+            "accuracy": 96.0,
+            "completeness": 95.0,
+            "faithfulness": 95.0,
+            "relevancy": 95.0,
+            "summary": "Both .drawio XML artifacts compile cleanly with zero geometry errors or warnings. ws3-pattern-b-silo has 54 labeled vertices, 19 orthogonal edges, and 22 embedded GCP SVG icons; ws3-c4-l3-cmek-killswitch-swimlane cleanly models the 5-actor revocation sequence."
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 95.2,
+            "accuracy": 96.0,
+            "completeness": 95.0,
+            "faithfulness": 94.0,
+            "relevancy": 96.0,
+            "summary": "Both the 7-slide Lean Visual Deck and 10-slide Executive Narrative Deck compile cleanly with native DrawingML vector shapes, rich speaker notes, embedded .drawio links, live Cloud Console before/after CMEK proofs, and CISO ROI framing."
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 92.5,
+            "accuracy": 95.0,
+            "completeness": 93.0,
+            "faithfulness": 87.0,
+            "relevancy": 95.0,
+            "summary": "Python silo service, bash deploy/verify harnesses, and Kubernetes vLLM manifest are syntactically valid and operationally sound (including trap-based CMEK re-enablement and Cloud Shell Terraform SHA256 verification). Slight faithfulness drift between gke_gemma3_airgapped_manifest.yaml (which uses nvidia-l4 nodeSelector"
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 91.5,
+            "accuracy": 93.0,
+            "completeness": 93.0,
+            "faithfulness": 87.0,
+            "relevancy": 93.0,
+            "summary": "25 valid HCL resources across two Terraform directories with zero undeclared variables. The runnable blog-03 example cleanly wires BigQuery/GCS encryption service agents, time_sleep IAM propagation, and Cloud Run v2. Minor accuracy/faithfulness gap in 3.6-terraform-silo-blueprint: Cloud HSM protection_level = 'HSM' and"
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 97.2,
+            "accuracy": 98.0,
+            "completeness": 95.0,
+            "faithfulness": 98.0,
+            "relevancy": 98.0,
+            "summary": "All 5 canonical Google Cloud documentation URLs (VPC-SC, IAM PAB, Cloud HSM, Confidential GKE SEV-SNP, and Multi-Tenant Agentic AI Architecture Center) are structurally valid, authoritative, and HTTP 200 reachable."
+          }
         },
         "key_strengths": [
-          "Exceptional Grounding and Verifiability: The document is rigorously grounded in executable code (`.py`, `.sh`, `.tf`), live multi-cloud deployments (GCP+AWS), and a 10-SaaS verification matrix with links to live audit ledgers and genuine UI screenshots.",
-          "Pedagogical Excellence with C4 Model: The explicit use of the C4 architecture model (L1-L5) provides a clear, multi-layered narrative that progresses smoothly from high-level system context to low-level implementation details, making complex topics accessible.",
-          "Quantitative and Test-Driven Security: Security guarantees, particularly the Cloud KMS CMEK kill-switch, are not just claimed but are quantified with LaTeX formulas, defined with `Where:` blocks, and proven with test scripts (`run_silo_security_tests.py`) and architectural grounding boundaries.",
-          "Comprehensive Asset Parity: The document demonstrates perfect parity between the text, diagrams (with 1:1 callout bindings to code), companion slide decks (via the launch matrix), and the underlying codebase, creating a cohesive and fully-integrated set of assets."
+          "Clear architectural and mathematical separation between L1 Valkey cache purge (<5s via SCAN + UNLINK) and full enclave cryptographic halt (41.2s verified via 30s/60s KMS liveness heartbeat), eliminating the stale in-memory DEK vulnerability.",
+          "Strict adherence to Google Cloud multi-tenant grounding facts: Identity Platform + Workload Identity Federation for external B2B tenants, regional Model Armor endpoints (modelarmor.<region>.rep.googleapis.com) inside VPC-SC, Vertex regional CMEK pinning (avoiding locations/global), and FIPS 140-3 Level 3 Cloud HSM.",
+          "Zero-modification runnable deployment harness (deploy.sh / verify.sh) with automated BEFORE (HTTP 200) -> live Cloud KMS key disable -> AFTER (HTTP 423 Locked + BigQuery KMS error) verification and live Cloud Console evidence.",
+          "Cleanly compiled .drawio diagrams (zero geometry warnings) and dual 7-slide/10-slide .pptx decks tailored for both practitioners and regulated enterprise CISOs."
         ],
         "remaining_gaps_or_VERIFY_flags": [
-          "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ],
-        "raw_model_overall_score": 100
+          "VERIFY_MANIFEST_SYNC: Inline YAML snippet in ws3-pattern-b-sovereign-silos.md (name: gemma3-27b-sovereign-enclave, namespace: finvault-silo, nodeSelector: cloud.google.com/gke-confidential-nodes-instance-type: SEV_SNP, env KMS_CMEK_KEY_URI) does not match the actual file workstream-3-pattern-b-siloed/3.3-solution-implementation/gke_gemma3_airgapped_manifest.yaml (name: finvault-airgapped-gemma3-27b, namespace: finvault-sovereign-agents, nodeSelector: cloud.google.com/gke-accelerator: nvidia-l4).",
+          "VERIFY_TERRAFORM_HSM_SEV_SNP: Blog prose describes Stage 2 (Cloud HSM FIPS 140-3 L3) and Stage 4 (Confidential GKE AMD SEV-SNP) as codified in 3.6-terraform-silo-blueprint/main.tf, and mentions IAM PAB in Stage 1, whereas the blueprint HCL defines standard software KMS keys (missing protection_level = \"HSM\"), Autopilot GKE without a confidential_nodes { enabled = true, confidential_instance_type = \"SEV_SNP\" } block (also note GPU + SEV-SNP machine-series compatibility on GKE Autopilot), and omits the IAM PAB resource.",
+          "MINOR_FILENAME_NAMING: The 7-slide lean visual deck is saved at path slides/ws3-12slide-visual-deck.pptx (legacy 12slide filename vs. 7-slide compiled count)."
+        ]
       }
     },
     {
       "status": "HTTP_200_OK",
       "http_status": 200,
-      "response_id": "3SLnaouiKuSf_bwPxfGs-As",
+      "response_id": "T84Ia4qHIcH6idMPs9u8qA4",
       "is_live_llm_call": true,
-      "model_id": "gemini-2.5-flash",
-      "model_family": "Gemini 2.5 Flash (Enterprise Structural Judge)",
-      "location": "us-central1",
+      "model_id": "gemini-4-argon",
+      "model_family": "Gemini 4 Argon (Frontier Code, Terraform HCL & Security Judge)",
+      "location": "global",
       "workstream": "WS3",
       "filename": "ws3-pattern-b-sovereign-silos.md",
-      "latency_ms": 9855.0,
-      "prompt_token_count": 25730,
-      "candidates_token_count": 383,
+      "latency_ms": 24535.2,
+      "prompt_token_count": 27823,
+      "candidates_token_count": 1394,
       "evaluation": {
         "workstream": "WS3",
         "verdict": "PASS",
-        "overall_score": 100,
+        "overall_score": 97.5,
         "dimension_scores": {
-          "terminology_and_systems_primitives": 100,
-          "pedagogical_flow_and_context_bridges": 100,
-          "visual_1to1_badge_and_code_grounding": 100,
-          "display_latex_and_symbol_definitions": 100,
-          "production_code_and_10saas_evidence": 100,
-          "well_architected_and_slide_launch_parity": 100
+          "accuracy": 98.0,
+          "completeness": 97.14,
+          "faithfulness": 97.0,
+          "relevancy": 97.86
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 98.0,
+            "accuracy": 98.0,
+            "completeness": 98.0,
+            "faithfulness": 97.0,
+            "relevancy": 99.0,
+            "summary": "Technically rigorous coverage of Pattern B Dedicated Sovereign Silos. Correctly specifies Identity Platform + Workload Identity Federation for B2B external tenants, regional Model Armor endpoints (modelarmor.<region>.rep.googleapis.com), VPC-SC perimeters, IAM Principal Access Boundaries (PAB), AMD SEV-SNP Confidential"
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 97.2,
+            "accuracy": 98.0,
+            "completeness": 97.0,
+            "faithfulness": 97.0,
+            "relevancy": 97.0,
+            "summary": "Both SVG architecture diagrams (ws3-pattern-b-silo and ws3-c4-l3-cmek-killswitch-swimlane) accurately depict the 1:1 dedicated project topology and the 5-actor temporal sequence for CMEK revocation (<60s SLA / 41.2s verified)."
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 97.0,
+            "accuracy": 97.0,
+            "completeness": 97.0,
+            "faithfulness": 97.0,
+            "relevancy": 97.0,
+            "summary": "Both .drawio XML artifacts compile cleanly with zero geometry errors or warnings. Vertex and edge topologies align 1:1 with the prose plane ownership matrix and the 5-actor CMEK revocation swimlane."
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 97.2,
+            "accuracy": 97.0,
+            "completeness": 97.0,
+            "faithfulness": 97.0,
+            "relevancy": 98.0,
+            "summary": "Both the 7-slide Lean Visual Deck and 10-slide Executive Narrative Deck compile cleanly with comprehensive speaker notes, embedded vector diagrams, compliance matrices, and live Google Cloud Console CMEK revocation proofs."
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 96.2,
+            "accuracy": 97.0,
+            "completeness": 96.0,
+            "faithfulness": 95.0,
+            "relevancy": 97.0,
+            "summary": "Python implementation (pattern_b_siloed_service.py), Kubernetes manifest (gke_gemma3_airgapped_manifest.yaml), and zero-modification bash scripts (deploy.sh, verify.sh) are syntactically valid and functionally sound. Minor note: the inline YAML snippet in the blog shows AMD SEV-SNP nodeSelector and KMS env vars whereas"
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 97.8,
+            "accuracy": 99.0,
+            "completeness": 97.0,
+            "faithfulness": 97.0,
+            "relevancy": 98.0,
+            "summary": "All 25 Terraform resources across both the runnable example (examples/blog-03-pattern-b-siloed/terraform) and the architectural blueprint (3.6-terraform-silo-blueprint) pass HCL AST validation with zero undeclared variables and proper KMS, BigQuery, GCS, VPC-SC, Cloud Run v2, and private GKE Autopilot configurations."
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 99.0,
+            "accuracy": 100.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 99.0,
+            "summary": "All 5 official Google Cloud documentation references (VPC-SC, IAM PAB, Cloud HSM CMEK, Confidential GKE SEV-SNP, and the canonical Multi-Tenant Agentic AI Architecture Center guide) are structurally valid and verified HTTP 200 reachable."
+          }
         },
         "key_strengths": [
-          "Exceptional clarity and rigor in defining complex terminology and systems primitives with classical analogies.",
-          "Flawless pedagogical flow, seamlessly transitioning from high-level concepts to granular implementation details (L1-L5 C4 model).",
-          "Outstanding visual-to-code grounding, with 1:1 badge mapping, detailed sub-hop resolution, and precise code line citations.",
-          "Exemplary use of display LaTeX for quantitative formulas, immediately followed by comprehensive symbol definitions and architectural grounding.",
-          "Robust grounding in executable production code and extensive 10-SaaS multi-cloud verification, demonstrating real-world applicability and testability.",
-          "Comprehensive coverage of all Google Cloud Well-Architected Framework pillars and a meticulously detailed slide-to-code launch matrix, ensuring full parity and operational readiness."
+          "Clear architectural separation between L1 Valkey cache purge (<5s via cursor SCAN + UNLINK) and full enclave cryptographic halt (41.2s verified via 30s/60s KMS liveness heartbeat) eliminating the stale in-memory DEK window.",
+          "Zero-modification runnable deployment lab (deploy.sh, verify.sh, destroy.sh) backed by 19 validated Terraform resources and live BEFORE/AFTER BigQuery & Cloud KMS console screenshots.",
+          "Strict adherence to Google Cloud multi-tenant security best practices: Identity Platform + WIF for external B2B tenants, regional Model Armor endpoints, IAM PAB org boundaries, and VPC-SC perimeters.",
+          "Complete 10-SaaS multi-cloud verification matrix proving HTTP 423 Locked fail-closed behavior and VPC-SC egress enforcement across all downstream targets."
         ],
         "remaining_gaps_or_VERIFY_flags": [
-          "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ],
-        "raw_model_overall_score": 100
+          "Minor YAML excerpt divergence: The blog markdown's inline excerpt of gke_gemma3_airgapped_manifest.yaml illustrates cloud.google.com/gke-confidential-nodes-instance-type: SEV_SNP and KMS_CMEK_KEY_URI environment variables, while the full file in 3.3-solution-implementation uses cloud.google.com/gke-accelerator: nvidia-l4 and PVC volume mounts. Both are valid GKE patterns, but unifying the file with the inline snippet would make faithfulness 100%."
+        ]
       }
     },
     {
       "status": "HTTP_200_OK",
       "http_status": 200,
-      "response_id": "3SLnatvhKfG448AP7vq5uQk",
+      "response_id": "as4Ia4yrKdf3ld8PjZCz2Qc",
       "is_live_llm_call": true,
       "model_id": "gemini-2.5-pro",
-      "model_family": "Gemini 2.5 Pro (Enterprise Reasoning Judge)",
+      "model_family": "Gemini 2.5 Pro (Cross-Generation Consensus Judge)",
       "location": "us-central1",
+      "workstream": "WS3",
+      "filename": "ws3-pattern-b-sovereign-silos.md",
+      "latency_ms": 20114.4,
+      "prompt_token_count": 28257,
+      "candidates_token_count": 1499,
+      "evaluation": {
+        "workstream": "WS3",
+        "verdict": "PASS",
+        "overall_score": 98.78,
+        "dimension_scores": {
+          "accuracy": 99.0,
+          "completeness": 98.0,
+          "faithfulness": 99.0,
+          "relevancy": 99.14
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "The blog content is exceptionally well-written, technically deep, and highly relevant to the target audience of CISOs and regulated enterprise architects. It accurately describes the sovereign silo pattern using VPC-SC, IAM PAB, and Cloud HSM CMEK. The inclusion of a verified 41.2s kill-switch time, specific product na"
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 99.2,
+            "accuracy": 99.0,
+            "completeness": 99.0,
+            "faithfulness": 100.0,
+            "relevancy": 99.0,
+            "summary": "The two diagrams are of outstanding quality. The main architecture diagram is dense but clear, effectively illustrating the physical and cryptographic boundaries of the sovereign silo. The CMEK revocation swimlane diagram is a masterclass in temporal sequence visualization, making a complex process easy to understand f"
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 98.2,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 98.0,
+            "summary": "The compiled Draw.io XML digest confirms that the diagrams are not just static images but are built from structured, labeled vertices and edges. The high vertex count and use of embedded GCP icons indicate meticulous construction. The XML is valid and compiles correctly, ensuring the diagrams are maintainable and exten"
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 98.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 99.0,
+            "summary": "Both the lean visual deck and the executive narrative deck are excellent. They successfully repurpose the core diagrams and concepts for different audiences. The executive deck's problem/solution framing is particularly effective. Speaker notes are detailed and provide valuable context. The inclusion of live console sc"
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 98.2,
+            "accuracy": 99.0,
+            "completeness": 97.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "The provided Python code, shell scripts, and Kubernetes manifest are of high quality, runnable, and directly implement the concepts described. The `pattern_b_siloed_service.py` correctly orchestrates the silo-specific controls. The `gke_gemma3_airgapped_manifest.yaml` accurately reflects how to deploy a confidential, a"
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 99.2,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 100.0,
+            "relevancy": 100.0,
+            "summary": "The Terraform code is exemplary. Two distinct modules are provided: a runnable example for the blog post and a reusable blueprint for production. The code is clean, well-structured, and uses current best practices (e.g., `for_each` on services). It correctly provisions all the critical sovereign components: VPC, VPC-SC"
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 99.5,
+            "accuracy": 100.0,
+            "completeness": 98.0,
+            "faithfulness": 100.0,
+            "relevancy": 100.0,
+            "summary": "The references are perfectly chosen, authoritative, and all are reachable. Each link points to the canonical Google Cloud documentation for the core technologies used in the pattern (VPC-SC, PAB, HSM, Confidential GKE). This provides the reader with a direct path to deepen their understanding from the source of truth. "
+          }
+        },
+        "key_strengths": [
+          "The verifiable, sub-60-second CMEK kill-switch is the central, most compelling feature. The workstream proves this not just with diagrams and text, but with runnable code (`verify.sh`), Terraform, and live console screenshots, creating an exceptionally high level of trust and credibility.",
+          "The architecture demonstrates a deep understanding of regulated enterprise requirements, correctly identifying and combining multiple advanced Google Cloud security primitives (VPC-SC, IAM PAB, Confidential GKE with SEV-SNP, Cloud HSM) into a cohesive, defensible pattern.",
+          "The end-to-end faithfulness across all seven artifacts is outstanding. The concepts introduced in the blog are visually represented in the diagrams, programmatically implemented in the code and Terraform, and summarized for executives in the slides, creating a seamless and consistent learning experience."
+        ],
+        "remaining_gaps_or_VERIFY_flags": []
+      }
+    },
+    {
+      "status": "HTTP_200_OK",
+      "http_status": 200,
+      "response_id": "OM4Ia82UNc36idMP3JTe6Q8",
+      "is_live_llm_call": true,
+      "model_id": "gemini-4-carbon",
+      "model_family": "Gemini 4 Carbon (Frontier Architecture & Faithfulness Judge)",
+      "location": "global",
       "workstream": "WS4",
       "filename": "ws4-pattern-c-hybrid-dynamic-tiering.md",
-      "latency_ms": 26425.2,
-      "prompt_token_count": 26969,
-      "candidates_token_count": 436,
+      "latency_ms": 27695.0,
+      "prompt_token_count": 28642,
+      "candidates_token_count": 1678,
       "evaluation": {
         "workstream": "WS4",
         "verdict": "PASS",
-        "overall_score": 100,
+        "overall_score": 96.36,
         "dimension_scores": {
-          "terminology_and_systems_primitives": 100,
-          "pedagogical_flow_and_context_bridges": 100,
-          "visual_1to1_badge_and_code_grounding": 100,
-          "display_latex_and_symbol_definitions": 100,
-          "production_code_and_10saas_evidence": 100,
-          "well_architected_and_slide_launch_parity": 100
+          "accuracy": 97.29,
+          "completeness": 95.71,
+          "faithfulness": 95.57,
+          "relevancy": 96.86
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 97.2,
+            "accuracy": 98.0,
+            "completeness": 97.0,
+            "faithfulness": 96.0,
+            "relevancy": 98.0,
+            "summary": "Technically rigorous, production-grounded deep dive into Pattern C (Governed Hub-and-Spoke Dynamic Hybrid). Accurately aligns with Google Cloud multi-tenancy grounding facts: Identity Platform (Multi-Tenancy) + Workload Identity Federation, regional Model Armor endpoints (modelarmor.<region>.rep.googleapis.com), Cloud "
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 96.2,
+            "accuracy": 97.0,
+            "completeness": 96.0,
+            "faithfulness": 96.0,
+            "relevancy": 96.0,
+            "summary": "Both logical diagrams (ws4-pattern-c-hybrid and ws4-c4-l3-live-tier-promotion-swimlane) clearly depict the 8-step Hub-to-Spoke PSC routing topology and the 5-actor zero-downtime live tier graduation state machine (SHADOW_SYNC, CMEK Re-Key + SHA-256 Parity, and 0ms Atomic CAS Pointer Flip)."
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 96.0,
+            "accuracy": 97.0,
+            "completeness": 95.0,
+            "faithfulness": 96.0,
+            "relevancy": 96.0,
+            "summary": "Both compiled .drawio XML artifacts validate cleanly with zero geometry errors or warnings. ws4-pattern-c-hybrid contains 54 labeled vertices, 24 orthogonal edges, and 17 embedded GCP SVG icons matching the Control, Compute, and Data plane descriptions; ws4-c4-l3-live-tier-promotion-swimlane cleanly maps all 5 actors ("
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 95.5,
+            "accuracy": 96.0,
+            "completeness": 96.0,
+            "faithfulness": 94.0,
+            "relevancy": 96.0,
+            "summary": "Both the 9-slide Lean Visual Deck and 10-slide Executive Narrative Deck compile cleanly with substantive speaker notes, native vector icons, embedded draw.io links, FinOps blended COGS math (1.8x at 5% enterprise), and live Jira 3LO + GCP VPC console proofs. Minor filename drift noted where the 9-slide deck retains the"
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 96.2,
+            "accuracy": 97.0,
+            "completeness": 96.0,
+            "faithfulness": 95.0,
+            "relevancy": 97.0,
+            "summary": "All Python modules (pattern_c_hybrid_router_and_migrator.py, run_tier_migration_suite.py) pass AST verification with zero errors and cleanly enforce DPoP binding, token/thinking clamping (4,000 MEDIUM vs. 8,000 HIGH), cross-spoke impersonation blocks, and 3-phase live tier promotion. Shell deployment and verification s"
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 97.0,
+            "accuracy": 98.0,
+            "completeness": 96.0,
+            "faithfulness": 96.0,
+            "relevancy": 98.0,
+            "summary": "Both Terraform directories (35 total resources across examples/blog-04-pattern-c-hybrid/terraform and 4.6-terraform-hybrid-psc-blueprint) pass HCL AST validation with zero undeclared variables or syntax errors. Accurately provisions isolated Hub and Spoke VPCs with zero peering, REGIONAL_MANAGED_PROXY and PRIVATE_SERVI"
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 96.2,
+            "accuracy": 98.0,
+            "completeness": 94.0,
+            "faithfulness": 96.0,
+            "relevancy": 97.0,
+            "summary": "All 5 canonical Google Cloud documentation citations (Private Service Connect, Cloud Run Direct VPC Egress, Firestore Transactions, AlloyDB CMEK, and Multi-tenant Agentic AI Architecture Center) are structurally valid, directly relevant to Pattern C, and verified HTTP 200 reachable."
+          }
         },
         "key_strengths": [
-          "Forensic Grounding in Code and Infrastructure: Every architectural component, sequence diagram badge, and mathematical formula is meticulously grounded in specific, line-level code citations, Terraform resource definitions, and live cloud infrastructure endpoints.",
-          "Exceptional Pedagogical Structure: The document masterfully employs a C4 (L1-L5) macro-to-micro progression, classical Computer Science analogies (e.g., VFS, RCU), and seamless context bridges, making profoundly complex hybrid cloud and zero-downtime migration concepts accessible to the target audience.",
-          "Unprecedented Verifiable Evidence: The dual 10-SaaS verification matrices, including live multi-cloud (Google Cloud + AWS Bedrock) targets with S3 audit ledgers, provide an extraordinary level of empirical, executable proof that substantiates every architectural claim.",
-          "Meticulous Rubric Adherence: The content demonstrates perfect compliance with all structural requirements, including the 5 Well-Architected pillars, LaTeX formulas with `Where:` definitions, and a complete slide-to-code launch matrix."
+          "Exemplary network and security engineering for Pattern C: replaces brittle VPC peering with unidirectional /28 Private Service Connect ServiceAttachments (ACCEPT_MANUAL) to eliminate CIDR overlap and lateral/reverse network reachability.",
+          "Rigorous 3-phase zero-downtime tenant graduation protocol (SHADOW_SYNC dual-write, Cloud KMS CMEK re-key with deterministic SHA-256 row/pgvector parity gate, and Firestore CAS route_epoch pointer swap with 30s drain) consistent across prose, swimlane XML, slides, and test suites.",
+          "Accurate adherence to Google Cloud B2B SaaS identity and AI security primitives: Identity Platform (Multi-Tenancy) + Workload Identity Federation, regional Model Armor endpoints, Cloud Run Gen2 gVisor CoW (--max-requests=1), and SPIFFE mTLS.",
+          "Complete practitioner reproducibility via zero-modification deploy.sh/verify.sh scripts backed by 35 valid Terraform resources and live Cloud Console / Atlassian Jira 3LO before-and-after verification proofs."
         ],
         "remaining_gaps_or_VERIFY_flags": [
-          "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ],
-        "raw_model_overall_score": 100
+          "Minor naming artifact: the 9-slide Lean Visual Deck file path is still named slides/ws4-12slide-visual-deck.pptx in frontmatter and links, although the blog prose accurately labels it as the 9-Slide Lean Visual Deck.",
+          "Minor CIDR example variation across environments: conceptual prose discusses reusable 10.40.0.0/20 spoke CIDRs, while the runnable single/dual-project Terraform example and live screenshots use 10.140.0.0/24 and 10.240.0.0/28\u2014all valid RFC 1918 ranges, though worth noting for strict cross-artifact uniformity."
+        ]
       }
     },
     {
       "status": "HTTP_200_OK",
       "http_status": 200,
-      "response_id": "5iLnavC6GfG448AP7vq5uQk",
+      "response_id": "VM4Ia-rtGc36idMP3JTe6Q8",
       "is_live_llm_call": true,
-      "model_id": "gemini-2.5-flash",
-      "model_family": "Gemini 2.5 Flash (Enterprise Structural Judge)",
-      "location": "us-central1",
+      "model_id": "gemini-4-argon",
+      "model_family": "Gemini 4 Argon (Frontier Code, Terraform HCL & Security Judge)",
+      "location": "global",
       "workstream": "WS4",
       "filename": "ws4-pattern-c-hybrid-dynamic-tiering.md",
-      "latency_ms": 10200.9,
-      "prompt_token_count": 26969,
-      "candidates_token_count": 395,
+      "latency_ms": 22342.6,
+      "prompt_token_count": 28642,
+      "candidates_token_count": 1609,
       "evaluation": {
         "workstream": "WS4",
         "verdict": "PASS",
-        "overall_score": 100,
+        "overall_score": 97.35,
         "dimension_scores": {
-          "terminology_and_systems_primitives": 100,
-          "pedagogical_flow_and_context_bridges": 100,
-          "visual_1to1_badge_and_code_grounding": 100,
-          "display_latex_and_symbol_definitions": 100,
-          "production_code_and_10saas_evidence": 100,
-          "well_architected_and_slide_launch_parity": 100
+          "accuracy": 97.71,
+          "completeness": 96.71,
+          "faithfulness": 97.14,
+          "relevancy": 97.86
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 97.8,
+            "accuracy": 98.0,
+            "completeness": 97.0,
+            "faithfulness": 98.0,
+            "relevancy": 98.0,
+            "summary": "Technically rigorous, production-grade exposition of Pattern C (Governed Hub-and-Spoke Dynamic Hybrid Architecture). Accurately aligns with Google Cloud grounding facts (Identity Platform Multi-Tenancy + Workload Identity Federation, regional Model Armor endpoints `modelarmor.<region>.rep.googleapis.com`, Cloud Run Age"
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 97.2,
+            "accuracy": 97.0,
+            "completeness": 97.0,
+            "faithfulness": 97.0,
+            "relevancy": 98.0,
+            "summary": "Both SVG architecture diagrams (`ws4-pattern-c-hybrid` and `ws4-c4-l3-live-tier-promotion-swimlane`) cleanly illustrate the 8-step logical flows for Pattern C Hub-and-Spoke PSC routing and the 5-actor (`ADMIN`, `ROUTER`, `MIGRATOR`, `POOL`, `SPOKE`) zero-downtime live tier graduation state machine."
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 97.0,
+            "accuracy": 98.0,
+            "completeness": 96.0,
+            "faithfulness": 97.0,
+            "relevancy": 97.0,
+            "summary": "Both `.drawio` XML files compile cleanly with 0 geometry errors or warnings. `ws4-pattern-c-hybrid` contains 54 labeled vertices, 24 orthogonal edges, and 17 embedded GCP SVG icons matching the Control, Compute, and Data planes in the blog prose. `ws4-c4-l3-live-tier-promotion-swimlane` contains 44 labeled vertices and"
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 97.0,
+            "accuracy": 97.0,
+            "completeness": 97.0,
+            "faithfulness": 97.0,
+            "relevancy": 97.0,
+            "summary": "Both compiled PowerPoint decks (9-slide Lean Visual Deck and 10-slide Executive Narrative Deck) are present, rich in speaker notes (256\u20131,557 chars per slide), embed native vector icons and Draw.io links, and maintain 1:1 fidelity with the blog's COGS metrics (`1.8x` at 950/50 split), `/28` PSC quotas, and live Jira/VP"
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 97.0,
+            "accuracy": 97.0,
+            "completeness": 97.0,
+            "faithfulness": 96.0,
+            "relevancy": 98.0,
+            "summary": "All Python modules (`pattern_c_hybrid_router_and_migrator.py` and `run_tier_migration_suite.py`) pass AST verification with zero syntax errors, implementing the 3-phase `SHADOW_SYNC` -> `ATOMIC_CUTOVER` -> `DRAIN_AND_VERIFY` state machine and tier token clamping (`4000` Standard Pool vs `8000` Enterprise Spoke). The ru"
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 97.5,
+            "accuracy": 98.0,
+            "completeness": 97.0,
+            "faithfulness": 97.0,
+            "relevancy": 98.0,
+            "summary": "Both Terraform directories (`examples/blog-04-pattern-c-hybrid/terraform` with 27 resources and `workstream-4-pattern-c-hybrid/4.6-terraform-hybrid-psc-blueprint` with 8 resources, totaling 35 resources) pass HCL AST validation with zero undeclared variables or errors. Accurately provisions isolated Hub and Spoke VPCs,"
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 98.0,
+            "accuracy": 99.0,
+            "completeness": 96.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "All 5 canonical Google Cloud documentation links (Private Service Connect, Cloud Run Direct VPC Egress, Firestore Transactions, AlloyDB CMEK, and the Google Cloud Architecture Center multi-tenant agentic AI reference) are structurally valid and verified HTTP 200 reachable."
+          }
         },
         "key_strengths": [
-          "Comprehensive and explicit definitions of core terminology with CS101 analogies, framing the SaaS AI Architect's Dilemma effectively.",
-          "Rigorous pedagogical flow, including a clear C4 model progression (L1-L5), smooth transitions, and explicit 5-Hop context bridges.",
-          "Exceptional visual grounding with 1:1 badge mapping to diagram elements, detailed sub-hop resolution, and precise line-range code citations.",
-          "Flawless implementation of display LaTeX for quantitative FinOps/latency/availability formulas, immediately followed by clear symbol definitions and architectural grounding boundaries.",
-          "Strong evidence of production-grade code artifacts and an extensive, detailed 10-SaaS multi-cloud verification matrix.",
-          "Full adherence to all 5 Google Cloud Well-Architected Framework pillars and a complete, well-structured slide launch parity matrix."
+          "Complete end-to-end architectural and code alignment across prose, Draw.io XML, PowerPoint decks, Python migration state machine, and 35 validated Terraform HCL resources.",
+          "Rigorous Google Cloud networking engineering for Pattern C: replaces brittle VPC Peering (25-network limit, non-overlapping CIDR constraint) with unidirectional `/28` Private Service Connect `ServiceAttachment` endpoints (`ACCEPT_MANUAL`) and consumer forwarding rules.",
+          "Zero-downtime live tier graduation (`SHADOW_SYNC` dual-write -> `SHA-256` row/vector parity + CMEK re-key -> `0 ms` Firestore CAS `route_epoch` flip + `30s` drain) verified both in synthetic test suites and runnable Cloud Run + Firestore deployments.",
+          "Comprehensive empirical verification combining 10-SaaS multi-cloud adversarial receipts (`HTTP 403 HYBRID_ROUTER_SPOKE_IMPERSONATION_BLOCKED`) with live Before/After Atlassian Jira Cloud 3LO and Google Cloud VPC/PSC console proofs."
         ],
-        "remaining_gaps_or_VERIFY_flags": [
-          "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ],
-        "raw_model_overall_score": 100
+        "remaining_gaps_or_VERIFY_flags": []
       }
     },
     {
       "status": "HTTP_200_OK",
       "http_status": 200,
-      "response_id": "3SLnasTOKtC248APmZGtgQw",
+      "response_id": "as4Ia4-nK9epm9IPqo2GyAg",
       "is_live_llm_call": true,
       "model_id": "gemini-2.5-pro",
-      "model_family": "Gemini 2.5 Pro (Enterprise Reasoning Judge)",
+      "model_family": "Gemini 2.5 Pro (Cross-Generation Consensus Judge)",
       "location": "us-central1",
-      "workstream": "WS5",
-      "filename": "ws5-decision-guide-and-agentic-triad.md",
-      "latency_ms": 30534.1,
-      "prompt_token_count": 24835,
-      "candidates_token_count": 432,
+      "workstream": "WS4",
+      "filename": "ws4-pattern-c-hybrid-dynamic-tiering.md",
+      "latency_ms": 19388.7,
+      "prompt_token_count": 29214,
+      "candidates_token_count": 1523,
       "evaluation": {
-        "workstream": "WS5",
+        "workstream": "WS4",
         "verdict": "PASS",
-        "overall_score": 100,
+        "overall_score": 98.53,
         "dimension_scores": {
-          "terminology_and_systems_primitives": 100,
-          "pedagogical_flow_and_context_bridges": 100,
-          "visual_1to1_badge_and_code_grounding": 100,
-          "display_latex_and_symbol_definitions": 100,
-          "production_code_and_10saas_evidence": 100,
-          "well_architected_and_slide_launch_parity": 100
+          "accuracy": 98.86,
+          "completeness": 98.14,
+          "faithfulness": 98.71,
+          "relevancy": 98.43
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "The blog post is exceptionally well-written, technically deep, and highly relevant. It accurately describes the Pattern C hybrid architecture, focusing on Private Service Connect (PSC) for enterprise spokes and a zero-downtime tier promotion mechanism. It correctly cites Google Cloud services like Identity Platform, Mo"
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 98.0,
+            "summary": "The two diagrams are professional, dense with accurate information, and perfectly aligned with the blog's narrative. The main architecture diagram clearly delineates the shared hub and isolated spokes, correctly labeling key components like PSC, Model Armor, and Identity Platform. The swimlane diagram provides an excel"
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 99.0,
+            "relevancy": 98.0,
+            "summary": "The compiled Draw.io XML files are clean, well-structured, and perfectly match the rendered SVG diagrams embedded in the blog. The vertex and edge counts are consistent, and the labels accurately reflect the architecture's components and data flows. The use of embedded GCP icons and orthogonal layouts enhances readabil"
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 98.0,
+            "accuracy": 98.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 98.0,
+            "summary": "Both the lean visual deck and the executive narrative deck are high-quality, professional, and faithful to the core architecture. They effectively repurpose the diagrams and key concepts for different audiences. The executive deck excels at framing the problem and ROI, while the lean deck provides a concise visual summ"
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 99.0,
+            "accuracy": 99.0,
+            "completeness": 99.0,
+            "faithfulness": 99.0,
+            "relevancy": 99.0,
+            "summary": "The Python code and shell scripts are exemplary. The `pattern_c_hybrid_router_and_migrator.py` provides a clear, logical implementation of the core routing and migration logic. The `run_tier_migration_suite.py` test suite is a powerful asset, proving the zero-downtime claim empirically. The `deploy.sh` and `verify.sh` "
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 99.0,
+            "accuracy": 99.0,
+            "completeness": 99.0,
+            "faithfulness": 99.0,
+            "relevancy": 99.0,
+            "summary": "The Terraform code is robust, well-structured, and production-grade. The runnable example (`examples/blog-04-pattern-c-hybrid`) is outstanding, correctly provisioning complex networking resources like VPCs, an internal LB, and the full Private Service Connect stack (NAT subnet, service attachment, consumer endpoint). T"
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 98.2,
+            "accuracy": 99.0,
+            "completeness": 97.0,
+            "faithfulness": 99.0,
+            "relevancy": 98.0,
+            "summary": "All five references are high-quality, directly relevant to the core technologies (PSC, Direct VPC Egress, Firestore Transactions, CMEK), and are confirmed to be reachable. The annotations accurately summarize why each link is important. The list provides the necessary official documentation to support the architectural"
+          }
         },
         "key_strengths": [
-          "Exceptional Verifiability and Grounding: The architecture is not just described but proven through an exhaustive, multi-cloud, 10-SaaS verification matrix, direct links to line-numbered code, and executable 1-click deployment scripts.",
-          "Rigorous Pedagogical Structure: The use of the C4 model, CS101 analogies for systems primitives, and quantitative LaTeX formulas with immediate 'Where:' definitions creates an uncommonly clear and rigorous learning path for a complex topic.",
-          "Seamless Artifact Parity: The document masterfully links diagrams (Figure 1 badges), textual explanations, source code (`runtime_pipeline.py`), presentation slides (via the 'What's next' matrix), and deployment artifacts, ensuring total consistency and eliminating ambiguity.",
-          "The Agentic Triad Framework: The conceptual model of the 'Multi-Tenant Agentic Triad' (Zero-Trust Security, Predictable FinOps, Privacy-Preserving Observability) is a powerful and memorable abstraction that unifies the entire design across all three patterns."
+          "The zero-downtime, zero-dropped-turn live tier promotion from a pooled to a dedicated PSC spoke is a standout feature, addressing a critical real-world SaaS operational challenge. The architecture is backed by a clear 3-phase process (SHADOW_SYNC, Parity Check, CAS Flip) and proven with a runnable test suite.",
+          "The provision of a complete, zero-modification runnable example (`deploy.sh`, `verify.sh`, Terraform) is a massive accelerator for practitioners. It transforms the architecture from a theoretical pattern into a tangible, verifiable solution, dramatically increasing credibility and adoption potential.",
+          "The architecture makes excellent, accurate use of Private Service Connect (PSC) to solve the scalability and security limitations of VPC Peering for hub-and-spoke models. The emphasis on unidirectional connectivity and the avoidance of CIDR conflicts is a key security and operational win.",
+          "Exceptional faithfulness across all seven artifacts. The concepts described in the blog are precisely reflected in the diagrams, implemented in the code and Terraform, and summarized in the slides, creating a cohesive and trustworthy set of assets."
         ],
-        "remaining_gaps_or_VERIFY_flags": [
-          "NONE \u2014 100% compliant across all 6 rubric dimensions"
-        ],
-        "raw_model_overall_score": 100
+        "remaining_gaps_or_VERIFY_flags": []
       }
     },
     {
       "status": "HTTP_200_OK",
       "http_status": 200,
-      "response_id": "5yLnauLRIbGS48AP8IGg0Qk",
+      "response_id": "OM4Ia73xNe3ys_IPyuKv-Ag",
       "is_live_llm_call": true,
-      "model_id": "gemini-2.5-flash",
-      "model_family": "Gemini 2.5 Flash (Enterprise Structural Judge)",
-      "location": "us-central1",
+      "model_id": "gemini-4-carbon",
+      "model_family": "Gemini 4 Carbon (Frontier Architecture & Faithfulness Judge)",
+      "location": "global",
       "workstream": "WS5",
       "filename": "ws5-decision-guide-and-agentic-triad.md",
-      "latency_ms": 12554.6,
-      "prompt_token_count": 24835,
-      "candidates_token_count": 488,
+      "latency_ms": 30853.8,
+      "prompt_token_count": 31194,
+      "candidates_token_count": 1729,
       "evaluation": {
         "workstream": "WS5",
         "verdict": "PASS",
-        "overall_score": 99.7,
+        "overall_score": 96.5,
         "dimension_scores": {
-          "terminology_and_systems_primitives": 100,
-          "pedagogical_flow_and_context_bridges": 98,
-          "visual_1to1_badge_and_code_grounding": 100,
-          "display_latex_and_symbol_definitions": 100,
-          "production_code_and_10saas_evidence": 100,
-          "well_architected_and_slide_launch_parity": 100
+          "accuracy": 97.14,
+          "completeness": 95.86,
+          "faithfulness": 96.0,
+          "relevancy": 97.0
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 97.2,
+            "accuracy": 98.0,
+            "completeness": 97.0,
+            "faithfulness": 96.0,
+            "relevancy": 98.0,
+            "summary": "Exceptionally well-structured capstone guide. Accurately uses Identity Platform (Multi-Tenancy) + Workload Identity Federation for external B2B SaaS, regional Model Armor endpoints (`modelarmor.<region>.rep.googleapis.com`), Vertex AI Memory Bank IAM CEL scopes (`aiplatform.googleapis.com/memoryScope`), Cloud Run Agent"
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 96.2,
+            "accuracy": 97.0,
+            "completeness": 96.0,
+            "faithfulness": 95.0,
+            "relevancy": 97.0,
+            "summary": "All three SVG architectural diagrams cover the 3-Gate Pattern Selector (A vs. C vs. B), the 5-actor Dynamic GCS Skill + A2A + FinOps OTel sequence swimlane, and the 2-plane Google Cloud to AWS AgentCore + 10-SaaS federation bridge. Minor rounding variance between Figure 2 label (89.1% prefix savings) and prose (~85% tu"
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 95.8,
+            "accuracy": 96.0,
+            "completeness": 96.0,
+            "faithfulness": 95.0,
+            "relevancy": 96.0,
+            "summary": "All 3 `.drawio` files compile cleanly with zero geometry errors or warnings across 26, 42, and 38 labeled vertices respectively. Control, Compute, and Data plane pills and gate logic (`q_spoke`, `q_silo`) map cleanly to the markdown decision formula, with minor sandbox project naming drift (`cymbal-ge-hub-2026` in Figu"
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 96.0,
+            "accuracy": 96.0,
+            "completeness": 96.0,
+            "faithfulness": 95.0,
+            "relevancy": 97.0,
+            "summary": "Both the 9-slide Lean Visual Deck and 10-slide Executive Narrative Deck compile cleanly with substantive speaker notes (219\u20131,555 chars per slide), native DrawingML diagrams, embedded `.drawio` links, and live console proof comparisons. Minor legacy filename `ws5-12slide-visual-deck.pptx` retained for the 9-slide lean "
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 96.0,
+            "accuracy": 97.0,
+            "completeness": 95.0,
+            "faithfulness": 96.0,
+            "relevancy": 96.0,
+            "summary": "All Python modules (`shared_diagnostic_agent.py`, `finvault_agent_alpha.py`, `cymbal_mcp_hub.py`) pass AST verification without errors, modeling real Gemini 2.5 Pro/Flash and Gemma 3 27B identifiers, tenant isolation (`403 Forbidden`), and 10-SaaS 2LO/3LO dispatch. Runnable `deploy.sh` and `verify.sh` scripts automate "
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 97.0,
+            "accuracy": 98.0,
+            "completeness": 96.0,
+            "faithfulness": 97.0,
+            "relevancy": 97.0,
+            "summary": "Valid HCL (`>= 1.5.0`, Google provider `>= 6.0.0`) provisioning 14 resources with zero undeclared variables. Enforces least-privilege separation across 3 distinct service accounts (`orchestrator_sa`, `specialist_sa`, `mcp_sa`), scoped Cloud Run v2 IAM invoker bindings, and a strongly typed Zero-PII BigQuery `otel_finop"
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 97.2,
+            "accuracy": 98.0,
+            "completeness": 95.0,
+            "faithfulness": 98.0,
+            "relevancy": 98.0,
+            "summary": "All 5 canonical Google Cloud documentation URLs return HTTP 200 and directly ground multi-tenant agentic architecture, Vertex AI Agent Engine Memory Bank scoping, multi-cloud Workload Identity Federation with AWS, Cloud Sensitive Data Protection, and OpenTelemetry attribution."
+          }
         },
         "key_strengths": [
-          "Comprehensive and rigorous definition of core terminology, enhanced with classical OS/distributed-systems analogies and clear framing of the SaaS AI Architect's Dilemma.",
-          "Exceptional pedagogical flow, guiding the reader seamlessly from macro-level executive decisions to micro-level C4 architectural details, with explicit 5-Hop context bridges and zero cold transitions.",
-          "Flawless 1:1 visual grounding, meticulously binding all 7 diagram badge labels to their corresponding callout steps, resolving sub-phases (3a/3b, 4a/4b, 5a/5b), and providing precise `runtime_pipeline.py` line range citations.",
-          "Perfect adherence to quantitative formula presentation standards, utilizing display LaTeX `$$...$$` immediately followed by bulleted `Where:` symbol/unit legends and `Architectural Grounding Boundary` callouts.",
-          "Extensive evidence of production-grade code grounding, referencing executable artifacts (`core-cymbal-agent/`, `terraform/`, `deploy_1click.sh`), and a highly detailed 10-SaaS Multi-Cloud verification matrix with live audit links and genuine UI proofs.",
-          "Complete coverage of all 5 Google Cloud Well-Architected Framework pillars and a comprehensive Slide Launch Matrix, ensuring full parity between documentation and presentation assets."
+          "Deterministic 3-Gate Binary Governance Selector (`q_spoke`, `q_silo`) cleanly unifies Pool (1.0x COGS), Hybrid `/28` PSC (1.8x\u20132.8x COGS), and Sovereign Silo (~15x COGS) under three invariant security/codebase rules.",
+          "Strict adherence to Google Cloud external B2B multi-tenancy best practices: Identity Platform Multi-Tenancy + Workload Identity Federation (zero misuse of Workforce Identity Federation), regional Model Armor endpoints, exact-match IAM CEL `memoryScope`, and Cloud Run SPIFFE mTLS.",
+          "Self-contained, zero-edit runnable Cloud Run Gen2 + BigQuery Terraform Triad (`examples/blog-05-agentic-triad`) with live HTTP 200/403 OAuth 2.1 OBO isolation tests and SHA-256 Zero-PII chargeback verification.",
+          "Comprehensive multi-cloud proof bridging Google Cloud OIDC keylessly to AWS STS, AWS Bedrock AgentCore MCP Gateway, and 10 commercial SaaS platforms (30/30 flows verified) backed by genuine Before/After console captures."
         ],
         "remaining_gaps_or_VERIFY_flags": [
-          "NONE \u2014 100% compliant across all 6 rubric dimensions"
+          "Minor cross-artifact metric rounding: `ws5-c4-l3-dynamic-skill-delegation-swimlane` and Slide 6 cite `89.1%` 32k prefix cache token savings, whereas `blogContent` prose states `~85%` turn token savings (both valid within the 90% cached-token discount envelope, depending on output ratio).",
+          "Minor naming variance: Lean visual deck file is named `ws5-12slide-visual-deck.pptx` while containing 9 compiled slides, and Figure 3 `.drawio` header displays live project IDs (`cymbal-ge-hub-2026 / cymbal-ge-silo-2026`) whereas the prose caption aliases them as `cymbal-pooled-saas-prod / cymbal-finvault-silo-prod`."
+        ]
+      }
+    },
+    {
+      "status": "HTTP_200_OK",
+      "http_status": 200,
+      "response_id": "V84Ia_PIGp6NoMYPlv_NiAU",
+      "is_live_llm_call": true,
+      "model_id": "gemini-4-argon",
+      "model_family": "Gemini 4 Argon (Frontier Code, Terraform HCL & Security Judge)",
+      "location": "global",
+      "workstream": "WS5",
+      "filename": "ws5-decision-guide-and-agentic-triad.md",
+      "latency_ms": 22533.4,
+      "prompt_token_count": 31194,
+      "candidates_token_count": 1453,
+      "evaluation": {
+        "workstream": "WS5",
+        "verdict": "PASS",
+        "overall_score": 97.28,
+        "dimension_scores": {
+          "accuracy": 98.0,
+          "completeness": 96.71,
+          "faithfulness": 96.57,
+          "relevancy": 97.86
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 98.0,
+            "accuracy": 98.0,
+            "completeness": 98.0,
+            "faithfulness": 97.0,
+            "relevancy": 99.0,
+            "summary": "Capstone prose accurately synthesizes Patterns A, B, and C into a formal 3-Gate Binary Governance Selector (q_spoke, q_silo) alongside three universal platform invariants. Correctly grounds Google Cloud Identity Platform (Multi-Tenancy) + Workload Identity Federation, regional Model Armor endpoints (modelarmor.<region>"
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 97.2,
+            "accuracy": 98.0,
+            "completeness": 97.0,
+            "faithfulness": 96.0,
+            "relevancy": 98.0,
+            "summary": "All three SVG architecture diagrams (ws5-decision-tree-and-triad, ws5-c4-l3-dynamic-skill-delegation-swimlane, saas10-multicloud-a2a-mcp-bridge) map cleanly to the capstone decision framework, 5-actor A2A/GCS skill delegation trace, and Google Cloud-to-AWS AgentCore multi-cloud federation topology."
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 96.2,
+            "accuracy": 97.0,
+            "completeness": 96.0,
+            "faithfulness": 96.0,
+            "relevancy": 96.0,
+            "summary": "All three .drawio XML artifacts compile cleanly with zero geometry errors or warnings across 106 total labeled vertices and 39 edges. Minor cosmetic note: project labels in saas10-multicloud-a2a-mcp-bridge use the live sandbox project IDs (cymbal-ge-hub-2026 / cymbal-ge-silo-2026) whereas blog prose also references the"
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 97.0,
+            "accuracy": 97.0,
+            "completeness": 97.0,
+            "faithfulness": 96.0,
+            "relevancy": 98.0,
+            "summary": "Both the 9-slide Lean Visual Deck and 10-slide Executive Narrative Deck compile cleanly with comprehensive speaker notes, embedded Draw.io links on architecture slides, live commercial SaaS before/after visual proofs, and executive ROI/scorecard summaries."
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 96.8,
+            "accuracy": 98.0,
+            "completeness": 96.0,
+            "faithfulness": 96.0,
+            "relevancy": 97.0,
+            "summary": "All Python modules (shared_diagnostic_agent.py, finvault_agent_alpha.py, cymbal_mcp_hub.py) pass AST verification with zero syntax errors, enforcing strict tenant_id isolation (HTTP 403 on cross-tenant Agent Alpha access) and Model Garden allowlisting. The deploy.sh and verify.sh scripts provide end-to-end automated pr"
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 97.8,
+            "accuracy": 99.0,
+            "completeness": 97.0,
+            "faithfulness": 97.0,
+            "relevancy": 98.0,
+            "summary": "Terraform HCL in examples/blog-05-agentic-triad/terraform is 100% valid across 14 resources with zero undeclared variables. Provisions three distinct least-privilege service accounts (orchestrator, specialist, mcp_gateway), scoped Cloud Run v2 IAM invoker bindings, and a strongly typed BigQuery Zero-PII FinOps chargeba"
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 98.0,
+            "accuracy": 99.0,
+            "completeness": 96.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "All 5 canonical Google Cloud documentation links (Architecture Center multi-tenant system, Vertex AI Agent Engine, Workload Identity Federation with AWS, Cloud Sensitive Data Protection, and BigQuery OpenTelemetry) are structurally valid and return HTTP 200."
+          }
+        },
+        "key_strengths": [
+          "Deterministic 3-Gate Binary Governance Selector (q_spoke, q_silo) cleanly maps compliance, blast-radius, and COGS trade-offs across Pattern A (1.0x), Pattern C (1.8x-2.8x), and Pattern B (~15x).",
+          "Strict adherence to Google Cloud multi-tenant identity, security, and FinOps grounding facts: Identity Platform + WIF, regional Model Armor endpoints, Vertex AI Memory Bank memoryScope CEL conditions, SPIFFE mTLS, and 32k context caching.",
+          "Runnable zero-modification Cloud Shell & Terraform package (14 HCL resources) proving live A2A Agent Card discovery, cross-tenant HTTP 403 MCP OBO rejection, and SHA-256 Zero-PII BigQuery FinOps attribution.",
+          "Comprehensive 10-SaaS x 3-Pattern (30/30) multi-cloud federation verification matrix bridging Google Cloud to AWS Bedrock AgentCore via keyless OIDC STS exchange."
         ],
-        "raw_model_overall_score": 100
+        "remaining_gaps_or_VERIFY_flags": []
+      }
+    },
+    {
+      "status": "HTTP_200_OK",
+      "http_status": 200,
+      "response_id": "bs4Ia_LiAcuamecPmYGb8QI",
+      "is_live_llm_call": true,
+      "model_id": "gemini-2.5-pro",
+      "model_family": "Gemini 2.5 Pro (Cross-Generation Consensus Judge)",
+      "location": "us-central1",
+      "workstream": "WS5",
+      "filename": "ws5-decision-guide-and-agentic-triad.md",
+      "latency_ms": 17377.2,
+      "prompt_token_count": 31881,
+      "candidates_token_count": 1428,
+      "evaluation": {
+        "workstream": "WS5",
+        "verdict": "PASS",
+        "overall_score": 98.5,
+        "dimension_scores": {
+          "accuracy": 99.0,
+          "completeness": 98.0,
+          "faithfulness": 98.0,
+          "relevancy": 99.0
+        },
+        "artifacts": {
+          "blogContent": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "The blog content is exceptionally well-structured, serving as a capstone that synthesizes the previous workstreams. It presents a clear decision framework (Pool vs. Hybrid vs. Silo), details the 'Agentic Triad' concept, and demonstrates multi-cloud federation. The technical explanations are precise, referencing specifi"
+          },
+          "diagrams": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "The three diagrams are professional, information-dense, and highly relevant. The 'Pattern Selector' provides a clear executive decision tool. The 'Dynamic Skill Delegation' swimlane effectively visualizes the complex agent interaction flow. The 'Multi-Cloud Federation' diagram accurately depicts the keyless integration"
+          },
+          "drawio": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "The Draw.io source files are well-organized, cleanly compiled, and perfectly match the rendered SVG diagrams in the blog. The XML digest confirms a logical structure with labeled vertices and orthogonal edges, indicating professional diagramming practices. The faithfulness to the diagrams and the overall architecture i"
+          },
+          "slides": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "Both the lean visual deck and the executive narrative deck are high-quality assets tailored to their respective audiences. They faithfully reproduce the core diagrams and concepts from the blog, with speaker notes providing additional context. The executive deck excels at framing the problem and ROI, while the lean dec"
+          },
+          "code": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "The Python code and shell scripts are of production quality. The Python agent classes (`SharedDiagnosticAgent`, `FinVaultPrivateAgentAlpha`, `CymbalMCPHub`) directly implement the concepts described in the blog, such as A2A delegation, dynamic skill loading, and multi-cloud tool dispatch. The `deploy.sh` and `verify.sh"
+          },
+          "terraform": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "The Terraform code is exemplary. It correctly provisions the entire 'Agentic Triad' stack, including three distinct Cloud Run services with chained, least-privilege IAM, and the Zero-PII BigQuery FinOps table. The use of separate service accounts for each hop in the chain is a security best practice that faithfully imp"
+          },
+          "references": {
+            "verdict": "PASS",
+            "score": 98.5,
+            "accuracy": 99.0,
+            "completeness": 98.0,
+            "faithfulness": 98.0,
+            "relevancy": 99.0,
+            "summary": "The five references are highly authoritative and directly relevant to the workstream's core topics, including the capstone architecture, Agent Engine, Workload Identity Federation, Cloud DLP, and OTel. All links are reachable and point to official Google Cloud documentation, providing a solid foundation for readers see"
+          }
+        },
+        "key_strengths": [
+          "The workstream provides a deterministic, business-driven framework (Pool vs. Hybrid vs. Silo) that is immediately useful for architects and CTOs, moving beyond purely technical discussions to address compliance and COGS.",
+          "The inclusion of a fully automated, runnable `deploy.sh` and `verify.sh` script is a major strength, transforming abstract architectural concepts into a tangible, verifiable reality in the user's own GCP project.",
+          "The 'Agentic Triad' and 'Dynamic GCS Skills' patterns are innovative and practical, addressing the real-world need for runtime customization and agent-to-agent delegation without requiring constant container rebuilds.",
+          "Exceptional faithfulness across all seven artifacts; the blog, diagrams, slides, code, and Terraform tell a single, consistent, and accurate story, which is the hallmark of a mature and well-executed architecture."
+        ],
+        "remaining_gaps_or_VERIFY_flags": []
       }
     }
   ]

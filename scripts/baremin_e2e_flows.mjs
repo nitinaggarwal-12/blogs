@@ -3344,7 +3344,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "gcpProject": "cymbal-ge-hub-2026 (#252968359259) ↔ AWS 393036065405 (us-east-1)",
     "runtimeTarget": "Cloud Run (ge-blogs) ↔ AWS AgentCore MCP + S3",
     "codeModules": "core-cymbal-agent/mcp_servers/enterprise_5_saas_bi_mcp.py • server.py (/api/saas-5-live-verify)",
-    "execCloudServices": "Cloud Armor + IAP • ADK 5-Hop Gateway • Workforce WIF / Entra OBO / DPoP • Model Armor Egress SDP • AWS AgentCore MCP Gateway • 10 SaaS Targets",
+    "execCloudServices": "Cloud Armor + IAP • ADK 5-Hop Gateway • Workload WIF / Entra OBO / DPoP • Model Armor Egress SDP • AWS AgentCore MCP Gateway • 10 SaaS Targets",
     "execTechSummary": "Executes live 30/30 cross-cloud verified tool calls (10 SaaS × 3 patterns: Pooled A, Hybrid C, Sovereign Silo B) bridging Cloud Run ADK agents across WIF/DPoP/OBO into AWS Bedrock AgentCore MCP Gateway (`cymbal-a2a-mcp-gateway-suyxm3caof`) & S3 (`cymbal-aws-federation-393036065405-us-east-1`).",
     "outcomeTitle": "Zero-Trust Multi-Cloud Agentic Federation (30/30 Live)",
     "outcomeBody": "Enforces identical Model Armor, 3LO user-delegation, and CMEK kill-switch rules whether a tool lives on GCP, AWS AgentCore, or 3P SaaS APIs.",
@@ -3369,7 +3369,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "name": "CROSS-CLOUD WIF / 3LO / OBO FEDERATION BRIDGE",
         "role": "Short-lived OIDC/Entra WIF, OBO, and 3LO token exchanges authenticate cleanly into AWS & 3P SaaS with 0 static keys.",
         "nodes": [
-          "Workforce WIF + SigV4 STS",
+          "Workload WIF + SigV4 STS",
           "RFC 8693 OBO + 3LO Exchange",
           "RFC 9449 DPoP Sender Proof"
         ]
