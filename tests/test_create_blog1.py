@@ -1657,7 +1657,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         # 2. Compile security_deep_dive (concept + architecture + security + sequence + wire -> 11 slides, WITH architecture diagram!)
         sec_cat = cb1.get_category("security_deep_dive")
         plan_sec = cb1.compute_dynamic_slide_plan(sec_cat["recommendedOutline"], include_starter_code=True)
-        self.assertEqual(plan_sec["enabledDiagramKinds"], ["concept", "architecture", "security", "sequence", "wire"])
+        self.assertEqual(plan_sec["enabledDiagramKinds"], ["architecture", "concept", "security", "sequence", "wire"])
         self.assertEqual(plan_sec["totalSlides"], 11)
         raw_sec = _sample_blueprint()
         bp_sec = cb1.normalize_blueprint(
@@ -2026,7 +2026,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
 
         cat_pl = cb1.get_category("product_launch")
         plan_pl = cb1.compute_dynamic_slide_plan(cat_pl["recommendedOutline"], include_starter_code=False)
-        self.assertEqual(plan_pl["enabledDiagramKinds"], ["concept", "architecture", "sequence"])
+        self.assertEqual(plan_pl["enabledDiagramKinds"], ["architecture", "concept", "sequence"])
         self.assertEqual(plan_pl["totalSlides"], 8)
 
         bp_pl = cb1.normalize_blueprint(

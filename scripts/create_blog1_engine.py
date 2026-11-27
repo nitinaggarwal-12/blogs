@@ -3023,16 +3023,16 @@ def compile_docx_bytes(
             if fk:
                 ordered_figs.append((fk, f"Figure {idx_f} — {ft}", fu))
     else:
-        if url_by_kind.get("concept"):
-            ordered_figs.append(("concept", "Figure 1 — Conceptual Mental Model & Invariant Lock", url_by_kind["concept"]))
         if url_by_kind.get("architecture"):
-            ordered_figs.append(("architecture", f"Figure {len(ordered_figs)+1} — Master Platform Architecture (C4 L2)", url_by_kind["architecture"]))
+            ordered_figs.append(("architecture", "Figure 1 — Reference Platform Architecture & Plane Ownership (C4 L2)", url_by_kind["architecture"]))
+        if url_by_kind.get("concept"):
+            ordered_figs.append(("concept", f"Figure {len(ordered_figs)+1} — Conceptual Mental Model & Invariant Lock", url_by_kind["concept"]))
         if url_by_kind.get("cloudarch"):
             ordered_figs.append(("cloudarch", f"Figure {len(ordered_figs)+1} — Cloud Architecture Center Blueprint (Hub-and-Spoke)", url_by_kind["cloudarch"]))
-        if url_by_kind.get("sequence"):
-            ordered_figs.append(("sequence", f"Figure {len(ordered_figs)+1} — End-to-End Request Lifecycle Sequence (C4 L3)", url_by_kind["sequence"]))
         if url_by_kind.get("security"):
             ordered_figs.append(("security", f"Figure {len(ordered_figs)+1} — Trust Perimeter & Security Boundary (C4 L1)", url_by_kind["security"]))
+        if url_by_kind.get("sequence"):
+            ordered_figs.append(("sequence", f"Figure {len(ordered_figs)+1} — End-to-End Request Lifecycle Sequence (C4 L3)", url_by_kind["sequence"]))
         if url_by_kind.get("wire"):
             ordered_figs.append(("wire", f"Figure {len(ordered_figs)+1} — Wire Payload & Schema Transformation (C4 L4)", url_by_kind["wire"]))
         if url_by_kind.get("async"):
@@ -4128,11 +4128,11 @@ def run_orthogonal_llm_judge(
     judge_model = select_orthogonal_judge_model(generator_model)
     code_judge_model = select_secondary_code_judge_model(generator_model, judge_model)
     diag_field_map = {
-        "concept": ("conceptDiagram", "figure_conceptDiagram"),
         "architecture": ("platformDiagram", "figure_platformDiagram"),
+        "concept": ("conceptDiagram", "figure_conceptDiagram"),
         "cloudarch": ("cloudArchDiagram", "figure_cloudArchDiagram"),
-        "sequence": ("sequenceDiagram", "figure_sequenceDiagram"),
         "security": ("securityDiagram", "figure_securityDiagram"),
+        "sequence": ("sequenceDiagram", "figure_sequenceDiagram"),
         "wire": ("wireDiagram", "figure_wireDiagram"),
         "async": ("asyncDiagram", "figure_asyncDiagram"),
     }

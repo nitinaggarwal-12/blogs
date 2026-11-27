@@ -117,6 +117,13 @@ class ExhaustiveCombinatorialMatrixTests(unittest.TestCase):
                 enabled_kinds,
                 f"Master Platform Architecture ('architecture' + WHO RUNS WHAT) is missing from category '{cid}'!",
             )
+            self.assertEqual(
+                enabled_kinds[0],
+                "architecture",
+                f"Reference Platform Architecture ('architecture') MUST be Figure 1 in category '{cid}', got {enabled_kinds}",
+            )
+            self.assertEqual(cat["recommendedOutline"][0].get("type"), "section")
+            self.assertEqual(cat["recommendedOutline"][1].get("kind"), "architecture")
             union_enabled_kinds.update(enabled_kinds)
 
         self.assertEqual(
