@@ -436,7 +436,7 @@ window.SLIDE_DIAGRAMS_ATLAS = {
       "diagramId": "ws1-c4-l4-wire-protocol-transformation",
       "title": "Slide 11 • WS1 Hop 1 Deep-Dive: Spoofed Header Stripping & Signed ECDSA P-256 STS JWT Wire",
       "shortTitle": "WS1 Hop 1 Deep-Dive: Spoofed Header Stripping & Signed ECDSA P-256 STS JWT Wire",
-      "purpose": "Demonstrates at packet/wire level how Hop 1 Envoy/ALB strips forged X-Tenant-ID headers at ingress, validates Workforce Identity / OIDC + RFC 9449 DPoP proof, and mints a short-lived signed STS JWT carrying immutable tenant_id and scope claims.",
+      "purpose": "Demonstrates at packet/wire level how Hop 1 Envoy/ALB strips forged X-Tenant-ID headers at ingress, validates Identity Platform & Workload WIF / OIDC + RFC 9449 DPoP proof, and mints a short-lived signed STS JWT carrying immutable tenant_id and scope claims.",
       "inCompendium54": true,
       "linkages": {
         "workstream": "WS1",

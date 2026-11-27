@@ -677,7 +677,7 @@ export const DOC_REF_THEMES = {
     s3Spoken:
       'Walking through the agentic execution flow on this slide shows how a single KMS-signed TenantSecurityContext propagates from edge ingress through Agent Registry filtering, Valkey quota checks, Gemini reasoning, and PostgreSQL Row-Level Security.',
     s4Spoken:
-      'For SaaS security and platform architects, this slide maps the four identity primitives—Workforce Identity Federation, OBO token exchange, SPIFFE workload identity, and composite tenant-user 3LO vaults—directly onto Google Cloud managed services.',
+      'For SaaS security and platform architects, this slide maps the four identity primitives—Identity Platform and Workload Identity Federation, OBO token exchange, SPIFFE workload identity, and composite tenant-user 3LO vaults—directly onto Google Cloud managed services.',
     s5Spoken:
       'This comparison matrix evaluates cryptographic OBO/DPoP propagation against ambient service accounts and client-supplied headers across spoofing resistance, audit non-repudiation, and cached-JWKS verification latency under 0.15 milliseconds.',
     s6Spoken:

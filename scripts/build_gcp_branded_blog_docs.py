@@ -1110,17 +1110,21 @@ def refresh_cloud_viewer_manifest() -> None:
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
     now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
-    # Refresh all slides entries
+    # Refresh all slides entries (strictly no fake clock: if .pptx changed vs recorded sha256, upload via gdrive first!)
     for skey, sentry in manifest.get("slides", {}).items():
         pptx_rel = sentry.get("pptxPath")
         if pptx_rel:
             p = ROOT_DIR / pptx_rel
             if p.is_file():
                 b = p.read_bytes()
-                sentry["sha256"] = hashlib.sha256(b).hexdigest()
+                new_sha = hashlib.sha256(b).hexdigest()
+                fid = sentry.get("googleSlidesId") or ""
+                if fid and sentry.get("sha256") != new_sha and skey != "BARE_MIN_12":
+                    run_gdrive(["mutate", "update", fid, str(p)])
+                    sentry["syncedAt"] = now_iso
+                sentry["sha256"] = new_sha
                 sentry["sizeBytes"] = len(b)
-                sentry["syncedAt"] = now_iso
-                if sentry.get("googleSlidesId"):
+                if fid:
                     fid = sentry["googleSlidesId"]
                     s_url = get_shareable_drive_url(fid)
                     if "resourcekey=" in s_url or not sentry.get("webViewLink"):
