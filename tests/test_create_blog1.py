@@ -1596,15 +1596,15 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         cats = cap.get("categories") or []
         self.assertEqual(len(cats), 7)
         cat_map = {c["id"]: c for c in cats}
-        self.assertEqual(cat_map["reference_architecture"]["recommendedSlideCount"], 11)
-        self.assertEqual(cat_map["reference_architecture"]["recommendedDiagramCount"], 5)
-        self.assertEqual(cat_map["pattern_tradeoff"]["recommendedSlideCount"], 8)
-        self.assertEqual(cat_map["hands_on_runbook"]["recommendedSlideCount"], 9)
-        self.assertEqual(cat_map["executive_brief"]["recommendedSlideCount"], 7)
-        self.assertEqual(cat_map["security_deep_dive"]["recommendedSlideCount"], 10)
-        self.assertEqual(cat_map["security_deep_dive"]["recommendedDiagramCount"], 4)
-        self.assertEqual(cat_map["product_launch"]["recommendedSlideCount"], 7)
-        self.assertEqual(cat_map["case_study_postmortem"]["recommendedSlideCount"], 7)
+        self.assertEqual(cat_map["reference_architecture"]["recommendedSlideCount"], 12)
+        self.assertEqual(cat_map["reference_architecture"]["recommendedDiagramCount"], 6)
+        self.assertEqual(cat_map["pattern_tradeoff"]["recommendedSlideCount"], 9)
+        self.assertEqual(cat_map["hands_on_runbook"]["recommendedSlideCount"], 10)
+        self.assertEqual(cat_map["executive_brief"]["recommendedSlideCount"], 8)
+        self.assertEqual(cat_map["security_deep_dive"]["recommendedSlideCount"], 11)
+        self.assertEqual(cat_map["security_deep_dive"]["recommendedDiagramCount"], 5)
+        self.assertEqual(cat_map["product_launch"]["recommendedSlideCount"], 8)
+        self.assertEqual(cat_map["case_study_postmortem"]["recommendedSlideCount"], 8)
 
         # 1. Compile executive_brief (2 diagrams: security FIRST then architecture; NO sequence, NO starter code -> 7 slides)
         custom_outline = [
@@ -1657,11 +1657,11 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertIn("![Figure 1: Custom Defense-in-Depth Perimeter](diagrams/exec-brief-custom-order-security.svg)", md_exec)
         self.assertLess(md_exec.index("Custom Defense-in-Depth Perimeter"), md_exec.index("Executive Target Architecture"))
 
-        # 2. Compile security_deep_dive (concept + security + sequence + wire -> 10 slides, NO architecture diagram)
+        # 2. Compile security_deep_dive (concept + architecture + security + sequence + wire -> 11 slides, WITH architecture diagram!)
         sec_cat = cb1.get_category("security_deep_dive")
         plan_sec = cb1.compute_dynamic_slide_plan(sec_cat["recommendedOutline"], include_starter_code=True)
-        self.assertEqual(plan_sec["enabledDiagramKinds"], ["concept", "security", "sequence", "wire"])
-        self.assertEqual(plan_sec["totalSlides"], 10)
+        self.assertEqual(plan_sec["enabledDiagramKinds"], ["concept", "architecture", "security", "sequence", "wire"])
+        self.assertEqual(plan_sec["totalSlides"], 11)
         raw_sec = _sample_blueprint()
         bp_sec = cb1.normalize_blueprint(
             raw_sec, "Zero-trust threat model and wire envelope enforcement",
@@ -1670,7 +1670,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         )
         man_sec = cb1.compile_and_save_blog(
             blueprint=bp_sec,
-            slug="sec-deep-dive-no-arch",
+            slug="sec-deep-dive-with-arch",
             model_used="gemini-4-neon",
             auth_mode="vertex_ai_iam",
             actor_email="test@example.com",
@@ -1683,7 +1683,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         )
         self.assertTrue(man_sec["quality"]["deterministic"]["allPassed"], man_sec["quality"]["deterministic"])
         self.assertIn("concept", man_sec["diagrams"])
-        self.assertNotIn("architecture", man_sec["diagrams"])
+        self.assertIn("architecture", man_sec["diagrams"])
 
         # 3. Legacy manifest hydration without slidePlan/outline
         legacy_m = {"slug": "old-blog", "diagrams": {"architecture": {"title": "Arch"}, "sequence": {"title": "Seq"}}, "blueprint": {"sections": [{"heading": "S1"}, {"heading": "S2"}], "slides": [{}] * 12}, "starterMeta": {"files": {"main.tf": "x"}}}
@@ -1768,8 +1768,8 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         """Verifies Milestone B: optimistic concurrency, manual edit, delta-TTS, MP4 invalidation, 2-way Draw.io, restore, AI iterate & Drive 409 guard."""
         slug = "milestone-b-sync-test"
         bp = _sample_blueprint()
-        bp["slides"] = bp["slides"] + [dict(bp["slides"][-1], number=i, title=f"Slide {i}") for i in range(10, 12)]
         plan = cb1.compute_dynamic_slide_plan(cb1.get_category("reference_architecture")["recommendedOutline"], include_starter_code=True)
+        bp["slides"] = bp["slides"] + [dict(bp["slides"][-1], number=i, title=f"Slide {i}") for i in range(10, plan["totalSlides"] + 1)]
         bp = cb1.normalize_blueprint(
             bp, "Zero-trust multi-tenant gateway architecture", "Multi-Tenant Agentic AI", "Architects",
             slide_plan=plan, category_id="reference_architecture",
@@ -1786,7 +1786,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
 
         # Seed fake cached audio tracks + stale host MP4 to verify Delta-TTS hash reuse & MP4 invalidation
         fake_mp3 = b"ID3\x03\x00\x00\x00\x00\x00\x00" + (b"\xff\xfb\x90\x00" * 40)
-        for i in range(1, 12):
+        for i in range(1, plan["totalSlides"] + 1):
             (blog_dir / "audio" / f"slide_{i:02d}.mp3").write_bytes(fake_mp3)
         (blog_dir / "video" / f"{slug}-host.mp4").write_bytes(b"fake-stale-mp4")
         m_disk = json.loads((blog_dir / "manifest.json").read_text(encoding="utf-8"))
@@ -1806,7 +1806,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
                 ).hexdigest(),
                 "provenance": "SYNTHETIC_CLOUD_TTS_CHIRP3_HD",
             }
-            for i in range(1, 12)
+            for i in range(1, plan["totalSlides"] + 1)
         ]
         (blog_dir / "manifest.json").write_text(json.dumps(m_disk, indent=2), encoding="utf-8")
 
@@ -2029,8 +2029,8 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
 
         cat_pl = cb1.get_category("product_launch")
         plan_pl = cb1.compute_dynamic_slide_plan(cat_pl["recommendedOutline"], include_starter_code=False)
-        self.assertEqual(plan_pl["enabledDiagramKinds"], ["concept", "sequence"])
-        self.assertEqual(plan_pl["totalSlides"], 7)
+        self.assertEqual(plan_pl["enabledDiagramKinds"], ["concept", "architecture", "sequence"])
+        self.assertEqual(plan_pl["totalSlides"], 8)
 
         bp_pl = cb1.normalize_blueprint(
             bp_raw,
@@ -2061,7 +2061,8 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         md_pl = (blog_dir_pl / "blog.md").read_text(encoding="utf-8")
         # Inline figures present; zero Studio QA / ledger / grounding query dump clutter!
         self.assertIn(f"![Figure 1: Core Capability & Developer Mental Model](diagrams/{slug_pl}-concept.svg)", md_pl)
-        self.assertIn(f"![Figure 2: End-to-End Quickstart Execution Flow](diagrams/{slug_pl}-sequence.svg)", md_pl)
+        self.assertIn(f"![Figure 2: Platform Integration Architecture & Plane Ownership (C4 L2)](diagrams/{slug_pl}-architecture.svg)", md_pl)
+        self.assertIn(f"![Figure 3: End-to-End Quickstart Execution Flow](diagrams/{slug_pl}-sequence.svg)", md_pl)
         for purged in (
             "Authoring Model:",
             "Verification Status:",

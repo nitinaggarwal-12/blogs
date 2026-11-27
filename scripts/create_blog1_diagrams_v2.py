@@ -227,8 +227,22 @@ def build_architecture_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     for ti in range(4):
         td = raw_tiles[ti] if ti < len(raw_tiles) else {"icon": "gcp_cloud", "label": "GCP"}
         tx, ty, tf, ts = tile_pos[ti]
-        lbl_t, _ = _cc.fit_single_line_px(td.get("label") or "GCP", 42, 8.6, bold=True)
-        fe_tiles.append({"id": f"badge_fe_{ti+1}", "x": tx, "y": ty, "w": 46, "h": 52, "icon": _cc.resolve_icon_key(td.get("icon", ""), td.get("label", "")), "iconSize": 24, "label": lbl_t, "labelSize": 8.5, "fill": tf, "stroke": ts})
+        raw_tile_lbl = str(td.get("label") or "GCP").strip()
+        _compact_tile_map = {
+            "model armor": "Armor",
+            "cloud armor": "WAF",
+            "cloud run": "Run v2",
+            "cloud spanner": "Spanner",
+            "spanner graph": "Spanner",
+            "vertex ai": "Vertex",
+            "cloud kms": "KMS",
+            "cloud dlp": "DLP",
+            "sensitive data protection": "SDP DLP",
+            "identity platform": "GCIP",
+        }
+        raw_tile_lbl = _compact_tile_map.get(raw_tile_lbl.lower(), raw_tile_lbl)
+        lbl_t, lbl_fs = _cc.fit_single_line_px(raw_tile_lbl, 43, 8.6, bold=True)
+        fe_tiles.append({"id": f"badge_fe_{ti+1}", "x": tx, "y": ty, "w": 46, "h": 52, "icon": _cc.resolve_icon_key(td.get("icon", ""), td.get("label", "")), "iconSize": 24, "label": lbl_t, "labelSize": round(lbl_fs, 1), "fill": tf, "stroke": ts})
     cards.append({
         "id": "app_layer", "x": 564, "y": 256, "w": 120, "h": 254,
         "fill": "#FFFFFF", "stroke": "#DADCE0", "isContainer": True, "align": "center", "padT": 14,

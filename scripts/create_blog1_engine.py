@@ -1546,7 +1546,7 @@ def normalize_blueprint(
 
     raw_slides = raw.get("slides") if isinstance(raw.get("slides"), list) else []
     if isinstance(slide_plan, dict) and isinstance(slide_plan.get("totalSlides"), int):
-        n_slides = max(6, min(12, int(slide_plan["totalSlides"])))
+        n_slides = max(6, min(14, int(slide_plan["totalSlides"])))
         default_kickers_l: List[str] = ["EXECUTIVE BRIEF", "PROBLEM & TARGETS"]
         default_titles_l: List[str] = [title[:72], "Architectural Challenge & Design Goals"]
         for ed in (slide_plan.get("enabledDiagrams") or []):
@@ -3628,7 +3628,7 @@ def _fmt_vtt_ts(secs: float) -> str:
 def build_webvtt(slides: List[Dict[str, Any]], durations: List[float]) -> str:
     out = ["WEBVTT", ""]
     cursor = 0.0
-    for i, sl in enumerate(slides[:12]):
+    for i, sl in enumerate(slides):
         dur = durations[i] if i < len(durations) and durations[i] > 0 else 8.0
         text = strip_emojis(sl.get("speakerNotes") or sl.get("title") or "")
         out.append(f"{i+1}")

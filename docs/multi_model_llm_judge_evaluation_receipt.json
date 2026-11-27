@@ -158,8 +158,8 @@
     "WS2": {
       "filename": "ws2-pattern-a-pooled-architecture.md",
       "deterministic_metrics": {
-        "bytes": 35051,
-        "sha256": "5ef6a30ceac543cadfb3b2e1f1ec9c289446779235969d75bfc8f0f407670f21",
+        "bytes": 35465,
+        "sha256": "c171bd05de748867d6c2114fe1332a3ae1f933a20956cec947b9d4574595cdd2",
         "publish_ready": true,
         "diagram_count": 3,
         "drawio_compiled_all": true,
@@ -202,8 +202,8 @@
     "WS3": {
       "filename": "ws3-pattern-b-sovereign-silos.md",
       "deterministic_metrics": {
-        "bytes": 27361,
-        "sha256": "0fe2263bd03b8c8f3d8bc27b3546fcdd7aae286efa9b78f6b89ecf46153d0cd6",
+        "bytes": 28024,
+        "sha256": "df602dba22a8785f49cc395c6bce28c696c991501e539436d2a89af76f311617",
         "publish_ready": true,
         "diagram_count": 2,
         "drawio_compiled_all": true,
@@ -290,8 +290,8 @@
     "WS5": {
       "filename": "ws5-decision-guide-and-agentic-triad.md",
       "deterministic_metrics": {
-        "bytes": 28506,
-        "sha256": "9628b8c7665e72ae04e13113277cf34d517fba92a2b6a6160aee0663865ade22",
+        "bytes": 28626,
+        "sha256": "56f85082762796c2f831aee44004ef4ec6e57e78b79a9846e7c2d2dffdc41860",
         "publish_ready": true,
         "diagram_count": 3,
         "drawio_compiled_all": true,
