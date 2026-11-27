@@ -882,14 +882,12 @@ def compile_spec_to_drawio_xml(spec: Dict[str, Any]) -> str:
     dname = esc_xml(spec.get("diagramName") or did)
     joined = "\n        ".join(cells)
     return (
-        f'<mxfile host="app.diagrams.net" modified="2026-11-24T00:00:00.000Z" agent="ge-blogs-canonical-compiler-py" version="24.7.17">\n'
-        f'  <diagram id="{did}" name="{dname}">\n'
-        f'    <mxGraphModel dx="1420" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" '
+        f'<mxfile host="app.diagrams.net" modified="2026-11-24T00:00:00.000Z" agent="ge-blogs-canonical-compiler-py" version="24.7.17">'
+        f'<diagram id="{did}" name="{dname}">'
+        f'<mxGraphModel dx="1420" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" '
         f'fold="1" page="1" pageScale="1" pageWidth="{cw}" pageHeight="{ch}" math="0" shadow="0">\n'
         f'      <root>\n        {joined}\n      </root>\n'
-        f'    </mxGraphModel>\n'
-        f'  </diagram>\n'
-        f'</mxfile>\n'
+        f'    </mxGraphModel></diagram></mxfile>\n'
     )
 
 

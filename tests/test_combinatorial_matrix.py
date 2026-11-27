@@ -168,6 +168,8 @@ class ExhaustiveCombinatorialMatrixTests(unittest.TestCase):
                     for dk in expected_diags:
                         self.assertTrue(man["diagrams"][dk]["geometryValid"], f"{slug}:{dk} geometry invalid")
                         self.assertEqual(man["diagrams"][dk]["geometryErrors"], [])
+                        dio_xml = (bdir / f"diagrams/{slug}-{dk}.drawio").read_text(encoding="utf-8")
+                        self.assertRegex(dio_xml, r"<diagram\b[^>]*><mxGraphModel\b", f"{slug}:{dk} violates GraphViewer zero-whitespace rule")
 
                     pptx_p = bdir / f"slides/{slug}-deck.pptx"
                     with zipfile.ZipFile(pptx_p) as zf:
@@ -241,6 +243,28 @@ class ExhaustiveCombinatorialMatrixTests(unittest.TestCase):
                 )
                 self.assertTrue(man["quality"]["deterministic"]["allPassed"], man["quality"]["deterministic"])
                 self.assertIn("architecture", man["diagrams"])
+
+    def test_05_repo_drawio_zero_whitespace_and_pptx_cnvpr_uniqueness(self) -> None:
+        """Enforces Draw.io GraphViewer zero inter-tag whitespace across repo .drawio files and ECMA-376 cNvPr ID uniqueness across repo .pptx files."""
+        for dio_p in sorted((ROOT_DIR / "diagrams").rglob("*.drawio")):
+            raw = dio_p.read_text(encoding="utf-8")
+            self.assertRegex(
+                raw,
+                r"<diagram\b[^>]*><mxGraphModel\b",
+                f"{dio_p.relative_to(ROOT_DIR)} has inter-tag whitespace between <diagram> and <mxGraphModel>",
+            )
+        for pptx_p in sorted((ROOT_DIR / "slides").glob("*.pptx")):
+            with zipfile.ZipFile(pptx_p, "r") as zf:
+                for zn in zf.namelist():
+                    if re.match(r"^ppt/slides/slide\d+\.xml$", zn):
+                        xml_s = zf.read(zn).decode("utf-8", errors="ignore")
+                        ids = [int(m.group(1)) for m in re.finditer(r'<(?:p:)?cNvPr\b[^>]*?\bid="(\d+)"', xml_s)]
+                        self.assertEqual(
+                            len(ids),
+                            len(set(ids)),
+                            f"Duplicate cNvPr shape IDs in {pptx_p.name}:{zn}",
+                        )
+
 
 
 if __name__ == "__main__":

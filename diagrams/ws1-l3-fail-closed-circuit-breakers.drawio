@@ -1,6 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2026-11-09T05:55:00Z" agent="PolymorphicStudio-2WaySync" version="24.7.8" type="device">
-  <diagram id="ws1-l3-fail-closed-circuit-breakers" name="WS1 • L3 Deterministic Fail-Closed Circuit Breakers (HTTP 401/403/429/422)">
-    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+<mxfile host="app.diagrams.net" modified="2026-11-09T05:55:00Z" agent="PolymorphicStudio-2WaySync" version="24.7.8" type="device"><diagram id="ws1-l3-fail-closed-circuit-breakers" name="WS1 • L3 Deterministic Fail-Closed Circuit Breakers (HTTP 401/403/429/422)"><mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -153,6 +151,4 @@
           <mxGeometry x="1049.3" y="832.0" width="478.7" height="16.2" as="geometry" />
         </mxCell>
       </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+    </mxGraphModel></diagram></mxfile>

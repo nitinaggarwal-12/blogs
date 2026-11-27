@@ -1066,13 +1066,13 @@ def compile_vision_scene_to_outputs(
 
     drawio_xml = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
-        '<mxfile host="app.diagrams.net" agent="PromptCanvas-Vision1to1" version="24.7.17">\n'
-        f'  <diagram id="{_cc.esc_xml(diagram_id)}" name="{_cc.esc_xml(diagram_name)}">\n'
-        f'    <mxGraphModel dx="{final_w}" dy="{final_h}" grid="1" gridSize="10" guides="1" tooltips="1" '
+        '<mxfile host="app.diagrams.net" agent="PromptCanvas-Vision1to1" version="24.7.17">'
+        f'<diagram id="{_cc.esc_xml(diagram_id)}" name="{_cc.esc_xml(diagram_name)}">'
+        f'<mxGraphModel dx="{final_w}" dy="{final_h}" grid="1" gridSize="10" guides="1" tooltips="1" '
         f'connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="{final_w}" pageHeight="{final_h}" '
         f'background="#FFFFFF" math="0" shadow="0">\n'
         '      <root>\n        ' + "\n        ".join(xml_cells) + "\n      </root>\n"
-        "    </mxGraphModel>\n  </diagram>\n</mxfile>\n"
+        "    </mxGraphModel></diagram></mxfile>\n"
     )
 
     # ------------------------------------------------------------------

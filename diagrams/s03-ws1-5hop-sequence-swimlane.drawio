@@ -1,6 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2026-11-14T05:15:00Z" agent="GE-Blogs-Clean-Engine/2.0" version="24.7.17" type="device">
-  <diagram id="s03-ws1-5hop-sequence-swimlane" name="WS1 + MC2 5-Hop Wire Protocol Anatomy">
-    <mxGraphModel dx="1420" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#FFFFFF" math="0" shadow="0">
+<mxfile host="app.diagrams.net" modified="2026-11-14T05:15:00Z" agent="GE-Blogs-Clean-Engine/2.0" version="24.7.17" type="device"><diagram id="s03-ws1-5hop-sequence-swimlane" name="WS1 + MC2 5-Hop Wire Protocol Anatomy"><mxGraphModel dx="1420" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
@@ -52,6 +50,4 @@
         <mxCell id="pk_data" value="&lt;b style=&quot;color:#C2410C;&quot;&gt;DATA&lt;/b&gt; &lt;span style=&quot;color:#334155;&quot;&gt;Valkey 0.4ms JTI deny-list + AlloyDB FORCE RLS + 3LO Databricks/Unity&lt;/span&gt;" style="rounded=1;arcSize=16;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#FDBA74;strokeWidth=1.1;fontSize=10.5;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="1"><mxGeometry x="1064" y="818" width="492" height="32" as="geometry"/></mxCell>
         <mxCell id="ftr_lbl" value="[Bare-Min 03/12 • WS1 + MC2 Protocol Anatomy] • ▸ 2-Way Draw.io ↗" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontColor=#475569;" vertex="1" parent="1"><mxGeometry x="44" y="858" width="900" height="24" as="geometry"/></mxCell>
       </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+    </mxGraphModel></diagram></mxfile>

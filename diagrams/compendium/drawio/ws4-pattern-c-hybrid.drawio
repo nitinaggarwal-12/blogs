@@ -1,6 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2026-11-23T07:30:00.000Z" agent="ge-blogs-canonical-compiler" version="24.7.17">
-  <diagram id="ws4-pattern-c-hybrid" name="WS4 - Pattern C Hybrid PSC">
-    <mxGraphModel dx="1420" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+<mxfile host="app.diagrams.net" modified="2026-11-23T07:30:00.000Z" agent="ge-blogs-canonical-compiler" version="24.7.17"><diagram id="ws4-pattern-c-hybrid" name="WS4 - Pattern C Hybrid PSC"><mxGraphModel dx="1420" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
@@ -120,6 +118,4 @@
         <mxCell id="e20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;endSize=6;exitX=1;exitY=0.78;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="gw_out_c_box" target="sp_llm"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1370" y="454"/><mxPoint x="1370" y="547"/></Array></mxGeometry></mxCell>
         <mxCell id="e21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;endSize=6;exitX=1;exitY=0.9;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="gw_out_c_box" target="sp_api"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1370" y="485"/><mxPoint x="1370" y="621"/></Array></mxGeometry></mxCell>
       </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+    </mxGraphModel></diagram></mxfile>

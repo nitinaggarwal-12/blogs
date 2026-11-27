@@ -1,6 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2026-11-23T07:30:00.000Z" agent="ge-blogs-canonical-compiler" version="24.7.17">
-  <diagram id="ws5-decision-tree-and-triad" name="WS5 - Architecture Pattern Selector">
-    <mxGraphModel dx="1420" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+<mxfile host="app.diagrams.net" modified="2026-11-23T07:30:00.000Z" agent="ge-blogs-canonical-compiler" version="24.7.17"><diagram id="ws5-decision-tree-and-triad" name="WS5 - Architecture Pattern Selector"><mxGraphModel dx="1420" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
@@ -53,6 +51,4 @@
         <mxCell id="e13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;dashPattern=6 4;startArrow=none;endArrow=classic;endFill=1;endSize=6;exitX=0.7194;exitY=1;exitDx=0;exitDy=0;entryX=0.1961;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="gate_silo" target="triad_2"><mxGeometry relative="1" as="geometry"></mxGeometry></mxCell>
         <mxCell id="e14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#94A3B8;strokeWidth=1.5;dashed=1;dashPattern=6 4;startArrow=none;endArrow=classic;endFill=1;endSize=6;exitX=0.8539;exitY=1;exitDx=0;exitDy=0;entryX=0.1552;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="pat_b" target="triad_3"><mxGeometry relative="1" as="geometry"></mxGeometry></mxCell>
       </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+    </mxGraphModel></diagram></mxfile>

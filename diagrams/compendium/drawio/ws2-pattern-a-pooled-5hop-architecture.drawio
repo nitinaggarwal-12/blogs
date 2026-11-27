@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="embed.diagrams.net" modified="2026-10-14T00:00:00.000Z" agent="PromptCanvas-Vision-Decompiler-v4.0" version="24.7.5" type="device">
-  <diagram id="ws2-pattern-a-pooled-5hop-architecture" name="Pattern A: High-Density Pooled Multi-Tenant Architecture &amp; Shared Runtime Governance">
-    <mxGraphModel dx="1200" dy="1410" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1410" background="#FFFFFF" math="0" shadow="0">
+<mxfile host="embed.diagrams.net" modified="2026-10-14T00:00:00.000Z" agent="PromptCanvas-Vision-Decompiler-v4.0" version="24.7.5" type="device"><diagram id="ws2-pattern-a-pooled-5hop-architecture" name="Pattern A: High-Density Pooled Multi-Tenant Architecture &amp; Shared Runtime Governance"><mxGraphModel dx="1200" dy="1410" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1410" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
@@ -86,6 +84,4 @@
         <mxCell id="lbl_step7_resp" value="&lt;svg width=&quot;0&quot; height=&quot;0&quot; style=&quot;display:none;&quot;&gt;&lt;/svg&gt;&lt;div style=&quot;font-family:'Google Sans', 'Roboto', Arial, sans-serif;font-size:11.5px;color:#202124;line-height:1.25;&quot;&gt;SDP-redacted response&lt;br/&gt;+ per-turn OTel span&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="978" y="720" width="142" height="34" as="geometry"/></mxCell>
         <mxCell id="lbl_gov_trunk" value="&lt;svg width=&quot;0&quot; height=&quot;0&quot; style=&quot;display:none;&quot;&gt;&lt;/svg&gt;&lt;div style=&quot;font-family:'Google Sans', 'Roboto', Arial, sans-serif;font-size:11.5px;color:#202124;line-height:1.25;&quot;&gt;Cache hits • RPM • per-tenant span cost → BigQuery&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="590" y="724" width="320" height="24" as="geometry"/></mxCell>
       </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+    </mxGraphModel></diagram></mxfile>

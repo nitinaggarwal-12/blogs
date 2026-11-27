@@ -1,6 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2026-11-09T05:55:00Z" agent="PolymorphicStudio-2WaySync" version="24.7.8" type="device">
-  <diagram id="ws5-c4-l1-80-20-reusable-terraform-core" name="WS5 • C4 L1 Logical: 80% Shared ADK Core + 20% Parameterized Terraform">
-    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+<mxfile host="app.diagrams.net" modified="2026-11-09T05:55:00Z" agent="PolymorphicStudio-2WaySync" version="24.7.8" type="device"><diagram id="ws5-c4-l1-80-20-reusable-terraform-core" name="WS5 • C4 L1 Logical: 80% Shared ADK Core + 20% Parameterized Terraform"><mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -348,6 +346,4 @@
           <mxGeometry x="1055.5" y="815.0" width="492.5" height="29.4" as="geometry" />
         </mxCell>
       </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+    </mxGraphModel></diagram></mxfile>

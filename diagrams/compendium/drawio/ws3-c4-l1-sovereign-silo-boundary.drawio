@@ -1,6 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2026-11-09T05:55:00Z" agent="PolymorphicStudio-2WaySync" version="24.7.8" type="device">
-  <diagram id="ws3-c4-l1-sovereign-silo-boundary" name="WS3 • C4 L1 Logical: Pattern B Dedicated Sovereign Project &amp; VPC-SC Boundary">
-    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+<mxfile host="app.diagrams.net" modified="2026-11-09T05:55:00Z" agent="PolymorphicStudio-2WaySync" version="24.7.8" type="device"><diagram id="ws3-c4-l1-sovereign-silo-boundary" name="WS3 • C4 L1 Logical: Pattern B Dedicated Sovereign Project &amp; VPC-SC Boundary"><mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -326,6 +324,4 @@
           <mxGeometry x="48.0" y="866.4" width="1504.0" height="26.4" as="geometry" />
         </mxCell>
       </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+    </mxGraphModel></diagram></mxfile>

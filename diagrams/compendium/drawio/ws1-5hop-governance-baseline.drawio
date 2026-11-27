@@ -1,6 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2026-11-23T07:30:00.000Z" agent="ge-blogs-canonical-compiler" version="24.7.17">
-  <diagram id="ws1-5hop-governance-baseline" name="WS1 - 5-Hop Governance Baseline">
-    <mxGraphModel dx="1420" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+<mxfile host="app.diagrams.net" modified="2026-11-23T07:30:00.000Z" agent="ge-blogs-canonical-compiler" version="24.7.17"><diagram id="ws1-5hop-governance-baseline" name="WS1 - 5-Hop Governance Baseline"><mxGraphModel dx="1420" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
@@ -122,6 +120,4 @@
         <mxCell id="e19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;endSize=6;exitX=1;exitY=0.72;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="gw_out_box" target="llm_srv"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1370" y="439"/><mxPoint x="1370" y="507"/></Array></mxGeometry></mxCell>
         <mxCell id="e20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#595959;strokeWidth=1.5;startArrow=none;endArrow=classic;endFill=1;endSize=6;exitX=1;exitY=0.86;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="gw_out_box" target="ent_api"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1370" y="474"/><mxPoint x="1370" y="597"/></Array></mxGeometry></mxCell>
       </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+    </mxGraphModel></diagram></mxfile>

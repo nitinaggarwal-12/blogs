@@ -1,6 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2026-11-12T20:00:00.000Z" agent="GE-Blogs-2Way-Sync" version="24.7.8" type="device">
-  <diagram id="s00-divider-part1-ws1" name="Slide 08 — Slide 08 • Part 1 (WS1) Framing: Reference Taxonomy &amp; Shared 5-Hop Control Plane">
-    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+<mxfile host="app.diagrams.net" modified="2026-11-12T20:00:00.000Z" agent="GE-Blogs-2Way-Sync" version="24.7.8" type="device"><diagram id="s00-divider-part1-ws1" name="Slide 08 — Slide 08 • Part 1 (WS1) Framing: Reference Taxonomy &amp; Shared 5-Hop Control Plane"><mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -17,6 +15,4 @@
           <mxGeometry x="40" y="828" width="1520" height="42" as="geometry" />
         </mxCell>
       </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+    </mxGraphModel></diagram></mxfile>

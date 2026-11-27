@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="embed.diagrams.net" modified="2026-10-14T00:00:00.000Z" agent="PromptCanvas-Vision-Decompiler-v4.0" version="24.7.5" type="device">
-  <diagram id="ws3-pattern-b-sovereign-silos-architecture" name="Pattern B: Zero-Trust Sovereign Silos (VPC-SC, IAM PAB, CMEK Kill-Switch &amp; Air-Gapped Gemma 3 on GKE)">
-    <mxGraphModel dx="1200" dy="1410" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1410" background="#FFFFFF" math="0" shadow="0">
+<mxfile host="embed.diagrams.net" modified="2026-10-14T00:00:00.000Z" agent="PromptCanvas-Vision-Decompiler-v4.0" version="24.7.5" type="device"><diagram id="ws3-pattern-b-sovereign-silos-architecture" name="Pattern B: Zero-Trust Sovereign Silos (VPC-SC, IAM PAB, CMEK Kill-Switch &amp; Air-Gapped Gemma 3 on GKE)"><mxGraphModel dx="1200" dy="1410" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1410" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
@@ -85,6 +83,4 @@
         <mxCell id="lbl_right_rag" value="&lt;svg width=&quot;0&quot; height=&quot;0&quot; style=&quot;display:none;&quot;&gt;&lt;/svg&gt;&lt;div style=&quot;font-family:'Google Sans',Roboto,Arial,sans-serif;font-size:12.5px;color:#202124;line-height:1.25;&quot;&gt;VPC-SC Bound&lt;br/&gt;Secure RAG&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="903" y="1014" width="180" height="38" as="geometry"/></mxCell>
         <mxCell id="lbl_right_tool" value="&lt;svg width=&quot;0&quot; height=&quot;0&quot; style=&quot;display:none;&quot;&gt;&lt;/svg&gt;&lt;div style=&quot;font-family:'Google Sans',Roboto,Arial,sans-serif;font-size:12.5px;color:#202124;line-height:1.25;&quot;&gt;CMEK Kill-Switch&lt;br/&gt;HTTP 423 Verified&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="903" y="1160" width="180" height="38" as="geometry"/></mxCell>
       </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+    </mxGraphModel></diagram></mxfile>

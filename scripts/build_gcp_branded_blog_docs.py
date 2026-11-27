@@ -1120,7 +1120,7 @@ def refresh_cloud_viewer_manifest() -> None:
                 new_sha = hashlib.sha256(b).hexdigest()
                 fid = sentry.get("googleSlidesId") or ""
                 if fid and sentry.get("sha256") != new_sha and skey != "BARE_MIN_12":
-                    run_gdrive(["mutate", "update", fid, str(p)])
+                    subprocess.run([GDRIVE_BIN, "mutate", "update", fid, str(p)], check=True, capture_output=True, text=True)
                     sentry["syncedAt"] = now_iso
                 sentry["sha256"] = new_sha
                 sentry["sizeBytes"] = len(b)

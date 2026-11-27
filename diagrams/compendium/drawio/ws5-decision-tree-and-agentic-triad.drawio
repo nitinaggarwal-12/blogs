@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="embed.diagrams.net" modified="2026-10-14T00:00:00.000Z" agent="PromptCanvas-Vision-Decompiler-v4.0" version="24.7.5" type="device">
-  <diagram id="ws5-decision-tree-and-agentic-triad" name="Workstream 5 Capstone: Executive Topology Decision Guide &amp; The Multi-Tenant Agentic Triad">
-    <mxGraphModel dx="1200" dy="1410" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1410" background="#FFFFFF" math="0" shadow="0">
+<mxfile host="embed.diagrams.net" modified="2026-10-14T00:00:00.000Z" agent="PromptCanvas-Vision-Decompiler-v4.0" version="24.7.5" type="device"><diagram id="ws5-decision-tree-and-agentic-triad" name="Workstream 5 Capstone: Executive Topology Decision Guide &amp; The Multi-Tenant Agentic Triad"><mxGraphModel dx="1200" dy="1410" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1410" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
@@ -71,6 +69,4 @@
         <mxCell id="lbl_q2_single" value="&lt;svg width=&quot;0&quot; height=&quot;0&quot; style=&quot;display:none;&quot;&gt;&lt;/svg&gt;&lt;div style=&quot;font-family:'Google Sans', 'Roboto', Arial, sans-serif;font-size:12.5px;color:#202124;line-height:1.25;&quot;&gt;Single shared tier →&lt;br/&gt;Pattern A (pooled)&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="508" y="596" width="156" height="36" as="geometry"/></mxCell>
         <mxCell id="lbl_q2_multi" value="&lt;svg width=&quot;0&quot; height=&quot;0&quot; style=&quot;display:none;&quot;&gt;&lt;/svg&gt;&lt;div style=&quot;font-family:'Google Sans', 'Roboto', Arial, sans-serif;font-size:12.5px;color:#202124;line-height:1.25;&quot;&gt;Standard + Enterprise&lt;br/&gt;→ Pattern C (hybrid)&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="800" y="674" width="192" height="30" as="geometry"/></mxCell>
       </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
+    </mxGraphModel></diagram></mxfile>
