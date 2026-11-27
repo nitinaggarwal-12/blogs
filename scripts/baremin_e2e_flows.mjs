@@ -1174,7 +1174,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
     "execCloudServices": "Cloud Run Gen2 gVisor • Memorystore for Valkey 8.0 • ARD Catalog Pruning • Vertex AI Context Caching • Gemini 2.5 Flash",
     "execTechSummary": "Demonstrates CoW --max-requests=1 heap wiping, Redis/Valkey atomic RPM/TPM bulkheads, SET NX PX 5000 single-flight lock, and exact math from 36,468 to 3,969 billed tokens per turn (89.1%).",
     "outcomeTitle": "89.1% Net Input Token Reduction With Zero Memory Bleed",
-    "outcomeBody": "Meeting Vertex AI's >=32,768-token floor unlocks 0.10x cached prefix pricing while ARD catalog pruning cuts dynamic MCP schema bloat by 94%.",
+    "outcomeBody": "Caching a 32,768-token static system prefix (well above Vertex AI's 4,096-token Context Cache API floor) unlocks 0.10x cached prefix pricing while ARD catalog pruning cuts dynamic MCP schema bloat by 94%.",
     "outcomeTech": "36,468 uncached tokens -> 3,969 equivalent tokens/turn (hop5 unit fixture: 18k/1.2k -> 84.7%)",
     "zonesSummary": [
       {
@@ -1264,7 +1264,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
         "badgeNum": "06",
         "zone": "Yellow Zone",
         "title": "Hit 32,768-Token Vertex Context Cache",
-        "logicalNarrative": "Static system instructions meet >=32,768 floor and bill at 0.10x (32,768 -> 3,277 equiv).",
+        "logicalNarrative": "Static 32,768-token architectural prefix (>= 4,096-token API floor) bills at 0.10x (32,768 -> 3,277 equiv).",
         "components": "Vertex AI ContextCacheConfig"
       },
       {
@@ -1328,7 +1328,7 @@ export const EXTRA_BAREMIN_AND_EXTENDED_FLOWS = [
       {
         "step": "Step ⑥",
         "hopName": "Context Cache",
-        "route": "Vertex AI >=32,768 Token Floor",
+        "route": "Vertex AI 32,768 Prefix Cache (>= 4,096 API Floor)",
         "protocolAndMechanism": "32,768 static prefix billed at 0.10x (3,277 eq) + 192 MCP + 500 user = 3,969.",
         "codeAndResource": "Gemini 2.5 Flash Cache",
         "verifiedOutcome": "89.1% net token reduction"

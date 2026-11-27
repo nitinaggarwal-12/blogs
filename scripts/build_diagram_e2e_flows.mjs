@@ -807,7 +807,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
     runtimeTarget: 'enterprise-s2p-global • Secret Manager tenant-{id}-3p-oauth',
     codeModules: 'workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md • core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py',
     execCloudServices:
-      'Identity-Aware Proxy • Workforce Identity Federation • Secret Manager • Cloud KMS • Vertex AI Agent Engine • Memorystore for Valkey • Firestore',
+      'Identity Platform (Multi-Tenancy) • Workload Identity Federation • Secret Manager • Cloud KMS • Vertex AI Agent Engine • Memorystore for Valkey • Firestore',
     execTechSummary:
       'Federates Google Workspace OIDC (FinVault) and Microsoft Entra ID v2.0 (RetailStream) into one pooled runtime, brokering 2LO implicit session passthrough for internal APIs and 3LO user-consented OAuth tokens for Jira, Workspace, and ServiceNow MCP servers.',
     outcomeTitle: 'Zero-Shadow-Account Federation & Scoped 2LO/3LO MCP Tool Execution',
@@ -913,7 +913,7 @@ const DIAGRAM_FLOW_SPECIFICATIONS = {
       {
         step: 'Step ①',
         hopName: 'Multi-IdP JWT Validation',
-        route: 'IAP & Workforce Identity Federation (Blue Zone)',
+        route: 'Identity Platform & Workload Identity Federation (Blue Zone)',
         protocolAndMechanism:
           'Validates upstream JWTs against `accounts.google.com/finvault.com` and `login.microsoftonline.com/retailstream-tenant-guid/v2.0` with DPoP proof verification.',
         codeAndResource: 'ISSUER_TO_TENANT_MAP in hop1_edge_identity_pep.py',

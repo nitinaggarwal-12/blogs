@@ -18,7 +18,7 @@ This standalone **Visual Verification Atlas** consolidates all **live console ca
 > **Approved Multi-Cloud Bridge & Companion Atlas Assets:**
 > - **Approved 12-Slide Architecture Deck (Multi-Cloud Bridge = Slide 11):** [Open Slide 11 in Google Slides ↗](https://docs.google.com/presentation/d/1erUlsPYIcS7-8GntHaj96nsKLZMJuaIesMPkidQgmTk/edit#slide=id.p11) • [Draw.io Source (`.drawio`)](../diagrams/saas10-multicloud-a2a-mcp-bridge.drawio)
 > - **Editable Google Docs Visual Atlas (`20` Verified Figures: 1 Multi-Cloud Bridge + 19 Live GCP Console & Commercial SaaS Console Proofs):** [Open 10-SaaS Visual Atlas in Google Docs ↗](https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw) • [Download `.docx`](../docs/word/saas-10-visual-verification-and-redteam-atlas.docx)
-> - **Editable Google Slides Visual Atlas (`17` Native Slides):** [Open 17-Slide Visual Atlas in Google Slides ↗](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw) • [Download `.pptx`](../slides/saas-10-visual-verification-atlas-16slide-deck.pptx)
+> - **Editable Google Slides Visual Atlas (`17` Native Slides — Cover + 16 Evidence Slides):** [Open 17-Slide Visual Atlas in Google Slides ↗](https://docs.google.com/presentation/d/1opxya9JlD9pwRsyOZYw0aS4hiLT7PzuntwR2Y9E9qXs/edit?resourcekey=0-bnGKTSSW6T6EoXChSqzgKw) • [Download `.pptx`](../slides/saas-10-visual-verification-atlas-16slide-deck.pptx)
 > - **Live Verification Receipts:** [`docs/cloud_console_verification_receipt.json`](../docs/cloud_console_verification_receipt.json) • [`docs/cloudrun_to_aws_10_saas_live_receipt.json`](../docs/cloudrun_to_aws_10_saas_live_receipt.json)
 
 ---
@@ -149,6 +149,14 @@ To keep each architecture guide scannable, every workstream maps its primary com
  - **Part 4 (`WS4`):** [Pattern C: Dynamic Hybrid Routing & Zero-Downtime Tier Upgrades](ws4-pattern-c-hybrid-dynamic-tiering.md)
  - **Part 5 (`WS5`):** [Executive Decision Guide & The Multi-Tenant Agentic Triad](ws5-decision-guide-and-agentic-triad.md)
 - **Live Verification Playbook & Receipts:** [`10-SaaS 3-Pattern Manual Testing Playbook`](../docs/10-THIRD-PARTY-SAAS-3-PATTERN-MANUAL-TESTING-PLAYBOOK.md) • [`Cloud Run → AWS Live Receipt`](../docs/cloudrun_to_aws_10_saas_live_receipt.json) • [`Cloud Console Verification Receipt`](../docs/cloud_console_verification_receipt.json)
+
+## References
+
+- [Multi-Tenant Agentic AI System on Google Cloud (Architecture Center)](https://docs.cloud.google.com/architecture/multi-tenant-agentic-ai-system) — Canonical reference architecture for pooled, sovereign-silo, and hybrid multi-tenant AI agents.
+- [Workload Identity Federation with AWS and OIDC Identity Providers](https://cloud.google.com/iam/docs/workload-identity-federation) — Keyless cross-cloud OIDC token exchange eliminating static service-account and IAM keys.
+- [Cloud Run Service-to-Service Authentication & Ingress Controls](https://cloud.google.com/run/docs/securing/authenticating) — Enforcing `INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER` and IAM-authenticated A2A/MCP gateways.
+- [Model Armor Overview & Regional Endpoint Reference](https://cloud.google.com/security-command-center/docs/model-armor-overview) — Inline prompt-injection and sensitive-data screening across multi-cloud MCP tool responses.
+- [Cloud KMS Customer-Managed Encryption Keys (CMEK)](https://cloud.google.com/kms/docs/cmek) — Cryptographic tenant isolation and emergency key-version disable kill-switches.
 
 <!-- E2E_FLOW_START -->
 <!-- Canonical Step-by-Step Logical & Technical E2E Flows served dynamically from diagrams/diagram_e2e_flows.json via toggleInlineFigureFlow(diagId) -->

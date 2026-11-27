@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-21T00:52:11.035Z",
+  "generatedAt": "2026-11-27T02:20:48.839Z",
   "totalDiagrams": 33,
   "templateStandard": "Official Google Cloud Architecture Center Template (#78) • Rule 53G 3-Layout Engine: hub-2-spoke (56v/23e), pooled-shared-plane (60v/20e), decision-tree-3-outcome (46v/19e)",
   "slideSequenceStandard": "Customer-Centric 3-Act Top-Down 12-Slide Architecture Deck: Act I (Slides 1–3 Cover & Briefing Map, Customer Use Cases & Architectural Options Matrix) -> Act II (Slide 4 L1 Logical Zones -> Slide 5 L2 Authoritative Figure 1 #78 Physical Blueprint -> Slide 6 L3 5-Actor Sequence -> Slide 7 L4 Wire Payload Transformation) -> Act III (Slides 8–12 Circuit Breakers, EAP Compensating Controls, Live GCP Proof, 3-Pillar Well-Architected Guarantees & Series Progression)",
@@ -596,7 +596,7 @@
       "gcpProject": "cymbal-control-plane (#248990048888) & cymbal-ge-hub-2026 (#887605034827)",
       "runtimeTarget": "enterprise-s2p-global • Secret Manager tenant-{id}-3p-oauth",
       "codeModules": "workstream-2-pattern-a-pooled/2.2-demo-env-and-3p-auth-sandbox.md • core-cymbal-agent/mcp_servers/cymbal_mcp_hub.py",
-      "execCloudServices": "Identity-Aware Proxy • Workforce Identity Federation • Secret Manager • Cloud KMS • Vertex AI Agent Engine • Memorystore for Valkey • Firestore",
+      "execCloudServices": "Identity Platform (Multi-Tenancy) • Workload Identity Federation • Secret Manager • Cloud KMS • Vertex AI Agent Engine • Memorystore for Valkey • Firestore",
       "execTechSummary": "Federates Google Workspace OIDC (FinVault) and Microsoft Entra ID v2.0 (RetailStream) into one pooled runtime, brokering 2LO implicit session passthrough for internal APIs and 3LO user-consented OAuth tokens for Jira, Workspace, and ServiceNow MCP servers.",
       "outcomeTitle": "Zero-Shadow-Account Federation & Scoped 2LO/3LO MCP Tool Execution",
       "outcomeBody": "FinVault users authenticate via Google Workspace OIDC to invoke Drive/Jira 3LO MCP tools, while RetailStream users authenticate via Microsoft Entra ID (with zero Google shadow accounts) to invoke SharePoint/ServiceNow 3LO MCP tools.",
@@ -713,7 +713,7 @@
         {
           "step": "Step ①",
           "hopName": "Multi-IdP JWT Validation",
-          "route": "IAP & Workforce Identity Federation (Blue Zone)",
+          "route": "Identity Platform & Workload Identity Federation (Blue Zone)",
           "protocolAndMechanism": "Validates upstream JWTs against `accounts.google.com/finvault.com` and `login.microsoftonline.com/retailstream-tenant-guid/v2.0` with DPoP proof verification.",
           "codeAndResource": "ISSUER_TO_TENANT_MAP in hop1_edge_identity_pep.py",
           "verifiedOutcome": "Supports 100% Microsoft Entra ID tenants with zero Google shadow accounts"
@@ -3880,7 +3880,7 @@
       "execCloudServices": "Cloud Run Gen2 gVisor • Memorystore for Valkey 8.0 • ARD Catalog Pruning • Vertex AI Context Caching • Gemini 2.5 Flash",
       "execTechSummary": "Demonstrates CoW --max-requests=1 heap wiping, Redis/Valkey atomic RPM/TPM bulkheads, SET NX PX 5000 single-flight lock, and exact math from 36,468 to 3,969 billed tokens per turn (89.1%).",
       "outcomeTitle": "89.1% Net Input Token Reduction With Zero Memory Bleed",
-      "outcomeBody": "Meeting Vertex AI's >=32,768-token floor unlocks 0.10x cached prefix pricing while ARD catalog pruning cuts dynamic MCP schema bloat by 94%.",
+      "outcomeBody": "Caching a 32,768-token static system prefix (well above Vertex AI's 4,096-token Context Cache API floor) unlocks 0.10x cached prefix pricing while ARD catalog pruning cuts dynamic MCP schema bloat by 94%.",
       "outcomeTech": "36,468 uncached tokens -> 3,969 equivalent tokens/turn (hop5 unit fixture: 18k/1.2k -> 84.7%)",
       "zonesSummary": [
         {
@@ -3970,7 +3970,7 @@
           "badgeNum": "06",
           "zone": "Yellow Zone",
           "title": "Hit 32,768-Token Vertex Context Cache",
-          "logicalNarrative": "Static system instructions meet >=32,768 floor and bill at 0.10x (32,768 -> 3,277 equiv).",
+          "logicalNarrative": "Static 32,768-token architectural prefix (>= 4,096-token API floor) bills at 0.10x (32,768 -> 3,277 equiv).",
           "components": "Vertex AI ContextCacheConfig"
         },
         {
@@ -4034,7 +4034,7 @@
         {
           "step": "Step ⑥",
           "hopName": "Context Cache",
-          "route": "Vertex AI >=32,768 Token Floor",
+          "route": "Vertex AI 32,768 Prefix Cache (>= 4,096 API Floor)",
           "protocolAndMechanism": "32,768 static prefix billed at 0.10x (3,277 eq) + 192 MCP + 500 user = 3,969.",
           "codeAndResource": "Gemini 2.5 Flash Cache",
           "verifiedOutcome": "89.1% net token reduction"

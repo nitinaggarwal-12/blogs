@@ -1088,10 +1088,10 @@ def build_security_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
             tid = _cc.strip_md(tx.get("id") or "T-0X")
             vec_raw = tx.get("vector") or tx.get("name") or tx.get("title") or "Threat"
             ctrl_raw = tx.get("control") or tx.get("mitigation") or tx.get("detail") or "Blocked at perimeter"
-            tvec = _cc.fit_single_line_px(f"{tid} · {vec_raw}", 322, 12.6, bold=True)[0]
-            out_l.append({"text": tvec, "bold": True, "size": 12.6, "color": "#0F172A", "gapTop": 10})
-            for wl in _cc.wrap_px(ctrl_raw, 322, 11.4, max_lines=2):
-                out_l.append({"text": wl, "size": 11.4, "color": "#334155", "gapTop": 3})
+            tvec, tvec_fs = _cc.fit_single_line_px(f"{tid} · {vec_raw}", 296, 12.2, bold=True)
+            out_l.append({"text": tvec, "bold": True, "size": tvec_fs, "color": "#0F172A", "gapTop": 10})
+            for wl in _cc.wrap_px(ctrl_raw, 296, 10.8, max_lines=2):
+                out_l.append({"text": wl, "size": 10.8, "color": "#334155", "gapTop": 3})
         return out_l
 
     # Card 1 inside Navy Vault: Edge & Auth Threats Blocked (T-01, T-02)
@@ -1371,7 +1371,10 @@ def build_wire_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     # =========================================================================
     # RIGHT COLUMN (x=1114..1566, w=452): VERIFIED PARAMETERIZED PAYLOAD (GREEN)
     # =========================================================================
-    out_tr = _cc.fit_single_line_px(h3.get("transport") or "gRPC / PSC + FGAC", 360, 12.2)[0]
+    out_tr = _cc.strip_md(h3.get("transport") or "gRPC / PSC + FGAC")
+    wr_sub_t, wr_sub_fs = _cc.fit_single_line_px(
+        f"{_cc.strip_md(h3.get('name') or 'Parameterized Target')} · {out_tr}", 338, 11.6
+    )
     cards.append({
         "id": "wr_hdr", "x": 1134, "y": 96, "w": 412, "h": 68,
         "fill": "#FFFFFF", "stroke": "none", "align": "center", "allowOverlap": True,
@@ -1379,7 +1382,7 @@ def build_wire_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         "iconPos": "left", "iconSize": 30, "padL": 54,
         "lines": [
             {"text": "Verified Bound Envelope", "bold": True, "size": 16.5, "color": "#0F172A"},
-            {"text": f"{_cc.fit_single_line_px(h3.get('name') or 'Parameterized Target', 210, 12.0)[0]} · {out_tr}", "size": 11.8, "color": "#475569", "gapTop": 3},
+            {"text": wr_sub_t, "size": wr_sub_fs, "color": "#475569", "gapTop": 3},
         ],
     })
     edges.append({"id": "wr_div", "rawPoints": [(1144, 174), (1536, 174)], "stroke": "#188038", "strokeWidth": 1.6, "noArrow": True})

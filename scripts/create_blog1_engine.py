@@ -3207,7 +3207,8 @@ def compile_blog_markdown(
         pid = _sid(dk)
         lines.append(f"![Figure {fn}: {ft}](diagrams/{slug}-{dk}.svg)")
         lines.append("")
-        lines.append(f"*Figure {fn}: {ft} ({fl}) — [Edit in Studio](/drawio-editor?id={pid})*")
+        suffix_fl = "" if (not fl or ft.rstrip().endswith(")") or fl.lower() in ft.lower()) else f" ({fl})"
+        lines.append(f"*Figure {fn}: {ft}{suffix_fl} — [Edit in Studio](/drawio-editor?id={pid})*")
         lines.append("")
 
     def _emit_md_section(sec: Dict[str, Any]) -> None:
@@ -4515,9 +4516,53 @@ def _redact_manifest_for_public_bundle(raw_bytes: bytes) -> bytes:
     return _sanitize_for_public_output(raw_bytes.decode("utf-8", errors="replace")).encode("utf-8")
 
 
+def _normalize_claim_ledger_ids(bp: Dict[str, Any]) -> None:
+    """Deduplicate exact (claim, value) pairs and guarantee strictly unique monotonic CLM-01..CLM-NN IDs."""
+    raw_ledger = bp.get("claimLedger")
+    if not isinstance(raw_ledger, list) or not raw_ledger:
+        return
+    deduped: List[Dict[str, Any]] = []
+    seen_pairs: set[Tuple[str, str]] = set()
+    seen_ids: set[str] = set()
+    needs_renum = False
+    for entry in raw_ledger:
+        if not isinstance(entry, dict):
+            continue
+        pair = (str(entry.get("claim") or "").strip().lower(), str(entry.get("value") or "").strip().lower())
+        if pair in seen_pairs and pair != ("", ""):
+            needs_renum = True
+            continue
+        seen_pairs.add(pair)
+        cid = str(entry.get("id") or "").strip()
+        if not cid or cid in seen_ids:
+            needs_renum = True
+        seen_ids.add(cid)
+        deduped.append(dict(entry))
+    if needs_renum or len(deduped) != len(raw_ledger):
+        for idx_c, item in enumerate(deduped, 1):
+            item["id"] = f"CLM-{idx_c:02d}"
+        bp["claimLedger"] = deduped
+
+
 def _rebuild_bundle_zip(blog_dir: Path, slug: str) -> Path:
     bundle_path = blog_dir / f"{slug}-bundle.zip"
     tmp_path = blog_dir / f".{slug}-bundle.tmp.zip"
+    enabled_kinds: Optional[set[str]] = None
+    slide_cap: Optional[int] = None
+    mp = blog_dir / "manifest.json"
+    if mp.is_file():
+        try:
+            m_obj = json.loads(mp.read_text(encoding="utf-8"))
+            plan_m = m_obj.get("slidePlan") or {}
+            if isinstance(plan_m.get("enabledDiagramKinds"), list) and plan_m["enabledDiagramKinds"]:
+                enabled_kinds = set(str(x) for x in plan_m["enabledDiagramKinds"])
+            elif isinstance(m_obj.get("diagrams"), dict) and m_obj["diagrams"]:
+                enabled_kinds = set(m_obj["diagrams"].keys())
+            sc_val = plan_m.get("totalSlides") or (m_obj.get("generation") or {}).get("slideCount")
+            if isinstance(sc_val, int) and sc_val >= 1:
+                slide_cap = sc_val
+        except Exception:
+            pass
     with zipfile.ZipFile(tmp_path, "w", zipfile.ZIP_DEFLATED) as zf:
         for p in sorted(blog_dir.rglob("*")):
             if not p.is_file():
@@ -4527,6 +4572,14 @@ def _rebuild_bundle_zip(blog_dir: Path, slug: str) -> Path:
             rel = p.relative_to(blog_dir).as_posix()
             if rel.startswith("revisions/"):
                 continue
+            if enabled_kinds is not None and rel.startswith("diagrams/"):
+                m_dk = re.match(rf"^diagrams/{re.escape(slug)}-([a-z]+)\.(?:drawio|svg)$", rel)
+                if m_dk and m_dk.group(1) not in enabled_kinds:
+                    continue
+            if slide_cap is not None:
+                m_sl = re.match(r"^(?:slides|audio)/slide_(\d+)\.(?:svg|mp3)$", rel)
+                if m_sl and int(m_sl.group(1)) > slide_cap:
+                    continue
             if rel == "manifest.json":
                 zf.writestr(f"{slug}/{rel}", _redact_manifest_for_public_bundle(p.read_bytes()))
             else:
@@ -5628,6 +5681,14 @@ def _recompile_after_proof_change(slug: str, manifest: Dict[str, Any]) -> Dict[s
     )
     for i, s_svg in enumerate(slide_svgs, 1):
         (blog_dir / "slides" / f"slide_{i:02d}.svg").write_text(s_svg, encoding="utf-8")
+    for old_sf in list((blog_dir / "slides").glob("slide_*.svg")):
+        m_sf = re.match(r"^slide_(\d+)\.svg$", old_sf.name)
+        if m_sf and int(m_sf.group(1)) > len(slide_svgs):
+            old_sf.unlink(missing_ok=True)
+    for old_af in list((blog_dir / "audio").glob("slide_*.mp3")):
+        m_af = re.match(r"^slide_(\d+)\.mp3$", old_af.name)
+        if m_af and int(m_af.group(1)) > len(slide_svgs):
+            old_af.unlink(missing_ok=True)
 
     pptx_bytes = compile_pptx_bytes(
         bp, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""), proofs, blog_dir,
@@ -6100,6 +6161,12 @@ def _recompile_full_blog_state(
     for dk, dv in diags_final.items():
         (blog_dir / "diagrams" / f"{slug}-{dk}.drawio").write_text(dv["xml"], encoding="utf-8")
         (blog_dir / "diagrams" / f"{slug}-{dk}.svg").write_text(dv["svg"], encoding="utf-8")
+    # Prune disabled local diagram files so local storage and bundle.zip stay strictly 1:1 with enabledDiagramKinds
+    for old_f in list((blog_dir / "diagrams").glob(f"{slug}-*.*")):
+        m_old_dk = re.match(rf"^{re.escape(slug)}-([a-z]+)\.(?:drawio|svg)$", old_f.name)
+        if m_old_dk and m_old_dk.group(1) not in diags_final:
+            old_f.unlink(missing_ok=True)
+    _normalize_claim_ledger_ids(bp)
 
     # 2. Rebuild slides SVGs, .pptx, blog.md, .docx, starter.zip
     native_slides: Dict[int, Tuple[str, str]] = {}
@@ -6120,6 +6187,14 @@ def _recompile_full_blog_state(
     )
     for i, s_svg in enumerate(slide_svgs, 1):
         (blog_dir / "slides" / f"slide_{i:02d}.svg").write_text(s_svg, encoding="utf-8")
+    for old_sf in list((blog_dir / "slides").glob("slide_*.svg")):
+        m_sf = re.match(r"^slide_(\d+)\.svg$", old_sf.name)
+        if m_sf and int(m_sf.group(1)) > len(slide_svgs):
+            old_sf.unlink(missing_ok=True)
+    for old_af in list((blog_dir / "audio").glob("slide_*.mp3")):
+        m_af = re.match(r"^slide_(\d+)\.mp3$", old_af.name)
+        if m_af and int(m_af.group(1)) > len(slide_svgs):
+            old_af.unlink(missing_ok=True)
 
     pptx_bytes = compile_pptx_bytes(
         bp, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""), proofs, blog_dir,
