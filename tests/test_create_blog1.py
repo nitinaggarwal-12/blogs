@@ -1895,7 +1895,8 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertTrue(j_ds["deterministic"]["allPassed"], j_ds["deterministic"])
         self.assertIn("Custom Cloud Armor WAF Node", (blog_dir / "diagrams" / f"{slug}-concept.svg").read_text(encoding="utf-8"))
         with zipfile.ZipFile(blog_dir / "slides" / f"{slug}-deck.pptx", "r") as zf:
-            self.assertIn("Custom Cloud Armor WAF Node", zf.read("ppt/slides/slide3.xml").decode("utf-8"))
+            self.assertIn("Reference Platform Architecture", zf.read("ppt/slides/slide3.xml").decode("utf-8"))
+            self.assertIn("Custom Cloud Armor WAF Node", zf.read("ppt/slides/slide4.xml").decode("utf-8"))
 
         # 5. 1-Click Undo / Restore to v1 restores original title and clears customEdited lock cleanly
         st_rst, _, b_rst = self._req(
@@ -2057,8 +2058,8 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         blog_dir_pl = Path(self._tmpdir.name) / slug_pl
         md_pl = (blog_dir_pl / "blog.md").read_text(encoding="utf-8")
         # Inline figures present; zero Studio QA / ledger / grounding query dump clutter!
-        self.assertIn(f"![Figure 1: Core Capability & Developer Mental Model](diagrams/{slug_pl}-concept.svg)", md_pl)
-        self.assertIn(f"![Figure 2: Platform Integration Architecture & Plane Ownership (C4 L2)](diagrams/{slug_pl}-architecture.svg)", md_pl)
+        self.assertIn(f"![Figure 1: Reference Platform Architecture & Plane Ownership (C4 L2)](diagrams/{slug_pl}-architecture.svg)", md_pl)
+        self.assertIn(f"![Figure 2: Core Capability & Developer Mental Model](diagrams/{slug_pl}-concept.svg)", md_pl)
         self.assertIn(f"![Figure 3: End-to-End Quickstart Execution Flow](diagrams/{slug_pl}-sequence.svg)", md_pl)
         for purged in (
             "Authoring Model:",
