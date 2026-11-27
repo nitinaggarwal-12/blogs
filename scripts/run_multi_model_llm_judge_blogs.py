@@ -339,7 +339,7 @@ def build_judge_prompt(bundle: Dict[str, Any]) -> str:
         "Evaluate ALL SEVEN artifacts (`blogContent`, `diagrams`, `drawio`, `slides`, `code`, `terraform`, `references`) across FOUR explicit 0-100 metrics:\n"
         "1. `accuracy`: Technical correctness against Google Cloud documentation, quotas, SLAs, SQL/HCL/Python syntax, and reachable HTTPS citations.\n"
         "2. `completeness`: Full coverage of architecture planes, failure modes, red-team defenses, slides, runnable code/Terraform, and references.\n"
-        "3. `faithfulness`: Strict 1:1 consistency across `blogContent` prose, `diagrams`, compiled `.drawio` XML vertices/edges, `.pptx` `slides`, `code`, `terraform`, and `references`.\n"
+        "3. `faithfulness`: Strict 1:1 consistency across `blogContent` prose, `diagrams`, compiled `.drawio` XML vertices/edges, `.pptx` `slides`, `code`, `terraform`, and `references`, including top-down C4 progressive disclosure (`Figure 1` = Reference Platform Architecture & Plane Ownership in Section 1, followed by zoom-in diagrams placed directly under the sections whose prose explains them).\n"
         "4. `relevancy`: Tight focus on the workstream's specific multi-tenant pattern, target audience, and practitioner execution.\n\n"
         "Return ONLY valid JSON matching this schema (no markdown fences):\n"
         "{\n"
@@ -384,10 +384,10 @@ def call_vertex_judge(model_cfg: Dict[str, Any], bundle: Dict[str, Any], prompt:
         "responseMimeType": "application/json",
     }
     if model_cfg.get("use_thinking_level"):
-        gen_cfg["thinkingConfig"] = {"thinkingLevel": "LOW"}
+        gen_cfg["thinkingConfig"] = {"thinkingLevel": "MEDIUM"}
     else:
         gen_cfg["temperature"] = 0.0
-        gen_cfg["thinkingConfig"] = {"thinkingBudget": 512}
+        gen_cfg["thinkingConfig"] = {"thinkingBudget": 1536}
 
     payload = {
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],

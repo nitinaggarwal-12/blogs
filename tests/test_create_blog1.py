@@ -2272,6 +2272,82 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
             media = [n for n in zf.namelist() if n.startswith("word/media/diagram_")]
             self.assertEqual(len(media), 3, f"Expected 3 embedded diagram PNGs in DOCX, got {media}")
 
+    def test_25_judge_pedagogical_rubric_and_d01_figure_sequence_parity(self) -> None:
+        """Verifies Judge Panel A receives SECTION_AND_FIGURE_PROGRESSION_MAP + MEDIUM thinking + Pedagogical Rubric, and D-01 catches inverted figure order."""
+        from unittest import mock
+
+        cat = cb1.get_category("security_deep_dive")
+        outline = cb1.normalize_blog_outline(cat["recommendedOutline"], category_id="security_deep_dive")
+        plan = cb1.compute_dynamic_slide_plan(outline, include_starter_code=True)
+        bp = cb1.normalize_blueprint(
+            _sample_blueprint(),
+            "Zero-trust agent defense",
+            "Cloud Security & Zero Trust",
+            "CISOs",
+            slide_plan=plan,
+            category_id="security_deep_dive",
+            outline=outline,
+        )
+        slug = "judge-rubric-order-test"
+        man = cb1.compile_and_save_blog(
+            blueprint=bp,
+            slug=slug,
+            model_used="gemini-4-neon",
+            auth_mode="vertex_ai_iam",
+            actor_email="test@example.com",
+            enable_tts=False,
+            enable_judge=False,
+            category_id="security_deep_dive",
+            outline=outline,
+            slide_plan=plan,
+            include_starter_code=True,
+        )
+        blog_dir = Path(self._tmpdir.name) / slug
+        md_text = (blog_dir / "blog.md").read_text(encoding="utf-8")
+        pptx_bytes = (blog_dir / "slides" / f"{slug}-deck.pptx").read_bytes()
+        docx_bytes = (blog_dir / "docs" / f"{slug}-whitepaper.docx").read_bytes()
+
+        captured_calls = []
+
+        def _capture_judge_call(**kwargs):
+            captured_calls.append(kwargs)
+            return ({"verdict": "APPROVED", "score": 96, "artifacts": {}, "strengths": [], "findings": []}, {})
+
+        with mock.patch.object(cb1, "call_gemini_json", side_effect=_capture_judge_call):
+            cb1.run_orthogonal_llm_judge(
+                bp=bp,
+                md_text=md_text,
+                generator_model="gemini-4-neon",
+                slide_plan=plan,
+                pptx_bytes=pptx_bytes,
+            )
+
+        panel_a = next(c for c in captured_calls if "Orthogonal Judge Panel A" in c["system_prompt"])
+        self.assertEqual(panel_a["thinking_level"], "MEDIUM")
+        self.assertEqual(panel_a["thinking_budget"], 1536)
+        self.assertIn("PEDAGOGICAL & PROGRESSIVE-DISCLOSURE ARCHITECTURE RUBRIC", panel_a["system_prompt"])
+        self.assertIn("Reference-First Anchor", panel_a["system_prompt"])
+        self.assertIn("SECTION_AND_FIGURE_PROGRESSION_MAP", panel_a["user_prompt"])
+        self.assertIn('"figureNumber": 1', panel_a["user_prompt"])
+        self.assertIn('"kind": "architecture"', panel_a["user_prompt"])
+
+        # D-01 must fail closed if blog.md figure order diverges from slidePlan["enabledDiagramKinds"]
+        corrupted_md = md_text.replace(f"{slug}-architecture.svg", f"{slug}-wire.svg", 1)
+        det_bad = cb1.run_deterministic_quality_gate(
+            bp=bp,
+            md_text=corrupted_md,
+            pptx_bytes=pptx_bytes,
+            docx_bytes=docx_bytes,
+            py_ast_ok=True,
+            py_ast_err="",
+            starter_files={"main.tf": "# GENERATED_TEMPLATE_UNDEPLOYED", "app.py": "# GENERATED_TEMPLATE_UNDEPLOYED", "README.md": "GENERATED_TEMPLATE_UNDEPLOYED", "PROVENANCE.txt": "GENERATED_TEMPLATE_UNDEPLOYED", "Dockerfile": "FROM python:3.12", "requirements.txt": "fastapi"},
+            extra_diagrams={k: {"xml": "<mxfile><diagram><mxGraphModel><root><mxCell id='0'/><mxCell id='1' parent='0'/><mxCell id='2' value='v' style='image=data:image/svg+xml,abc;image=data:image/svg+xml,def' vertex='1' parent='1'/></root></mxGraphModel></diagram></mxfile>", "svg": "<svg/>"} for k in plan["enabledDiagramKinds"]},
+            arch_icon_count=8,
+            slide_plan=plan,
+        )
+        d01 = next(c for c in det_bad["checks"] if c["id"] == "D-01")
+        self.assertEqual(d01["status"], "FAIL")
+        self.assertIn("Figure sequence mismatch", d01["detail"])
 
 
 if __name__ == "__main__":

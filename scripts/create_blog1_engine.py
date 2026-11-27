@@ -3293,17 +3293,36 @@ def compile_blog_markdown(
                 ft = str(ed.get("title") or meta.get("defaultTitle") or dk.title())
                 fl = str((diags_map or {}).get(dk, {}).get("layer") or meta.get("shortLabel") or dk.upper())
                 fig_rows.append((dk, ft, fl, idx_f))
+    elif eff_outline:
+        for item_o in eff_outline:
+            if not isinstance(item_o, dict) or not item_o.get("enabled") or item_o.get("type") != "diagram":
+                continue
+            dk = str(item_o.get("kind") or "")
+            has_dk = (
+                bool(arch_url or (diags_map and "architecture" in diags_map))
+                if dk == "architecture"
+                else (
+                    bool(seq_url or (diags_map and "sequence" in diags_map))
+                    if dk == "sequence"
+                    else bool(ex_u.get(dk) or (diags_map and dk in diags_map))
+                )
+            )
+            if dk and has_dk and all(r[0] != dk for r in fig_rows):
+                meta = DIAGRAM_KIND_META.get(dk, {})
+                ft = str(item_o.get("title") or meta.get("defaultTitle") or dk.title())
+                fl = str((diags_map or {}).get(dk, {}).get("layer") or meta.get("shortLabel") or dk.upper())
+                fig_rows.append((dk, ft, fl, len(fig_rows) + 1))
     else:
+        if arch_url or (diags_map and "architecture" in diags_map):
+            fig_rows.append(("architecture", "Reference Platform Architecture & Plane Ownership", "C4 L2", len(fig_rows) + 1))
         if ex_u.get("concept") or (diags_map and "concept" in diags_map):
             fig_rows.append(("concept", "Conceptual Mental Model & Invariant Lock", "CONCEPT", len(fig_rows) + 1))
-        if arch_url or (diags_map and "architecture" in diags_map):
-            fig_rows.append(("architecture", "Master Platform Architecture", "C4 L2", len(fig_rows) + 1))
         if ex_u.get("cloudarch") or (diags_map and "cloudarch" in diags_map):
             fig_rows.append(("cloudarch", "Cloud Architecture Center Blueprint", "HUB-SPOKE", len(fig_rows) + 1))
-        if seq_url or (diags_map and "sequence" in diags_map):
-            fig_rows.append(("sequence", "Request Lifecycle Sequence", "C4 L3", len(fig_rows) + 1))
         if ex_u.get("security") or (diags_map and "security" in diags_map):
             fig_rows.append(("security", "Trust Perimeter & Security Boundary", "C4 L1", len(fig_rows) + 1))
+        if seq_url or (diags_map and "sequence" in diags_map):
+            fig_rows.append(("sequence", "Request Lifecycle Sequence", "C4 L3", len(fig_rows) + 1))
         if ex_u.get("wire") or (diags_map and "wire" in diags_map):
             fig_rows.append(("wire", "Wire Payload & Schema Transformation", "C4 L4", len(fig_rows) + 1))
         if ex_u.get("async") or (diags_map and "async" in diags_map):
@@ -3780,11 +3799,23 @@ def run_deterministic_quality_gate(
     cb_count = sum(len(s.get("codeBlocks") or []) for s in (bp.get("sections") or []))
     tbl_count = sum(1 for s in (bp.get("sections") or []) if s.get("table"))
     min_secs = 2 if plan else 3
+    md_fig_matches = re.findall(r"!\[Figure\s+(\d+):[^\]]*\]\(diagrams/[A-Za-z0-9_-]+-([a-z]+)\.svg\)", md_text or "")
+    md_fig_nums = [int(n) for n, _ in md_fig_matches]
+    md_fig_kinds = [k for _, k in md_fig_matches]
+    exp_order_d1 = list(plan.get("enabledDiagramKinds") or []) if (plan and plan.get("enabledDiagramKinds")) else None
+    fig_seq_ok = (md_fig_nums == list(range(1, len(md_fig_nums) + 1))) and (
+        exp_order_d1 is None or not md_fig_kinds or md_fig_kinds == exp_order_d1
+    )
     _add(
         "D-01",
-        "Markdown Structure & Prose-Only Depth",
-        prose_words >= 180 and len(bp.get("sections", [])) >= min_secs,
-        f"{prose_words:,} prose-only words (excl. code/tables/URLs) across {len(bp.get('sections', []))} sections, {tbl_count} section tables, {cb_count} inline code blocks.",
+        "Markdown Structure, Figure Sequence Parity & Prose Depth",
+        prose_words >= 180 and len(bp.get("sections", [])) >= min_secs and fig_seq_ok,
+        (
+            f"{prose_words:,} prose-only words (excl. code/tables/URLs) across {len(bp.get('sections', []))} sections, "
+            f"{tbl_count} section tables, {cb_count} inline code blocks, figureOrder={md_fig_kinds}."
+            if fig_seq_ok
+            else f"Figure sequence mismatch in blog.md: nums={md_fig_nums}, mdKinds={md_fig_kinds}, expectedPlan={exp_order_d1}."
+        ),
     )
 
     # Assemble unified enabled diagrams map so any category subset works cleanly without assuming architecture/sequence
@@ -4186,6 +4217,34 @@ def run_orthogonal_llm_judge(
         diag_field_map[k][1]: (bp.get(diag_field_map[k][0]) or {})
         for k in enabled_kinds
     }
+    # Build explicit ordered (Figure # -> Kind -> Slide # -> Preceding Section Heading & Opening Sentence) map
+    progression_map: List[Dict[str, Any]] = []
+    cur_sec_heading = "(Before Section 1)"
+    cur_sec_open = ""
+    sec_lookup = {
+        re.sub(r"^\d+\.\s*", "", str(s.get("heading") or "")).strip().lower(): str((s.get("paragraphs") or [""])[0])[:220]
+        for s in (bp.get("sections") or [])
+    }
+    for ln_m in (md_text or "").splitlines():
+        s_ln = ln_m.strip()
+        if s_ln.startswith("## ") and not s_ln.startswith("## Executive Summary"):
+            cur_sec_heading = s_ln[3:].strip()
+            clean_h = re.sub(r"^\d+\.\s*", "", cur_sec_heading).strip().lower()
+            cur_sec_open = sec_lookup.get(clean_h, "")
+        m_emb = re.match(r"^!\[Figure\s+(\d+):\s*([^\]]+)\]\(diagrams/[A-Za-z0-9_-]+-([a-z]+)\.svg\)", s_ln)
+        if m_emb:
+            fnum_i = int(m_emb.group(1))
+            ftitle_s = m_emb.group(2).strip()
+            fkind_s = m_emb.group(3).strip()
+            snum_i = int(((slide_plan or {}).get("diagramSlideMap") or {}).get(fkind_s) or (2 + fnum_i))
+            progression_map.append({
+                "figureNumber": fnum_i,
+                "kind": fkind_s,
+                "slideNumber": snum_i,
+                "figureTitle": ftitle_s,
+                "placedUnderSection": cur_sec_heading,
+                "sectionOpeningProse": cur_sec_open,
+            })
     slides_summary = [
         {
             "number": s.get("number"),
@@ -4214,8 +4273,13 @@ def run_orthogonal_llm_judge(
         "NEVER claim these models are fake, unconfirmed, or deprecated, and NEVER recommend downgrading them to Gemini 1.5. Conversely, DO flag invented non-existent IDs like `gemini-4.0-flash` or `gemini-4-pro`. "
         "2. Cloud Spanner Graph (`CREATE PROPERTY GRAPH`, ISO GQL `GRAPH_TABLE`), Spanner vector search, Spanner full-text search (`TOKENLIST`/`TOKENIZE_FULLTEXT`), and Cloud Run v2 (`google_cloud_run_v2_service`) are real Google Cloud capabilities — verify exact syntax against LIVE_GOOGLE_SEARCH_GROUNDING before rejecting. "
         "3. Treat LIVE_GOOGLE_SEARCH_GROUNDING as verified live web evidence. "
-        f"4. CATEGORY & DIAGRAM SCOPE: This blog uses category `{cat_id}` with EXACTLY {len(enabled_kinds)} enabled diagram(s) ({', '.join(enabled_diag_names)}), {total_slides_n} slide(s), and starter code {'ENABLED' if inc_code else 'DISABLED (intentionally omitted by category)'}. "
-        "Verify ONLY the enabled diagram(s) and enabled artifacts — NEVER penalize diagram kinds or starter code intentionally omitted by this category! "
+        f"4. CATEGORY & DIAGRAM SCOPE: This blog uses category `{cat_id}` with {len(enabled_kinds)} enabled diagram(s) ({', '.join(enabled_diag_names)}), {total_slides_n} slide(s), and starter code {'ENABLED' if inc_code else 'DISABLED (intentionally omitted by category)'}. "
+        "Do not penalize optional L3/L4 sub-diagrams or starter code intentionally disabled by a lean category, EXCEPT DO audit and flag P1 for any violation of the PEDAGOGICAL & PROGRESSIVE-DISCLOSURE ARCHITECTURE RUBRIC below! "
+        "PEDAGOGICAL & PROGRESSIVE-DISCLOSURE ARCHITECTURE RUBRIC (flag P0/P1 and set verdict=NEEDS_REVISION on `diagrams`/`blogContent`/`slides` for ANY violation): "
+        "- Reference-First Anchor (`Figure 1` / `Section 1` / `Slide 3`): Multi-diagram architecture posts MUST establish the end-to-end Reference Platform Architecture & Plane Ownership (`architecture` / `platformDiagram` showing Caller Tiers, Hops, and Control/Compute/Data planes) FIRST as `Figure 1` under `Section 1` (and `Slide 3` in the deck) before zooming into sub-views; flag P1 if `architecture` is missing from a multi-diagram post or buried at the end after L3/L4 views. "
+        "- Top-Down C4 Progressive Zoom (`L100/L200 -> L300 -> L400`): Diagrams MUST progress from system/platform context (`architecture` -> `concept` / `cloudarch` -> `security`) down to runtime execution & wire internals (`sequence` -> `wire` / `async`); flag P1 if low-level `wire` or `async` diagrams appear before broad platform/topology context. "
+        "- 1:1 Section-Prose-to-Diagram Semantic Match: Inspect `SECTION_AND_FIGURE_PROGRESSION_MAP` — every diagram MUST sit immediately under the section whose heading and prose genuinely explain that exact diagram (flag P1 if a Platform Architecture diagram is parked under a FinOps/Kill-Switch section, or if two diagrams are stacked back-to-back without explanatory section prose). "
+        "- Cross-Surface Sequence Parity: `blog.md` `Figure 1..D`, `.pptx` `Slides 3..2+D`, and `.docx` `Figure 1..D` MUST follow the exact same ordered diagram sequence. "
         "STRICT AUDIT CHECKLIST (flag P0/P1 for ANY violation): "
         "- Spanner Graph ANN: `APPROX_COSINE_DISTANCE` inside single-stage `MATCH (src)-[rel]->(dst)` silently defeats the vector index (must use 2-stage `MATCH (@{FORCE_INDEX=...} src) ... ORDER BY distance LIMIT @k NEXT MATCH ...`). "
         "- Spanner FGAC: hard limit is 100 database roles per database; never grant `roles/spanner.databaseUser` to an FGAC-restricted service account. "
@@ -4247,6 +4311,7 @@ def run_orthogonal_llm_judge(
         f"DOMAIN: {bp['domain']}\nAUDIENCE: {bp.get('audience', '')}\nPROMPT: {bp.get('prompt', '')}\nGENERATOR_MODEL: {generator_model}\n\n"
         f"KEY_TAKEAWAYS:\n{json.dumps(bp.get('keyTakeaways') or [], indent=2)}\n\n"
         + (f"LIVE_GOOGLE_SEARCH_GROUNDING (status={(grounding or {}).get('status')}):\n{g_sum[:6000]}\n\n" if g_sum else "")
+        + f"SECTION_AND_FIGURE_PROGRESSION_MAP (audit Reference-First Figure 1, top-down C4 zoom order, and 1:1 section-prose-to-diagram alignment):\n{json.dumps(progression_map, indent=2)}\n\n"
         + f"RENDERED_DIAGRAMS_SPEC_JSON ({len(enabled_kinds)} enabled):\n{json.dumps(rendered_diagrams, indent=2)}\n\n"
         + f"COMPILED_DRAWIO_XML_GRAPH_DIGEST (actual mxGraphModel vertices, edges, orthogonal styles, SVG icons & geometry validation):\n{json.dumps(drawio_digest, indent=2)}\n\n"
         + f"SLIDES_SPEC_SUMMARY ({len(slides_summary)} slides):\n{json.dumps(slides_summary, indent=2)}\n\n"
@@ -4363,8 +4428,8 @@ def run_orthogonal_llm_judge(
                 model=judge_model,
                 api_key_override=api_key_override,
                 max_output_tokens=12288 if is_global_vertex_model(judge_model) else 8192,
-                thinking_budget=512,
-                thinking_level="LOW",
+                thinking_budget=1536,
+                thinking_level="MEDIUM",
                 temperature=0.1,
                 timeout_s=95.0,
                 use_google_search=True,
@@ -4380,8 +4445,8 @@ def run_orthogonal_llm_judge(
                 model=judge_model,
                 api_key_override=api_key_override,
                 max_output_tokens=12288 if is_global_vertex_model(judge_model) else 8192,
-                thinking_budget=512,
-                thinking_level="LOW",
+                thinking_budget=1536,
+                thinking_level="MEDIUM",
                 temperature=0.1,
                 timeout_s=85.0,
                 use_google_search=False,
