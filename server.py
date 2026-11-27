@@ -5250,6 +5250,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                     self._send_json(auth_status, {"ok": False, "code": auth_code, "error": auth_msg})
                     return
                 raw_slug = urllib.parse.unquote(m_cb1_sync.group(1))
+                _, actor_email, _ = self._detect_iap_actor(body if isinstance(body, dict) else {})
                 transient_ws_token = str(self.headers.get("X-Google-Workspace-Token") or "").strip() or None
                 force_new = bool(body.get("forceNew", False)) if isinstance(body, dict) else False
                 conflict_res = str(body.get("conflictResolution") or "check") if isinstance(body, dict) else "check"
@@ -5260,6 +5261,7 @@ class PortalRequestHandler(BaseHTTPRequestHandler):
                         access_token_override=transient_ws_token,
                         force_new=force_new,
                         conflict_resolution=conflict_res,
+                        actor_email=actor_email or "",
                     )
                     self._send_json(int(res.get("statusCode", 200)), res)
                 except create_blog1_mod.CreateBlog1Error as exc:

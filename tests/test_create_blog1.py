@@ -1066,12 +1066,12 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertNotIn("-Slide Deck (.pptx)", js_text)
         self.assertNotIn("Download .pptx (", js_text)
 
-        # 2. Capabilities exposes OAuth client ID for browser 1-click Google Slides/Docs sync
+        # 2. Capabilities never ships an unregistered desktop OAuth client ID that triggers origin_mismatch
         cap_st, _, cap_body = self._req("/api/create-blog1/capabilities")
         self.assertEqual(cap_st, 200)
         cap = json.loads(cap_body.decode("utf-8"))
-        self.assertTrue(cap["capabilities"]["workspaceOauthClientId"].endswith(".apps.googleusercontent.com"))
-        self.assertTrue(cap["capabilities"]["workspaceBrowserOauth"])
+        self.assertEqual(cap["capabilities"]["workspaceOauthClientId"], "")
+        self.assertFalse(cap["capabilities"]["workspaceBrowserOauth"])
 
         # 3. Unmounted server without token returns 412 with oauthClientId + scopes
         bp = _sample_blueprint()
@@ -2161,6 +2161,69 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
             set(j_res["artifactEvaluations"].keys()),
             {"blogContent", "diagrams", "drawio", "slides", "code", "terraform", "references"},
         )
+
+    def test_22_cloud_run_sa_shared_drive_sync_and_stale_manifest_eviction(self) -> None:
+        """Verifies zero-popup Cloud Run SA Shared Drive sync (no unregistered OAuth Client ID) & stale /tmp manifest eviction."""
+        from unittest import mock
+        self.assertEqual(cb1.DEFAULT_WORKSPACE_OAUTH_CLIENT_ID, "")
+        self.assertTrue(bool(cb1.DEFAULT_WORKSPACE_SHARED_DRIVE_ID))
+
+        bp = _sample_blueprint()
+        slug = "zt-sa-shared-drive-sync"
+        cb1.compile_and_save_blog(
+            blueprint=bp,
+            slug=slug,
+            model_used="gemini-2.5-flash",
+            auth_mode="unit_test_fixture",
+            actor_email="architect@google.com",
+            enable_tts=False,
+            enable_judge=False,
+        )
+
+        # 1. Server-side Cloud Run SA Shared Drive sync converts .pptx + .docx with parent_folder_id & grants actor access
+        upload_calls = []
+        perm_calls = []
+
+        def _fake_sa_upload(token, filename, src_mime, dst_mime, raw_bytes, existing_id=None, *, parent_folder_id=None):
+            upload_calls.append((token, dst_mime, existing_id, parent_folder_id))
+            if dst_mime.endswith("presentation"):
+                return {"id": existing_id or "sd_slides_001", "resourceKey": "0-rkSd1", "modifiedTime": "2026-11-27T03:00:00Z", "headRevisionId": "r1"}
+            return {"id": existing_id or "sd_doc_001", "resourceKey": "0-rkDoc1", "modifiedTime": "2026-11-27T03:00:00Z", "headRevisionId": "r1"}
+
+        def _fake_grant(token, file_id, actor_email=""):
+            perm_calls.append((file_id, actor_email))
+
+        with mock.patch.object(cb1, "_get_cloud_run_drive_sa_token", return_value="sa-meta-drive-token"), \
+             mock.patch.object(cb1, "_drive_multipart_upload", side_effect=_fake_sa_upload), \
+             mock.patch.object(cb1, "_drive_grant_workspace_permissions", side_effect=_fake_grant):
+            res = cb1.sync_to_google_workspace(slug, actor_email="architect@google.com")
+
+        self.assertTrue(res["ok"])
+        self.assertEqual(res["statusCode"], 200)
+        self.assertEqual(res["workspaceSync"]["provider"], "cloud_run_sa_shared_drive")
+        self.assertEqual(upload_calls[0][3], cb1.DEFAULT_WORKSPACE_SHARED_DRIVE_ID)
+        self.assertEqual(upload_calls[1][3], cb1.DEFAULT_WORKSPACE_SHARED_DRIVE_ID)
+        self.assertEqual(perm_calls, [("sd_slides_001", "architect@google.com"), ("sd_doc_001", "architect@google.com")])
+
+        # 2. Stale /tmp manifest.json (Drive: Not Synced, rev=1) is evicted when index.json shows rev=2 + SYNCED
+        blog_dir = cb1.get_storage_root() / slug
+        stale_m = json.loads((blog_dir / "manifest.json").read_text(encoding="utf-8"))
+        stale_m["revision"] = 1
+        stale_m["workspaceSync"] = {"status": "STALE"}
+        (blog_dir / "manifest.json").write_text(json.dumps(stale_m), encoding="utf-8")
+
+        fresh_idx = {
+            "blogs": [{
+                "slug": slug,
+                "revision": 2,
+                "updatedAt": "2099-01-01T00:00:00Z",
+                "workspaceSync": {"status": "SYNCED", "slidesUrl": "https://docs.google.com/presentation/d/sd_slides_001/edit", "docUrl": "https://docs.google.com/document/d/sd_doc_001/edit"},
+            }]
+        }
+        with mock.patch.object(cb1, "_is_gcs_sync_enabled", return_value=True), \
+             mock.patch.object(cb1, "_load_index", return_value=fresh_idx):
+            cb1._ensure_blog_fresh_from_index(slug)
+        self.assertFalse(blog_dir.exists(), "Stale local blog cache directory must be evicted when index.json advances")
 
 
 if __name__ == "__main__":

@@ -1298,12 +1298,30 @@
         return;
       }
     }
+    let pendingWin = null;
+    try {
+      pendingWin = window.open('about:blank', '_blank');
+      if (pendingWin && pendingWin.document) {
+        pendingWin.document.title = 'Syncing to Google ' + (mode === 'docs' ? 'Docs' : 'Slides') + '...';
+      }
+    } catch (_) {
+      pendingWin = null;
+    }
     const synced = await triggerWorkspaceSync(slug, mode);
     if (synced && synced.status === 'SYNCED') {
       const targetUrl = mode === 'docs' ? synced.docUrl : synced.slidesUrl;
       if (isSafeHref(targetUrl)) {
-        window.open(targetUrl, '_blank', 'noopener,noreferrer');
+        if (pendingWin && !pendingWin.closed) {
+          try { pendingWin.opener = null; } catch (_) {}
+          pendingWin.location.replace(targetUrl);
+        } else {
+          window.open(targetUrl, '_blank', 'noopener,noreferrer');
+        }
+        return;
       }
+    }
+    if (pendingWin && !pendingWin.closed) {
+      try { pendingWin.close(); } catch (_) {}
     }
   }
 

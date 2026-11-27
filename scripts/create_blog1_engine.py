@@ -788,9 +788,54 @@ def _ensure_rel_hydrated(slug: str, rel_path: str) -> Optional[Path]:
 
 DEFAULT_WORKSPACE_OAUTH_CLIENT_ID = os.environ.get(
     "GOOGLE_WORKSPACE_OAUTH_CLIENT_ID",
-    "248990048888-hpng38o8veg9k4qnpcmlsoh7dkgvqc6o.apps.googleusercontent.com",
+    "",
+).strip()
+DEFAULT_WORKSPACE_SHARED_DRIVE_ID = os.environ.get(
+    "GOOGLE_WORKSPACE_SHARED_DRIVE_ID",
+    "0AEhajVC2_rtpUk9PVA",
 ).strip()
 DEFAULT_GDRIVE_CLI_PATH = Path("/google/bin/releases/gemini-agents-gdrive/gdrive")
+_SA_DRIVE_TOKEN_CACHE: Dict[str, Any] = {"token": None, "exp": 0.0}
+
+
+def _can_use_cloud_run_sa_drive() -> bool:
+    if os.environ.get("GEAP_DISABLE_VERTEX_AUTH", "").strip() == "1":
+        return False
+    if os.environ.get("CREATE_BLOG1_DISABLE_SA_DRIVE", "").strip() == "1":
+        return False
+    if not DEFAULT_WORKSPACE_SHARED_DRIVE_ID:
+        return False
+    return bool(
+        os.environ.get("K_SERVICE")
+        or os.environ.get("ENABLE_METADATA_DRIVE_SYNC", "").strip() == "1"
+    )
+
+
+def _get_cloud_run_drive_sa_token() -> Optional[str]:
+    """Fetches a Drive-scoped OAuth2 token from the Cloud Run GCE Metadata Server (zero popups, zero disk secrets)."""
+    if not _can_use_cloud_run_sa_drive():
+        return None
+    now = time.time()
+    cached = _SA_DRIVE_TOKEN_CACHE.get("token")
+    if cached and now < float(_SA_DRIVE_TOKEN_CACHE.get("exp") or 0.0):
+        return str(cached)
+    meta_url = (
+        "http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/"
+        "default/token?scopes=https://www.googleapis.com/auth/drive"
+    )
+    req = urllib.request.Request(meta_url, headers={"Metadata-Flavor": "Google"}, method="GET")
+    try:
+        with urllib.request.urlopen(req, timeout=4.0) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+        tok = str(payload.get("access_token") or "").strip()
+        if tok:
+            ttl = max(60.0, float(payload.get("expires_in", 3000)) - 120.0)
+            _SA_DRIVE_TOKEN_CACHE["token"] = tok
+            _SA_DRIVE_TOKEN_CACHE["exp"] = now + ttl
+            return tok
+    except Exception:
+        return None
+    return None
 
 
 def _has_local_gdrive_cli() -> bool:
@@ -822,7 +867,8 @@ def get_capabilities() -> Dict[str, Any]:
     has_ffmpeg = bool(shutil.which("ffmpeg"))
     has_svg_raster = bool(shutil.which("rsvg-convert"))
     gdrive_cli_ready = _has_local_gdrive_cli()
-    has_workspace = _has_workspace_oauth_token() or gdrive_cli_ready
+    sa_drive_ready = bool(_get_cloud_run_drive_sa_token())
+    has_workspace = _has_workspace_oauth_token() or gdrive_cli_ready or sa_drive_ready
     is_cloud_run = bool(os.environ.get("K_SERVICE"))
     return {
         "ok": True,
@@ -889,9 +935,11 @@ def get_capabilities() -> Dict[str, Any]:
                 "tmpLruBudgetMb": 256,
             },
             "workspaceOauthSync": has_workspace,
+            "workspaceServerSideSync": sa_drive_ready or gdrive_cli_ready or _has_workspace_oauth_token(),
+            "workspaceSharedDriveId": DEFAULT_WORKSPACE_SHARED_DRIVE_ID if sa_drive_ready else "",
             "workspaceOauthClientId": DEFAULT_WORKSPACE_OAUTH_CLIENT_ID,
             "workspaceCliReady": gdrive_cli_ready,
-            "workspaceBrowserOauth": True,
+            "workspaceBrowserOauth": bool(DEFAULT_WORKSPACE_OAUTH_CLIENT_ID),
             "hostMp4Compiler": has_ffmpeg and has_svg_raster,
             "browserWebmExporter": True,
             "browserScreenRecorder": True,
@@ -5548,6 +5596,13 @@ def start_generation_job(
                 slide_plan=slide_plan,
                 include_starter_code=include_starter_code,
             )
+            if _can_use_cloud_run_sa_drive() or _has_local_gdrive_cli() or _has_workspace_oauth_token():
+                try:
+                    ws_auto = sync_to_google_workspace(slug, actor_email=actor_email)
+                    if isinstance(ws_auto, dict) and ws_auto.get("ok") and ws_auto.get("workspaceSync"):
+                        manifest["workspaceSync"] = ws_auto["workspaceSync"]
+                except Exception:
+                    pass
             with _JOBS_LOCK:
                 jr = _JOBS[job_id]
                 jr["status"] = "COMPLETED"
@@ -5603,8 +5658,40 @@ def list_blogs(refresh_gcs: bool = False) -> List[Dict[str, Any]]:
     return list(idx.get("blogs", []))
 
 
+def _ensure_blog_fresh_from_index(slug: str) -> None:
+    """Evicts stale local /tmp/<slug>/ cache whenever GCS index.json shows a newer revision, timestamp, or Drive sync status."""
+    if not _is_gcs_sync_enabled():
+        return
+    blog_dir = (get_storage_root() / slug).resolve()
+    local_mp = blog_dir / "manifest.json"
+    if not local_mp.is_file():
+        return
+    try:
+        idx = _load_index()
+        idx_entry = next((b for b in (idx.get("blogs") or []) if isinstance(b, dict) and b.get("slug") == slug), None)
+        if not idx_entry:
+            return
+        local_m = json.loads(local_mp.read_text(encoding="utf-8"))
+        idx_rev = int(idx_entry.get("revision") or 1)
+        loc_rev = int(local_m.get("revision") or 1)
+        idx_upd = str(idx_entry.get("updatedAt") or "")
+        loc_upd = str(local_m.get("updatedAt") or "")
+        idx_ws = (idx_entry.get("workspaceSync") or {}) if isinstance(idx_entry.get("workspaceSync"), dict) else {}
+        loc_ws = (local_m.get("workspaceSync") or {}) if isinstance(local_m.get("workspaceSync"), dict) else {}
+        ws_mismatch = (
+            str(idx_ws.get("status") or "") != str(loc_ws.get("status") or "")
+            or str(idx_ws.get("slidesUrl") or "") != str(loc_ws.get("slidesUrl") or "")
+            or str(idx_ws.get("docUrl") or "") != str(loc_ws.get("docUrl") or "")
+        )
+        if idx_rev > loc_rev or (idx_upd and idx_upd > loc_upd) or ws_mismatch:
+            shutil.rmtree(blog_dir, ignore_errors=True)
+    except Exception:
+        pass
+
+
 def get_blog_detail(slug: str) -> Dict[str, Any]:
     clean = validate_existing_slug(slug)
+    _ensure_blog_fresh_from_index(clean)
     mp = _ensure_rel_hydrated(clean, "manifest.json")
     if mp is None or not mp.is_file():
         raise CreateBlog1Error(f"Blog '{clean}' not found.", 404, "BLOG_NOT_FOUND")
@@ -6885,17 +6972,25 @@ def _drive_multipart_upload(
     dst_mime: str,
     raw_bytes: bytes,
     existing_id: Optional[str] = None,
+    *,
+    parent_folder_id: Optional[str] = None,
 ) -> Dict[str, Any]:
     boundary = f"cb1_{uuid.uuid4().hex}"
-    meta_obj: Dict[str, str] = {"name": filename, "mimeType": dst_mime}
-    meta = json.dumps(meta_obj).encode("utf-8")
-    parts = [
-        f"--{boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n".encode("utf-8"),
-        meta,
-        f"\r\n--{boundary}\r\nContent-Type: {src_mime}\r\n\r\n".encode("utf-8"),
-        raw_bytes,
-        f"\r\n--{boundary}--\r\n".encode("utf-8"),
-    ]
+    patch_meta_obj: Dict[str, Any] = {"name": filename, "mimeType": dst_mime}
+    post_meta_obj: Dict[str, Any] = {"name": filename, "mimeType": dst_mime}
+    if parent_folder_id:
+        post_meta_obj["parents"] = [parent_folder_id]
+
+    def _build_body(m_obj: Dict[str, Any]) -> bytes:
+        parts = [
+            f"--{boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n".encode("utf-8"),
+            json.dumps(m_obj).encode("utf-8"),
+            f"\r\n--{boundary}\r\nContent-Type: {src_mime}\r\n\r\n".encode("utf-8"),
+            raw_bytes,
+            f"\r\n--{boundary}--\r\n".encode("utf-8"),
+        ]
+        return b"".join(parts)
+
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": f"multipart/related; boundary={boundary}",
@@ -6908,7 +7003,7 @@ def _drive_multipart_upload(
             patch_req = urllib.request.Request(
                 f"https://www.googleapis.com/upload/drive/v3/files/{urllib.parse.quote(existing_id, safe='')}"
                 f"?uploadType=multipart&supportsAllDrives=true&fields={fields}",
-                data=b"".join(parts),
+                data=_build_body(patch_meta_obj),
                 headers=headers,
                 method="PATCH",
             )
@@ -6919,12 +7014,52 @@ def _drive_multipart_upload(
                 raise
     req = urllib.request.Request(
         f"https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields={fields}",
-        data=b"".join(parts),
+        data=_build_body(post_meta_obj),
         headers=headers,
         method="POST",
     )
     with urllib.request.urlopen(req, timeout=75.0) as resp:
         return json.loads(resp.read().decode("utf-8"))
+
+
+def _drive_grant_workspace_permissions(token: str, file_id: str, actor_email: str = "") -> None:
+    """Grants non-notifying Drive access to the authenticated @google.com BeyondCorp caller + domain link reader."""
+    if not token or not file_id:
+        return
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json; charset=UTF-8",
+    }
+    if DEFAULT_GCP_PROJECT:
+        headers["x-goog-user-project"] = DEFAULT_GCP_PROJECT
+    perm_url = (
+        f"https://www.googleapis.com/drive/v3/files/{urllib.parse.quote(file_id, safe='')}"
+        "/permissions?supportsAllDrives=true&sendNotificationEmail=false"
+    )
+    clean_actor = str(actor_email or "").strip().lower()
+    if re.fullmatch(r"[a-z0-9._%+-]+@google\.com", clean_actor) and "unauthenticated" not in clean_actor:
+        try:
+            u_req = urllib.request.Request(
+                perm_url,
+                data=json.dumps({"type": "user", "role": "writer", "emailAddress": clean_actor}).encode("utf-8"),
+                headers=headers,
+                method="POST",
+            )
+            with urllib.request.urlopen(u_req, timeout=12.0):
+                pass
+        except Exception:
+            pass
+    try:
+        d_req = urllib.request.Request(
+            perm_url,
+            data=json.dumps({"type": "domain", "domain": "google.com", "role": "reader", "allowFileDiscovery": False}).encode("utf-8"),
+            headers=headers,
+            method="POST",
+        )
+        with urllib.request.urlopen(d_req, timeout=12.0):
+            pass
+    except Exception:
+        pass
 
 
 def _gdrive_cli_upload_or_update(
@@ -6969,8 +7104,10 @@ def sync_to_google_workspace(
     access_token_override: Optional[str] = None,
     force_new: bool = False,
     conflict_resolution: str = "check",
+    actor_email: str = "",
 ) -> Dict[str, Any]:
     clean = validate_existing_slug(slug)
+    _ensure_blog_fresh_from_index(clean)
     mp = _ensure_rel_hydrated(clean, "manifest.json")
     if mp is None or not mp.is_file():
         raise CreateBlog1Error(f"Blog '{clean}' not found.", 404, "BLOG_NOT_FOUND")
@@ -6982,6 +7119,7 @@ def sync_to_google_workspace(
 
     token = transient_tok
     auth_provider = "browser_oauth_gis" if token else ""
+    parent_shared_drive_id: Optional[str] = None
     if not token and bridge_mod is not None and hasattr(bridge_mod, "get_drive_access_token"):
         try:
             token = bridge_mod.get_drive_access_token()
@@ -6989,6 +7127,12 @@ def sync_to_google_workspace(
                 auth_provider = "server_oauth_refresh"
         except Exception:
             token = None
+    if not token:
+        sa_tok = _get_cloud_run_drive_sa_token()
+        if sa_tok:
+            token = sa_tok
+            auth_provider = "cloud_run_sa_shared_drive"
+            parent_shared_drive_id = DEFAULT_WORKSPACE_SHARED_DRIVE_ID or None
 
     use_cli = (not token) and _has_local_gdrive_cli()
     if not token and not use_cli:
@@ -7081,6 +7225,7 @@ def sync_to_google_workspace(
 
     try:
         if token:
+            extra_kw = {"parent_folder_id": parent_shared_drive_id} if parent_shared_drive_id else {}
             slides_res = _drive_multipart_upload(
                 token,
                 slides_name,
@@ -7088,6 +7233,7 @@ def sync_to_google_workspace(
                 "application/vnd.google-apps.presentation",
                 pptx_p.read_bytes(),
                 existing_id=existing_slides_id,
+                **extra_kw,
             )
             docs_res = _drive_multipart_upload(
                 token,
@@ -7096,7 +7242,11 @@ def sync_to_google_workspace(
                 "application/vnd.google-apps.document",
                 docx_p.read_bytes(),
                 existing_id=existing_doc_id,
+                **extra_kw,
             )
+            if auth_provider == "cloud_run_sa_shared_drive":
+                _drive_grant_workspace_permissions(token, str(slides_res.get("id") or ""), actor_email=actor_email)
+                _drive_grant_workspace_permissions(token, str(docs_res.get("id") or ""), actor_email=actor_email)
         else:
             auth_provider = "google_drive_cli"
             slides_res = _gdrive_cli_upload_or_update(

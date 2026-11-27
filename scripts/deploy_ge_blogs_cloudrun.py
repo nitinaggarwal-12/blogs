@@ -364,6 +364,7 @@ def main() -> None:
         env = get_gcloud_env()
 
         print(f"==> [3/4] Updating Cloud Run service {service_name} in ramp-portal-dev (us-west1)...")
+        cache_epoch = time.strftime("%Y%m%d%H%M%S", time.gmtime())
         subprocess.run(
             [
                 "gcloud",
@@ -375,6 +376,7 @@ def main() -> None:
                 "--billing-project=ramp-portal-dev",
                 "--region=us-west1",
                 f"--image={image_uri}",
+                f"--update-env-vars=GCS_CACHE_EPOCH={cache_epoch},GOOGLE_WORKSPACE_SHARED_DRIVE_ID=0AEhajVC2_rtpUk9PVA",
                 "--quiet",
             ],
             check=True,
