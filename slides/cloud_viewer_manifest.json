@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-27T05:31:21Z",
+  "updatedAt": "2026-11-27T17:04:19Z",
   "accountEmail": "248990048888-compute@developer.gserviceaccount.com",
   "oauthClientId": "",
   "slides": {
@@ -436,12 +436,12 @@
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/preview",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/export?format=pdf",
       "webViewLink": "https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/edit",
-      "syncedAt": "2026-11-27T05:31:21Z",
+      "syncedAt": "2026-11-27T17:04:19Z",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/1eVttI-XXL6_pGx_O0oKY5IxWDobQ_MphXNYkAQObMsA/export?format=docx",
       "wordDocxPath": "docs/word/ws1-reference-architecture-taxonomy-and-5hop-baseline.docx",
       "wordDocxSizeBytes": 7326049,
       "bytes": 50489,
-      "mdSha256": "e39bccf00eb679b362061c099019fe7d0143d58df166bd1b7ceaa98e1b9c5e4c"
+      "mdSha256": "1774b7c6c22b660bfda799aeef1c813df2b6040e472a639e53899d3cb4b171f4"
     },
     "WS2": {
       "key": "WS2",
@@ -454,13 +454,13 @@
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/preview?resourcekey=0-lLM1d36y60xMkgO678CtSA",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/export?format=pdf&resourcekey=0-lLM1d36y60xMkgO678CtSA",
       "webViewLink": "https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/edit?resourcekey=0-lLM1d36y60xMkgO678CtSA",
-      "syncedAt": "2026-11-27T05:31:21Z",
+      "syncedAt": "2026-11-27T17:04:19Z",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/15YASIZEeZ4i9X0KnooxjDcPIDoGnfuyWf-50UR51SM0/export?format=docx&resourcekey=0-lLM1d36y60xMkgO678CtSA",
       "wordDocxPath": "docs/word/ws2-pattern-a-pooled-architecture.docx",
-      "wordDocxSizeBytes": 5636675,
+      "wordDocxSizeBytes": 5636678,
       "resourceKey": "0-lLM1d36y60xMkgO678CtSA",
       "bytes": 35465,
-      "mdSha256": "02dbf90b8ac70d849ce96a3d30791a6fd7d78430a539281d6625d2a2a21c1bb0"
+      "mdSha256": "c171bd05de748867d6c2114fe1332a3ae1f933a20956cec947b9d4574595cdd2"
     },
     "WS3": {
       "key": "WS3",
@@ -473,13 +473,13 @@
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0/preview?resourcekey=0-sbdt9Z1LSBbEWQRk8JHYOA",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0/export?format=pdf&resourcekey=0-sbdt9Z1LSBbEWQRk8JHYOA",
       "webViewLink": "https://docs.google.com/document/d/1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0/edit?resourcekey=0-sbdt9Z1LSBbEWQRk8JHYOA",
-      "syncedAt": "2026-11-27T05:31:21Z",
+      "syncedAt": "2026-11-27T17:04:19Z",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/1l34-lgyjuF9KtqWmshOUzdxXSEoLBkovwmPtdpPSPM0/export?format=docx&resourcekey=0-sbdt9Z1LSBbEWQRk8JHYOA",
       "wordDocxPath": "docs/word/ws3-pattern-b-sovereign-silos.docx",
       "wordDocxSizeBytes": 5627397,
       "resourceKey": "0-sbdt9Z1LSBbEWQRk8JHYOA",
       "bytes": 28024,
-      "mdSha256": "30714c006e2513b9dea8e0aeecf97c2af8d99638dcdc465c717b85f8c276f5f0"
+      "mdSha256": "df602dba22a8785f49cc395c6bce28c696c991501e539436d2a89af76f311617"
     },
     "WS4": {
       "key": "WS4",
@@ -492,13 +492,13 @@
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/preview?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/export?format=pdf&resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
       "webViewLink": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/edit?resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
-      "syncedAt": "2026-11-27T05:31:21Z",
+      "syncedAt": "2026-11-27T17:04:19Z",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/1T-2w2EYTgIJx195EmXvwt5Qg0UiK90ZsjoXcNbrMl0I/export?format=docx&resourcekey=0-I2qSR0LlhnB9ul1V-gZwPw",
       "wordDocxPath": "docs/word/ws4-pattern-c-hybrid-dynamic-tiering.docx",
       "wordDocxSizeBytes": 5762383,
       "resourceKey": "0-I2qSR0LlhnB9ul1V-gZwPw",
       "bytes": 28055,
-      "mdSha256": "51763ddc7d8be231ca70f3f40dcd41d1271d5937994cbb0a2385515abcd97071"
+      "mdSha256": "b03fc2eae9b4ba2d829fc3080030903d736ea7a4a2ce2256338bee347b99a371"
     },
     "WS5": {
       "key": "WS5",
@@ -511,13 +511,13 @@
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/preview?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/export?format=pdf&resourcekey=0-XWkODR5elYC9-fuGO6aBaQ",
       "webViewLink": "https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/edit?resourcekey=0-XWkODR5elYC9-fuGO6aBaQ",
-      "syncedAt": "2026-11-27T05:31:21Z",
+      "syncedAt": "2026-11-27T17:04:19Z",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/1ate8K63qHrYP6OUQ7qO0H6Quq8S5g3TnLbDhbaAZ_SU/export?format=docx&resourcekey=0-XWkODR5elYC9-fuGO6aBaQ",
       "wordDocxPath": "docs/word/ws5-decision-guide-and-agentic-triad.docx",
       "wordDocxSizeBytes": 6621270,
       "resourceKey": "0-XWkODR5elYC9-fuGO6aBaQ",
       "bytes": 28626,
-      "mdSha256": "9ba092eb197ee89aa49349dadd727435e2ed751b3b608c53099ece2145926a21"
+      "mdSha256": "56f85082762796c2f831aee44004ef4ec6e57e78b79a9846e7c2d2dffdc41860"
     },
     "ALL": {
       "key": "ALL",
@@ -530,13 +530,13 @@
       "googleDocsPreviewUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/preview?resourcekey=0-hSujxBUvoiHkoIFajcWeQg",
       "googleDocsPdfUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/export?format=pdf&resourcekey=0-hSujxBUvoiHkoIFajcWeQg",
       "webViewLink": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/edit?resourcekey=0-hSujxBUvoiHkoIFajcWeQg",
-      "syncedAt": "2026-11-27T05:31:21Z",
+      "syncedAt": "2026-11-27T17:04:19Z",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/150urLMKde_4W3_UbLItqbq_SB6Rf8eV8pjj7Tv8JiZM/export?format=docx&resourcekey=0-hSujxBUvoiHkoIFajcWeQg",
       "wordDocxPath": "docs/word/all-end-to-end-workstream-and-diagram-guide.docx",
       "wordDocxSizeBytes": 11627004,
       "resourceKey": "0-hSujxBUvoiHkoIFajcWeQg",
       "bytes": 71490,
-      "mdSha256": "4bddee935efd0aa87e2a6de0830b86026506deaca3e493268499c054498c51fe"
+      "mdSha256": "2dc4a6a9ea2a2843dc1e45c47db645558b2bd5f459be1bd12e8302e0e83ac453"
     },
     "ATLAS": {
       "key": "ATLAS",
@@ -549,13 +549,13 @@
       "googleDocsPdfUrl": "https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/export?format=pdf&resourcekey=0-klzhSI2SvWYPCvpPwwMSUw",
       "googleDocsDocxUrl": "https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/export?format=docx&resourcekey=0-klzhSI2SvWYPCvpPwwMSUw",
       "webViewLink": "https://docs.google.com/document/d/1FwxBGLefb0NIyG8i6QytRr8ugXyJf-sdY5lTLSA6EQY/edit?resourcekey=0-klzhSI2SvWYPCvpPwwMSUw",
-      "syncedAt": "2026-11-27T05:31:21Z",
+      "syncedAt": "2026-11-27T17:04:19Z",
       "resourceKey": "0-klzhSI2SvWYPCvpPwwMSUw",
       "sha256": "d21907757689fedcee82772a1db09675841f81db5e52b68977298260037b33b1",
       "sizeBytes": 19899,
       "wordDocxSizeBytes": 9946288,
       "bytes": 19899,
-      "mdSha256": "5a169e08e85fa2f3b7cfb25ccddbacee124febd3521533d115d1f8d5df974be8"
+      "mdSha256": "d21907757689fedcee82772a1db09675841f81db5e52b68977298260037b33b1"
     }
   },
   "verifiedProofs": {

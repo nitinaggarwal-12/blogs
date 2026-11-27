@@ -48,13 +48,19 @@ class ExhaustiveCombinatorialMatrixTests(unittest.TestCase):
     def setUp(self) -> None:
         self._tmpdir = tempfile.TemporaryDirectory()
         self._prev_dir = os.environ.get("GEAP_CREATE_BLOG1_DIR")
+        self._prev_fast = os.environ.get("GEAP_FAST_TEST_MODE")
         os.environ["GEAP_CREATE_BLOG1_DIR"] = self._tmpdir.name
+        os.environ["GEAP_FAST_TEST_MODE"] = "1"
 
     def tearDown(self) -> None:
         if self._prev_dir is None:
             os.environ.pop("GEAP_CREATE_BLOG1_DIR", None)
         else:
             os.environ["GEAP_CREATE_BLOG1_DIR"] = self._prev_dir
+        if self._prev_fast is None:
+            os.environ.pop("GEAP_FAST_TEST_MODE", None)
+        else:
+            os.environ["GEAP_FAST_TEST_MODE"] = self._prev_fast
         self._tmpdir.cleanup()
 
     def _compile_combination(

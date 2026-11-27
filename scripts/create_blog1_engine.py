@@ -2914,6 +2914,76 @@ def _docx_inline_image(rid: str, docpr_id: int, name: str, iw: int, ih: int) -> 
     )
 
 
+def _parse_svg_viewbox_dims(svg_text: str) -> Tuple[int, int]:
+    m_vb = re.search(r'viewBox="\s*[-\d.]+\s+[-\d.]+\s+([\d.]+)\s+([\d.]+)\s*"', svg_text)
+    if m_vb:
+        w = max(400, min(2400, int(round(float(m_vb.group(1))))))
+        h = max(300, min(2400, int(round(float(m_vb.group(2))))))
+        return w, h
+    return 1600, 900
+
+
+def _rasterize_diagram_svgs_to_pngs(
+    blog_dir: Path, slug: str, diags_map: Dict[str, Dict[str, Any]]
+) -> Dict[str, Tuple[bytes, int, int]]:
+    """Renders enabled diagram SVGs into 2x Retina PNGs in blog_dir/diagrams/ when headless Chrome is available."""
+    out: Dict[str, Tuple[bytes, int, int]] = {}
+    if os.environ.get("GEAP_FAST_TEST_MODE") == "1":
+        return out
+    import shutil as _shutil
+    chrome_bin = _shutil.which("google-chrome") or _shutil.which("chromium")
+    if not chrome_bin:
+        return out
+    diag_dir = blog_dir / "diagrams"
+    diag_dir.mkdir(parents=True, exist_ok=True)
+    from concurrent.futures import ThreadPoolExecutor as _TPE
+
+    def _render_one(item: Tuple[str, Dict[str, Any]]) -> Optional[Tuple[str, bytes, int, int]]:
+        dk, dv = item
+        svg_p = diag_dir / f"{slug}-{dk}.svg"
+        if not svg_p.is_file() and isinstance(dv, dict) and dv.get("svg"):
+            svg_p.write_text(dv["svg"], encoding="utf-8")
+        if not svg_p.is_file():
+            return None
+        svg_txt = svg_p.read_text(encoding="utf-8")
+        vw, vh = _parse_svg_viewbox_dims(svg_txt)
+        png_p = diag_dir / f"{slug}-{dk}.png"
+        try:
+            subprocess.run(
+                [
+                    chrome_bin,
+                    "--headless=new",
+                    "--no-sandbox",
+                    "--disable-gpu",
+                    "--hide-scrollbars",
+                    "--force-device-scale-factor=2",
+                    f"--window-size={vw},{vh}",
+                    f"--screenshot={png_p}",
+                    f"file://{svg_p.resolve()}",
+                ],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                timeout=30,
+            )
+            if png_p.is_file():
+                raw_b = png_p.read_bytes()
+                _, pw, ph, _ = parse_image_header(raw_b)
+                return (dk, raw_b, pw, ph)
+        except Exception:
+            return None
+        return None
+
+    items = list((diags_map or {}).items())
+    if items:
+        with _TPE(max_workers=min(6, len(items))) as ex:
+            for res in ex.map(_render_one, items):
+                if res:
+                    dk, rb, pw, ph = res
+                    out[dk] = (rb, pw, ph)
+    return out
+
+
 def compile_docx_bytes(
     bp: Dict[str, Any],
     slug: str,
@@ -4633,7 +4703,7 @@ def _rebuild_bundle_zip(blog_dir: Path, slug: str) -> Path:
             if rel.startswith("revisions/"):
                 continue
             if enabled_kinds is not None and rel.startswith("diagrams/"):
-                m_dk = re.match(rf"^diagrams/{re.escape(slug)}-([a-z]+)\.(?:drawio|svg)$", rel)
+                m_dk = re.match(rf"^diagrams/{re.escape(slug)}-([a-z]+)\.(?:drawio|svg|png)$", rel)
                 if m_dk and m_dk.group(1) not in enabled_kinds:
                     continue
             if slide_cap is not None:
@@ -4669,6 +4739,7 @@ def _update_index_entry(manifest: Dict[str, Any]) -> bytes:
         "qualityTotal": manifest.get("quality", {}).get("deterministic", {}).get("total", 13),
         "diagramCount": len(manifest.get("diagrams") or {}),
         "slideCount": len((manifest.get("blueprint") or {}).get("slides") or []),
+        "overallStatus": (manifest.get("quality") or {}).get("overallStatus", "APPROVED"),
         "judgeVerdict": (manifest.get("quality", {}).get("orthogonalJudge") or {}).get("verdict", "UNRUN"),
         "judgeScore": (manifest.get("quality", {}).get("orthogonalJudge") or {}).get("score"),
         "workspaceSync": manifest.get("workspaceSync") or {},
@@ -4815,6 +4886,7 @@ def compile_and_save_blog(
         for kind, dv in diags.items():
             (blog_dir / "diagrams" / f"{slug}-{kind}.drawio").write_text(dv["xml"], encoding="utf-8")
             (blog_dir / "diagrams" / f"{slug}-{kind}.svg").write_text(dv["svg"], encoding="utf-8")
+        raster_pngs = _rasterize_diagram_svgs_to_pngs(blog_dir, slug, diags)
         extra_svgs = {k: dv["svg"] for k, dv in diags.items() if k not in ("architecture", "sequence")}
         extra_urls = {k: dv["viewerUrl"] for k, dv in diags.items() if k not in ("architecture", "sequence")}
         native_slides: Dict[int, Tuple[str, str]] = {}
@@ -4853,6 +4925,7 @@ def compile_and_save_blog(
         docx_b = compile_docx_bytes(
             bp_cur, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""),
             proofs, blog_dir, extra_urls=extra_urls, grounding=g_info,
+            diagram_pngs=raster_pngs or None,
             slide_plan=eff_plan, outline=eff_outline if eff_plan else None, diags_map=diags,
         )
         (blog_dir / "docs" / f"{slug}-whitepaper.docx").write_bytes(docx_b)
@@ -6260,9 +6333,10 @@ def _recompile_full_blog_state(
     for dk, dv in diags_final.items():
         (blog_dir / "diagrams" / f"{slug}-{dk}.drawio").write_text(dv["xml"], encoding="utf-8")
         (blog_dir / "diagrams" / f"{slug}-{dk}.svg").write_text(dv["svg"], encoding="utf-8")
+    raster_pngs_re = _rasterize_diagram_svgs_to_pngs(blog_dir, slug, diags_final)
     # Prune disabled local diagram files so local storage and bundle.zip stay strictly 1:1 with enabledDiagramKinds
     for old_f in list((blog_dir / "diagrams").glob(f"{slug}-*.*")):
-        m_old_dk = re.match(rf"^{re.escape(slug)}-([a-z]+)\.(?:drawio|svg)$", old_f.name)
+        m_old_dk = re.match(rf"^{re.escape(slug)}-([a-z]+)\.(?:drawio|svg|png)$", old_f.name)
         if m_old_dk and m_old_dk.group(1) not in diags_final:
             old_f.unlink(missing_ok=True)
     _normalize_claim_ledger_ids(bp)
@@ -6313,6 +6387,7 @@ def _recompile_full_blog_state(
     docx_bytes = compile_docx_bytes(
         bp, slug, arch_d.get("viewerUrl", ""), seq_d.get("viewerUrl", ""),
         proofs, blog_dir, extra_urls=extra_urls or None, grounding=grounding_info,
+        diagram_pngs=raster_pngs_re or None,
         slide_plan=plan, outline=outline, diags_map=diags_final,
     )
     (blog_dir / "docs" / f"{slug}-whitepaper.docx").write_bytes(docx_bytes)
@@ -7119,6 +7194,76 @@ def _gdrive_cli_upload_or_update(
         return json.loads(res.stdout.strip())
 
 
+def _maybe_backfill_docx_diagrams_from_slides(
+    token: str,
+    slides_id: str,
+    slug: str,
+    manifest: Dict[str, Any],
+    docx_p: Path,
+) -> None:
+    """Serverless fallback (e.g. python:3.11-slim Cloud Run without Chrome):
+    if any enabled diagram PNG is missing on disk, fetches Google Slides LARGE slide thumbnails,
+    caches diagrams/{slug}-{kind}.png, and regenerates docs/{slug}-whitepaper.docx before Docs upload."""
+    if not token or not slides_id:
+        return
+    plan = manifest.get("slidePlan") or {}
+    enabled_diags = plan.get("enabledDiagrams") or []
+    if not enabled_diags:
+        return
+    blog_dir = get_storage_root() / slug
+    diag_dir = blog_dir / "diagrams"
+    diag_dir.mkdir(parents=True, exist_ok=True)
+    missing = [
+        ed for ed in enabled_diags
+        if isinstance(ed, dict) and ed.get("kind") and not (diag_dir / f"{slug}-{ed['kind']}.png").is_file()
+    ]
+    if not missing:
+        return
+    try:
+        pres_url = f"https://slides.googleapis.com/v1/presentations/{urllib.parse.quote(slides_id, safe='')}?fields=slides(objectId)"
+        req = urllib.request.Request(pres_url, headers={"Authorization": f"Bearer {token}"})
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            pres_obj = json.loads(resp.read().decode("utf-8"))
+        slides_arr = pres_obj.get("slides") or []
+        fetched_any = False
+        for ed in missing:
+            dk = str(ed["kind"])
+            s_idx = int(ed.get("slideNumber") or 0) - 1
+            if 0 <= s_idx < len(slides_arr):
+                page_id = str(slides_arr[s_idx].get("objectId") or "")
+                if not page_id:
+                    continue
+                t_url = (
+                    f"https://slides.googleapis.com/v1/presentations/{urllib.parse.quote(slides_id, safe='')}"
+                    f"/pages/{urllib.parse.quote(page_id, safe='')}/thumbnail?thumbnailProperties.thumbnailSize=LARGE"
+                )
+                t_req = urllib.request.Request(t_url, headers={"Authorization": f"Bearer {token}"})
+                with urllib.request.urlopen(t_req, timeout=20) as t_resp:
+                    t_obj = json.loads(t_resp.read().decode("utf-8"))
+                content_url = str(t_obj.get("contentUrl") or "")
+                if content_url:
+                    with urllib.request.urlopen(content_url, timeout=20) as img_resp:
+                        img_bytes = img_resp.read()
+                    if img_bytes.startswith(b"\x89PNG"):
+                        (diag_dir / f"{slug}-{dk}.png").write_bytes(img_bytes)
+                        fetched_any = True
+        if fetched_any:
+            bp = manifest.get("blueprint") or {}
+            d_meta = manifest.get("diagrams") or {}
+            arch_url = (d_meta.get("architecture") or {}).get("viewerUrl", "")
+            seq_url = (d_meta.get("sequence") or {}).get("viewerUrl", "")
+            extra_urls = {k: (v or {}).get("viewerUrl", "") for k, v in d_meta.items() if k not in ("architecture", "sequence")}
+            grounding_info = (manifest.get("quality") or {}).get("grounding") or {}
+            new_docx = compile_docx_bytes(
+                bp, slug, arch_url, seq_url, manifest.get("proofs") or [], blog_dir,
+                extra_urls=extra_urls or None, grounding=grounding_info,
+                slide_plan=plan, outline=manifest.get("outline"), diags_map=d_meta,
+            )
+            docx_p.write_bytes(new_docx)
+    except Exception:
+        pass
+
+
 def sync_to_google_workspace(
     slug: str,
     bridge_mod: Any = None,
@@ -7256,6 +7401,9 @@ def sync_to_google_workspace(
                 pptx_p.read_bytes(),
                 existing_id=existing_slides_id,
                 **extra_kw,
+            )
+            _maybe_backfill_docx_diagrams_from_slides(
+                token, str(slides_res.get("id") or ""), clean, manifest, docx_p
             )
             docs_res = _drive_multipart_upload(
                 token,

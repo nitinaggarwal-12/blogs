@@ -1165,6 +1165,7 @@ def refresh_cloud_viewer_manifest() -> None:
                 "title": spec["manifest_title"],
                 "mdPath": spec["md_rel"],
                 "sha256": hashlib.sha256(md_b).hexdigest(),
+                "mdSha256": hashlib.sha256(md_b).hexdigest(),
                 "sizeBytes": len(md_b),
                 "bytes": len(md_b),
                 "googleDocsId": spec["doc_id"],

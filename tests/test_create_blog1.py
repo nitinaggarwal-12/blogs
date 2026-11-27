@@ -241,10 +241,12 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
             "K_SERVICE": os.environ.get("K_SERVICE"),
             "GEMINI_API_KEY": os.environ.get("GEMINI_API_KEY"),
             "CREATE_BLOG1_DISABLE_GDRIVE_CLI": os.environ.get("CREATE_BLOG1_DISABLE_GDRIVE_CLI"),
+            "GEAP_FAST_TEST_MODE": os.environ.get("GEAP_FAST_TEST_MODE"),
         }
         os.environ["GEAP_CREATE_BLOG1_DIR"] = cls._tmpdir.name
         os.environ["GEAP_DISABLE_GCS_SYNC"] = "1"
         os.environ["CREATE_BLOG1_DISABLE_GDRIVE_CLI"] = "1"
+        os.environ["GEAP_FAST_TEST_MODE"] = "1"
 
         cls.httpd = ThreadingHTTPServer(("127.0.0.1", 0), srv.PortalRequestHandler)
         cls.port = cls.httpd.server_address[1]
@@ -2233,6 +2235,46 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         self.assertIn("gemini-2.5-flash", cleaned)
         self.assertNotIn("td.googleapis.com", cleaned)
         self.assertIn("agents.global.org-<ORG_ID>.system.id.goog", cleaned)
+
+    def test_24_docx_embeds_inline_retina_diagram_pngs(self) -> None:
+        import shutil as _shutil
+        if not (_shutil.which("google-chrome") or _shutil.which("chromium")):
+            self.skipTest("Headless Chrome not installed in this environment")
+        cat = cb1.get_category("executive_brief")
+        outline = cb1.normalize_blog_outline(cat["recommendedOutline"], category_id="executive_brief")
+        plan = cb1.compute_dynamic_slide_plan(outline, include_starter_code=False)
+        bp = cb1.normalize_blueprint(
+            _sample_blueprint(),
+            "Executive governance test",
+            "Multi-Tenant Agentic AI",
+            "Executives",
+            slide_plan=plan,
+            category_id="executive_brief",
+            outline=outline,
+        )
+        slug = "docx-retina-embed-test"
+        os.environ.pop("GEAP_FAST_TEST_MODE", None)
+        try:
+            cb1.compile_and_save_blog(
+                blueprint=bp,
+                slug=slug,
+                model_used="gemini-4-neon",
+                auth_mode="vertex_ai_iam",
+                actor_email="test@example.com",
+                enable_tts=False,
+                enable_judge=False,
+                category_id="executive_brief",
+                outline=outline,
+                slide_plan=plan,
+                include_starter_code=False,
+            )
+        finally:
+            os.environ["GEAP_FAST_TEST_MODE"] = "1"
+        docx_p = cb1.get_storage_root() / slug / "docs" / f"{slug}-whitepaper.docx"
+        with zipfile.ZipFile(docx_p) as zf:
+            media = [n for n in zf.namelist() if n.startswith("word/media/diagram_")]
+            self.assertEqual(len(media), 3, f"Expected 3 embedded diagram PNGs in DOCX, got {media}")
+
 
 
 if __name__ == "__main__":

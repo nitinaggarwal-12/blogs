@@ -16,8 +16,8 @@
     "-B",
     "server.py"
   ],
-  "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00174-rg9",
-  "verifiedAt": "2026-11-27T06:51:03Z",
+  "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
+  "verifiedAt": "2026-11-27T06:56:55Z",
   "approvedSimplifiedHeaderDiagramsCount": 12,
   "certifiedDiagramsCount": 12,
   "workstreamsCount": 5,
@@ -28,10 +28,10 @@
   "currentRevisionVerification": {
     "revision": "ge-blogs-00174-rg9",
     "image": "us-west1-docker.pkg.dev/ramp-portal-dev/cloud-run-source-deploy/ge-blogs:v20261127-064821-light-clean",
-    "verifiedAt": "2026-11-27T06:51:03Z",
+    "verifiedAt": "2026-11-27T06:56:55Z",
     "controlPlaneReady": true,
     "startupProbeSucceeded": true,
-    "startupProbeLog": "Default STARTUP TCP/HTTP probe succeeded for ge-blogs-00174-rg9",
+    "startupProbeLog": "Default STARTUP TCP probe succeeded after 1 attempt for container \"ge-blogs-1\" on port 8080.",
     "beyondCorpEdgeUrl": "https://ge-blogs-248990048888.cr.gclb.goog",
     "beyondCorpEdgeStatus": 302,
     "preDeployGate": "13/13 Deep Forensic Audit + Full Unit Test Suite executed before OCI layer packaging",
