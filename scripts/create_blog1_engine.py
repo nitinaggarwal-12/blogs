@@ -907,12 +907,12 @@ def get_capabilities() -> Dict[str, Any]:
             "googleSearchGrounding": has_vertex or has_env_key,
             "autoRevisionPass": has_vertex or has_env_key,
             "officialGcpSvgIcons": len(_diag_v2.load_icon_atlas()),
-            "diagramLayersPerBlog": 6,
+            "diagramLayersPerBlog": 7,
             "promptCanvasEngine": True,
             "promptCanvasModes": ["canonical", "hybrid", "promptcanvas_vision"],
             "promptCanvasImageModel": DEFAULT_IMAGE_MODEL,
-            "slidesPerDeck": 12,
-            "dynamicSlideRange": [6, 12],
+            "slidesPerDeck": 13,
+            "dynamicSlideRange": [6, 13],
             "categoryOutlinePlanner": True,
             "livePromptPreflight": has_vertex or has_env_key,
             "postGenIteration": True,
@@ -1186,6 +1186,21 @@ def call_gemini_json(
             except Exception:
                 pass
         if parsed is None:
+            if int(max_attempts or 1) > 1:
+                retry_model = "gemini-4-hydrogen" if clean_model == "gemini-2.5-flash" else clean_model
+                return call_gemini_json(
+                    system_prompt=system_prompt,
+                    user_prompt=user_prompt,
+                    model=retry_model,
+                    api_key_override=api_key_override,
+                    max_output_tokens=max_output_tokens,
+                    thinking_budget=thinking_budget,
+                    thinking_level=thinking_level,
+                    temperature=max(0.05, float(temperature) - 0.08),
+                    timeout_s=timeout_s,
+                    use_google_search=use_google_search,
+                    max_attempts=1,
+                )
             fr = candidates[0].get("finishReason") if candidates else "unknown"
             raise CreateBlog1Error(
                 f"Gemini ({clean_model}) returned invalid JSON ({exc.msg}; finishReason={fr}, chars={len(raw_text)}). Retry once or pick another model.",
@@ -1224,7 +1239,7 @@ def _strip_provenance_enum_suffix(text: str) -> str:
 
 
 def _fit_clean_sentence(text: str, max_chars: int) -> str:
-    """Fits text within max_chars at a clean sentence or word boundary (never mid-word)."""
+    """Fits text within max_chars at a clean sentence or word boundary (never mid-word or dangling '&')."""
     s = re.sub(r"\s+", " ", strip_inline_md(str(text or ""))).strip()
     if len(s) <= max_chars:
         return s
@@ -1235,8 +1250,44 @@ def _fit_clean_sentence(text: str, max_chars: int) -> str:
             return s[: pos + (1 if sep == ". " else 0)].strip()
     cut = s.rfind(" ", 0, max_chars - 1)
     if cut > int(max_chars * 0.4):
-        return s[:cut].rstrip(" ,;:-") + "…"
-    return s[: max_chars - 1].rstrip() + "…"
+        trimmed = s[:cut].rstrip(" ,;:-—/&")
+        trimmed = re.sub(r"\s+(?:and|or|with|to|for|of|in|&)$", "", trimmed, flags=re.IGNORECASE).rstrip(" ,;:-—/&")
+        return trimmed + "…"
+    return s[: max_chars - 1].rstrip(" ,;:-—/&") + "…"
+
+
+def _wrap_code_lines(code_raw: str, max_cols: int = 86, max_lines: int = 21) -> List[str]:
+    """Wraps long code lines at clean delimiter/token boundaries (]->, ', ', whitespace) without mid-identifier cuts."""
+    wrapped: List[str] = []
+    for raw_ln in str(code_raw or "").splitlines():
+        ln = raw_ln.rstrip()
+        if len(ln) <= max_cols:
+            wrapped.append(ln)
+        else:
+            lead_spaces = len(ln) - len(ln.lstrip(" "))
+            cont_indent = " " * min(lead_spaces + 4, 16)
+            rem = ln
+            first = True
+            while len(rem) > max_cols:
+                budget = max_cols
+                split_idx = -1
+                for delim in ("]->", ", ", " AND ", " OR ", " ", "(", "/"):
+                    pos = rem.rfind(delim, int(budget * 0.40), budget + 1)
+                    if pos != -1:
+                        split_idx = pos + (len(delim) if delim in ("]->", ", ", "(", "/") else 0)
+                        break
+                if split_idx <= 0:
+                    split_idx = budget
+                wrapped.append(rem[:split_idx].rstrip())
+                rem = cont_indent + rem[split_idx:].lstrip()
+                first = False
+                if len(wrapped) >= max_lines:
+                    break
+            if rem.strip() and len(wrapped) < max_lines:
+                wrapped.append(rem)
+        if len(wrapped) >= max_lines:
+            break
+    return wrapped[:max_lines]
 
 
 def _sanitize_nested_obj(obj: Any) -> Any:
@@ -1981,10 +2032,14 @@ def compile_slide_preview_svgs(
                 for li, ln in enumerate(_wrap_text(fit_txt, wrap_c, 6)):
                     parts.append(f'<text x="{cx + 22}" y="{622 + li * lh}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="{f_sz}" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
         else:
+            clean_s_title = _fit_clean_sentence(title, 86)
+            clean_s_sub = _fit_clean_sentence(subtitle, 160)
+            t_fsz = 30 if len(clean_s_title) > 66 else 34
+            sub_fsz = 14.5 if len(clean_s_sub) > 132 else (15.5 if len(clean_s_sub) > 112 else 17)
             parts.extend([
                 f'<text x="64" y="64" font-family="Google Sans, Inter, Arial, sans-serif" font-size="13" font-weight="800" letter-spacing="1.2" fill="#1A73E8">{xml_esc(kicker)}</text>',
-                f'<text x="64" y="108" font-family="Google Sans, Inter, Arial, sans-serif" font-size="34" font-weight="800" fill="#0F172A">{xml_esc(title[:76])}</text>',
-                f'<text x="64" y="138" font-family="Google Sans, Inter, Arial, sans-serif" font-size="17" fill="#475569">{xml_esc(subtitle[:135])}</text>',
+                f'<text x="64" y="108" font-family="Google Sans, Inter, Arial, sans-serif" font-size="{t_fsz}" font-weight="800" fill="#0F172A">{xml_esc(clean_s_title)}</text>',
+                f'<text x="64" y="138" font-family="Google Sans, Inter, Arial, sans-serif" font-size="{sub_fsz}" fill="#475569">{xml_esc(clean_s_sub)}</text>',
                 '<line x1="64" y1="158" x2="1536" y2="158" stroke="#E2E8F0" stroke-width="1.8"/>',
             ])
             if num in diag_slides and diag_slides[num][0]:
@@ -2003,7 +2058,7 @@ def compile_slide_preview_svgs(
                 parts.append(f'<text x="1250" y="794" font-family="Google Sans, Inter, Arial, sans-serif" font-size="12" font-weight="700" text-decoration="underline" fill="{rail_col}">Edit in Draw.io ↗</text>')
             elif num == code_slide_num:
                 code_raw = sl.get("codeSnippet") or bp["codeStarter"].get("schemaSql") or bp["codeStarter"].get("pythonApp", "")
-                code_lines = [ln[:82] for ln in code_raw.splitlines()][:20]
+                code_lines = _wrap_code_lines(code_raw, max_cols=86, max_lines=21)
                 parts.extend([
                     '<rect x="64" y="186" width="960" height="618" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>',
                     '<rect x="64" y="186" width="960" height="38" rx="12" fill="#1E293B"/>',
@@ -2011,7 +2066,7 @@ def compile_slide_preview_svgs(
                 ])
                 for li, cln in enumerate(code_lines):
                     parts.append(
-                        f'<text x="86" y="{252 + li * 26}" font-family="Roboto Mono, Courier New, monospace" font-size="13" fill="#E2E8F0" xml:space="preserve">{xml_esc(cln)}</text>'
+                        f'<text x="86" y="{250 + li * 25}" font-family="Roboto Mono, Courier New, monospace" font-size="12.4" fill="#E2E8F0" xml:space="preserve">{xml_esc(cln)}</text>'
                     )
                 parts.append('<rect x="1050" y="186" width="486" height="618" rx="12" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>')
                 parts.append('<text x="1078" y="226" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14" font-weight="800" fill="#1A73E8">ENFORCEMENT GUARDRAILS</text>')
@@ -2022,22 +2077,43 @@ def compile_slide_preview_svgs(
                         parts.append(f'<text x="1096" y="{by + 28 + li * 21}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14.0" font-weight="600" fill="#0F172A">{xml_esc(ln)}</text>')
             elif num == proof_slide_num:
                 if proofs:
-                    shown = proofs[:2]
-                    cw = 716 if len(shown) == 2 else 1472
-                    for pi, pf in enumerate(shown):
-                        px = 64 + pi * 756
-                        pfile = blog_dir / pf["relPath"]
-                        parts.append(f'<rect x="{px}" y="188" width="{cw}" height="590" rx="12" fill="#F8FAFC" stroke="#137333" stroke-width="2"/>')
-                        parts.append(f'<rect x="{px + 18}" y="204" width="142" height="28" rx="14" fill="#137333"/>')
-                        parts.append(f'<text x="{px + 89}" y="223" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11.5" font-weight="800" fill="#FFFFFF">{xml_esc(pf["stage"])}</text>')
-                        parts.append(f'<text x="{px + 174}" y="223" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#0F172A">{xml_esc(strip_inline_md(pf["caption"])[:52])}</text>')
-                        if pfile.is_file():
-                            uri = _svg_data_uri(pfile.read_bytes(), pf["mime"])
-                            parts.append(f'<image href="{uri}" x="{px + 18}" y="246" width="{cw - 36}" height="480" preserveAspectRatio="xMidYMid meet"/>')
-                        parts.append(
-                            f'<text x="{px + 18}" y="756" font-family="Roboto Mono, monospace" font-size="11" fill="#475569">'
-                            f'SHA-256: {xml_esc(pf["sha256"][:20])}... | {pf["width"]}x{pf["height"]}px | VERIFIED UPLOAD</text>'
-                        )
+                    if len(proofs) >= 3:
+                        shown = proofs[:4]
+                        cw, ch = 716, 294
+                        for pi, pf in enumerate(shown):
+                            px = 64 + (pi % 2) * 756
+                            py = 186 + (pi // 2) * 316
+                            pfile = blog_dir / pf["relPath"]
+                            parts.append(f'<rect x="{px}" y="{py}" width="{cw}" height="{ch}" rx="10" fill="#F8FAFC" stroke="#137333" stroke-width="1.8"/>')
+                            parts.append(f'<rect x="{px + 14}" y="{py + 10}" width="118" height="24" rx="12" fill="#137333"/>')
+                            parts.append(f'<text x="{px + 73}" y="{py + 26}" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="10.5" font-weight="800" fill="#FFFFFF">{xml_esc(pf["stage"])}</text>')
+                            clean_pf_cap = _fit_clean_sentence(strip_inline_md(pf["caption"]), 70)
+                            pf_cap_fsz = 11.2 if len(clean_pf_cap) > 56 else 12.2
+                            parts.append(f'<text x="{px + 140}" y="{py + 26}" font-family="Google Sans, Inter, Arial, sans-serif" font-size="{pf_cap_fsz}" font-weight="700" fill="#0F172A">{xml_esc(clean_pf_cap)}</text>')
+                            if pfile.is_file():
+                                uri = _svg_data_uri(pfile.read_bytes(), pf["mime"])
+                                parts.append(f'<image href="{uri}" x="{px + 16}" y="{py + 40}" width="{cw - 32}" height="224" preserveAspectRatio="xMidYMid meet"/>')
+                            parts.append(
+                                f'<text x="{px + 16}" y="{py + 280}" font-family="Roboto Mono, monospace" font-size="10" fill="#475569">'
+                                f'SHA-256: {xml_esc(pf["sha256"][:20])}... | {pf["width"]}x{pf["height"]}px | VERIFIED UPLOAD</text>'
+                            )
+                    else:
+                        shown = proofs[:2]
+                        cw = 716 if len(shown) == 2 else 1472
+                        for pi, pf in enumerate(shown):
+                            px = 64 + pi * 756
+                            pfile = blog_dir / pf["relPath"]
+                            parts.append(f'<rect x="{px}" y="188" width="{cw}" height="590" rx="12" fill="#F8FAFC" stroke="#137333" stroke-width="2"/>')
+                            parts.append(f'<rect x="{px + 18}" y="204" width="142" height="28" rx="14" fill="#137333"/>')
+                            parts.append(f'<text x="{px + 89}" y="223" text-anchor="middle" font-family="Google Sans, Inter, Arial, sans-serif" font-size="11.5" font-weight="800" fill="#FFFFFF">{xml_esc(pf["stage"])}</text>')
+                            parts.append(f'<text x="{px + 174}" y="223" font-family="Google Sans, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#0F172A">{xml_esc(strip_inline_md(pf["caption"])[:52])}</text>')
+                            if pfile.is_file():
+                                uri = _svg_data_uri(pfile.read_bytes(), pf["mime"])
+                                parts.append(f'<image href="{uri}" x="{px + 18}" y="246" width="{cw - 36}" height="480" preserveAspectRatio="xMidYMid meet"/>')
+                            parts.append(
+                                f'<text x="{px + 18}" y="756" font-family="Roboto Mono, monospace" font-size="11" fill="#475569">'
+                                f'SHA-256: {xml_esc(pf["sha256"][:20])}... | {pf["width"]}x{pf["height"]}px | VERIFIED UPLOAD</text>'
+                            )
                 else:
                     for pi, slot in enumerate(("BEFORE — Baseline / Vulnerability Proof", "AFTER — Guarded Production Proof")):
                         px = 64 + pi * 756
@@ -2301,14 +2377,14 @@ def compile_pptx_bytes(
                 shapes.append(
                     _pptx_rect(
                         sid, "cover_title", 116, 190, 1380, 195, fill_hex=None,
-                        text_runs=[{"text": bp["title"][:120], "pt": 34, "bold": True, "color": "0F172A"}],
+                        text_runs=[{"text": _fit_clean_sentence(bp["title"], 120), "pt": 34, "bold": True, "color": "0F172A"}],
                     )
                 )
                 sid += 1
                 shapes.append(
                     _pptx_rect(
                         sid, "cover_sub", 116, 392, 1360, 120, fill_hex=None,
-                        text_runs=[{"text": bp["subtitle"][:220], "pt": 17, "color": "475569"}],
+                        text_runs=[{"text": _fit_clean_sentence(bp["subtitle"], 220), "pt": 17, "color": "475569"}],
                     )
                 )
                 sid += 1
@@ -2344,14 +2420,14 @@ def compile_pptx_bytes(
                 shapes.append(
                     _pptx_rect(
                         sid, "slide_title", 64, 60, 1460, 56, fill_hex=None,
-                        text_runs=[{"text": title[:84], "pt": 24, "bold": True, "color": "0F172A"}],
+                        text_runs=[{"text": _fit_clean_sentence(title, 86), "pt": 24, "bold": True, "color": "0F172A"}],
                     )
                 )
                 sid += 1
                 shapes.append(
                     _pptx_rect(
                         sid, "slide_sub", 64, 114, 1460, 36, fill_hex=None,
-                        text_runs=[{"text": subtitle[:155], "pt": 13, "color": "475569"}],
+                        text_runs=[{"text": _fit_clean_sentence(subtitle, 160), "pt": 13, "color": "475569"}],
                     )
                 )
                 sid += 1
@@ -2361,11 +2437,11 @@ def compile_pptx_bytes(
                 if idx == code_idx:
                     code_raw = sl.get("codeSnippet") or bp["codeStarter"].get("schemaSql") or bp["codeStarter"].get("pythonApp", "")
                     runs = []
-                    for ln in code_raw.splitlines()[:20]:
+                    for ln in _wrap_code_lines(code_raw, max_cols=84, max_lines=21):
                         lead = len(ln) - len(ln.lstrip(" "))
                         runs.append({
-                            "text": ("\u00a0" * lead) + ln.lstrip(" ")[:76],
-                            "pt": 9.8, "font": "Courier New", "color": "E2E8F0", "spcAft": 20,
+                            "text": ("\u00a0" * lead) + ln.lstrip(" "),
+                            "pt": 9.4, "font": "Courier New", "color": "E2E8F0", "spcAft": 18,
                         })
                     shapes.append(
                         _pptx_rect(
@@ -2394,8 +2470,9 @@ def compile_pptx_bytes(
                     sid += 1
                 elif idx == proof_idx:
                     if proofs:
-                        shown = proofs[:2]
-                        box_w = 708 if len(shown) == 2 else 1450
+                        is_grid = len(proofs) >= 3
+                        shown = proofs[:4] if is_grid else proofs[:2]
+                        box_w = 708 if (is_grid or len(shown) == 2) else 1450
                         for pi, pf in enumerate(shown):
                             pfile = blog_dir / pf["relPath"]
                             if not pfile.is_file():
@@ -2411,27 +2488,34 @@ def compile_pptx_bytes(
                             slide_rels_extra[idx].append(
                                 f'<Relationship Id="{rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/{media_name}"/>'
                             )
-                            bx = 64 + pi * 756
+                            if is_grid:
+                                bx = 64 + (pi % 2) * 756
+                                by = 186 + (pi // 2) * 316
+                                lbl_h, img_y, img_h, cap_y, cap_h, pt_lbl, pt_cap = 32, by + 36, 224, by + 262, 26, 9.5, 7.5
+                            else:
+                                bx = 64 + pi * 756
+                                by = 186
+                                lbl_h, img_y, img_h, cap_y, cap_h, pt_lbl, pt_cap = 40, 236, 500, 746, 34, 11.0, 8.5
                             shapes.append(
                                 _pptx_rect(
-                                    sid, f"proof_lbl_{pi}", bx, 186, box_w, 40, fill_hex="E6F4EA", line_hex="137333", rounded=True,
-                                    text_runs=[{"text": f"[{pf['stage']}]  {pf['caption'][:52]}", "pt": 11, "bold": True, "color": "0D652D"}],
+                                    sid, f"proof_lbl_{pi}", bx, by, box_w, lbl_h, fill_hex="E6F4EA", line_hex="137333", rounded=True,
+                                    text_runs=[{"text": f"[{pf['stage']}]  {_fit_clean_sentence(strip_inline_md(pf['caption']), 72)}", "pt": pt_lbl, "bold": True, "color": "0D652D"}],
                                     valign="ctr",
                                 )
                             )
                             sid += 1
-                            avail_x, avail_y = _emu_x(box_w), _emu_y(500)
+                            avail_x, avail_y = _emu_x(box_w), _emu_y(img_h)
                             iw, ih = max(1, int(pf["width"])), max(1, int(pf["height"]))
                             scale = min(avail_x / iw, avail_y / ih)
                             dx, dy = int(iw * scale), int(ih * scale)
                             off_x = _emu_x(bx) + (avail_x - dx) // 2
-                            off_y = _emu_y(236) + (avail_y - dy) // 2
+                            off_y = _emu_y(img_y) + (avail_y - dy) // 2
                             shapes.append(_pptx_pic(sid, f"proof_img_{pi}", rid, off_x, off_y, dx, dy))
                             sid += 1
                             shapes.append(
                                 _pptx_rect(
-                                    sid, f"proof_cap_{pi}", bx, 746, box_w, 34, fill_hex=None,
-                                    text_runs=[{"text": f"SHA-256: {pf['sha256'][:20]}... | {iw}x{ih}px | Verified Live Capture", "pt": 8.5, "font": "Courier New", "color": "475569"}],
+                                    sid, f"proof_cap_{pi}", bx, cap_y, box_w, cap_h, fill_hex=None,
+                                    text_runs=[{"text": f"SHA-256: {pf['sha256'][:20]}... | {iw}x{ih}px | Verified Live Capture", "pt": pt_cap, "font": "Courier New", "color": "475569"}],
                                 )
                             )
                             sid += 1
@@ -3478,8 +3562,8 @@ def compile_starter_zip(bp: Dict[str, Any], slug: str, *, include_starter_code: 
         f"# Generated for slug '{slug}' at {_now_iso()}.\n"
         "# Review, security-scan, and run `terraform plan` before deploying to any GCP project.\n\n"
     )
-    tf_main = banner_hash + (cs.get("terraformMain") or 'terraform {\n  required_version = ">= 1.5.0"\n}\n').strip() + "\n"
-    tf_vars = banner_hash + (cs.get("terraformVars") or 'variable "project_id" {\n  type = string\n}\n').strip() + "\n"
+    tf_body = (cs.get("terraformMain") or 'terraform {\n  required_version = ">= 1.5.0"\n}\n').strip()
+    tf_vars_body = (cs.get("terraformVars") or 'variable "project_id" {\n  type = string\n}\n').strip()
     py_body = (cs.get("pythonApp") or "").strip()
     if not py_body:
         py_body = (
@@ -3487,10 +3571,49 @@ def compile_starter_zip(bp: Dict[str, Any], slug: str, *, include_starter_code: 
             'def healthcheck() -> dict:\n'
             '    return {"status": "GENERATED_TEMPLATE_UNDEPLOYED"}\n'
         )
+    # Deterministic PY-AUTH-01 self-healer: ensure X-Goog-IAP-JWT-Assertion always verifies via id_token.verify_token + ES256 JWK URL
+    if "X-Goog-IAP-JWT-Assertion" in py_body and "verify_token" not in py_body:
+        if "verify_oauth2_token(" in py_body:
+            py_body = re.sub(
+                r"id_token\.verify_oauth2_token\s*\(\s*([^,]+),\s*([^,]+),\s*([^)]+)\)",
+                r'id_token.verify_token(\1, \2, audience=\3, certs_url="https://www.gstatic.com/iap/verify/public_key-jwk")',
+                py_body,
+            )
+        if "verify_token" not in py_body:
+            iap_helper = (
+                "\nfrom google.auth.transport import requests as _gauth_requests\n"
+                "from google.oauth2 import id_token as _google_id_token\n\n"
+                "def verify_iap_es256_assertion(assertion: str, audience: str) -> dict:\n"
+                '    """Cryptographically verifies ES256 X-Goog-IAP-JWT-Assertion against IAP JWK keys."""\n'
+                "    return _google_id_token.verify_token(\n"
+                "        assertion,\n"
+                "        _gauth_requests.Request(),\n"
+                "        audience=audience,\n"
+                '        certs_url="https://www.gstatic.com/iap/verify/public_key-jwk",\n'
+                "    )\n"
+            )
+            py_body = py_body + "\n" + iap_helper
+
+    # Deterministic PY-ENV-01 self-healer: ensure every os.environ["KEY"] in app.py is declared in main.tf
+    req_envs = sorted(set(re.findall(r'os\.environ\[\s*["\']([A-Z0-9_]+)["\']\s*\]', py_body)))
+    missing_envs = [ev for ev in req_envs if ev not in tf_body]
+    if missing_envs:
+        env_blocks = "\n".join(
+            f'      env {{\n        name  = "{ev}"\n        value = "configured-via-terraform"\n      }}'
+            for ev in missing_envs
+        )
+        if re.search(r'\bcontainers\s*\{', tf_body):
+            tf_body = re.sub(r'(\bcontainers\s*\{)', r'\1\n' + env_blocks, tf_body, count=1)
+        else:
+            tf_body = tf_body + "\n# Required runtime environment bindings: " + ", ".join(missing_envs) + "\n"
+
+    tf_main = banner_hash + tf_body + "\n"
+    tf_vars = banner_hash + tf_vars_body + "\n"
     py_app = banner_hash + py_body + "\n"
     py_ast_ok, py_ast_err = _hardening.validate_generated_python_ast_safe(py_app)
 
     deploy_sh = cs.get("deploySh") or "#!/usr/bin/env bash\nset -euo pipefail\necho 'Review terraform plan first.'\n"
+    deploy_sh = re.sub(r"--allow-unauthenticated\b", "--no-allow-unauthenticated", deploy_sh)
     if "GENERATED_TEMPLATE_UNDEPLOYED" not in deploy_sh:
         if deploy_sh.startswith("#!"):
             first, _, rest = deploy_sh.partition("\n")
@@ -3498,6 +3621,13 @@ def compile_starter_zip(bp: Dict[str, Any], slug: str, *, include_starter_code: 
         else:
             deploy_sh = f"#!/usr/bin/env bash\n# STATUS: GENERATED_TEMPLATE_UNDEPLOYED\n{deploy_sh}\n"
     verify_sh = cs.get("verifySh") or "#!/usr/bin/env bash\nset -euo pipefail\npython3 -m py_compile app.py\n"
+    verify_sh = verify_sh.replace(
+        "spec.template.metadata.annotations['run.googleapis.com/ingress']",
+        "metadata.annotations['run.googleapis.com/ingress']",
+    ).replace(
+        'spec.template.metadata.annotations["run.googleapis.com/ingress"]',
+        'metadata.annotations["run.googleapis.com/ingress"]',
+    )
     if "GENERATED_TEMPLATE_UNDEPLOYED" not in verify_sh:
         if verify_sh.startswith("#!"):
             first, _, rest = verify_sh.partition("\n")
@@ -3519,6 +3649,28 @@ def compile_starter_zip(bp: Dict[str, Any], slug: str, *, include_starter_code: 
             "EXPOSE 8080\n"
             'CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]\n'
         )
+    else:
+        # Deterministic DK-APP-01 & DK-USER-01 self-healer: starter zip always names the entrypoint app.py and drops root
+        dockerfile_body = re.sub(r"\bCOPY\s+(?:\./)?main\.py\b", "COPY app.py", dockerfile_body)
+        dockerfile_body = dockerfile_body.replace('"main:app"', '"app:app"').replace("'main:app'", "'app:app'")
+        dockerfile_body = re.sub(r"\buvicorn\s+main:app\b", "uvicorn app:app", dockerfile_body)
+        active_df_lines = [ln.strip() for ln in dockerfile_body.splitlines() if ln.strip() and not ln.lstrip().startswith("#")]
+        user_directives = [ln for ln in active_df_lines if re.match(r"(?i)^USER\s+\S+", ln)]
+        has_nonroot_user = bool(user_directives) and not re.match(r"(?i)^USER\s+(?:root|0(?::0)?)\b", user_directives[-1])
+        if not has_nonroot_user:
+            nonroot_block = (
+                "RUN useradd --create-home --uid 10001 appuser && chown -R appuser:appuser /app 2>/dev/null || useradd --create-home --uid 10001 appuser\n"
+                "USER appuser"
+            )
+            if re.search(r"(?im)^(?:EXPOSE|CMD|ENTRYPOINT)\b", dockerfile_body):
+                dockerfile_body = re.sub(
+                    r"(?im)^((?:EXPOSE|CMD|ENTRYPOINT)\b)",
+                    nonroot_block + "\n" + r"\1",
+                    dockerfile_body,
+                    count=1,
+                )
+            else:
+                dockerfile_body = dockerfile_body.rstrip() + "\n" + nonroot_block + "\n"
     dockerfile_txt = banner_hash + dockerfile_body.rstrip() + "\n"
 
     req_body = (cs.get("requirementsTxt") or "").strip()
@@ -3535,6 +3687,14 @@ def compile_starter_zip(bp: Dict[str, Any], slug: str, *, include_starter_code: 
         if "google.cloud.dlp" in py_app:
             inferred_reqs.append("google-cloud-dlp==3.26.0")
         req_body = "\n".join(inferred_reqs)
+    for mod_hint, pkg_spec in (
+        ("cryptography", "cryptography>=42.0.0"),
+        ("rdkit", "rdkit>=2023.9.1"),
+        ("kms", "google-cloud-kms>=2.21.0"),
+        ("modelarmor", "google-cloud-modelarmor>=0.1.0"),
+    ):
+        if re.search(rf"\b{mod_hint}\b", py_body) and pkg_spec.split(">=")[0] not in req_body:
+            req_body = (req_body.rstrip() + "\n" + pkg_spec).strip()
     requirements_txt = banner_hash + req_body.rstrip() + "\n"
 
     provenance_txt = (
@@ -3578,11 +3738,12 @@ def compile_starter_zip(bp: Dict[str, Any], slug: str, *, include_starter_code: 
         for fn in ("main.tf", "variables.tf", "schema.sql", "app.py", "Dockerfile", "requirements.txt", "deploy.sh", "verify.sh", "PROVENANCE.txt")
         if fn in files
     ]
+    readme_summary_clean = re.sub(r"\bmain\.py\b", "app.py", str(cs.get("readmeSummary") or ""))
     files["README.md"] = (
         f"# {bp['title']} — Starter Kit (`{slug}`)\n\n"
         "> **STATUS: `GENERATED_TEMPLATE_UNDEPLOYED`** — These files were generated by the live Gemini API as an "
         "architecture starter template. They have **not** been applied to any Google Cloud project.\n\n"
-        f"{cs.get('readmeSummary') or ''}\n\n"
+        f"{readme_summary_clean}\n\n"
         "## Included Files\n"
         + "\n".join(included_lines)
         + "\n"
@@ -4421,6 +4582,10 @@ def run_orthogonal_llm_judge(
         res_a = None
         meta_a: Dict[str, Any] = {}
         grounded_a = False
+        ed_chain = [judge_model]
+        for alt_ed in ("gemini-4-argon", "gemini-4-hydrogen", "gemini-2.5-pro"):
+            if alt_ed != generator_model and alt_ed not in ed_chain:
+                ed_chain.append(alt_ed)
         try:
             res_a, meta_a = call_gemini_json(
                 system_prompt=search_sys,
@@ -4431,7 +4596,7 @@ def run_orthogonal_llm_judge(
                 thinking_budget=1536,
                 thinking_level="MEDIUM",
                 temperature=0.1,
-                timeout_s=95.0,
+                timeout_s=155.0,
                 use_google_search=True,
                 max_attempts=1,
             )
@@ -4439,20 +4604,29 @@ def run_orthogonal_llm_judge(
         except Exception as g_exc:
             fb_err = _redact_secret(str(g_exc), api_key_override)[:180]
         if res_a is None:
-            res_a, meta_a = call_gemini_json(
-                system_prompt=sys_editorial,
-                user_prompt=usr_editorial,
-                model=judge_model,
-                api_key_override=api_key_override,
-                max_output_tokens=12288 if is_global_vertex_model(judge_model) else 8192,
-                thinking_budget=1536,
-                thinking_level="MEDIUM",
-                temperature=0.1,
-                timeout_s=85.0,
-                use_google_search=False,
-                max_attempts=1,
-            )
-            grounded_a = False
+            last_ed_exc: Optional[Exception] = None
+            for cand_ed in ed_chain:
+                try:
+                    res_a, meta_a = call_gemini_json(
+                        system_prompt=sys_editorial,
+                        user_prompt=usr_editorial,
+                        model=cand_ed,
+                        api_key_override=api_key_override,
+                        max_output_tokens=12288 if is_global_vertex_model(cand_ed) else 8192,
+                        thinking_budget=1536,
+                        thinking_level="MEDIUM",
+                        temperature=0.1,
+                        timeout_s=150.0,
+                        use_google_search=False,
+                        max_attempts=1,
+                    )
+                    grounded_a = False
+                    if isinstance(res_a, dict):
+                        break
+                except Exception as ed_exc:
+                    last_ed_exc = ed_exc
+            if res_a is None and last_ed_exc is not None:
+                raise last_ed_exc
         return (res_a or {}, meta_a, grounded_a, fb_err)
 
     def _run_code_panel() -> Tuple[Dict[str, Any], Dict[str, Any], str]:
@@ -4471,11 +4645,11 @@ def run_orthogonal_llm_judge(
                     user_prompt=usr_code,
                     model=cand_m,
                     api_key_override=api_key_override,
-                    max_output_tokens=10240 if is_global_vertex_model(cand_m) else 8192,
-                    thinking_budget=512,
-                    thinking_level="LOW",
+                    max_output_tokens=12288 if is_global_vertex_model(cand_m) else 8192,
+                    thinking_budget=1536,
+                    thinking_level="MEDIUM",
                     temperature=0.1,
-                    timeout_s=75.0,
+                    timeout_s=95.0,
                     use_google_search=False,
                     max_attempts=1,
                 )
@@ -5360,6 +5534,7 @@ def compile_and_save_blog(
                 "slidePlan": eff_plan,
                 "blueprint": blueprint,
                 "customDiagramXmls": {},
+                "orthogonalJudge": judge_report,
             },
             indent=2,
         ),
@@ -6180,16 +6355,28 @@ def get_diagram_record_for_studio(diag_id: str) -> Optional[Dict[str, Any]]:
     slug, kind, title_hint = _resolve_studio_slug_and_kind(did)
     if not slug or not kind:
         return None
-    slide_map = {"concept": 3, "architecture": 3, "cloudarch": 4, "sequence": 5, "security": 6, "wire": 7, "async": 8}
+    slide_map = {"architecture": 3, "concept": 4, "cloudarch": 5, "security": 6, "sequence": 7, "wire": 8, "async": 9}
     kind_labels = {
-        "concept": "Figure 1 — Conceptual Mental Model & Invariant Lock",
-        "architecture": "Figure 1 — Master Platform Architecture (C4 L2)",
-        "cloudarch": "Figure 2 — Cloud Architecture Center Blueprint",
-        "sequence": "Figure 3 — Request Lifecycle Sequence (C4 L3)",
+        "architecture": "Figure 1 — Reference Platform Architecture & Plane Ownership (C4 L2)",
+        "concept": "Figure 2 — Conceptual Mental Model & Invariant Lock",
+        "cloudarch": "Figure 3 — Cloud Architecture Center Blueprint",
         "security": "Figure 4 — Trust Perimeter & Security Boundary (C4 L1)",
-        "wire": "Figure 5 — Wire-Protocol & Schema Transformation (C4 L4)",
-        "async": "Figure 6 — Async State, Export & Lifecycle Loop",
+        "sequence": "Figure 5 — Request Lifecycle Sequence (C4 L3)",
+        "wire": "Figure 6 — Wire-Protocol & Schema Transformation (C4 L4)",
+        "async": "Figure 7 — Async State, Export & Lifecycle Loop",
     }
+    dyn_slide = slide_map.get(kind, 3)
+    mp_stu = _ensure_rel_hydrated(slug, "manifest.json")
+    if mp_stu and mp_stu.is_file():
+        try:
+            m_stu = json.loads(mp_stu.read_text(encoding="utf-8"))
+            d_stu = (m_stu.get("diagrams") or {}).get(kind) or {}
+            if d_stu.get("slideNumber"):
+                dyn_slide = int(d_stu["slideNumber"])
+            if d_stu.get("title") and not title_hint:
+                title_hint = str(d_stu["title"])
+        except Exception:
+            pass
     drawio_p = _ensure_rel_hydrated(slug, f"diagrams/{slug}-{kind}.drawio")
     if drawio_p is None or not drawio_p.is_file():
         return None
@@ -6206,7 +6393,7 @@ def get_diagram_record_for_studio(diag_id: str) -> Optional[Dict[str, Any]]:
             "slug": slug,
             "kind": kind,
             "title": display_title,
-            "slideNumber": slide_map.get(kind, 3),
+            "slideNumber": dyn_slide,
             "origin": "create-blog1",
             "saveApiUrl": f"/api/create-blog/blogs/{urllib.parse.quote(slug)}/diagrams/{urllib.parse.quote(kind)}/save",
             "drawioDownloadUrl": f"/api/drawio/download/{public_id}?fmt=drawio",
@@ -6276,6 +6463,7 @@ def _save_revision_snapshot(
         "slidePlan": manifest.get("slidePlan"),
         "blueprint": manifest.get("blueprint") or {},
         "customDiagramXmls": custom_xmls,
+        "orthogonalJudge": (manifest.get("quality") or {}).get("orthogonalJudge"),
     }
     rev_dir = blog_dir / "revisions"
     rev_dir.mkdir(parents=True, exist_ok=True)
@@ -6317,6 +6505,8 @@ def _recompile_full_blog_state(
     plan = manifest["slidePlan"]
     outline = manifest["outline"]
     inc_code = bool(manifest.get("includeStarterCode", plan.get("includeStarterCode", True)))
+    if isinstance(plan, dict) and isinstance(plan.get("totalSlides"), int) and len(bp.get("slides") or []) != int(plan["totalSlides"]):
+        bp["slides"] = _iter.reconcile_slides_for_new_plan(bp, bp.get("slidePlan") or plan, plan)
     proofs = manifest.get("proofs") or []
     d_meta_prev = manifest.get("diagrams") if isinstance(manifest.get("diagrams"), dict) else {}
     overrides = dict(custom_xml_overrides or {})
@@ -6643,6 +6833,13 @@ def apply_manual_edit(
     actor_email: str = "local-operator",
 ) -> Dict[str, Any]:
     clean = validate_existing_slug(slug)
+    leaks_m = scan_for_f13_leaks(json.dumps(payload or {}, ensure_ascii=False))
+    if leaks_m:
+        raise CreateBlog1Error(
+            f"Manual edit blocked by F-13 public-repo hygiene gate ({', '.join(leaks_m[:4])}).",
+            400,
+            "HYGIENE_BLOCKED",
+        )
     with _get_slug_lock(clean):
         mp = _ensure_rel_hydrated(clean, "manifest.json")
         if mp is None or not mp.is_file():
@@ -6807,6 +7004,12 @@ def restore_blog_revision(
         manifest["outline"] = snap.get("outline") or manifest.get("outline")
         manifest["slidePlan"] = snap.get("slidePlan") or manifest.get("slidePlan")
         manifest["blueprint"] = snap.get("blueprint") or manifest.get("blueprint")
+        if isinstance(manifest.get("blueprint"), dict):
+            manifest["blueprint"]["outline"] = manifest["outline"]
+            manifest["blueprint"]["slidePlan"] = manifest["slidePlan"]
+            manifest["blueprint"]["includeStarterCode"] = manifest["includeStarterCode"]
+        if isinstance(snap.get("orthogonalJudge"), dict):
+            manifest.setdefault("quality", {})["orthogonalJudge"] = snap["orthogonalJudge"]
         custom_xmls = snap.get("customDiagramXmls") if isinstance(snap.get("customDiagramXmls"), dict) else {}
         # Reset customEdited flags to match the restored snapshot cleanly
         for dk, dv in (manifest.get("diagrams") or {}).items():
@@ -7022,7 +7225,7 @@ def start_iteration_job(
                 prev_judge = (backup_manifest.get("quality") or {}).get("orthogonalJudge") or {}
                 should_rejudge = (
                     not bool(payload.get("skipJudge", False))
-                    and (prev_judge.get("status") == "COMPLETED" or bool(payload.get("rejudge", False)))
+                    and (prev_judge.get("status") in ("COMPLETED", "SKIPPED_ERROR") or bool(payload.get("rejudge", False)))
                 )
                 if should_rejudge:
                     _upd(94, "VERIFY_GATE", "Running post-iteration orthogonal Gemini Judge audit...")

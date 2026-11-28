@@ -680,7 +680,7 @@ def assess_prompt_preflight(
                     "category": oc,
                     "prompt": oprompt,
                     "angle": oangle or CATEGORY_BY_ID[oc]["description"][:140],
-                    "recommendedDiagrams": odiags[:6],
+                    "recommendedDiagrams": odiags[:7],
                 })
         fb_opts = _default_fallback_options(clean_prompt, rec_cat)
         while len(parsed_opts) < 3:

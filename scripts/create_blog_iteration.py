@@ -649,7 +649,7 @@ def apply_scoped_iteration_patch(
 
     if clean_scope in ("all", "slides"):
         slides = bp.get("slides") or []
-        for sp in (patch.get("slidePatches") or [])[:12]:
+        for sp in (patch.get("slidePatches") or [])[:14]:
             if not isinstance(sp, dict):
                 continue
             num = sp.get("number")
@@ -745,6 +745,70 @@ def apply_scoped_iteration_patch(
             changes.append(f"Replaced '{old_s[:36]}' -> '{new_s[:36]}' ({hits}x).")
 
     return changes, sorted(affected)
+
+
+def reconcile_slides_for_new_plan(
+    bp: Dict[str, Any],
+    old_plan: Dict[str, Any],
+    new_plan: Dict[str, Any],
+) -> List[Dict[str, Any]]:
+    """
+    Preserves existing Cover, BLUF, per-diagram slides, Code slide, Proof slide, Table slide,
+    and Closing slide across dynamic outline / diagram / starter-code toggles without shifting
+    unrelated slide content or causing IndexError on slide count growth.
+    """
+    import copy as _copy
+    old_slides = list(bp.get("slides") or [])
+
+    def _get_old(one_based: Optional[int], default_title: str, default_kicker: str) -> Dict[str, Any]:
+        if isinstance(one_based, int) and 1 <= one_based <= len(old_slides) and isinstance(old_slides[one_based - 1], dict):
+            return _copy.deepcopy(old_slides[one_based - 1])
+        return {
+            "number": 1,
+            "kicker": default_kicker[:44].upper(),
+            "title": default_title[:88],
+            "subtitle": str(bp.get("subtitle") or "")[:160],
+            "bullets": [
+                str(x)[:140]
+                for x in (bp.get("keyTakeaways") or ["Enforces zero-trust architecture invariants across planes."])[:4]
+            ],
+            "speakerNotes": f"Here we walk through {default_title} and its key operational guardrails on Google Cloud.",
+        }
+
+    old_dmap = (old_plan or {}).get("diagramSlideMap") or {}
+    rebuilt: List[Dict[str, Any]] = [
+        _get_old(1, str(bp.get("title") or "Executive Architecture Brief"), "EXECUTIVE BRIEF"),
+        _get_old(2, "Architectural Challenge & Design Goals", "PROBLEM & TARGETS"),
+    ]
+    for ed in (new_plan.get("enabledDiagrams") or []):
+        dk = str(ed.get("kind") or "")
+        d_title = str(ed.get("title") or dk.title())
+        d_layer = str(ed.get("layer") or "ARCHITECTURE DIAGRAM")
+        old_snum = int(old_dmap[dk]) if dk in old_dmap else None
+        sl_d = _get_old(old_snum, d_title, d_layer)
+        if old_snum is None:
+            sl_d["kicker"] = d_layer[:44].upper()
+            sl_d["title"] = d_title[:88]
+        rebuilt.append(sl_d)
+
+    if new_plan.get("codeSlide"):
+        old_cs = (old_plan or {}).get("codeSlide")
+        sl_c = _get_old(int(old_cs) if old_cs else None, "Implementation Guardrails & Starter Code", "IMPLEMENTATION & GUARDRAILS")
+        if not sl_c.get("codeSnippet"):
+            cs_bp = bp.get("codeStarter") or {}
+            sl_c["codeSnippet"] = str(cs_bp.get("pythonApp") or cs_bp.get("terraformMain") or "# Starter template")[:700]
+        rebuilt.append(sl_c)
+
+    old_ps = int((old_plan or {}).get("proofSlide") or max(1, len(old_slides) - 2))
+    old_ts = int((old_plan or {}).get("tableSlide") or max(1, len(old_slides) - 1))
+    old_cl = int((old_plan or {}).get("totalSlides") or len(old_slides) or 1)
+    rebuilt.append(_get_old(old_ps, "Verified Console & SaaS Proofs", "LIVE PROOF VAULT"))
+    rebuilt.append(_get_old(old_ts, "Cost, Latency & Architecture Trade-offs", "TRADE-OFFS & FINOPS"))
+    rebuilt.append(_get_old(old_cl, "Production Readiness Checklist & Next Steps", "PRODUCTION READINESS"))
+
+    for idx_r, s_obj in enumerate(rebuilt, 1):
+        s_obj["number"] = idx_r
+    return rebuilt
 
 
 def apply_manual_edit_patch(
@@ -899,13 +963,15 @@ def apply_manual_edit_patch(
             if key in file_map.values() and isinstance(content, str):
                 cs[key] = sanitize_fn(content)
                 changes.append(f"Edited starter file '{fname}'.")
-                affected.add("starter.zip")
+                affected.update(["starter.zip", "blog.md", "docx", "slides"])
 
     elif target == "outline":
         cat_id = str(manifest.get("category") or "reference_architecture")
+        old_plan = manifest.get("slidePlan") if isinstance(manifest.get("slidePlan"), dict) else (bp.get("slidePlan") or {})
         new_outline = normalize_outline_fn(payload.get("outline"), category_id=cat_id)
         inc_code = bool(payload.get("includeStarterCode", manifest.get("includeStarterCode", True)))
         new_plan = compute_slide_plan_fn(new_outline, include_starter_code=inc_code)
+        bp["slides"] = reconcile_slides_for_new_plan(bp, old_plan, new_plan)
         manifest["outline"] = new_outline
         manifest["slidePlan"] = new_plan
         manifest["includeStarterCode"] = inc_code
@@ -913,7 +979,7 @@ def apply_manual_edit_patch(
         bp["slidePlan"] = new_plan
         bp["includeStarterCode"] = inc_code
         changes.append(f"Updated outline & diagram placement ({len(new_plan['enabledDiagrams'])} diagrams, {new_plan['totalSlides']} slides).")
-        affected.update(["blog.md", "docx", "diagrams", "slides"])
+        affected.update(["blog.md", "docx", "diagrams", "slides", "audio"])
 
     elif target == "diagram_lock":
         dk = str(payload.get("kind") or "").strip().lower()

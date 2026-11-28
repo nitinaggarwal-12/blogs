@@ -281,6 +281,22 @@ def scan_terraform_security(starter_files: Dict[str, str]) -> List[Dict[str, str
             "severity": "HIGH",
             "detail": "app.py reads X-Goog-IAP-JWT-Assertion without cryptographically verifying it via google.oauth2.id_token.verify_token(..., certs_url='https://www.gstatic.com/iap/verify/public_key-jwk').",
         })
+    df_txt = str(starter_files.get("Dockerfile") or "")
+    if df_txt:
+        if re.search(r"\bCOPY\s+(?:\./)?main\.py\b", df_txt) or "main:app" in df_txt:
+            findings.append({
+                "id": "DK-APP-01",
+                "severity": "HIGH",
+                "detail": "Dockerfile references main.py / main:app instead of packaged starter entrypoint app.py / app:app.",
+            })
+        active_df = [ln.strip() for ln in df_txt.splitlines() if ln.strip() and not ln.lstrip().startswith("#")]
+        u_lines = [ln for ln in active_df if re.match(r"(?i)^USER\s+\S+", ln)]
+        if not u_lines or re.match(r"(?i)^USER\s+(?:root|0(?::0)?)\b", u_lines[-1]):
+            findings.append({
+                "id": "DK-USER-01",
+                "severity": "HIGH",
+                "detail": "Dockerfile lacks a non-root USER directive (container runs as root).",
+            })
     req_envs = sorted(set(re.findall(r'os\.environ\[\s*["\']([A-Z0-9_]+)["\']\s*\]', py_app)))
     if req_envs and active_tf:
         missing_tf_envs = [ev for ev in req_envs if ev not in active_tf]
@@ -304,18 +320,18 @@ def prose_stage_system_prompt() -> str:
         "2. Ground EVERY Google Cloud product name, GA/Preview feature, SQL/GQL/API syntax, quota, and SLA in the "
         "LIVE_SEARCH_GROUNDING dossier provided. Replace deprecated terms (e.g., use 'Vertex AI Vector Search', "
         "NOT 'Matching Engine'; use exact product access controls like 'Fine-Grained Access Control' where applicable).\n"
-        "3. NEVER invent real customer emails, employee names, synthetic tenant placeholders ('acme', 'PolicyGraph'), internal shortlinks (go/...), issue IDs (b/...), or fake benchmarks. Anchor the technical narrative in ONE continuous, realistic enterprise workload scenario across sections (e.g., an on-call SRE or security engineer operating a regulated workload such as FinVault or RetailStream) so every control is grounded in a concrete request path.\n"
+        "3. NEVER invent real customer emails, employee names, synthetic tenant placeholders ('acme', 'PolicyGraph', 'FinVault', 'RetailStream', 'MedCore', 'Globex', 'Cymbal Bank'), internal shortlinks (go/...), issue IDs (b/...), or fake benchmarks. Anchor the technical narrative strictly in ONE continuous, realistic enterprise workload scenario derived from the user's prompt domain so every control is grounded in a concrete request path.\n"
         "4. Write DEEP, publication-clean Google Cloud blog prose — keep inline `codeBlocks` surgical and concise (`8` to `22` lines proving ONE architectural invariant, policy, SQL/GQL query, or FinOps equation; give inline snippets descriptive architectural captions rather than filenames like `main.tf` or `app.py`, leaving full multi-resource files to `codeStarter`). Use exact language tags (`sql`, `hcl` for Terraform NEVER `yaml`, `python`, `bash`, `formula`), crisp comparative tables, failure modes, and compensating controls.\n"
         "5. Tag EVERY numeric claim/SLA/latency/cost assumption in `claimLedger` strictly as one of: "
         "GCP_DOCUMENTED | DERIVED_MODEL | EXAMPLE_TARGET | USER_SUPPLIED.\n"
-        "6. Use current live Vertex AI model names (Gemini 4: gemini-4-neon / carbon / argon / hydrogen with location='global'; Gemini 3.x: gemini-3.8-flash; Gemini 2.5: gemini-2.5-pro / flash; embeddings: prefer gemini-embedding-001, or explicitly note text-embedding-005 retirement April 1, 2027) — NEVER invent non-existent model IDs like `gemini-4.0-flash` or `gemini-4-pro`, and NEVER reference retired Gemini 1.0/1.5 checkpoints.\n"
+        "6. Use current live Vertex AI model names (Gemini 4: gemini-4-neon / carbon / argon / hydrogen with location='global'; Gemini 3.x: gemini-3.8-flash; Gemini 2.5: gemini-2.5-pro / flash; Gemini Live API native audio/video: gemini-2.5-flash or gemini-3.8-flash via `client.aio.live.connect`; embeddings: prefer gemini-embedding-001, or explicitly note text-embedding-005 retirement April 1, 2027) — NEVER invent non-existent model IDs like `gemini-4.0-flash`, `gemini-4-pro`, `gemini-3.8-live`, or `gemini-3.8-live-extended-thinking`, and NEVER reference retired Gemini 1.0/1.5 checkpoints.\n"
         "7. STRICT GCP ENGINEERING ACCURACY:\n"
         "   - External B2B SaaS Identity: ALWAYS use Identity Platform multi-tenancy + Workload Identity Federation (WIF) for external B2B SaaS customer tenants; NEVER recommend Workforce Identity Federation for external B2B SaaS users (Workforce WIF is strictly for an organization's own workforce/employees).\n"
         "   - Disaggregated Agentic Architecture (where agentic AI applies): separate the stateless Brain (Cloud Run v2 / Vertex AI Agent Engine), isolated zero-credential Hands (Agent Sandboxes in Gemini / gVisor), out-of-process Vault (Auth Manager / Secret Manager + Cloud KMS minting short-lived task-scoped 2LO/3LO credentials), and Policy Gateways (Model Armor + Cloud DLP).\n"
         "   - Gemini Context Caching: shared immutable system/tool prefix requires a 4,096-token minimum (delivering up to 90% input token savings); NEVER cite a stale 32,768-token minimum.\n"
         "   - Memory Bank in Gemini & Agent Identity: enforce exact-match scope keys plus perimeter Cloud IAM CEL conditions on `aiplatform.googleapis.com/memoryScope` (`roles/aiplatform.memoryUser`), and note Cloud Run Agent Identity (SPIFFE X.509 mTLS, Preview) where service-to-service agent auth applies.\n"
         "   - Google Cloud Model Armor ALWAYS requires a regional API endpoint (`modelarmor.<region>.rep.googleapis.com` via `ClientOptions(api_endpoint=...)`) and regional template resource paths (`projects/<project>/locations/<region>/templates/<template>`); NEVER use `locations/global/templates/...` or an unconfigured default `ModelArmorClient()`.\n"
-        "   - Cloud Spanner Graph + ANN vector search (`APPROX_COSINE_DISTANCE`) MUST use the 2-stage pattern `MATCH (@{FORCE_INDEX=...} src:Label) ... ORDER BY distance LIMIT @k NEXT MATCH (src)-[rel:...]->(dst:...)` (a single-stage join silently defeats the vector index!).\n"
+        "   - Cloud Spanner Graph requires Enterprise or Enterprise Plus edition (`edition = \"ENTERPRISE\"` on `google_spanner_instance`), and `APPROX_COSINE_DISTANCE` inside `GRAPH_TABLE` MUST use the 2-stage pattern placing `APPROX_COSINE_DISTANCE(...) AS dist` directly in `MATCH (@{FORCE_INDEX=...} src:Label) WHERE src.embedding IS NOT NULL RETURN src, APPROX_COSINE_DISTANCE(...) AS dist ORDER BY dist ASC LIMIT @k NEXT MATCH (src)-[rel:...]->(dst:...)` (NEVER put `APPROX_COSINE_DISTANCE` inside a `LET` clause, and NEVER use a single-stage join).\n"
         "   - Cloud Spanner FGAC has a hard quota of 100 database roles per database (use workload/service-tier roles + mandatory parameterized `@tenantId`, NEVER claim 1:1 per-tenant DB roles for >100 SaaS tenants!). Grant `roles/spanner.fineGrainedAccessUser` + conditional `roles/spanner.databaseRoleUser`, NEVER `roles/spanner.databaseUser` when using FGAC; ensure the runtime role actually has `INSERT`/`UPDATE` privileges on every table it mutates.\n"
         "   - Cloud Spanner Editions: Enterprise is regional-only (99.99% SLA; us-central1 list rate $1.23/hr per 1,000 PUs = 3 replicas x $0.41/replica-hr); 99.999% multi-region SLA requires Enterprise Plus.\n"
         "   - Cloud Run ingress describe MUST check top-level `metadata.annotations['run.googleapis.com/ingress']` (NEVER `spec.template.metadata.annotations`).\n"
@@ -500,15 +516,15 @@ def topology_stage_user_prompt(
     }
     if inc_code:
         schema["codeStarter"] = {
-            "readmeSummary": "Review, security-scan, and terraform plan notes listing all included files including schema.sql, Dockerfile, and requirements.txt.",
+            "readmeSummary": "Review, security-scan, and terraform plan notes listing all included files (app.py, main.tf, variables.tf, schema.sql, Dockerfile, requirements.txt, deploy.sh, verify.sh).",
             "schemaSql": "-- Complete valid DDL/SQL/ISO GQL matching the data/security sections verbatim",
-            "terraformMain": "# Complete hardened Terraform using google_cloud_run_v2_service (NO allUsers, NO roles/spanner.databaseUser if FGAC!)",
+            "terraformMain": "# Complete hardened Terraform using google_cloud_run_v2_service (NO allUsers, NO roles/spanner.databaseUser if FGAC, separate KMS signer vs verifier service accounts when out-of-process HITL signing is used!)",
             "terraformVars": "# Terraform variable declarations matching every var.* in terraformMain",
-            "pythonApp": "# Complete syntactically valid Python 3.11 FastAPI app with IAP JWT verify_token + google-genai + exact schemaSql tables/columns",
-            "dockerfile": "FROM python:3.11-slim\n...",
-            "requirementsTxt": "fastapi\nuvicorn\n...",
-            "deploySh": "#!/usr/bin/env bash\nset -euo pipefail\n...",
-            "verifySh": "#!/usr/bin/env bash\nset -euo pipefail\n...",
+            "pythonApp": "# Complete syntactically valid Python 3.11 FastAPI app.py enforcing IAP JWT verify_token + binding/verifying path/body tenant_id against authenticated JWT claims (HTTP 403 on mismatch, zero IDOR) + cryptography ECDSA public-key verification when KMS ASYMMETRIC_SIGN is used + bidirectional asyncio.gather upstream/downstream loops when Gemini Live WebSockets are used",
+            "dockerfile": "FROM python:3.11-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\nCOPY app.py .\nRUN useradd --create-home --uid 10001 appuser && chown -R appuser:appuser /app\nUSER appuser\nEXPOSE 8080\nCMD [\"uvicorn\", \"app:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8080\"]",
+            "requirementsTxt": "fastapi\nuvicorn\ngoogle-auth\ncryptography\n...",
+            "deploySh": "#!/usr/bin/env bash\nset -euo pipefail\n# Match main.tf ingress & VPC egress flags 1:1 (--no-allow-unauthenticated)",
+            "verifySh": "#!/usr/bin/env bash\nset -euo pipefail\n# Check metadata.annotations['run.googleapis.com/ingress']",
         }
     else:
         schema["codeStarter"] = {}
@@ -964,7 +980,13 @@ def diagram_architect_user_prompt(
     enabled_kinds: Optional[List[str]] = None,
 ) -> str:
     sec_headings = [s.get("heading", "") for s in (prose_raw.get("sections") or [])[:10] if isinstance(s, dict)]
-    claims = (prose_raw.get("claimLedger") or [])[:8]
+    inline_snippets = []
+    for s in (prose_raw.get("sections") or [])[:10]:
+        if isinstance(s, dict):
+            for cb in (s.get("codeBlocks") or [])[:2]:
+                if isinstance(cb, dict) and cb.get("code"):
+                    inline_snippets.append(str(cb["code"])[:420])
+    claims = (prose_raw.get("claimLedger") or [])[:20]
     g_sum = str((grounding or {}).get("summary") or "").strip()[:2800]
     kind_to_bp = {
         "concept": "conceptDiagram",
@@ -979,15 +1001,17 @@ def diagram_architect_user_prompt(
     if not req_keys:
         req_keys = list(kind_to_bp.values())
     diag_instruction = (
-        f"Synthesize the ultra-crisp, domain-specific JSON specification for ONLY these {len(req_keys)} enabled diagram keys: {', '.join(req_keys)}. Omit disabled diagram keys. Output ONLY valid raw JSON."
+        f"Synthesize the ultra-crisp, domain-specific JSON specification for ONLY these {len(req_keys)} enabled diagram keys: {', '.join(req_keys)}. "
+        "CRITICAL FIDELITY INVARIANT: Every funnel stage count, throughput/latency figure, database/graph name, and Spanner FGAC role name in EVERY diagram MUST match VERIFIED CLAIMS and INLINE CODE SNIPPETS 1:1 (ZERO numeric or identifier drift!). Omit disabled diagram keys. Output ONLY valid raw JSON."
     )
     return (
         f"TITLE: {prose_raw.get('title', '')}\n"
         f"SUBTITLE: {prose_raw.get('subtitle', '')}\n"
         f"EXECUTIVE SUMMARY: {str(prose_raw.get('summary') or '')[:900]}\n"
         f"SECTION HEADINGS: {json.dumps(sec_headings)}\n"
-        f"VERIFIED CLAIMS SAMPLE: {json.dumps(claims)[:1400]}\n\n"
-        f"ORIGINAL USER REQUEST:\n{topic_prompt[:2000]}\n\n"
+        f"VERIFIED CLAIMS (MUST MATCH 1:1 IN DIAGRAMS): {json.dumps(claims)[:3200]}\n"
+        + (f"INLINE SQL / CODE IDENTIFIERS & ROLES (USE EXACT NAMES): {json.dumps(inline_snippets)[:2200]}\n\n" if inline_snippets else "\n")
+        + f"ORIGINAL USER REQUEST:\n{topic_prompt[:4200]}\n\n"
         + (f"LIVE GOOGLE SEARCH GROUNDING DOSSIER:\n{g_sum}\n\n" if g_sum else "")
         + diag_instruction
     )

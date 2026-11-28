@@ -522,6 +522,23 @@
     stopAudioPlayer();
     state.activeSlug = null;
     state.activeBlog = null;
+    state.editingTab = null;
+    state.dirtyUnsaved = false;
+    try {
+      const u = new URL(window.location.href);
+      if (u.searchParams.has('slug')) {
+        u.searchParams.delete('slug');
+        window.history.replaceState(null, '', u.pathname + (u.search || ''));
+      }
+    } catch (_) {}
+    if (!state.pollTimer) {
+      const jp = document.getElementById('job-panel');
+      const jl = document.getElementById('job-stage-label');
+      if (jp) jp.classList.add('hidden');
+      if (jl) jl.textContent = 'Running pipeline...';
+    }
+    hidePreflightPanel();
+    setBanner(document.getElementById('composer-msg'), '', '');
     const act = document.getElementById('active-blog-view');
     const emp = document.getElementById('empty-state');
     if (act) act.classList.add('hidden');
@@ -752,7 +769,7 @@
         continue;
       }
       if (ln.trim().startsWith('|') && i + 1 < lines.length && lines[i + 1].includes('---')) {
-        const parseRow = (r) => r.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((c) => c.trim());
+        const parseRow = (r) => r.trim().replace(/^\|/, '').replace(/\|$/, '').split(/(?<!\\)\|/).map((c) => c.replace(/\\\|/g, '|').replace(/&#124;/g, '|').trim());
         const headers = parseRow(ln);
         i += 2;
         const rows = [];
@@ -920,6 +937,20 @@
       const data = await apiGet('/api/create-blog/blogs/' + encodeURIComponent(slug));
       state.activeSlug = slug;
       state.activeBlog = data;
+      const existIdx = state.blogs.findIndex((x) => x.slug === slug);
+      if (existIdx >= 0) {
+        const detS = (data.quality && data.quality.deterministic) || {};
+        const genS = data.generation || {};
+        state.blogs[existIdx] = Object.assign({}, state.blogs[existIdx], {
+          title: data.title || state.blogs[existIdx].title,
+          revision: Number(data.revision || 1),
+          diagramCount: Number(genS.diagramCount || Object.keys(data.diagrams || {}).length || state.blogs[existIdx].diagramCount || 0),
+          slideCount: getSlideCount(data),
+          qualityPassed: Number(detS.passed != null ? detS.passed : state.blogs[existIdx].qualityPassed),
+          qualityTotal: Number(detS.total != null ? detS.total : state.blogs[existIdx].qualityTotal),
+          workspaceSync: data.workspaceSync || state.blogs[existIdx].workspaceSync,
+        });
+      }
       state.activeSlide = Math.min(state.activeSlide || 1, getSlideCount(data));
       state.playerSlide = Math.min(state.playerSlide || 1, getSlideCount(data));
       state.editingTab = null;
@@ -938,6 +969,14 @@
       renderLibrary();
       renderHero(data);
       renderAllTabs(data);
+      if (window.scrollY > 0) {
+        const heroEl = document.querySelector('#active-blog-view .hero-card');
+        const topbarEl = document.querySelector('.topbar');
+        const tbBottom = topbarEl ? topbarEl.getBoundingClientRect().bottom : 80;
+        if (heroEl && heroEl.getBoundingClientRect().top < tbBottom) {
+          window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+      }
     } catch (err) {
       setBanner(document.getElementById('composer-msg'), 'banner-err', 'Unable to open blog: ' + err.message);
     }
@@ -1221,8 +1260,7 @@
         applyBtn.disabled = true;
         applyBtn.textContent = 'Refining with Gemini...';
         statusLine.textContent = 'Submitting surgical iteration job...';
-        const apiKeyVal = (document.getElementById('inp-apikey') && document.getElementById('inp-apikey').value || '').trim();
-        const extraHdrs = apiKeyVal ? { 'X-Gemini-Api-Key': apiKeyVal } : {};
+        const extraHdrs = {};
         try {
           const res = await apiPost('/api/create-blog/blogs/' + encodeURIComponent(slug) + '/iterate', {
             instruction: txt,
@@ -1769,6 +1807,10 @@
     const panel = document.getElementById('panel-slides');
     const slug = blog.slug;
     const slides = (blog.blueprint && blog.blueprint.slides) || [];
+    const totalSc = getSlideCount(blog);
+    if (state.activeSlide > totalSc || state.activeSlide < 1) {
+      state.activeSlide = Math.min(Math.max(1, state.activeSlide || 1), totalSc);
+    }
     const n = state.activeSlide;
     const cur = slides[n - 1] || {};
     const imgRel = 'slides/slide_' + String(n).padStart(2, '0') + '.svg';
@@ -1927,6 +1969,10 @@
     const cap = document.getElementById('player-caption');
     const lbl = document.getElementById('player-status');
     const playBtn = document.getElementById('btn-player-play');
+    const totalPc = getSlideCount(blog);
+    if (state.playerSlide > totalPc || state.playerSlide < 1) {
+      state.playerSlide = Math.min(Math.max(1, state.playerSlide || 1), totalPc);
+    }
     const n = state.playerSlide;
     const sl = ((blog.blueprint && blog.blueprint.slides) || [])[n - 1] || {};
     if (img) img.setAttribute('src', assetUrl(blog.slug, 'slides/slide_' + String(n).padStart(2, '0') + '.svg'));
@@ -2031,6 +2077,10 @@
       tracks.length + ' / ' + getSlideCount(blog) + ' live MP3 tracks generated (' + formatTime(totalSec) + ' total). Explicitly labeled as narrated slide-deck playback (not a human digital twin or live screen recording).'
     );
 
+    const totalPc = getSlideCount(blog);
+    if (state.playerSlide > totalPc || state.playerSlide < 1) {
+      state.playerSlide = Math.min(Math.max(1, state.playerSlide || 1), totalPc);
+    }
     const n = state.playerSlide;
     const sl = ((blog.blueprint && blog.blueprint.slides) || [])[n - 1] || {};
     const stage = el('div', { className: 'slide-stage-wrap player-stage-wrap' },
@@ -2613,17 +2663,17 @@
       enableTts: document.getElementById('chk-tts').checked,
       enableJudge: document.getElementById('chk-judge').checked,
       enableGrounding: (document.getElementById('chk-ground') ? document.getElementById('chk-ground').checked : true),
-      enableAutoRevise: (document.getElementById('chk-ground') ? document.getElementById('chk-ground').checked : true),
+      enableAutoRevise: Boolean(document.getElementById('chk-judge').checked && (document.getElementById('chk-ground') ? document.getElementById('chk-ground').checked : true)),
     };
   }
 
   async function launchGenerationWithPayload(payload) {
+    if (state.pollTimer) return;
     const msgBox = document.getElementById('composer-msg');
     const genBtn = document.getElementById('btn-generate');
     setBanner(msgBox, '', '');
     hidePreflightPanel();
-    const apiKeyVal = (document.getElementById('inp-apikey').value || '').trim();
-    const extraHeaders = apiKeyVal ? { 'X-Gemini-Api-Key': apiKeyVal } : {};
+    const extraHeaders = {};
     genBtn.disabled = true;
     genBtn.textContent = 'Running Live Pipeline...';
     try {
@@ -2750,6 +2800,7 @@
     const catSel = document.getElementById('inp-category');
     if (catSel) {
       catSel.addEventListener('change', () => {
+        if (state.preflightResult) hidePreflightPanel();
         applyCategorySelection(catSel.value, true);
       });
     }
@@ -2794,7 +2845,7 @@
 
     document.getElementById('generate-form').addEventListener('submit', async (ev) => {
       ev.preventDefault();
-      if (state.preflightBusy) return;
+      if (state.preflightBusy || state.pollTimer) return;
       const msgBox = document.getElementById('composer-msg');
       const genBtn = document.getElementById('btn-generate');
       setBanner(msgBox, '', '');
@@ -2807,6 +2858,10 @@
       state.preflightBusy = true;
       genBtn.disabled = true;
       genBtn.textContent = 'Assessing Prompt with Gemini...';
+      const jpPre = document.getElementById('job-panel');
+      const jlPre = document.getElementById('job-stage-label');
+      if (jpPre) jpPre.classList.add('hidden');
+      if (jlPre) jlPre.textContent = 'Assessing prompt...';
       try {
         const pf = await apiPost('/api/create-blog/preflight', {
           prompt,

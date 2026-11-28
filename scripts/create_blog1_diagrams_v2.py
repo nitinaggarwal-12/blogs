@@ -729,16 +729,6 @@ def build_sequence_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         lifelines.append({"id": f"ll_v_{i}", "x1": cx, "y1": 224, "x2": cx, "y2": 698, "stroke": "#CBD5E1", "strokeWidth": 1.4, "dashed": True})
         circle_badges.append({"id": f"hub_{i}", "cx": cx, "cy": 212, "r": 10, "fill": bar_colors[i], "text": ""})
 
-    # Activation bars spanning actual active intervals (split AI/KMS lane 3 around Step 3 and Step 5 so Step 4 crosses clean white canvas)
-    bars = [
-        {"id": "bar_0", "x": lane_x[0] - 8, "y": 244, "w": 16, "h": 416, "fill": bar_colors[0]},
-        {"id": "bar_1", "x": lane_x[1] - 8, "y": 250, "w": 16, "h": 110, "fill": bar_colors[1]},
-        {"id": "bar_2", "x": lane_x[2] - 8, "y": 318, "w": 16, "h": 340, "fill": bar_colors[2]},
-        {"id": "bar_3a", "x": lane_x[3] - 8, "y": 384, "w": 16, "h": 46, "fill": bar_colors[3]},
-        {"id": "bar_3b", "x": lane_x[3] - 8, "y": 524, "w": 16, "h": 54, "fill": bar_colors[3]},
-        {"id": "bar_4", "x": lane_x[4] - 8, "y": 454, "w": 16, "h": 56, "fill": bar_colors[4]},
-    ]
-
     # True actor-to-actor sequence routing (NEVER force a bogus left-to-right staircase!)
     raw_steps = sq.get("steps") or []
     def_steps = [
@@ -779,6 +769,34 @@ def build_sequence_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
 
     # Render all 6 real horizontal actor-to-actor arrows across clean non-overlapping rows y=262..622
     row_ys = [262, 332, 402, 474, 546, 622]
+
+    # Dynamically compute activation bars strictly on rows where each actor participates (zero phantom bars on skipped lanes!)
+    bars: List[Dict[str, Any]] = [
+        {"id": "bar_0", "x": lane_x[0] - 8, "y": 244, "w": 16, "h": 402, "fill": bar_colors[0]},
+    ]
+    for col_idx in (1, 2, 3, 4):
+        active_rows = [r_i for r_i, st_c in enumerate(step_list) if st_c["fromIdx"] == col_idx or st_c["toIdx"] == col_idx]
+        if not active_rows:
+            continue
+        # Merge contiguous step indices into clean bar segments so skipped rows stay 100% open
+        segs: List[List[int]] = [[active_rows[0], active_rows[0]]]
+        for r_i in active_rows[1:]:
+            if r_i == segs[-1][1] + 1:
+                segs[-1][1] = r_i
+            else:
+                segs.append([r_i, r_i])
+        for s_idx, (r_start, r_end) in enumerate(segs):
+            by_top = row_ys[r_start] - 20
+            by_bot = row_ys[r_end] + 22
+            bars.append({
+                "id": f"bar_{col_idx}_{s_idx}",
+                "x": lane_x[col_idx] - 8,
+                "y": by_top,
+                "w": 16,
+                "h": max(42, by_bot - by_top),
+                "fill": bar_colors[col_idx],
+            })
+
     edges: List[Dict[str, Any]] = []
     step_colors = ["#0F172A", "#0D7377", "#1A73E8", "#065F46", "#6D28D9", "#137333"]
     for i, st in enumerate(step_list):
@@ -802,11 +820,17 @@ def build_sequence_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
             x_start = lane_x[fi] + (8 if going_right else -8)
             x_end = lane_x[ti] + (-10 if going_right else 10)
             bx = x_start + (22 if going_right else -22)
-            # Reserve clear horizontal gutter past circle badge so text NEVER touches step badge #N
-            lbl_x = (bx + 18.0) if going_right else (x_end + 12.0)
-            span_w = max(165.0, (x_end - lbl_x - 10.0) if going_right else (bx - 18.0 - lbl_x))
-            wire_txt, wire_fs = _cc.fit_single_line_px(f"{st['title']}: {st['wire']}", span_w * 0.90, 9.0, bold=True)
-            det_txt, det_fs = _cc.fit_single_line_px(st["detail"], span_w * 0.90, 8.2, bold=False)
+            # When an arrow skips across intermediate lifeline(s) (|ti - fi| >= 2), keep text inside the first open gutter!
+            if going_right:
+                lbl_x = bx + 16.0
+                gutter_right = (lane_x[fi + 1] - 10.0) if (ti - fi >= 2) else (x_end - 8.0)
+                span_w = max(170.0, gutter_right - lbl_x)
+            else:
+                lbl_x = x_end + 12.0
+                gutter_right = (lane_x[ti + 1] - 10.0) if (fi - ti >= 2) else (bx - 16.0)
+                span_w = max(170.0, gutter_right - lbl_x)
+            wire_txt, wire_fs = _cc.fit_single_line_px(f"{st['title']}: {st['wire']}", span_w * 0.94, 9.0, bold=True)
+            det_txt, det_fs = _cc.fit_single_line_px(st["detail"], span_w * 0.94, 8.2, bold=False)
             edges.append({
                 "id": f"se_{i+1}",
                 "rawPoints": [(x_start, ry), (x_end, ry)],
@@ -1476,12 +1500,25 @@ def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         ("ASYNC", "#F5F3FF", "#A78BFA", "#5B21B6"),
         ("DATA", "#FFFBEB", "#FBBF24", "#92400E"),
     ]
-    hop_lbls = ("Row CDC", "Beam Stream", "Audit Sync")
+    raw_hop_lbls = ad.get("hopLabels") if isinstance(ad.get("hopLabels"), list) else []
+    hop_lbls = tuple(
+        _cc.fit_single_line_px(
+            str(raw_hop_lbls[hi] if hi < len(raw_hop_lbls) and raw_hop_lbls[hi] else f"Stage {hi+1} -> {hi+2}"),
+            88,
+            9.6,
+            bold=True,
+        )[0]
+        for hi in range(3)
+    )
+    pipe_title = _cc.strip_md(
+        ad.get("pipelineTitle")
+        or "Google Cloud Off-Path Asynchronous Pipeline (Zero Synchronous Request-Path Blocking)"
+    )
     zones: List[Dict[str, Any]] = [
         {
             "id": "as_pipe_z", "x": 34, "y": 74, "w": 1532, "h": 350, "rx": 14,
             "fill": "#F8FAFC", "stroke": "#94A3B8", "dashed": True, "strokeWidth": 1.4,
-            "title": "Google Cloud Off-Path Asynchronous Pipeline (Zero Synchronous OLTP Read/Write Impact)",
+            "title": pipe_title,
             "titleColor": "#174EA6", "titleSize": 11.8,
         },
     ]
@@ -1541,20 +1578,20 @@ def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
     zones.append({
         "id": "as_dlq_z", "x": 34, "y": 484, "w": 958, "h": 332, "rx": 14,
         "fill": "#FFFFFF", "stroke": "#DC2626", "dashed": True, "strokeWidth": 1.4,
-        "title": "Fault Handling, Dead-Letter Queue (GCS CMEK) & Idempotent Replay",
+        "title": _cc.strip_md(ad.get("dlqZoneTitle") or "Fault Handling, Dead-Letter Isolation & Idempotent Replay"),
         "titleColor": "#991B1B", "titleSize": 12.0,
     })
     cards.append({
         "id": "as_dlq_c", "x": 52, "y": 524, "w": 922, "h": 96,
         "fill": "#FEF2F2", "stroke": "#FCA5A5", "strokeWidth": 1.1, "rx": 10,
-        "icon": "cloud_storage", "iconPos": "left", "iconSize": 32, "padL": 58, "padR": 14,
+        "icon": infer_gcp_icon_key("", dlq_note, "cloud_logging"), "iconPos": "left", "iconSize": 32, "padL": 58, "padR": 14,
         "lines": [
             {"text": "Dead-Letter Isolation & Replay Contract", "bold": True, "size": 12.8, "color": "#991B1B"},
             *[{"text": wl, "size": 11.4, "color": "#334155", "gapTop": 4 if wi == 0 else 2} for wi, wl in enumerate(_cc.wrap_px(dlq_note, 840, 11.4, max_lines=2))],
         ],
     })
     dlq_cards = [
-        ("Exponential Backoff", "Jittered retries prevent downstream BigQuery or Beam quota storms.", "#EFF6FF", "#93C5FD", "#174EA6"),
+        ("Exponential Backoff", "Jittered retries prevent downstream API, batch, or queue quota storms.", "#EFF6FF", "#93C5FD", "#174EA6"),
         ("Idempotent Replay Keys", "Commit timestamp + record sequence guarantee zero duplicate rows.", "#ECFDF5", "#6EE7B7", "#065F46"),
         ("Alert on DLQ Depth > 0", "Cloud Monitoring triggers SRE alert immediately on poison pills.", "#FEF2F2", "#FCA5A5", "#991B1B"),
     ]
@@ -1597,7 +1634,7 @@ def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         ]
     else:
         gov_cards = [
-            ("cloud_kms", "Cloud KMS CMEK & Isolation Guard", f"Enforces customer-managed encryption keys and tenant boundary parity across {s0_svc} & {s2_svc}.", "#FFFBEB", "#FCD34D", "#92400E"),
+            ("cloud_kms", "Cloud KMS Cryptographic & Tenant Guard", f"Enforces Cloud KMS cryptographic controls and verified tenant isolation across {s0_svc} & {s2_svc}.", "#FFFBEB", "#FCD34D", "#92400E"),
             ("cloud_monitoring", "End-to-End Lag & Parity SLO", f"Tracks {s0_svc} -> {s1_svc} -> {s2_svc} freshness lag and reconciles replayed DLQ events.", "#ECFDF5", "#6EE7B7", "#065F46"),
         ]
     for gi, (gic, gt, gd, gbg, gbd, gfg) in enumerate(gov_cards):
@@ -1614,9 +1651,9 @@ def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         })
 
     edges.extend([
-        {"id": "as_err_1", "rawPoints": [(54 + 1 * (sw + gap) + sw / 2.0, 408), (54 + 1 * (sw + gap) + sw / 2.0, 484)], "stroke": "#DC2626", "strokeWidth": 1.8, "dashed": True, "label": "Beam Error / DLQ", "labelY": 448},
-        {"id": "as_err_2", "rawPoints": [(54 + 2 * (sw + gap) + 120, 408), (54 + 2 * (sw + gap) + 120, 484)], "stroke": "#DC2626", "strokeWidth": 1.8, "dashed": True, "label": "BQ Load Error", "labelY": 448},
-        {"id": "as_fb", "rawPoints": [(54 + 3 * (sw + gap) + sw / 2.0, 408), (54 + 3 * (sw + gap) + sw / 2.0, 484)], "stroke": "#137333", "strokeWidth": 2.0, "dashed": True, "label": _cc.fit_single_line_px(fb_lbl, 180, 9.4, bold=True)[0], "labelY": 448},
+        {"id": "as_err_1", "rawPoints": [(54 + 1 * (sw + gap) + sw / 2.0, 408), (54 + 1 * (sw + gap) + sw / 2.0, 484)], "stroke": "#DC2626", "strokeWidth": 1.8, "dashed": True, "label": "Validation / DLQ", "labelY": 448},
+        {"id": "as_err_2", "rawPoints": [(54 + 2 * (sw + gap) + 120, 408), (54 + 2 * (sw + gap) + 120, 484)], "stroke": "#DC2626", "strokeWidth": 1.8, "dashed": True, "label": "Commit Retry / DLQ", "labelY": 448},
+        {"id": "as_fb", "rawPoints": [(54 + 3 * (sw + gap) + sw / 2.0, 408), (54 + 3 * (sw + gap) + sw / 2.0, 484)], "stroke": "#137333", "strokeWidth": 2.0, "dashed": True, "label": _cc.fit_single_line_px(fb_lbl, 250, 9.2, bold=True)[0], "labelY": 448},
     ])
 
     as_title, _ = _cc.fit_single_line_px(f"Async Pipeline & Recovery Architecture — {title}", 1260, 15.0, bold=True)
@@ -1631,7 +1668,7 @@ def build_async_spec_v3(bp: Dict[str, Any], slug: str) -> Dict[str, Any]:
         "pills": pills,
         "edges": edges,
         "planeLegend": [
-            {"id": "al_1", "plane": "DATA", "x": 34, "y": 838, "w": 1532, "h": 24, "text": _cc.fit_single_line_px(_cc.strip_md(ad.get("legend") or f"Asynchronous {s0_svc} -> {s1_svc} -> {s2_svc} pipeline, DLQ replay & CMEK checks run off the synchronous serving path."), 1490, 10.2)[0]},
+            {"id": "al_1", "plane": "DATA", "x": 34, "y": 838, "w": 1532, "h": 24, "text": _cc.fit_single_line_px(_cc.strip_md(ad.get("legend") or f"Asynchronous {s0_svc} -> {s1_svc} -> {s2_svc} pipeline, DLQ replay & KMS checks run off the synchronous serving path."), 1490, 10.2)[0]},
         ],
     }
 

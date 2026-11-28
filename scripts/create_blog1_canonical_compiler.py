@@ -207,11 +207,11 @@ def fit_single_line_px(text: str, max_width_px: float, font_size: float, bold: b
         return "", font_size
     if est_text_width_px(clean, font_size, bold=bold) <= max_width_px:
         return clean, font_size
-    for scale in (0.94, 0.88, 0.82, 0.78):
+    for scale in (0.94, 0.88, 0.82, 0.76, 0.70, 0.65):
         fs = round(font_size * scale, 1)
         if est_text_width_px(clean, fs, bold=bold) <= max_width_px:
             return clean, fs
-    fs = round(font_size * 0.80, 1)
+    fs = round(font_size * 0.68, 1)
     words = clean.split()
     kept: List[str] = []
     for w in words:

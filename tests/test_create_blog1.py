@@ -816,7 +816,7 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         cap = cb1.get_capabilities()
         self.assertIsInstance(cap, dict)
         self.assertGreaterEqual(cap["capabilities"]["officialGcpSvgIcons"], 20)
-        self.assertEqual(cap["capabilities"]["diagramLayersPerBlog"], 6)
+        self.assertEqual(cap["capabilities"]["diagramLayersPerBlog"], 7)
 
         # 2. wrap_px splits ultra-long identifiers without orphaned leading bullets or border overflow
         cc = cb1._diag_v2._cc
@@ -2348,6 +2348,148 @@ class TestCreateBlog1EngineAndRoutes(unittest.TestCase):
         d01 = next(c for c in det_bad["checks"] if c["id"] == "D-01")
         self.assertEqual(d01["status"], "FAIL")
         self.assertIn("Figure sequence mismatch", d01["detail"])
+
+    def test_26_seven_diagrams_13_slides_and_4_proof_2x2_grid(self) -> None:
+        """Verifies all 7/7 diagrams compile a 13-slide deck and 4 CONSOLE proofs render in a 2x2 grid on Slide 11."""
+        cat = cb1.get_category("reference_architecture")
+        outline = cb1.normalize_blog_outline(cat["recommendedOutline"], category_id="reference_architecture")
+        outline.append({"id": "sec-7", "type": "section", "title": "Async GPU Docking & Wet-Lab LIMS Loop", "enabled": True})
+        for item in outline:
+            if item.get("type") == "diagram":
+                item["enabled"] = True
+        # Move diag-async to the end right under sec-7
+        async_it = next(x for x in outline if x.get("kind") == "async")
+        outline = [x for x in outline if x.get("kind") != "async"] + [async_it]
+
+        plan = cb1.compute_dynamic_slide_plan(outline, include_starter_code=True)
+        self.assertEqual(plan["totalSlides"], 13)
+        self.assertEqual(plan["proofSlide"], 11)
+        self.assertEqual(len(plan["enabledDiagramKinds"]), 7)
+
+        raw_bp = _sample_blueprint()
+        while len(raw_bp["sections"]) < 7:
+            raw_bp["sections"].append(dict(raw_bp["sections"][-1], heading=f"{len(raw_bp['sections'])+1}. Async Wet-Lab Loop"))
+        bp = cb1.normalize_blueprint(
+            raw_bp,
+            "Autonomous DMTA molecule discovery agents",
+            "Biopharma R&D",
+            "Principal Cloud Architects",
+            slide_plan=plan,
+            category_id="reference_architecture",
+            outline=outline,
+        )
+        slug = "dmta-7diag-4proof-grid-test"
+        cb1.compile_and_save_blog(
+            blueprint=bp,
+            slug=slug,
+            model_used="gemini-4-neon",
+            auth_mode="vertex_ai_iam",
+            actor_email="unit-test",
+            enable_tts=False,
+            enable_judge=False,
+            category_id="reference_architecture",
+            outline=outline,
+            slide_plan=plan,
+            include_starter_code=True,
+        )
+        for i in range(1, 5):
+            png_b64 = base64.b64encode(_make_valid_png(1280 + i * 2, 720)).decode("ascii")
+            st_p, _, _ = self._req(
+                f"/api/create-blog1/blogs/{slug}/proofs",
+                method="POST",
+                body={
+                    "stage": "CONSOLE",
+                    "caption": f"Live GCP Console Proof {i}",
+                    "sourceUrl": "https://console.cloud.google.com/vertex-ai",
+                    "dataBase64": png_b64,
+                },
+                headers={"X-Portal-CSRF": srv._PORTAL_CSRF_TOKEN},
+            )
+            self.assertEqual(st_p, 201)
+
+        blog_dir = Path(self._tmpdir.name) / slug
+        svg11 = (blog_dir / "slides" / "slide_11.svg").read_text(encoding="utf-8")
+        for i in range(1, 5):
+            self.assertIn(f"Live GCP Console Proof {i}", svg11)
+
+        pptx_p = blog_dir / "slides" / f"{slug}-deck.pptx"
+        with zipfile.ZipFile(pptx_p, "r") as zf:
+            names = set(zf.namelist())
+            self.assertIn("ppt/slides/slide13.xml", names)
+            for i in range(1, 5):
+                self.assertIn(f"ppt/media/proof_{i}.png", names)
+            s11_xml = zf.read("ppt/slides/slide11.xml").decode("utf-8")
+            for i in range(4):
+                self.assertIn(f"proof_img_{i}", s11_xml)
+
+    def test_27_base_templates_immutability_and_ui_ratchet(self) -> None:
+        """Mechanically enforces zero base-template mutations and ratchets UI/SVG word-boundary fixes."""
+        import subprocess
+        repo_root = Path(__file__).resolve().parent.parent
+        diff_out = subprocess.check_output(
+            ["git", "diff", "--name-only"], cwd=str(repo_root), text=True
+        ).splitlines()
+        protected_prefixes = (
+            "blogs/ws1", "blogs/ws2", "blogs/ws3", "blogs/ws4", "blogs/ws5",
+            "diagrams/ws1", "diagrams/ws2", "diagrams/ws3", "diagrams/ws4", "diagrams/ws5",
+            "slides/ws1", "slides/ws2", "slides/ws3", "slides/ws4", "slides/ws5",
+            "scripts/lib/ws1_to_ws5_specs.mjs",
+            "screenshots/verified-cloud-console/screenshot_provenance.json",
+        )
+        leaked_mods = [p for p in diff_out if p.startswith(protected_prefixes)]
+        self.assertEqual(leaked_mods, [], f"Base template files must never be mutated: {leaked_mods}")
+
+        # Verify static BLOG_CATEGORIES baseline counts remain untouched
+        ra_cat = cb1.get_category("reference_architecture")
+        ra_enabled_diags = [x["kind"] for x in ra_cat["recommendedOutline"] if x["type"] == "diagram" and x["enabled"]]
+        self.assertEqual(len(ra_enabled_diags), 6)
+        self.assertEqual(ra_enabled_diags[0], "architecture")
+
+        # Verify compile_slide_preview_svgs never slices long slide subtitles mid-word (e.g. 'Access Control' -> 'Ac')
+        raw_bp = _sample_blueprint()
+        bp = cb1.normalize_blueprint(raw_bp, "ADK Checkpoints", "Agentic AI", "Architects")
+        bp["slides"][2]["subtitle"] = (
+            "Architecting a secure, serverless agent checkpointing system on Google Cloud, "
+            "integrating IAP, Model Armor, and Spanner Fine-Grained Access Control across regions"
+        )
+        svgs = cb1.compile_slide_preview_svgs(bp, "<svg/>", "<svg/>", [])
+        self.assertNotIn("Fine-Grained Ac<", svgs[2])
+
+        # Verify js/create_blog1.js & templates/create_blog1_page.html UI fixes stay ratcheted
+        js_src = (repo_root / "js" / "create_blog1.js").read_text(encoding="utf-8")
+        self.assertNotIn("getElementById('inp-apikey')", js_src)
+        self.assertIn("document.getElementById('chk-judge').checked", js_src)
+        self.assertIn("if (state.preflightResult) hidePreflightPanel();", js_src)
+        self.assertIn("state.blogs[existIdx] = Object.assign(", js_src)
+        html_src = (repo_root / "templates" / "create_blog1_page.html").read_text(encoding="utf-8")
+        self.assertIn("scroll-padding-top: calc(var(--topbar-h", html_src)
+        self.assertIn("scroll-margin-top: calc(var(--topbar-h", html_src)
+
+        # Verify DK-APP-01 & DK-USER-01 Dockerfile self-healer normalizes main.py -> app.py and injects non-root USER
+        raw_bp["codeStarter"] = {
+            "dockerfile": 'FROM python:3.11-slim\nWORKDIR /app\nCOPY main.py .\nCMD ["uvicorn", "main:app", "--port", "8080"]\n',
+            "readmeSummary": "Run main.py locally or build Dockerfile.",
+            "pythonApp": "import cryptography\nfrom fastapi import FastAPI\napp = FastAPI()\n",
+        }
+        _, healed_files, ast_ok, _ = cb1.compile_starter_zip(raw_bp, "dk-heal-test", include_starter_code=True)
+        self.assertTrue(ast_ok)
+        self.assertIn("COPY app.py .", healed_files["Dockerfile"])
+        self.assertIn('"app:app"', healed_files["Dockerfile"])
+        self.assertIn("USER appuser", healed_files["Dockerfile"])
+        self.assertNotIn("main.py", healed_files["README.md"])
+        self.assertIn("cryptography>=", healed_files["requirements.txt"])
+        from scripts import create_blog1_pipeline_v2 as pv2
+        self.assertEqual(pv2.scan_terraform_security(healed_files), [])
+
+        # Verify _wrap_code_lines never cuts identifiers like (t:TherapeuticTarget) mid-word on Slide 10
+        wrapped_gql = cb1._wrap_code_lines(
+            "  MATCH (s)-[:MEASURED_IN]->(a:BindingAssay)-[:ASSAYED_AGAINST]->(t:TherapeuticTarget)",
+            max_cols=76,
+            max_lines=10,
+        )
+        self.assertTrue(any("(t:TherapeuticTarget)" in ln for ln in wrapped_gql))
+        self.assertNotIn("&…", cb1._fit_clean_sentence("Cloud KMS Keyring — Dual Asymmetric EC_SIGN_P256_SHA256 Signing & Symmetric CMEK Vault", 70))
+
 
 
 if __name__ == "__main__":

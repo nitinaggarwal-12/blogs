@@ -346,7 +346,7 @@ _D13_STRUCTURAL_ALLOW_PATTERNS: Tuple[re.Pattern[str], ...] = (
         r"(?:\s+[a-z]+)?$"
     ),
     re.compile(r"(?i)^(?:199\d|20[0-3]\d)(?:\s+[a-z]+)?$"),
-    re.compile(r"(?i)^(?:1|2|3|4|5|6|7|8|9|10|11|12)\s*(?:layers?|steps?|hops?|slides?)$"),
+    re.compile(r"(?i)^(?:1|2|3|4|5|6|7|8|9|10|11|12|13|14)\s*(?:layers?|steps?|hops?|slides?|diagrams?|stages?)$"),
     re.compile(r"(?i)^(?:256|384|512|1024|1280|1440|1600|1920|2048|2560|4096)\s*[a-z]*$"),
     re.compile(r"(?i)^(?:100%)\s*$"),
     re.compile(r"(?i)^0\s+[a-z/]+$"),
@@ -1414,7 +1414,7 @@ def extract_compiled_drawio_digest(
                     if "image=data:image/svg+xml," in style:
                         icon_cells += 1
                     if lbl:
-                        id_to_label[cid] = lbl[:90]
+                        id_to_label[cid] = lbl[:180]
                         g_el = cell.find("mxGeometry")
                         gx = float(g_el.attrib.get("x", 0)) if g_el is not None and g_el.attrib.get("x") else 0
                         gy = float(g_el.attrib.get("y", 0)) if g_el is not None and g_el.attrib.get("y") else 0
@@ -1422,7 +1422,7 @@ def extract_compiled_drawio_digest(
                         gh = float(g_el.attrib.get("height", 0)) if g_el is not None and g_el.attrib.get("height") else 0
                         vertices.append({
                             "id": cid,
-                            "label": lbl[:110],
+                            "label": lbl[:260],
                             "bounds": [int(gx), int(gy), int(gw), int(gh)],
                         })
                 elif cell.attrib.get("edge") == "1":
@@ -1434,7 +1434,7 @@ def extract_compiled_drawio_digest(
                         "id": cid,
                         "source": cell.attrib.get("source", ""),
                         "target": cell.attrib.get("target", ""),
-                        "label": lbl[:80],
+                        "label": lbl[:160],
                         "orthogonal": is_ortho,
                     })
             resolved_edges = [
